@@ -1,0 +1,350 @@
+/* Dark Mode Styles */
+[data-theme="dark"] {
+    /* Base Colors */
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --border-color: #404040;
+    --card-bg: #2d2d2d;
+    --input-bg: #333333;
+    --table-stripe: #252525;
+    --hover-bg: #3d3d3d;
+    --test-color: red;
+}
+
+/* Base Elements */
+[data-theme="dark"] body {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Navbar Specific */
+[data-theme="dark"] .navbar {
+    background-color: var(--bg-secondary) !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .navbar-dark .navbar-nav .nav-link {
+    color: var(--text-primary) !important;
+}
+
+/* Cards and Containers */
+[data-theme="dark"] .card,
+[data-theme="dark"] .container,
+[data-theme="dark"] .container-fluid,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .dropdown-menu {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color);
+}
+
+/* Frames and Sections */
+[data-theme="dark"] .collapsible-frame,
+[data-theme="dark"] .frame-content,
+[data-theme="dark"] .frame-header,
+[data-theme="dark"] .filters-section,
+[data-theme="dark"] .summary-frame,
+[data-theme="dark"] .workout-log-frame {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Tables */
+[data-theme="dark"] .table,
+[data-theme="dark"] .results-section .table {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .table thead th,
+[data-theme="dark"] .results-section .table thead th {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .table tbody tr,
+[data-theme="dark"] .results-section .table tbody tr {
+    background-color: var(--card-bg) !important;
+}
+
+[data-theme="dark"] .table tbody tr:nth-of-type(odd),
+[data-theme="dark"] .results-section .table tbody tr:nth-of-type(odd) {
+    background-color: var(--table-stripe) !important;
+}
+
+[data-theme="dark"] .table td,
+[data-theme="dark"] .table th,
+[data-theme="dark"] .results-section .table td,
+[data-theme="dark"] .results-section .table th {
+    border-color: var(--border-color) !important;
+}
+
+/* Add hover effect for the results table */
+[data-theme="dark"] .results-section .table tbody tr:hover {
+    background-color: var(--hover-bg) !important;
+}
+
+/* Form Elements */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] .input-group-text {
+    background-color: #2c3034 !important;
+    border-color: #495057 !important;
+    color: #e9ecef !important;
+}
+
+/* Specific styles for the exercise search input */
+[data-theme="dark"] #exercise-search.form-control {
+    background-color: #2c3034 !important;
+    color: #fff !important;
+    border-color: #495057 !important;
+}
+
+/* Placeholder text color */
+[data-theme="dark"] #exercise-search.form-control::placeholder {
+    color: #6c757d !important;
+}
+
+/* Focus state */
+[data-theme="dark"] #exercise-search.form-control:focus {
+    background-color: #343a40 !important;
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    color: #fff !important;
+}
+
+/* Hover state */
+[data-theme="dark"] #exercise-search.form-control:hover {
+    border-color: #6c757d !important;
+}
+
+/* Buttons */
+[data-theme="dark"] .btn {
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .btn-outline-secondary {
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Headers and Text */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] .card-title {
+    color: var(--text-primary) !important;
+}
+
+/* Transitions */
+body,
+.navbar,
+.card,
+.table,
+.form-control,
+.btn {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Dark Mode Toggle Button */
+#darkModeToggle {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+#darkModeToggle i,
+#darkModeToggle span {
+    color: #0d6efd !important;
+}
+
+#darkModeToggle:hover {
+    opacity: 0.8;
+}
+
+/* Volume Indicators in Dark Mode */
+[data-theme="dark"] .volume-indicator {
+    border: 1px solid var(--border-color);
+}
+
+/* Welcome Page in Dark Mode */
+[data-theme="dark"] .welcome-container {
+    background-color: var(--bg-primary);
+}
+
+[data-theme="dark"] .hero-section {
+    background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
+}
+
+/* Add this somewhere visible to test */
+[data-theme="dark"] .navbar-brand {
+    color: var(--test-color) !important;
+}
+
+/* Tables - Add table-responsive styles */
+[data-theme="dark"] .table-responsive {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Ensure text is visible in all table contexts */
+[data-theme="dark"] .table-responsive .table {
+    color: var(--text-primary) !important;
+    background-color: var(--card-bg) !important;
+}
+
+/* Ensure consistent background color */
+[data-theme="dark"] .results-section {
+    background-color: var(--card-bg) !important;
+}
+
+/* Ensure table header remains visible when scrolling */
+[data-theme="dark"] .table-responsive thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--bg-secondary) !important;
+}
+
+/* Add border to table-responsive to match overall theme */
+[data-theme="dark"] .table-responsive {
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+}
+
+/* Tables and Results Section */
+[data-theme="dark"] .results-section,
+[data-theme="dark"] .table-responsive {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .results-section .table,
+[data-theme="dark"] .table-responsive .table {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .results-section .table thead th,
+[data-theme="dark"] .table-responsive .table thead th {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+[data-theme="dark"] .results-section .table tbody tr,
+[data-theme="dark"] .table-responsive .table tbody tr {
+    background-color: var(--bg-primary) !important;
+}
+
+[data-theme="dark"] .results-section .table tbody tr:nth-of-type(odd),
+[data-theme="dark"] .table-responsive .table tbody tr:nth-of-type(odd) {
+    background-color: var(--table-stripe) !important;
+}
+
+[data-theme="dark"] .results-section .table td,
+[data-theme="dark"] .results-section .table th,
+[data-theme="dark"] .table-responsive .table td,
+[data-theme="dark"] .table-responsive .table th {
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Hover effects */
+[data-theme="dark"] .results-section .table tbody tr:hover,
+[data-theme="dark"] .table-responsive .table tbody tr:hover {
+    background-color: var(--hover-bg) !important;
+}
+
+/* Remove any white backgrounds that might be overriding */
+[data-theme="dark"] .table-responsive,
+[data-theme="dark"] .results-section,
+[data-theme="dark"] .table {
+    background: none !important;
+}
+
+/* Results Body Table Specific Styles */
+[data-theme="dark"] #results-body {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] #results-body tr {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] #results-body tr:nth-of-type(odd) {
+    background-color: var(--table-stripe) !important;
+}
+
+[data-theme="dark"] #results-body td {
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] #results-body tr:hover {
+    background-color: var(--hover-bg) !important;
+}
+
+/* Ensure the parent table has proper background */
+[data-theme="dark"] #results-body table {
+    background-color: var(--bg-primary) !important;
+}
+
+/* Target the specific table and its container */
+[data-theme="dark"] .table.table-hover {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .table.table-hover tbody,
+[data-theme="dark"] #results-body {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .table.table-hover tr,
+[data-theme="dark"] #results-body tr {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .table.table-hover td,
+[data-theme="dark"] #results-body td {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Striped rows */
+[data-theme="dark"] .table.table-hover tbody tr:nth-of-type(odd),
+[data-theme="dark"] #results-body tr:nth-of-type(odd) {
+    background-color: var(--table-stripe) !important;
+}
+
+/* Hover effect */
+[data-theme="dark"] .table.table-hover tbody tr:hover,
+[data-theme="dark"] #results-body tr:hover {
+    background-color: var(--hover-bg) !important;
+}
+
+/* Remove any default table backgrounds */
+[data-theme="dark"] .table.table-hover,
+[data-theme="dark"] .table.table-hover tbody,
+[data-theme="dark"] .table.table-hover tr,
+[data-theme="dark"] .table.table-hover td {
+    background-image: none !important;
+} 

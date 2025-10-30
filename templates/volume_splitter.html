@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="volume-splitter-container">
+    <!-- Header Section -->
+    <div class="section-header text-center mb-4">
+        <h2>Volume Splitter</h2>
+        <p class="lead">Plan and distribute your training volume effectively across your workout week</p>
+    </div>
+
+    <!-- Main Form -->
+    <div class="volume-form-container">
+        <!-- Training Frequency Section -->
+        <div class="frequency-section mb-4">
+            <h3>Step 1: Weekly Training Frequency</h3>
+            <div class="form-group">
+                <label for="training-days">How many days per week can you train consistently?</label>
+                <select id="training-days" class="form-select">
+                    {% for i in range(1, 8) %}
+                    <option value="{{ i }}" {% if i == 3 %}selected{% endif %}>{{ i }} days</option>
+                    {% endfor %}
+                </select>
+                <small class="form-text text-muted">
+                    This will help distribute your volume across your training week
+                </small>
+            </div>
+        </div>
+
+        <!-- Volume Input Section -->
+        <div class="volume-input-section mb-4">
+            <h3>Step 2: Muscle Group Volume</h3>
+            <p class="text-muted mb-3">Enter your desired weekly sets for each muscle group</p>
+            
+            <div class="volume-inputs">
+                {% for muscle in muscle_groups %}
+                <div class="volume-input-group">
+                    <label for="{{ muscle|lower }}-volume">{{ muscle }}</label>
+                    <div class="input-group">
+                        <input type="number" 
+                               id="{{ muscle|lower }}-volume" 
+                               class="form-control volume-input"
+                               data-muscle="{{ muscle }}"
+                               min="0" 
+                               value="0"
+                               placeholder="Weekly sets">
+                        <div class="input-group-append">
+                            <span class="input-group-text">sets/week</span>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">
+                        Recommended: {{ recommended_ranges[muscle]['min'] }}-{{ recommended_ranges[muscle]['max'] }} sets/week
+                    </small>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="volume-controls">
+                <button id="calculate-volume" class="btn btn-primary">
+                    <i class="fas fa-calculator"></i> Calculate Distribution
+                </button>
+                <button id="reset-volume" class="btn btn-secondary">
+                    <i class="fas fa-undo"></i> Reset Values
+                </button>
+                <button id="export-to-excel-btn" class="btn">
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section mb-4 d-none">
+            <h3>Step 3: Volume Distribution</h3>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Muscle Group</th>
+                            <th>Weekly Sets</th>
+                            <th>Sets per Session</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <button id="export-volume" class="btn btn-success mt-3">
+                Export Volume Plan
+            </button>
+        </div>
+
+        <!-- AI Suggestions Section -->
+        <div class="ai-suggestions-section mb-4 d-none">
+            <h3>AI Suggestions</h3>
+            <div class="suggestions-container">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="volume-history-section mb-4">
+            <h3>Volume History</h3>
+            <div class="history-container">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Training Days</th>
+                            <th>Total Volume</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+{% endblock %} 

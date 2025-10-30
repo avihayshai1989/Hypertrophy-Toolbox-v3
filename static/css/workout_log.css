@@ -1,0 +1,177 @@
+/* Workout Log Table Styles */
+.workout-log-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+}
+
+/* Planned columns styling */
+.planned-column {
+    background-color: #e3f2fd !important; /* Light blue background for light mode */
+    color: #1565c0;
+    font-weight: 500;
+}
+
+/* Dark mode styles for planned columns */
+[data-theme='dark'] .planned-column {
+    background-color: #1a237e !important; /* Darker blue background */
+    color: #fff !important; /* White text */
+}
+
+/* Scored columns styling */
+.scored-column {
+    background-color: #f3e5f5 !important; /* Light purple background */
+    color: #7b1fa2;
+    font-weight: 500;
+    min-width: 100px;
+    position: relative;
+}
+
+/* Highlight columns styling */
+.highlight-column {
+    background-color: #fff3e0 !important; /* Light orange background */
+    color: #e65100;
+    font-weight: 500;
+}
+
+/* Table header styling */
+.workout-log-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
+    padding: 12px 8px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* Dark mode styles for table headers */
+[data-theme='dark'] .workout-log-table thead th {
+    background-color: #212529 !important;
+    color: #fff !important;
+    border-bottom: 2px solid #343a40;
+}
+
+/* Table cell styling */
+.workout-log-table td {
+    padding: 8px;
+    vertical-align: middle;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Dark mode styles for table cells */
+[data-theme='dark'] .workout-log-table td {
+    border-top: 1px solid #343a40;
+}
+
+/* Remove button styling */
+.workout-log-table .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.workout-log-table .btn-danger i {
+    font-size: 0.875rem;
+}
+
+/* Hover effect for table rows */
+.workout-log-table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+/* Dark mode hover effect */
+[data-theme='dark'] .workout-log-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Badge styling */
+.workout-log-table .badge {
+    font-size: 0.875rem;
+    padding: 0.35em 0.65em;
+}
+
+/* Responsive table */
+@media (max-width: 992px) {
+    .workout-log-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Editable field styling */
+.editable {
+    cursor: pointer;
+    position: relative;
+}
+
+.editable-input {
+    width: 100%;
+    height: 38px;
+    padding: 8px;
+    border: 2px solid #e65100;
+    border-radius: 4px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.date-input {
+    min-width: 150px;
+}
+
+.editable:hover {
+    background-color: rgba(230, 81, 0, 0.1) !important;
+}
+
+.editable-text {
+    display: block;
+    padding: 4px;
+}
+
+/* Number input styling */
+.number-input {
+    width: 80px;
+    text-align: center;
+}
+
+.editable-input.number-input {
+    padding: 4px;
+    height: 32px;
+}
+
+#debug-info {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+}
+
+#debug-info pre {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+/* Ensure text remains visible in dark mode */
+[data-theme='dark'] .workout-log-table {
+    color: #fff;
+}
+
+/* Scored columns in dark mode */
+[data-theme='dark'] .scored-column {
+    background-color: #4a148c !important; /* Darker purple */
+    color: #fff !important;
+}
+
+/* Highlight columns in dark mode */
+[data-theme='dark'] .highlight-column {
+    background-color: #e65100 !important; /* Darker orange */
+    color: #fff !important;
+}

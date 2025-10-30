@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="page-header text-center mb-4">
+        <h1>{{ page_title }}</h1>
+        <div class="header-underline"></div>
+    </div>
+
+    <div class="workout-log-frame">
+        <div class="table-responsive">
+            <table class="table table-striped workout-log-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th class="planned-column">Routine</th>
+                        <th class="planned-column">Exercise</th>
+                        <th class="planned-column">Planned Sets</th>
+                        <th class="planned-column">Planned Min Reps</th>
+                        <th class="planned-column">Planned Max Reps</th>
+                        <th class="planned-column">Planned RIR</th>
+                        <th class="planned-column">Planned RPE</th>
+                        <th class="planned-column">Planned Weight</th>
+                        <th class="scored-column editable">Scored Min Reps</th>
+                        <th class="scored-column editable">Scored Max Reps</th>
+                        <th class="scored-column editable">Scored RIR</th>
+                        <th class="scored-column editable">Scored RPE</th>
+                        <th class="scored-column editable">Scored Weight</th>
+                        <th class="highlight-column">Last Progression</th>
+                        <th class="highlight-column">Progressive Overload</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in workout_logs %}
+                    <tr data-log-id="{{ log.id }}">
+                        <td>{{ loop.index }}</td>
+                        <td class="planned-column">{{ log.routine }}</td>
+                        <td class="planned-column">{{ log.exercise }}</td>
+                        <td class="planned-column">{{ log.planned_sets }}</td>
+                        <td class="planned-column" data-field="planned_min_reps">{{ log.planned_min_reps }}</td>
+                        <td class="planned-column" data-field="planned_max_reps">{{ log.planned_max_reps }}</td>
+                        <td class="planned-column" data-field="planned_rir">{{ log.planned_rir }}</td>
+                        <td class="planned-column" data-field="planned_rpe">{{ log.planned_rpe }}</td>
+                        <td class="planned-column" data-field="planned_weight">{{ log.planned_weight }}</td>
+                        <td class="scored-column editable" data-field="scored_min_reps">
+                            <input type="number" 
+                                   class="editable-input number-input" 
+                                   value="{{ log.scored_min_reps if log.scored_min_reps and log.scored_min_reps != 'None' else '' }}"
+                                   onchange="updateScoredValue('{{ log.id }}', 'scored_min_reps', this.value)"
+                                   style="display: none;">
+                            <span class="editable-text">{{ log.scored_min_reps or 'Click to set' }}</span>
+                        </td>
+                        <td class="scored-column editable" data-field="scored_max_reps">
+                            <input type="number" 
+                                   class="editable-input number-input" 
+                                   value="{{ log.scored_max_reps if log.scored_max_reps and log.scored_max_reps != 'None' else '' }}"
+                                   onchange="updateScoredValue('{{ log.id }}', 'scored_max_reps', this.value)"
+                                   style="display: none;">
+                            <span class="editable-text">{{ log.scored_max_reps or 'Click to set' }}</span>
+                        </td>
+                        <td class="scored-column editable" data-field="scored_rir">
+                            <input type="number" 
+                                   class="editable-input number-input" 
+                                   value="{{ log.scored_rir if log.scored_rir and log.scored_rir != 'None' else '' }}"
+                                   onchange="updateScoredValue('{{ log.id }}', 'scored_rir', this.value)"
+                                   style="display: none;">
+                            <span class="editable-text">{{ log.scored_rir or 'Click to set' }}</span>
+                        </td>
+                        <td class="scored-column editable" data-field="scored_rpe">
+                            <input type="number" 
+                                   class="editable-input number-input" 
+                                   value="{{ log.scored_rpe if log.scored_rpe and log.scored_rpe != 'None' else '' }}"
+                                   onchange="updateScoredValue('{{ log.id }}', 'scored_rpe', this.value)"
+                                   style="display: none;">
+                            <span class="editable-text">{{ log.scored_rpe or 'Click to set' }}</span>
+                        </td>
+                        <td class="scored-column editable" data-field="scored_weight">
+                            <input type="number" 
+                                   class="editable-input number-input" 
+                                   value="{{ log.scored_weight if log.scored_weight and log.scored_weight != 'None' else '' }}"
+                                   step="0.5"
+                                   min="0"
+                                   onchange="updateScoredValue('{{ log.id }}', 'scored_weight', this.value)"
+                                   style="display: none;">
+                            <span class="editable-text">{{ log.scored_weight or 'Click to set' }}</span>
+                        </td>
+                        <td class="highlight-column editable" data-field="last_progression_date">
+                            <input type="date" 
+                                   class="editable-input date-input" 
+                                   value="{{ log.last_progression_date if log.last_progression_date and log.last_progression_date != 'None' else '' }}"
+                                   onchange="handleDateChange(event, '{{ log.id }}')"
+                                   style="display: none;">
+                            <span class="editable-text">
+                                {% if log.last_progression_date and log.last_progression_date != 'None' %}
+                                    {{ log.last_progression_date|datetime('%d-%m-%Y') }}
+                                {% else %}
+                                    Click to set date
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td class="highlight-column">
+                            {% set is_progressive = 
+                                (log.scored_rir is not none and log.planned_rir is not none and log.scored_rir < log.planned_rir) or
+                                (log.scored_rpe is not none and log.planned_rpe is not none and log.scored_rpe > log.planned_rpe) or
+                                (log.scored_min_reps is not none and log.planned_min_reps is not none and log.scored_min_reps > log.planned_min_reps) or
+                                (log.scored_max_reps is not none and log.planned_max_reps is not none and log.scored_max_reps > log.planned_max_reps) or
+                                (log.scored_weight is not none and log.planned_weight is not none and log.scored_weight > log.planned_weight)
+                            %}
+                            <span class="badge {{ 'bg-success' if is_progressive else 'bg-warning' }}">
+                                {{ 'Achieved' if is_progressive else 'Pending' }}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteWorkoutLog('{{ log.id }}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification Section -->
+<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toast-body">
+                <!-- Toast message will be inserted here -->
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<div class="btn-group" aria-label="Export controls">
+    <!-- Other buttons in the group -->
+</div>
+{% endblock %} 

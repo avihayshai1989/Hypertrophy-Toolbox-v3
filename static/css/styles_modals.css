@@ -1,0 +1,55 @@
+/* Modal Base Styles */
+.modal-content {
+    border-radius: 1rem;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+
+/* Insights Modal */
+#insightsModal .modal-body h4,
+#insightsModal .modal-body h5,
+#insightsModal .modal-body h6 {
+    color: #2c3e50;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+#insightsModal .modal-body ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+#insightsModal .modal-body li {
+    margin-bottom: 0.5rem;
+}
+
+/* AI Assistant Modal */
+#aiAssistantModal .modal-dialog {
+    max-width: 700px;
+}
+
+#aiAssistantModal .chat-container {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+} 

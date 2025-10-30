@@ -1,0 +1,395 @@
+/* Optimized Volume Splitter Layout */
+.volume-splitter-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 300px 1fr 350px;
+    gap: 1.5rem;
+    min-height: calc(100vh - 80px); /* Account for navbar */
+}
+
+/* Left Column - Controls */
+.volume-controls-column {
+    background: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+}
+
+/* Center Column - Main Content */
+.volume-main-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Right Column - Suggestions */
+.volume-side-column {
+    background: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+}
+
+/* Volume Inputs Grid */
+.volume-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* Results Section */
+.results-section {
+    background: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+}
+
+/* History Section */
+.volume-history-section {
+    margin-top: auto; /* Push to bottom of main column */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1400px) {
+    .volume-splitter-container {
+        grid-template-columns: 250px 1fr 300px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .volume-splitter-container {
+        grid-template-columns: 1fr 300px;
+    }
+    
+    .volume-controls-column {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .volume-splitter-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+    
+    .volume-controls-column,
+    .volume-main-column,
+    .volume-side-column {
+        grid-column: 1;
+    }
+}
+
+/* Column Header Styling */
+.column-header {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* Compact Card Styling */
+.compact-card {
+    background: var(--bg-primary);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--border-color);
+}
+
+/* Dark Mode Adjustments */
+[data-theme="dark"] .volume-controls-column,
+[data-theme="dark"] .volume-side-column,
+[data-theme="dark"] .results-section {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .column-header {
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Scrollable Sections */
+.scrollable-section {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.scrollable-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-section::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 3px;
+}
+
+.scrollable-section::-webkit-scrollbar-track {
+    background-color: var(--bg-primary);
+}
+
+.status-optimal {
+    color: #28a745;
+}
+
+.status-low {
+    color: #ffc107;
+}
+
+.status-high {
+    color: #dc3545;
+}
+
+.status-excessive {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* AI Suggestions Section - Slim Design */
+.ai-suggestions-section {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: var(--card-bg);
+}
+
+.suggestions-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Slim Suggestion Cards */
+.suggestion-card {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    min-height: unset;
+    background: var(--bg-primary);
+}
+
+/* Card Types */
+.suggestion-card[data-type="warning"] {
+    border-left-color: #ffc107;
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.suggestion-card[data-type="info"] {
+    border-left-color: #0dcaf0;
+    background-color: rgba(13, 202, 240, 0.1);
+}
+
+.suggestion-card[data-type="suggestion"] {
+    border-left-color: #198754;
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+/* Card Icon */
+.suggestion-card .suggestion-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Card Content */
+.suggestion-card .suggestion-content {
+    flex-grow: 1;
+}
+
+.suggestion-card .suggestion-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.suggestion-card .suggestion-message {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Hover Effects */
+.suggestion-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Mode Adjustments */
+[data-theme="dark"] .suggestion-card {
+    background-color: var(--card-bg);
+}
+
+[data-theme="dark"] .suggestion-card[data-type="warning"] {
+    background-color: rgba(255, 193, 7, 0.15);
+}
+
+[data-theme="dark"] .suggestion-card[data-type="info"] {
+    background-color: rgba(13, 202, 240, 0.15);
+}
+
+[data-theme="dark"] .suggestion-card[data-type="suggestion"] {
+    background-color: rgba(25, 135, 84, 0.15);
+}
+
+/* Expandable Content */
+.suggestion-card .expandable-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.suggestion-card.expanded .expandable-content {
+    max-height: 200px;
+    margin-top: 0.5rem;
+}
+
+/* Toggle Button */
+.suggestion-card .expand-toggle {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.suggestion-card .expand-toggle:hover {
+    color: var(--text-primary);
+}
+
+/* History Section Styling */
+.volume-history-section {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+[data-theme='dark'] .volume-history-section {
+    background-color: #212529;
+}
+
+.volume-history-section tr.active {
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+[data-theme='dark'] .volume-history-section tr.active {
+    background-color: rgba(40, 167, 69, 0.2);
+}
+
+.load-plan {
+    transition: all 0.3s ease;
+}
+
+.load-plan:hover {
+    transform: scale(1.05);
+}
+
+/* Add loading state styles */
+.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1em;
+    height: 1em;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.6s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Add these dark mode styles */
+[data-theme='dark'] .results-section {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme='dark'] .results-section table {
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .results-section thead th {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme='dark'] .results-section tbody tr {
+    background-color: var(--card-bg);
+}
+
+[data-theme='dark'] .results-section tbody tr:nth-of-type(odd) {
+    background-color: var(--table-stripe);
+}
+
+[data-theme='dark'] .results-section td,
+[data-theme='dark'] .results-section th {
+    border-color: var(--border-color);
+}
+
+[data-theme='dark'] .results-section tbody tr:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Status colors in dark mode */
+[data-theme='dark'] .status-optimal {
+    color: #4caf50;  /* Brighter green for dark mode */
+}
+
+[data-theme='dark'] .status-low {
+    color: #ffd700;  /* Brighter yellow for dark mode */
+}
+
+[data-theme='dark'] .status-high,
+[data-theme='dark'] .status-excessive {
+    color: #ff6b6b;  /* Brighter red for dark mode */
+}
+
+/* Volume Controls Container */
+.volume-controls {
+    display: flex;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+}
+
+.volume-controls .btn {
+    min-width: 160px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Icon styling */
+.volume-controls .btn i {
+    font-size: 1rem;
+} 

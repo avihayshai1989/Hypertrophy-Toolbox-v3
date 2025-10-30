@@ -1,0 +1,254 @@
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    /* Layout Responsiveness */
+    .split-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Form Responsiveness */
+    .form-container {
+        flex-direction: column;
+    }
+    
+    .uniform-dropdown {
+        width: 100%;
+        min-width: unset;
+    }
+    
+    .wide-input,
+    .large-input,
+    .small-input {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    /* Frame Responsiveness */
+    .unified-frames-container {
+        padding: 0 1rem;
+    }
+    
+    .input-frame,
+    .action-frame {
+        padding: 1rem;
+    }
+    
+    .frame-title {
+        font-size: 0.8rem;
+    }
+    
+    .action-frame .d-flex {
+        gap: 1rem !important;
+    }
+    
+    .action-frame .btn-group {
+        width: 100%;
+    }
+    
+    .action-frame .btn {
+        flex: 1;
+    }
+}
+
+/* Desktop Styles */
+@media (max-width: 1920px) {
+    .container {
+        max-width: 90%;
+    }
+
+    .table-container {
+        max-width: 95%;
+    }
+}
+
+/* Large Desktop Styles */
+@media (min-width: 1921px) and (max-width: 2560px) {
+    .container {
+        max-width: 85%;
+    }
+
+    .table-container {
+        max-width: 100%;
+    }
+
+    .form-container {
+        gap: 0.5rem;
+    }
+
+    .small-input,
+    .large-input {
+        width: calc((100% - 1rem) / 5);
+        margin-right: 2px;
+        min-width: 150px;
+    }
+
+    .wide-input {
+        width: 615px;
+    }
+}
+
+/* 4K and Ultra-wide Styles */
+@media (min-width: 2561px) {
+    .container {
+        max-width: 80%;
+    }
+
+    .table-container {
+        max-width: 100%;
+        font-size: 1.2rem;
+        overflow-x: auto;
+    }
+
+    .form-container {
+        gap: 0.5rem;
+    }
+
+    .small-input,
+    .large-input {
+        padding: 10px;
+        width: calc((100% - 1rem) / 5);
+        margin-right: 1px;
+        min-width: 200px;
+        box-sizing: border-box;
+    }
+
+    .wide-input {
+        width: 280px;
+    }
+}
+
+/* Welcome Page Responsive Styles */
+@media (min-width: 1440px) {
+    .welcome-container h1 {
+        font-size: 3rem;
+    }
+
+    .welcome-container p {
+        font-size: 1.5rem;
+    }
+}
+
+@media (min-width: 2560px) {
+    .welcome-container h1 {
+        font-size: 4rem;
+    }
+
+    .welcome-container p {
+        font-size: 2rem;
+    }
+}
+
+/* 1080p (1920x1080) */
+@media screen and (max-width: 1920px) {
+    .container {
+        max-width: 1600px;
+    }
+    
+    .input-fields-group input,
+    .input-fields-group .form-control {
+        height: 45px;
+        font-size: 1rem;
+        padding: 8px 14px;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .form-select {
+        height: 45px;
+        font-size: 1rem;
+    }
+}
+
+/* 1440p (2560x1440) */
+@media screen and (min-width: 2560px) {
+    /* Scale down the root font size for 1440p */
+    :root {
+        font-size: 14px;  /* Base font size adjustment */
+    }
+
+    .container {
+        max-width: 1800px;  /* Reduced from 2000px */
+        padding: 15px;
+    }
+    
+    /* Input fields scaling */
+    .input-fields-group input,
+    .input-fields-group .form-control {
+        height: 40px;  /* Reduced from 50px */
+        font-size: 0.9rem;
+        padding: 8px 14px;
+    }
+    
+    /* Button scaling */
+    .btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+    
+    /* Form elements scaling */
+    .form-select {
+        height: 40px;
+        font-size: 0.9rem;
+    }
+    
+    /* Table scaling */
+    .table td, 
+    .table th {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Frame adjustments */
+    .input-frame,
+    .action-frame {
+        padding: 1rem;
+    }
+    
+    /* Dropdown adjustments */
+    .uniform-dropdown {
+        max-width: 400px;
+    }
+    
+    /* Heading adjustments */
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.75rem;
+    }
+    
+    h3 {
+        font-size: 1.5rem;
+    }
+}
+
+/* 4K (3840x2160) */
+@media screen and (min-width: 2561px) {
+    .container {
+        max-width: 2800px;
+    }
+    
+    .input-fields-group input,
+    .input-fields-group .form-control {
+        height: 55px;
+        font-size: 1.2rem;
+        padding: 12px 20px;
+    }
+    
+    .btn {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+    }
+    
+    .form-select {
+        height: 55px;
+        font-size: 1.2rem;
+    }
+}
+
+@media screen and (min-width: 3840px) {
+    /* 4K styles remain the same but with adjusted breakpoint */
+}

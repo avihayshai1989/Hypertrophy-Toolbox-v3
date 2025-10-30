@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="page-header text-center mb-4">
+        <h1>Weekly Summary</h1>
+        <div class="header-underline"></div>
+    </div>
+
+    <!-- Add base layer frame -->
+    <div class="summary-frame">
+        <!-- Method Selection and Legend with full width -->
+        <div class="summary-header">
+            <!-- Calculation Method -->
+            <div class="method-selector">
+                <label for="method" class="form-label">Calculation Method</label>
+                <select id="method" class="form-select" onchange="updateWeeklySummary()">
+                    <option value="Total" selected>Total (All Contributions)</option>
+                    <option value="Fractional">Fractional (Weighted Contributions)</option>
+                    <option value="Direct">Direct (Primary Muscle Group Only)</option>
+                </select>
+            </div>
+
+            <!-- Volume Classification Legend -->
+            <div class="volume-legend">
+                <h5>Volume Classification Legend</h5>
+                <div class="legend-indicators">
+                    <div class="legend-item">
+                        <div class="volume-indicator low-volume"></div>
+                        <span>Low Volume: Below 10 sets</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="volume-indicator medium-volume"></div>
+                        <span>Medium Volume: 10-19 sets</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="volume-indicator high-volume"></div>
+                        <span>High Volume: 20-29 sets</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="volume-indicator ultra-volume"></div>
+                        <span>Ultra Volume: 30+ sets</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables in frame -->
+        <div class="summary-tables">
+            <!-- Weekly Summary Table -->
+            <div class="summary-section">
+                <div id="weekly-summary-container" class="table-container">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Muscle Group</th>
+                                <th>Total Sets</th>
+                                <th>Total Reps</th>
+                                <th>Total Volume</th>
+                                <th>Volume Classification</th>
+                            </tr>
+                        </thead>
+                        <tbody id="weekly-summary-table">
+                            <!-- Will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Exercise Categories Summary -->
+            <div class="summary-section">
+                <h3 class="text-center mb-4">Exercise Categories Summary</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Subcategory</th>
+                                <th>Total Exercises</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                            <tr>
+                                <td>
+                                    <span data-bs-toggle="tooltip" 
+                                          title="{{ get_category_tooltip(category.category) }}">
+                                        {{ category.category }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span data-bs-toggle="tooltip" 
+                                          title="{{ get_subcategory_tooltip(category.category, category.subcategory) }}">
+                                        {{ category.subcategory }}
+                                    </span>
+                                </td>
+                                <td>{{ category.total_exercises }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Advanced Isolated Muscles Statistics -->
+            <div class="summary-section">
+                <h3 class="text-center mb-4">Advanced Isolated Muscles Statistics</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Isolated Muscle</th>
+                                <th>Exercise Count</th>
+                                <th>Total Sets</th>
+                                <th>Total Reps</th>
+                                <th>Total Volume</th>
+                                <th>Volume Classification</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for muscle in isolated_muscles %}
+                            <tr>
+                                <td>{{ muscle.isolated_muscle }}</td>
+                                <td>{{ muscle.exercise_count }}</td>
+                                <td>{{ muscle.total_sets }}</td>
+                                <td>{{ muscle.total_reps }}</td>
+                                <td>{{ muscle.total_volume }}</td>
+                                <td>
+                                    <div class="volume-classification" 
+                                         data-bs-toggle="tooltip"
+                                         title="{{ get_volume_tooltip(get_volume_label(muscle.total_sets), muscle.total_sets) }}">
+                                        <span class="volume-badge {{ get_volume_class(muscle.total_sets) }}">
+                                            {{ get_volume_label(muscle.total_sets) }}
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Volume Formula Explanation -->
+        <div class="alert alert-info mt-4 mb-4">
+            <strong>Training Volume Formula:</strong> Total Volume = Sets × Reps × Weight
+        </div>
+
+        <!-- Export Button -->
+        <div class="export-section mt-3 text-center">
+            <a href="/export_to_excel" class="btn btn-export-excel">
+                <i class="fas fa-file-excel"></i> Export All Tables
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+// Function to get volume classification details
+function getVolumeDetails(totalSets) {
+    let volumeClass, volumeLabel;
+    
+    if (totalSets < 10) {
+        volumeClass = 'low-volume';
+        volumeLabel = 'Low Volume';
+    } else if (totalSets < 20) {
+        volumeClass = 'medium-volume';
+        volumeLabel = 'Medium Volume';
+    } else if (totalSets < 30) {
+        volumeClass = 'high-volume';
+        volumeLabel = 'High Volume';
+    } else {
+        volumeClass = 'ultra-volume';
+        volumeLabel = 'Ultra Volume';
+    }
+
+    const ranges = {
+        'Low Volume': 'Below 10 sets',
+        'Medium Volume': '10-19 sets',
+        'High Volume': '20-29 sets',
+        'Ultra Volume': '30+ sets'
+    };
+
+    return {
+        class: volumeClass,
+        label: volumeLabel,
+        tooltip: `${volumeLabel}: ${ranges[volumeLabel]} (Current: ${totalSets} sets)`
+    };
+}
+
+// Function to update the weekly summary table based on the selected method
+async function updateWeeklySummary() {
+    const method = document.getElementById("method").value;
+    const tableBody = document.getElementById("weekly-summary-table");
+    const categoryTableBody = document.querySelector(".table-responsive tbody");
+
+    // Display loading spinner
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="5" class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </td>
+        </tr>`;
+
+    try {
+        const response = await fetch(`/weekly_summary?method=${method}`, {
+            headers: { "Accept": "application/json" }
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch weekly summary.");
+
+        const data = await response.json();
+
+        // Update weekly summary table
+        if (data.weekly_summary.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No data available.</td>
+                </tr>`;
+        } else {
+            // Populate the table with fetched data
+            tableBody.innerHTML = data.weekly_summary.map(row => {
+                const volume = getVolumeDetails(row.total_sets);
+                return `
+                    <tr>
+                        <td>${row.muscle_group || "N/A"}</td>
+                        <td>${row.total_sets}</td>
+                        <td>${row.total_reps}</td>
+                        <td>${row.total_weight}</td>
+                        <td>
+                            <div class="volume-classification" 
+                                 data-bs-toggle="tooltip"
+                                 title="${volume.tooltip}">
+                                <span class="volume-badge ${volume.class}">
+                                    ${volume.label}
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+        }
+
+        // Update categories table
+        if (data.categories.length === 0) {
+            categoryTableBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="text-center text-muted">No categories data available.</td>
+                </tr>`;
+        } else {
+            categoryTableBody.innerHTML = data.categories.map(cat => `
+                <tr>
+                    <td>
+                        <span data-bs-toggle="tooltip" 
+                              title="${get_category_tooltip(cat.category)}">
+                            ${cat.category}
+                        </span>
+                    </td>
+                    <td>
+                        <span data-bs-toggle="tooltip" 
+                              title="${get_subcategory_tooltip(cat.category, cat.subcategory)}">
+                            ${cat.subcategory}
+                        </span>
+                    </td>
+                    <td>${cat.total_exercises}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center text-danger">Failed to load data.</td>
+            </tr>`;
+    }
+}
+
+// Initialize table when the page loads
+document.addEventListener("DOMContentLoaded", updateWeeklySummary);
+
+function get_category_tooltip(category) {
+    const tooltips = {
+        'Mechanic': 'Classification based on joint involvement in the exercise',
+        'Utility': 'Classification based on exercise role in training',
+        'Force': 'Classification based on primary force direction'
+    };
+    return tooltips[category] || '';
+}
+
+function get_subcategory_tooltip(category, subcategory) {
+    const tooltips = {
+        'Mechanic': {
+            'Compound': 'Multi-joint exercises like squats and bench press',
+            'Isolated': 'Single-joint exercises focusing on specific muscles'
+        },
+        'Utility': {
+            'Auxiliary': 'Supportive exercises that complement main lifts',
+            'Basic': 'Foundational exercises targeting major muscle groups'
+        },
+        'Force': {
+            'Push': 'Exercises involving pushing motions away from body',
+            'Pull': 'Exercises involving pulling motions toward body'
+        }
+    };
+    return tooltips[category]?.[subcategory] || '';
+}
+</script>
+{% endblock %}

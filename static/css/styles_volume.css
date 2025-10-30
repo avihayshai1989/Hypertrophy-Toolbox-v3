@@ -1,0 +1,49 @@
+/* Volume Indicators */
+.volume-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+.volume-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+}
+
+/* Volume Classification Colors */
+.low-volume {
+    background-color: #dc3545; /* Red */
+}
+
+.medium-volume {
+    background-color: #fd7e14; /* Orange */
+}
+
+.high-volume {
+    background-color: #198754; /* Green */
+}
+
+.ultra-volume {
+    background-color: #6f42c1; /* Purple */
+}
+
+/* Volume Classification Container */
+.volume-classification {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Legend Container */
+.legend-container {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.legend-container .gap-3 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem !important;
+} 

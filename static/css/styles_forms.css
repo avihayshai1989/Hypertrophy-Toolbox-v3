@@ -1,0 +1,483 @@
+/* Form Container */
+.form-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+/* Form Labels */
+.form-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #555;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    text-align: left;
+    margin-bottom: 0.5rem;
+}
+
+/* Form Controls */
+.form-select, .form-control {
+    margin-bottom: 15px;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fafafa;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 8px rgba(13, 110, 253, 0.4);
+    outline: none;
+}
+
+/* Dropdown Styles */
+.filter-dropdown {
+    background-color: #e6f7ff;
+    color: #333;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.filter-dropdown:not([value]):not(:focus) {
+    background-color: #e6f7ff;
+    color: #555;
+}
+
+.filter-dropdown:focus, .filter-dropdown:active {
+    background-color: #ffffff;
+    color: #000;
+}
+
+/* Uniform Dropdown */
+.uniform-dropdown {
+    width: 500px;
+    max-width: 100%;
+    min-width: 300px;
+    background-color: #e6f7ff;
+}
+
+.uniform-dropdown:focus {
+    background-color: #ffffff;
+}
+
+/* Input Sizes */
+.wide-input {
+    width: 400px;
+}
+
+.large-input {
+    flex: 1;
+    max-width: calc((100% - 1rem) / 5);
+    min-width: 150px;
+    margin-right: 2px;
+    text-align: center;
+}
+
+.small-input {
+    width: calc((100% - 1rem) / 5);
+    min-width: 150px;
+    margin-right: 1px;
+    text-align: center;
+}
+
+/* Exercise Form Specific */
+#add-exercise-form {
+    text-align: center;
+}
+
+#add-exercise-form .row.justify-content-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#add-exercise-form .row {
+    --bs-gutter-x: 0.25rem;
+    --bs-gutter-y: 0.25rem;
+}
+
+#add-exercise-form .large-input,
+#add-exercise-form .small-input {
+    margin-right: 2px;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+/* Custom Row */
+.custom-row {
+    display: flex;
+    gap: 1px;
+    justify-content: flex-start;
+}
+
+.custom-input {
+    flex: 1;
+    max-width: calc((100% - 2rem) / 5);
+    margin-right: 0.5rem;
+}
+
+/* Environment Groups */
+.uniform-dropdown optgroup {
+    font-weight: bold;
+    padding: 10px 0;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Environment Colors */
+.uniform-dropdown optgroup[data-environment="gym"] {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+.uniform-dropdown optgroup[data-environment="home-workout"] {
+    background-color: #f3e5f5;
+    color: #6a1b9a;
+}
+
+/* Category Colors */
+.category-split-programs {
+    color: #5d4037 !important;
+    background-color: #efebe9 !important;
+}
+
+.category-basic-splits {
+    color: #455a64 !important;
+    background-color: #eceff1 !important;
+}
+
+/* Program Type Colors and their children */
+/* Full Body - Green Theme */
+.program-full-body,
+.program-full-body ~ .routine-option {
+    color: #2e7d32 !important;
+    background-color: #e8f5e9 !important;
+}
+
+/* 4 Week Split - Orange Theme */
+.program-4-week-split,
+.program-4-week-split ~ .routine-option {
+    color: #ef6c00 !important;
+    background-color: #fff3e0 !important;
+}
+
+/* Push Pull Legs - Indigo Theme */
+.program-push-pull-legs,
+.program-push-pull-legs ~ .routine-option {
+    color: #303f9f !important;
+    background-color: #e8eaf6 !important;
+}
+
+/* 2 Days Split - Blue Theme */
+.program-2-days-split,
+.program-2-days-split ~ .routine-option {
+    color: #0277bd !important;
+    background-color: #e1f5fe !important;
+}
+
+/* Upper Lower - Red Theme */
+.program-upper-lower,
+.program-upper-lower ~ .routine-option {
+    color: #c62828 !important;
+    background-color: #ffebee !important;
+}
+
+/* 3 Days Split - Teal Theme */
+.program-3-days-split,
+.program-3-days-split ~ .routine-option {
+    color: #00695c !important;
+    background-color: #e0f2f1 !important;
+}
+
+/* Routine Options - Base Styles */
+.routine-option {
+    padding: 4px 36px;
+    transition: background-color 0.2s;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.routine-option.nested {
+    padding-left: 48px;
+}
+
+/* Hover and Selection States */
+.uniform-dropdown option:not([disabled]):hover {
+    filter: brightness(0.95);
+    cursor: pointer;
+}
+
+.uniform-dropdown option:checked {
+    background-color: #1976d2 !important;
+    color: white !important;
+}
+
+/* Visual hierarchy improvements */
+.category-header {
+    font-size: 1.05rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 12px !important;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.program-header {
+    font-weight: 600;
+    padding: 8px 24px !important;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Indentation and spacing */
+.uniform-dropdown option {
+    margin: 2px 0;
+}
+
+/* Visual Separators */
+.uniform-dropdown optgroup + optgroup {
+    border-top: 2px solid #dee2e6;
+}
+
+/* Form Validation */
+.form-feedback {
+    display: none;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.is-invalid ~ .invalid-feedback {
+    display: block;
+    color: #dc3545;
+}
+
+.is-valid ~ .valid-feedback {
+    display: block;
+    color: #28a745;
+}
+
+/* Required Field Indicator */
+.required::after {
+    content: "*";
+    color: #dc3545;
+    margin-left: 4px;
+}
+
+/* Dropdown Animation */
+.form-select {
+    transition: all 0.3s ease;
+    transform-origin: top;
+}
+
+.form-select:focus {
+    transform: scale(1.01);
+}
+
+/* Enhanced Dropdown Arrows */
+.form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+/* Dropdown Open State */
+.form-select:focus option {
+    animation: slideIn 0.2s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Center text in specific input fields */
+input[placeholder="Weight"],
+input[placeholder="Sets"],
+input[placeholder="RIR"],
+input[placeholder="RPE"],
+input[placeholder="Min Rep"],
+input[placeholder="Max Rep"] {
+    text-align: center;
+}
+
+/* Input Fields Group */
+.input-fields-group {
+    display: flex;
+    gap: 1rem;
+    flex: 3;
+    justify-content: flex-end;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.input-fields-group .input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 140px;
+    max-width: 180px;
+}
+
+/* Label Styling */
+.input-fields-group .form-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.3rem;
+}
+
+/* Input Styling */
+.input-fields-group input,
+.input-fields-group .form-control {
+    width: 100%;
+    height: 42px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 21px !important;
+    background-color: #fff;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Override any Bootstrap input-group styles that might affect border-radius */
+.input-group .form-control:first-child,
+.input-group .form-control:last-child,
+.input-group input:first-child,
+.input-group input:last-child {
+    border-radius: 21px !important;
+}
+
+/* Ensure the input group doesn't affect the border radius */
+.input-group {
+    border-radius: 21px !important;
+}
+
+/* Override any Bootstrap specific corner styles */
+.input-group>.form-control:not(:first-child),
+.input-group>.form-control:not(:last-child) {
+    border-radius: 21px !important;
+}
+
+/* Number Input Specific */
+.input-fields-group input[type="number"] {
+    text-align: center;
+    padding-right: 0.5rem; /* Reduced right padding to accommodate spinners */
+}
+
+/* Custom styling for number input spinners */
+.input-fields-group input[type="number"]::-webkit-inner-spin-button,
+.input-fields-group input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    opacity: 1;
+    background: transparent;
+    cursor: pointer;
+    display: block;
+    width: 24px;
+    height: 42px; /* Match input height */
+    position: relative;
+    right: 4px;
+    border-left: 1px solid #ced4da;
+    background-image: 
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='42' viewBox='0 0 24 42'%3E%3Cpath d='M12 10l-4 4h8l-4-4zm0 22l4-4h-8l4 4z' fill='%23495057'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Remove Firefox default spinner */
+.input-fields-group input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Add Firefox custom spinner */
+@supports (-moz-appearance: none) {
+    .input-fields-group input[type="number"] {
+        position: relative;
+    }
+    
+    .input-fields-group input[type="number"]::after {
+        content: '';
+        position: absolute;
+        right: 4px;
+        top: 0;
+        bottom: 0;
+        width: 24px;
+        border-left: 1px solid #ced4da;
+        background-image: 
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='42' viewBox='0 0 24 42'%3E%3Cpath d='M12 10l-4 4h8l-4-4zm0 22l4-4h-8l4 4z' fill='%23495057'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+}
+
+/* Hover state for spinners */
+.input-fields-group input[type="number"]::-webkit-inner-spin-button:hover,
+.input-fields-group input[type="number"]::-webkit-outer-spin-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Active state for spinners */
+.input-fields-group input[type="number"]::-webkit-inner-spin-button:active,
+.input-fields-group input[type="number"]::-webkit-outer-spin-button:active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Focus State */
+.input-fields-group input:focus,
+.input-fields-group .form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Hover State */
+.input-fields-group input:hover,
+.input-fields-group .form-control:hover {
+    border-color: #a8c7fa;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .input-fields-group {
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .input-fields-group .input-group {
+        min-width: calc(50% - 0.5rem);
+    }
+}
+
+/* Add tooltip for RPE range */
+#rpe {
+    position: relative;
+}
+
+#rpe:hover::after {
+    content: "Rate of Perceived Exertion (1-10)";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+} 

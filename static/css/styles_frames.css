@@ -1,0 +1,680 @@
+/* Frame Base Styles */
+.frame-title {
+    position: absolute;
+    top: -0.6rem;
+    left: 1.5rem;
+    background-color: #fff;
+    padding: 0 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Dark mode for frame title */
+[data-theme='dark'] .frame-title,
+[data-theme='dark'] .filters-title {
+    background-color: #212529;
+    color: #fff;
+}
+
+[data-theme='dark'] .action-frame .frame-title,
+[data-theme='dark'] .filters-section .filters-title {
+    background-color: #212529;
+    color: #fff;
+    z-index: 12;  /* Ensure visibility */
+}
+
+/* Filters Frame */
+.filters-section {
+    position: relative;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    background: #ffffff;
+}
+
+.filters-title {
+    position: absolute;
+    top: -0.6rem;
+    left: 1.5rem;
+    background-color: #fff;
+    padding: 0 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Input Frame Specific */
+.input-frame {
+    background-color: #f8f9fa;
+    padding: 1rem;
+}
+
+/* Horizontal Input Layout */
+.input-frame .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.75rem;
+    justify-content: flex-start;
+}
+
+.input-frame .col-12 {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 0;
+    margin: 0;
+}
+
+.input-frame .form-control {
+    background-color: #fff;
+    border-color: #ced4da;
+    transition: all 0.2s ease-in-out;
+    width: 120px;
+    height: 32px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+}
+
+.input-frame .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+/* Action Frame Specific */
+.action-frame {
+    z-index: 2;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.action-frame .frame-header {
+    z-index: 10;
+}
+
+.action-frame.collapsed + .workout-plan.table-container {
+    margin-top: 2rem;
+}
+
+.action-frame .d-flex {
+    padding: 0;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Horizontal Layout Container */
+.horizontal-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Input Validation States */
+.input-frame .form-control.is-valid {
+    border-color: #28a745;
+    background-image: url("data:image/svg+xml,...");
+}
+
+.input-frame .form-control.is-invalid {
+    border-color: #dc3545;
+    background-image: url("data:image/svg+xml,...");
+}
+
+/* Input Focus Animation */
+.input-frame .form-control:focus {
+    transform: translateY(-1px);
+    transition: transform 0.2s ease;
+}
+
+/* Input Group Hover Effects */
+.input-fields-group .input-group:hover .form-control {
+    border-color: #80bdff;
+}
+
+/* Input Label Animation */
+.input-fields-group label {
+    transition: color 0.2s ease;
+}
+
+.input-fields-group .form-control:focus + label {
+    color: #007bff;
+}
+
+/* Collapsible Frame Styles */
+.collapsible-frame {
+    position: relative;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.frame-header {
+    position: relative;
+    background: #f8f9fa;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Hide button styling */
+.collapse-toggle {
+    background: none;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6c757d;
+    transition: color 0.2s;
+    justify-content: center !important;
+    height: 36px !important;
+    min-width: 100px !important;
+    margin: 5px 10px !important;
+    border-radius: 18px !important;
+    font-family: 'Inter', Arial, sans-serif !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+    
+    /* Light cyan color scheme */
+    background-color: #e0f7fa !important;
+    color: #00838f !important;
+    border: 1px solid #b2ebf2 !important;
+}
+
+.collapse-toggle:hover {
+    color: #495057;
+}
+
+.collapse-toggle:active {
+    transform: translateY(1px);
+}
+
+/* Icon and text spacing */
+.collapse-toggle i {
+    font-size: 0.9rem;
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+}
+
+.toggle-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* Collapsed state */
+.collapsible-frame.collapsed {
+    margin-bottom: 0.5rem;
+    min-height: 60px;
+}
+
+.collapsible-frame.collapsed .frame-content {
+    display: none;
+}
+
+.collapsible-frame.collapsed .frame-header {
+    box-shadow: none;
+    border-bottom: none;
+    padding: 1rem;
+}
+
+/* Action frame specific collapsed state */
+.action-frame.collapsed {
+    min-height: 70px;
+    padding-bottom: 0.5rem;
+}
+
+.action-frame.collapsed .frame-header {
+    padding: 1.25rem 1rem;
+}
+
+/* Frame content transition */
+.frame-content {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    padding: 1rem;
+    transition: all 0.3s ease-in-out;
+    flex: 1;
+}
+
+/* Hover effect for collapsed frames */
+.collapsible-frame.collapsed:hover {
+    background-color: #f1f3f5;
+}
+
+/* Title visibility in collapsed state */
+.collapsible-frame.collapsed .frame-title,
+.collapsible-frame.collapsed .filters-title {
+    position: static;
+    padding: 0;
+    margin: 0;
+    background: none;
+}
+
+/* Update toggle text based on state */
+.collapsible-frame.collapsed .toggle-text {
+    opacity: 1;
+}
+
+/* Collapsed state adjustments */
+.collapsible-frame.collapsed .frame-header {
+    justify-content: flex-start;
+}
+
+.collapsible-frame.collapsed .frame-title,
+.collapsible-frame.collapsed .filters-title {
+    position: static;
+    padding: 0;
+    margin: 0;
+    background: none;
+}
+
+/* Specific height for filters section when collapsed */
+.filters-section.collapsible-frame.collapsed {
+    height: 70px;
+    display: flex;
+    align-items: center;
+}
+
+.filters-section.collapsible-frame.collapsed .frame-header {
+    padding: 0.8rem 1rem;
+}
+
+/* Filters Frame specific styles */
+.filters-section .frame-header {
+    width: 100%;  /* Make header full width */
+    padding: 0.8rem 2rem;  /* Increase horizontal padding */
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    margin: 0;  /* Remove margin to span full width */
+    border-radius: 8px 8px 0 0;
+}
+
+/* Adjust collapsed state for filters section */
+.filters-section.collapsible-frame.collapsed {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    width: 100%;  /* Ensure full width */
+    padding: 0;  /* Remove padding to allow header to span full width */
+}
+
+.filters-section.collapsible-frame.collapsed .frame-header {
+    width: 100%;
+    padding: 0.8rem 2rem;
+    margin: 0;
+}
+
+/* Base Layer Frame for Workout Log */
+.workout-log-frame {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    width: 100%;
+}
+
+/* Table Container within Frame */
+.workout-log-frame .table-responsive {
+    margin: 0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* Table Styling */
+.workout-log-table {
+    width: 100%;
+    margin-bottom: 0;
+    background: white;
+}
+
+/* Table Header */
+.workout-log-table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    padding: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive Frame Adjustments */
+@media (max-width: 1200px) {
+    .workout-log-frame {
+        padding: 1rem;
+    }
+} 
+
+/* Summary Frame Styles */
+.summary-frame {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    width: 100%;
+}
+
+/* Summary Controls Section */
+.summary-controls {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Summary Tables Section */
+.summary-tables {
+    width: 100%;
+}
+
+.summary-section {
+    margin-bottom: 2rem;
+    background: white;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.summary-section .table-container {
+    margin: 0;
+    width: 100%;
+}
+
+.summary-section table {
+    margin-bottom: 0;
+    width: 100%;
+}
+
+/* Table Header Styling */
+.summary-section thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    padding: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+    .summary-frame {
+        padding: 1rem;
+    }
+    
+    .summary-controls {
+        padding: 0 0.5rem;
+    }
+} 
+
+/* Summary Header Section */
+.summary-header {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+/* Dark mode for summary header */
+[data-theme='dark'] .summary-header {
+    background: #212529;
+    border-color: #495057;
+    color: #fff;
+}
+
+[data-theme='dark'] .summary-header label,
+[data-theme='dark'] .summary-header .form-label,
+[data-theme='dark'] .summary-header h5,
+[data-theme='dark'] .summary-header .text-muted {
+    color: #fff !important;
+}
+
+[data-theme='dark'] .summary-header select,
+[data-theme='dark'] .summary-header .form-select {
+    background-color: #343a40;
+    border-color: #495057;
+    color: #fff;
+}
+
+[data-theme='dark'] .summary-header .volume-legend {
+    background: #343a40;
+    border-color: #495057;
+}
+
+/* Method Selector Styling */
+.method-selector {
+    margin-bottom: 1.5rem;
+}
+
+.method-selector .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.method-selector .form-select {
+    max-width: 100%;
+    background-color: white;
+}
+
+/* Volume Legend Styling */
+.volume-legend {
+    background: white;
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
+}
+
+.volume-legend h5 {
+    color: #495057;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.legend-indicators {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .summary-header {
+        padding: 1rem;
+    }
+    
+    .legend-indicators {
+        gap: 1rem;
+    }
+    
+    .legend-item {
+        min-width: 180px;
+    }
+} 
+
+/* Frame Layouts */
+/* Container for unified frames */
+.unified-frames-container {
+    position: relative;
+    z-index: 1;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    overflow: visible;
+    transition: all 0.3s ease-in-out;
+}
+
+.input-frame,
+.action-frame {
+}
+
+/* Split layout for frames */
+.split-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: all 0.3s ease-in-out;
+} 
+
+/* Dark mode for input fields group */
+[data-theme='dark'] .input-fields-group {
+    background-color: #212529;
+}
+
+[data-theme='dark'] .input-fields-group label,
+[data-theme='dark'] .input-fields-group .form-label {
+    color: #fff !important;
+}
+
+[data-theme='dark'] .input-fields-group .form-control,
+[data-theme='dark'] .input-fields-group .form-select {
+    background-color: #343a40;
+    border-color: #495057;
+    color: #fff;
+}
+
+[data-theme='dark'] .input-fields-group .form-control:focus,
+[data-theme='dark'] .input-fields-group .form-select:focus {
+    background-color: #2c3034;
+    border-color: #6c757d;
+    color: #fff;
+}
+
+/* Dark mode for collapsible frame */
+[data-theme='dark'] .collapsible-frame {
+    background-color: #212529;
+    border-color: #495057;
+}
+
+[data-theme='dark'] .collapsible-frame .frame-header {
+    background-color: #343a40;
+    border-color: #495057;
+}
+
+[data-theme='dark'] .collapsible-frame .frame-title,
+[data-theme='dark'] .collapsible-frame .frame-content {
+    color: #fff;
+} 
+
+/* Dark mode for summary tables */
+[data-theme='dark'] .summary-tables {
+    background: #212529;
+    border-color: #495057;
+    color: #fff;
+}
+
+[data-theme='dark'] .summary-tables .table {
+    background-color: #212529;
+}
+
+[data-theme='dark'] .summary-tables .table thead th {
+    background-color: #343a40;
+    color: #fff;
+    border-color: #495057;
+}
+
+[data-theme='dark'] .summary-tables .table tbody td {
+    background-color: #212529;
+    color: #fff;
+    border-color: #495057;
+}
+
+[data-theme='dark'] .summary-tables .table tbody tr:hover td {
+    background-color: #2c3034;
+}
+
+[data-theme='dark'] .summary-tables .card {
+    background-color: #343a40;
+    border-color: #495057;
+}
+
+[data-theme='dark'] .summary-tables .card-header {
+    background-color: #2c3034;
+    border-color: #495057;
+    color: #fff;
+}
+
+[data-theme='dark'] .summary-tables .card-body {
+    color: #fff;
+} 
+
+/* Dark mode for section titles */
+[data-theme='dark'] .text-center.mb-4 {
+    color: #fff;
+}
+
+/* Dark mode for table section headers */
+[data-theme='dark'] h4.text-center.mb-4 {
+    color: #fff;
+    font-weight: 600;
+} 
+
+/* Dark mode for summary section */
+[data-theme='dark'] .summary-section {
+    background-color: #212529;
+    color: #fff;
+}
+
+[data-theme='dark'] .summary-section h2,
+[data-theme='dark'] .summary-section h3,
+[data-theme='dark'] .summary-section h4 {
+    color: #fff;
+}
+
+/* Dark mode for buttons */
+[data-theme='dark'] .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0a58ca;
+    color: #fff;
+}
+
+[data-theme='dark'] .btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+[data-theme='dark'] .btn-secondary {
+    background-color: #6c757d;
+    border-color: #565e64;
+    color: #fff;
+}
+
+[data-theme='dark'] .btn-secondary:hover {
+    background-color: #5c636a;
+    border-color: #565e64;
+} 

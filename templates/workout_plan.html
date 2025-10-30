@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header with consistent styling -->
+    <div class="table-header text-center mb-4">
+        <h2>Workout Plan</h2>
+        <div class="table-header-underline"></div>
+    </div>
+
+    <!-- Filters for Exercises -->
+    <div class="unified-frames-container">
+        <!-- Filters Section -->
+        <div class="collapsible-frame filters-section">
+            <div class="frame-header">
+                <div class="filters-title">Filter Exercises</div>
+                <button class="collapse-toggle" aria-expanded="true" title="Toggle Filters Panel">
+                    <i class="fas fa-chevron-up"></i>
+                    <span class="toggle-text">Hide</span>
+                </button>
+            </div>
+            <div class="frame-content">
+                <div class="filters dropdown-group">
+                    <form id="filters-form" class="row gx-4 gy-3">
+                        {% for filter_name, filter_options in filters.items() %}
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <label for="{{ filter_name }}" class="form-label">{{ filter_name.replace('_', ' ').capitalize() }}</label>
+                            <select id="{{ filter_name }}" class="form-select uniform-dropdown filter-dropdown">
+                                <option value="">All</option>
+                                {% for option in filter_options %}
+                                <option value="{{ option }}">{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endfor %}
+
+                        <!-- Routine Dropdown -->
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <label for="routine" class="form-label">Routine</label>
+                            <select id="routine" class="form-select uniform-dropdown routine-dropdown">
+                                <option value="">Select Routine</option>
+                                
+                                <!-- GYM Environment -->
+                                <optgroup label="GYM" class="environment-group" data-environment="gym">
+                                    <!-- Full Body Program -->
+                                    <option class="program-header program-full-body" disabled>Full Body</option>
+                                    <option class="routine-option" value="GYM - Full Body - Workout A">└─ Workout A</option>
+                                    <option class="routine-option" value="GYM - Full Body - Workout B">└─ Workout B</option>
+                                    <option class="routine-option" value="GYM - Full Body - Workout C">└─ Workout C</option>
+                                    
+                                    <!-- Push Pull Legs Program -->
+                                    <option class="program-header program-push-pull-legs" disabled>Push Pull Legs</option>
+                                    <option class="routine-option" value="GYM - Push Pull Legs - Push 1">└─ Push 1</option>
+                                    <option class="routine-option" value="GYM - Push Pull Legs - Pull 1">└─ Pull 1</option>
+                                    <option class="routine-option" value="GYM - Push Pull Legs - Legs 1">└─ Legs 1</option>
+                                    <option class="routine-option" value="GYM - Push Pull Legs - Push 2">└─ Push 2</option>
+                                    <option class="routine-option" value="GYM - Push Pull Legs - Pull 2">└─ Pull 2</option>
+                                    <option class="routine-option" value="GYM - Push Pull Legs - Legs 2">└─ Legs 2</option>
+                                    
+                                    <!-- Upper Lower Program -->
+                                    <option class="program-header program-upper-lower" disabled>Upper Lower</option>
+                                    <option class="routine-option" value="GYM - Upper Lower - Upper 1">└─ Upper 1</option>
+                                    <option class="routine-option" value="GYM - Upper Lower - Lower 1">└─ Lower 1</option>
+                                    <option class="routine-option" value="GYM - Upper Lower - Upper 2">└─ Upper 2</option>
+                                    <option class="routine-option" value="GYM - Upper Lower - Lower 2">└─ Lower 2</option>
+
+                                    <!-- Basic Split Category -->
+                                    <option class="category-header category-basic-split" disabled>Basic Split</option>
+                                    
+                                    <!-- 2 Days Split Program -->
+                                    <option class="program-header program-basic-split" disabled>├─ 2 Days Split</option>
+                                    <option class="routine-option nested" value="GYM - 2 Days Split - Workout A">│  └─ Workout A</option>
+                                    <option class="routine-option nested" value="GYM - 2 Days Split - Workout B">│  └─ Workout B</option>
+                                    
+                                    <!-- 3 Days Split Program -->
+                                    <option class="program-header program-basic-split" disabled>├─ 3 Days Split</option>
+                                    <option class="routine-option nested" value="GYM - 3 Days Split - Workout A">│  └─ Workout A</option>
+                                    <option class="routine-option nested" value="GYM - 3 Days Split - Workout B">│  └─ Workout B</option>
+                                    <option class="routine-option nested" value="GYM - 3 Days Split - Workout C">│  └─ Workout C</option>
+
+                                    <!-- 4 Days Split Program -->
+                                    <option class="program-header program-basic-split" disabled>├─ 4 Days Split</option>
+                                    <option class="routine-option nested" value="GYM - 4 Days Split - A1">│  └─ A1</option>
+                                    <option class="routine-option nested" value="GYM - 4 Days Split - B1">│  └─ B1</option>
+                                    <option class="routine-option nested" value="GYM - 4 Days Split - A2">│  └─ A2</option>
+                                    <option class="routine-option nested" value="GYM - 4 Days Split - B2">│  └─ B2</option>
+
+                                    <!-- 6 Days Split Program -->
+                                    <option class="program-header program-basic-split" disabled>├─ 6 Days Split</option>
+                                    <option class="routine-option nested" value="GYM - 6 Days Split - Workout A">│  └─ Workout A</option>
+                                    <option class="routine-option nested" value="GYM - 6 Days Split - Workout B">│  └─ Workout B</option>
+                                    <option class="routine-option nested" value="GYM - 6 Days Split - Workout C">│  └─ Workout C</option>
+                                    <option class="routine-option nested" value="GYM - 6 Days Split - Workout D">│  └─ Workout D</option>
+                                    <option class="routine-option nested" value="GYM - 6 Days Split - Workout E">│  └─ Workout E</option>
+                                    <option class="routine-option nested" value="GYM - 6 Days Split - Workout F">│  └─ Workout F</option>
+                                </optgroup>
+                                
+                                <!-- Home Workout Environment -->
+                                <optgroup label="Home Workout" class="environment-group" data-environment="home-workout">
+                                    <!-- Push Pull Legs Program -->
+                                    <option class="program-header program-push-pull-legs" disabled>Push Pull Legs</option>
+                                    <option class="routine-option" value="Home - Push Pull Legs - Push 1">└─ Push 1</option>
+                                    <option class="routine-option" value="Home - Push Pull Legs - Pull 1">└─ Pull 1</option>
+                                    <option class="routine-option" value="Home - Push Pull Legs - Legs 1">└─ Legs 1</option>
+                                    <option class="routine-option" value="Home - Push Pull Legs - Push 2">└─ Push 2</option>
+                                    <option class="routine-option" value="Home - Push Pull Legs - Pull 2">└─ Pull 2</option>
+                                    <option class="routine-option" value="Home - Push Pull Legs - Legs 2">└─ Legs 2</option>
+                                    
+                                    <!-- Upper Lower Program -->
+                                    <option class="program-header program-upper-lower" disabled>Upper Lower</option>
+                                    <option class="routine-option" value="Home - Upper Lower - Upper 1">└─ Upper 1</option>
+                                    <option class="routine-option" value="Home - Upper Lower - Lower 1">└─ Lower 1</option>
+                                    <option class="routine-option" value="Home - Upper Lower - Upper 2">└─ Upper 2</option>
+                                    <option class="routine-option" value="Home - Upper Lower - Lower 2">└─ Lower 2</option>
+
+                                    <!-- Basic Split Category -->
+                                    <option class="category-header category-basic-split" disabled>Basic Split</option>
+                                    
+                                    <!-- 2 Days Split Program -->
+                                    <option class="program-header program-basic-split" disabled>├─ 2 Days Split</option>
+                                    <option class="routine-option nested" value="Home - 2 Days Split - Workout A">│  └─ Workout A</option>
+                                    <option class="routine-option nested" value="Home - 2 Days Split - Workout B">│  └─ Workout B</option>
+                                    
+                                    <!-- 3 Days Split Program -->
+                                    <option class="program-header program-basic-split" disabled>├─ 3 Days Split</option>
+                                    <option class="routine-option nested" value="Home - 3 Days Split - Workout A">│  └─ Workout A</option>
+                                    <option class="routine-option nested" value="Home - 3 Days Split - Workout B">│  └─ Workout B</option>
+                                    <option class="routine-option nested" value="Home - 3 Days Split - Workout C">│  └─ Workout C</option>
+
+                                    <!-- 4 Days Split Program -->
+                                    <option class="program-header program-basic-split" disabled>├─ 4 Days Split</option>
+                                    <option class="routine-option nested" value="Home - 4 Days Split - A1">│  └─ A1</option>
+                                    <option class="routine-option nested" value="Home - 4 Days Split - B1">│  └─ B1</option>
+                                    <option class="routine-option nested" value="Home - 4 Days Split - A2">│  └─ A2</option>
+                                    <option class="routine-option nested" value="Home - 4 Days Split - B2">│  └─ B2</option>
+
+                                    <!-- 6 Days Split Program -->
+                                    <option class="program-header program-basic-split" disabled>├─ 6 Days Split</option>
+                                    <option class="routine-option nested" value="Home - 6 Days Split - Workout A">│  └─ Workout A</option>
+                                    <option class="routine-option nested" value="Home - 6 Days Split - Workout B">│  └─ Workout B</option>
+                                    <option class="routine-option nested" value="Home - 6 Days Split - Workout C">│  └─ Workout C</option>
+                                    <option class="routine-option nested" value="Home - 6 Days Split - Workout D">│  └─ Workout D</option>
+                                    <option class="routine-option nested" value="Home - 6 Days Split - Workout E">│  └─ Workout E</option>
+                                    <option class="routine-option nested" value="Home - 6 Days Split - Workout F">│  └─ Workout F</option>
+                                    </optgroup>
+                            </select>
+                        </div>
+
+                        <!-- Exercise Dropdown -->
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <label for="exercise" class="form-label">Exercise</label>
+                            <select id="exercise" class="form-select uniform-dropdown exercise-dropdown">
+                                {% for exercise in exercises %}
+                                {% if exercise %}
+                                <option value="{{ exercise }}">{{ exercise }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Add this right after the Exercise dropdown in the filters section -->
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <label for="exercise-search" class="form-label">Live Exercise Filter</label>
+                            <input 
+                                type="text" 
+                                id="exercise-search" 
+                                class="form-control uniform-input" 
+                                placeholder="Type to search exercises..."
+                                autocomplete="off">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workout Controls Section -->
+        <div class="collapsible-frame action-frame">
+            <div class="frame-header">
+                <div class="frame-title">Workout Controls</div>
+                <button class="collapse-toggle" aria-expanded="true" title="Toggle Controls Panel">
+                    <i class="fas fa-chevron-up"></i>
+                    <span class="toggle-text">Hide</span>
+                </button>
+            </div>
+            <div class="frame-content">
+                <div class="horizontal-layout">
+                    <!-- Action Buttons Group -->
+                    <div class="action-buttons-group">
+                        <button id="add_exercise_btn" class="btn btn-primary" type="button">
+                            <i class="fas fa-plus"></i> Add Exercise
+                        </button>
+                        <div class="btn-group" role="group" aria-label="Filter controls">
+                            <button id="filter-btn" class="btn btn-primary">
+                                <i class="fas fa-filter"></i> Apply Filters
+                            </button>
+                            <button id="clear-filters-btn" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> Clear Filters
+                            </button>
+                        </div>
+                        <div class="btn-group" aria-label="Export controls">
+                            <a href="/export_to_excel" class="btn btn-export-excel">
+                                <i class="fas fa-file-excel"></i> Export All Tables
+                            </a>
+                            <button id="export-to-log-btn" class="btn btn-export-log" onclick="exportToWorkoutLog()">
+                                <i class="fas fa-clipboard-list"></i> Export to Workout Log
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Input Fields Group -->
+                    <div class="input-fields-group">
+                        <div class="input-group">
+                            <label for="weight" class="form-label">Weight</label>
+                            <input type="number" id="weight" class="form-control" min="0" value="25">
+                        </div>
+                        <div class="input-group">
+                            <label for="sets" class="form-label">Sets</label>
+                            <input type="number" id="sets" class="form-control" min="1" value="3">
+                        </div>
+                        <div class="input-group">
+                            <label for="rir" class="form-label">RIR</label>
+                            <input type="number" id="rir" class="form-control" placeholder="RIR" min="0" max="10" value="3">
+                        </div>
+                        <div class="input-group">
+                            <label for="rpe" class="form-label">RPE</label>
+                            <input type="number" id="rpe" class="form-control" placeholder="RPE" min="1" max="10" step="0.5" value="7">
+                        </div>
+                        <div class="input-group">
+                            <label for="min_rep" class="form-label">Min Rep</label>
+                            <input type="number" id="min_rep" class="form-control" placeholder="Min Rep" min="1" value="6">
+                        </div>
+                        <div class="input-group">
+                            <label for="max_rep_range" class="form-label">Max Rep</label>
+                            <input type="number" id="max_rep_range" class="form-control" min="1" value="8">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Display the Workout Plan -->
+    <div class="workout-plan table-container mt-5">
+        <div class="table-header">
+            <h2 class="text-center">Workout Plan Table</h2>
+            <div class="table-header-underline"></div>
+        </div>
+        <table class="table table-striped workout-plan-table">
+            <thead>
+                <tr>
+                    <th width="30"></th>
+                    <th>Routine</th>
+                    <th>Exercise</th>
+                    <th>Primary Muscle</th>
+                    <th>Secondary Muscle</th>
+                    <th>Tertiary Muscle</th>
+                    <th>Isolated Muscles</th>
+                    <th>Utility</th>
+                    <th>Sets</th>
+                    <th>Min Rep</th>
+                    <th>Max Rep</th>
+                    <th>RIR</th>
+                    <th>RPE</th>
+                    <th>Weight</th>
+                    <th>Grips</th>
+                    <th>Stabilizers</th>
+                    <th>Synergists</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="workout_plan_table_body">
+                <!-- Rows will be populated dynamically via JavaScript -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+
+<script type="module">
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize collapse toggles
+    const toggleButtons = document.querySelectorAll('.collapse-toggle');
+    
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const frame = this.closest('.collapsible-frame');
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            const toggleText = this.querySelector('.toggle-text');
+            const allFrames = document.querySelectorAll('.collapsible-frame');
+            
+            // Toggle collapsed state
+            frame.classList.toggle('collapsed');
+            
+            // Update aria-expanded
+            this.setAttribute('aria-expanded', !isExpanded);
+            
+            // Update button text
+            toggleText.textContent = isExpanded ? 'Show' : 'Hide';
+            
+            // Rotate the chevron icon
+            const icon = this.querySelector('i');
+            icon.style.transform = isExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+            
+            // Adjust spacing
+            setTimeout(() => {
+                // Recalculate positions after collapse/expand
+                window.dispatchEvent(new Event('resize'));
+                
+                // Adjust margins for subsequent frames
+                let previousFrame = frame;
+                allFrames.forEach(currentFrame => {
+                    if (currentFrame === frame) return;
+                    
+                    if (previousFrame.classList.contains('collapsed')) {
+                        currentFrame.style.marginTop = '1rem';
+                    } else {
+                        currentFrame.style.marginTop = '2rem';
+                    }
+                    previousFrame = currentFrame;
+                });
+                
+                // Adjust table margin
+                const table = document.querySelector('.workout-plan.table-container');
+                if (table) {
+                    const lastFrame = Array.from(allFrames).pop();
+                    table.style.marginTop = lastFrame.classList.contains('collapsed') ? '2rem' : '3rem';
+                }
+            }, 300); // Wait for collapse animation to complete
+        });
+    });
+});
+</script>
+{% endblock %}

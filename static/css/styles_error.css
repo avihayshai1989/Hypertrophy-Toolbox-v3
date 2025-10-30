@@ -1,0 +1,36 @@
+/* Error Page Styles */
+.error-container {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 2rem;
+    text-align: center;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.error-container .display-4 {
+    color: #dc3545;
+    margin-bottom: 1.5rem;
+}
+
+.error-container .lead {
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+/* Debug Information Section */
+.error-container .alert-secondary {
+    text-align: left;
+    font-family: monospace;
+    white-space: pre-wrap;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.error-container pre {
+    margin: 0;
+    padding: 1rem;
+    background: #f1f3f5;
+    border-radius: 0.25rem;
+} 

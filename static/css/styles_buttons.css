@@ -1,0 +1,221 @@
+/* Button Base Styles - Make even more specific to override Bootstrap */
+button.btn,
+a.btn,
+input.btn,
+.btn.btn-primary,
+.btn.btn-secondary,
+.btn.btn-success,
+.btn.btn-outline-secondary,
+.btn.btn-export-excel,
+.btn.btn-export-log,
+#clear-filters-btn,
+button[type="submit"].btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 42px !important;
+    min-width: 180px !important;
+    padding: 0 1.8rem !important;
+    margin: 5px 10px !important;
+    border-radius: 21px !important;
+    font-family: 'Inter', Arial, sans-serif !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+}
+
+/* Button Types */
+.btn-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.btn-success:hover {
+    background-color: #c8e6c9;
+    border-color: #a5d6a7;
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border: 1px solid #bbdefb;
+}
+
+.btn-primary:hover {
+    background-color: #bbdefb;
+    border-color: #90caf9;
+    transform: translateY(-2px);
+}
+
+.btn-outline-secondary {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    border: 1px solid #e9ecef;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    color: #2c3e50;
+    transform: translateY(-2px);
+}
+
+/* Export Buttons */
+.btn-export-excel {
+    background-color: #fce4ec !important;  /* Light fuchsia background */
+    color: #d81b60 !important;  /* Darker fuchsia text */
+    border: 1px solid #f8bbd0 !important;  /* Light fuchsia border */
+}
+
+.btn-export-excel:hover {
+    background-color: #f8bbd0 !important;  /* Slightly darker on hover */
+    border-color: #f48fb1 !important;
+    transform: translateY(-2px);
+}
+
+.btn-export-log {
+    background-color: #e8e3f7 !important;  /* Light lilac background */
+    color: #673ab7 !important;  /* Darker lilac text */
+    border: 1px solid #d4c6f7 !important;  /* Light lilac border */
+}
+
+.btn-export-log:hover {
+    background-color: #d4c6f7 !important;  /* Slightly darker on hover */
+    border-color: #b39ddb !important;
+    transform: translateY(-2px);
+}
+
+/* Clear Filters Button */
+#clear-filters-btn {
+    background-color: #e8eaf6 !important;  /* Light midnight blue background */
+    color: #283593 !important;  /* Darker midnight blue text */
+    border: 1px solid #c5cae9 !important;  /* Light midnight blue border */
+}
+
+#clear-filters-btn:hover {
+    background-color: #c5cae9 !important;  /* Slightly darker on hover */
+    border-color: #9fa8da !important;
+    transform: translateY(-2px);
+}
+
+/* Active state for all buttons */
+.btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* Focus state */
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+/* Loading State */
+.btn.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Apply Filters Button - with higher specificity */
+#filters-form #apply-filters-btn.btn {
+    background-color: #e3f2fd !important;  /* Light blue background */
+    color: #1976d2 !important;  /* Darker blue text */
+    border: 1px solid #bbdefb !important;  /* Light blue border */
+}
+
+#filters-form #apply-filters-btn.btn:hover {
+    background-color: #bbdefb !important;  /* Slightly darker on hover */
+    border-color: #90caf9 !important;
+    transform: translateY(-2px);
+}
+
+/* Primary Button Style */
+.btn.btn-primary,
+#apply-filters-btn.btn.btn-primary {
+    background-color: #e3f2fd !important;  /* Light blue background */
+    color: #1976d2 !important;  /* Darker blue text */
+    border: 1px solid #bbdefb !important;  /* Light blue border */
+}
+
+.btn.btn-primary:hover,
+#apply-filters-btn.btn.btn-primary:hover {
+    background-color: #bbdefb !important;  /* Slightly darker on hover */
+    border-color: #90caf9 !important;
+    transform: translateY(-2px);
+}
+
+/* Add Exercise Button - Seafoam color scheme */
+#add_exercise_btn.btn {
+    background-color: #98DFD6 !important;  /* Light seafoam */
+    color: #006D77 !important;  /* Dark seafoam text */
+    border: 1px solid #83D1C4 !important;  /* Medium seafoam border */
+}
+
+#add_exercise_btn.btn:hover {
+    background-color: #83D1C4 !important;  /* Slightly darker on hover */
+    border-color: #006D77 !important;
+    transform: translateY(-2px);
+}
+
+#add_exercise_btn.btn:active {
+    transform: translateY(1px);
+    background-color: #7AC9BC !important;  /* Even darker when clicked */
+}
+
+/* Export to Workout Log Button - Lighter Pastel color scheme */
+#export-to-log-btn.btn {
+    background-color: #FFE2E4 !important;  /* Lighter pastel pink */
+    color: #D94A5A !important;  /* Keeping same text color for contrast */
+    border: 1px solid #FFD0D4 !important;  /* Lighter border */
+}
+
+#export-to-log-btn.btn:hover {
+    background-color: #FFD0D4 !important;  /* Slightly darker on hover but still light */
+    border-color: #D94A5A !important;
+    transform: translateY(-2px);
+}
+
+#export-to-log-btn.btn:active {
+    transform: translateY(1px);
+    background-color: #FFC5CA !important;  /* Slightly darker when clicked */
+}
+
+/* Export to Excel Button - Volume Splitter */
+#export-to-excel-btn.btn {
+    background-color: #E8F5E9 !important;  /* Light green */
+    color: #2E7D32 !important;  /* Dark green text */
+    border: 1px solid #C8E6C9 !important;  /* Medium green border */
+}
+
+#export-to-excel-btn.btn:hover {
+    background-color: #C8E6C9 !important;  /* Slightly darker on hover */
+    border-color: #2E7D32 !important;
+    transform: translateY(-2px);
+}
+
+#export-to-excel-btn.btn:active {
+    transform: translateY(1px);
+    background-color: #A5D6A7 !important;  /* Even darker when clicked */
+} 

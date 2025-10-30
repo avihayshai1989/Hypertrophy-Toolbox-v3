@@ -1,0 +1,605 @@
+/* Table Base Styles */
+.table {
+    margin: 0 auto;
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table th, 
+.table td {
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #e9ecef;
+    padding: 14px;
+    font-size: 1rem;
+    word-wrap: break-word;
+}
+
+.table th {
+    background: #f7f9fc;
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.table td {
+    background-color: #ffffff;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f5fb;
+}
+
+/* Table Container */
+.table-container {
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+/* Table Workout Specific */
+.table-workout {
+    margin: 0 auto;
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table-workout thead {
+    background-color: #f8f9fa;
+}
+
+.table-workout .table-header-row th {
+    background-color: #e9ecef;
+    color: #495057;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    padding: 1rem;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table-workout tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table-workout tbody tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+.table-workout tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.table-workout tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+.table-workout td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Table Container Enhancement */
+.workout-plan.table-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Dark mode for workout plan table container */
+[data-theme='dark'] .workout-plan.table-container {
+    background: #212529;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    color: #fff;
+}
+
+[data-theme='dark'] .workout-plan.table-container table {
+    color: #e9ecef;
+}
+
+[data-theme='dark'] .workout-plan.table-container th {
+    background: #343a40;
+    color: #fff;
+    border-color: #495057;
+}
+
+[data-theme='dark'] .workout-plan.table-container td {
+    background: #212529;
+    border-color: #495057;
+    color: #fff;
+}
+
+[data-theme='dark'] .workout-plan.table-container tr:hover td {
+    background: #2c3034;
+    color: #fff;
+}
+
+[data-theme='dark'] .workout-plan.table-container tr:nth-child(even) td {
+    background: #2c3034;
+    color: #fff;
+}
+
+/* Table Header Styling */
+.table-header {
+    margin-bottom: 1.5rem;
+}
+
+.table-header-underline {
+    height: 3px;
+    width: 60px;
+    background: #007bff;
+    margin: 0.5rem auto;
+    border-radius: 2px;
+}
+
+/* Row Selection */
+.table tbody tr.selected {
+    background-color: rgba(0, 123, 255, 0.1) !important;
+    box-shadow: inset 0 0 0 1px #007bff;
+}
+
+/* Row Hover Animation */
+.table tbody tr {
+    transition: all 0.2s ease-in-out;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Cell Highlight on Edit */
+.table td.editing {
+    padding: 0;
+    background-color: #fff;
+    box-shadow: 0 0 0 2px #007bff;
+}
+
+/* Sortable Headers */
+.table th.sortable {
+    cursor: pointer;
+    position: relative;
+    padding-right: 24px;
+}
+
+.table th.sortable::after {
+    content: "↕";
+    position: absolute;
+    right: 8px;
+    opacity: 0.5;
+}
+
+.table th.sortable.asc::after {
+    content: "↑";
+    opacity: 1;
+}
+
+.table th.sortable.desc::after {
+    content: "↓";
+    opacity: 1;
+}
+
+/* Table Styles */
+.table {
+    margin-bottom: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Dark Mode Styles */
+[data-theme='dark'] .table {
+    background-color: #212529;
+    color: #fff;
+    border-color: #495057;
+}
+
+/* Table Header */
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+    font-weight: 600;
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+[data-theme='dark'] .table thead th {
+    background-color: #343a40;
+    border-bottom-color: #495057;
+    color: #fff;
+}
+
+/* Table Body */
+.table tbody td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #dee2e6;
+}
+
+[data-theme='dark'] .table tbody td {
+    border-color: #495057;
+    color: #e9ecef;
+}
+
+/* Table Hover Effect */
+.table tbody tr:hover {
+    background-color: rgba(0,0,0,0.075);
+}
+
+[data-theme='dark'] .table tbody tr:hover {
+    background-color: rgba(255,255,255,0.075);
+}
+
+/* Striped rows */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0,0,0,0.05);
+}
+
+[data-theme='dark'] .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255,255,255,0.05);
+}
+
+/* Responsive table container */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+}
+
+/* Dark mode scrollbar */
+[data-theme='dark'] .table-responsive::-webkit-scrollbar {
+    background-color: #343a40;
+}
+
+[data-theme='dark'] .table-responsive::-webkit-scrollbar-thumb {
+    background-color: #495057;
+}
+
+/* Action buttons in table */
+.table .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+[data-theme='dark'] .table .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+}
+
+[data-theme='dark'] .table .btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+/* Dark mode text colors for specific elements */
+[data-theme='dark'] .workout-plan.table-container .form-control,
+[data-theme='dark'] .workout-plan.table-container .form-select,
+[data-theme='dark'] .workout-plan.table-container .input-group-text,
+[data-theme='dark'] .workout-plan.table-container label,
+[data-theme='dark'] .workout-plan.table-container .text-muted {
+    color: #fff !important;
+}
+
+/* Ensure text remains white on hover */
+[data-theme='dark'] .workout-plan.table-container tr:hover td {
+    color: #fff;
+}
+
+/* Dark mode for workout log frame */
+[data-theme='dark'] .workout-log-frame {
+    background: #212529;
+    border-color: #495057;
+    color: #000;
+    font-weight: bold;
+}
+
+/* Dark mode for workout log table */
+[data-theme='dark'] .workout-log-frame table {
+    background-color: #212529;
+    color: #000;
+    font-weight: bold;
+}
+
+[data-theme='dark'] .workout-log-frame th {
+    background-color: #343a40;
+    color: #fff !important;
+    border-color: #495057;
+}
+
+[data-theme='dark'] .workout-log-frame td {
+    background-color: #212529;
+    color: #000 !important;
+    font-weight: bold;
+    border-color: #495057;
+}
+
+[data-theme='dark'] .workout-log-frame tr:hover td {
+    background-color: #2c3034;
+    color: #000 !important;
+}
+
+/* Dark mode for editable cells */
+[data-theme='dark'] .workout-log-frame .editable-text {
+    color: #000 !important;
+    font-weight: bold;
+    background-color: transparent;
+}
+
+[data-theme='dark'] .workout-log-frame .editable-input {
+    background-color: #2c3034;
+    color: #000 !important;
+    font-weight: bold;
+    border-color: #495057;
+}
+
+/* Dark mode for badges in workout log */
+[data-theme='dark'] .workout-log-frame .badge {
+    border: 1px solid #495057;
+}
+
+[data-theme='dark'] .workout-log-frame .badge.bg-success {
+    background-color: #198754 !important;
+    color: #fff;
+}
+
+[data-theme='dark'] .workout-log-frame .badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000;
+}
+
+/* Dark mode for table text elements */
+[data-theme='dark'] .workout-log-frame .form-control,
+[data-theme='dark'] .workout-log-frame .form-select,
+[data-theme='dark'] .workout-log-frame input,
+[data-theme='dark'] .workout-log-frame select,
+[data-theme='dark'] .workout-log-frame label,
+[data-theme='dark'] .workout-log-frame .text-muted {
+    color: #000 !important;
+    font-weight: bold;
+    background-color: #343a40;
+    border-color: #495057;
+}
+
+/* Dark mode for table cells and their content */
+[data-theme='dark'] .workout-log-frame td *,
+[data-theme='dark'] .workout-log-frame th * {
+    color: #000 !important;
+    font-weight: bold;
+}
+
+/* Dark mode for date inputs */
+[data-theme='dark'] .workout-log-frame input[type="date"] {
+    background-color: #2c3034;
+    color: #e9ecef !important;
+    border-color: #495057;
+}
+
+/* Dark mode for form controls */
+[data-theme='dark'] .workout-log-frame .form-control,
+[data-theme='dark'] .workout-log-frame .form-select,
+[data-theme='dark'] .workout-log-frame input,
+[data-theme='dark'] .workout-log-frame select {
+    background-color: #2c3034;
+    color: #000 !important;
+    font-weight: bold;
+    border-color: #495057;
+}
+
+/* Dark mode for labels and text */
+[data-theme='dark'] .workout-log-frame label,
+[data-theme='dark'] .workout-log-frame .text-muted {
+    color: #adb5bd !important;
+}
+
+[data-theme='dark'] .workout-log-frame tr:hover td {
+    background-color: #2c3034;
+    color: #000 !important;
+}
+
+/* Keep numbers under # column white */
+[data-theme='dark'] .workout-log-frame td:first-child {
+    color: #fff !important;
+}
+
+[data-theme='dark'] .workout-log-frame td:first-child * {
+    color: #fff !important;
+}
+
+/* Make trash icon white in dark mode */
+[data-theme='dark'] .workout-log-frame .fa-trash {
+    color: #fff !important;
+}
+
+[data-theme='dark'] .workout-log-frame .btn-danger i {
+    color: #fff !important;
+}
+
+/* Preserve white color for first column and trash icon on hover */
+[data-theme='dark'] .workout-log-frame tr:hover td:first-child,
+[data-theme='dark'] .workout-log-frame tr:hover td:first-child *,
+[data-theme='dark'] .workout-log-frame tr:hover .fa-trash,
+[data-theme='dark'] .workout-log-frame tr:hover .btn-danger i {
+    color: #fff !important;
+}
+
+/* Consolidated Editable Styles */
+.editable {
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Light Mode Styles */
+.editable:hover,
+.table tbody tr .editable:hover {  /* More specific selector to override table hover */
+    background-color: rgba(13, 110, 253, 0.08) !important;  /* Light blue */
+}
+
+.editable.editing,
+.table tbody tr .editable.editing {
+    background-color: rgba(13, 110, 253, 0.12) !important;  /* Slightly darker light blue */
+}
+
+.editable input {
+    width: 100%;
+    padding: 4px 8px;
+    border: 2px solid #0d6efd;
+    border-radius: 4px;
+    background-color: #fff !important;
+    color: #212529;
+}
+
+.editable input:focus {
+    outline: none;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    background-color: #fff !important;
+}
+
+/* Selection Highlighting */
+.editable::selection,
+.editable input::selection,
+::selection {
+    background-color: rgba(13, 110, 253, 0.2) !important;
+    color: #212529;
+}
+
+::-moz-selection {
+    background-color: rgba(13, 110, 253, 0.2) !important;
+    color: #212529;
+}
+
+/* Dark Mode Styles */
+[data-theme='dark'] .editable:hover,
+[data-theme='dark'] .table tbody tr .editable:hover {
+    background-color: rgba(52, 152, 219, 0.2) !important;
+}
+
+[data-theme='dark'] .editable.editing,
+[data-theme='dark'] .table tbody tr .editable.editing {
+    background-color: rgba(52, 152, 219, 0.25) !important;
+}
+
+[data-theme='dark'] .editable input {
+    background-color: #2c3034 !important;
+    border-color: #3498db;
+    color: #fff;
+}
+
+[data-theme='dark'] .editable input:focus {
+    border-color: #2980b9;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    background-color: #2c3034 !important;
+}
+
+/* Pencil Icon */
+.editable:hover::after {
+    content: '✎';
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    opacity: 0.7;
+    color: #0d6efd;  /* Light mode pencil color */
+}
+
+[data-theme='dark'] .editable:hover::after {
+    color: #3498db;  /* Dark mode pencil color */
+}
+
+/* Add these styles for drag and drop functionality */
+.drag-handle {
+    cursor: move;
+    width: 30px;
+    color: #6c757d;
+    text-align: center;
+}
+
+.drag-handle i {
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.drag-handle:hover i {
+    opacity: 1;
+}
+
+tr.sortable-ghost {
+    background-color: #f8f9fa !important;
+    opacity: 0.5;
+}
+
+tr.sortable-drag {
+    background-color: #fff !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Dark mode styles */
+[data-theme='dark'] .drag-handle {
+    color: #adb5bd;
+}
+
+[data-theme='dark'] tr.sortable-ghost {
+    background-color: #343a40 !important;
+}
+
+[data-theme='dark'] tr.sortable-drag {
+    background-color: #2c3034 !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Light mode styles - Update these */
+.editable:hover {
+    background-color: rgba(13, 110, 253, 0.08) !important;  /* Very light blue */
+}
+
+.editable.editing {
+    background-color: rgba(13, 110, 253, 0.12) !important;  /* Slightly darker light blue */
+}
+
+/* Add these new styles for selection highlighting */
+.editable::selection {
+    background-color: rgba(13, 110, 253, 0.2) !important;  /* Light blue for text selection */
+    color: #212529;
+}
+
+.editable input::selection {
+    background-color: rgba(13, 110, 253, 0.2) !important;
+    color: #212529;
+}
+
+/* Override browser's default selection color */
+::selection {
+    background-color: rgba(13, 110, 253, 0.2) !important;
+    color: #212529;
+}
+
+::-moz-selection {
+    background-color: rgba(13, 110, 253, 0.2) !important;
+    color: #212529;
+}
+
+/* Input focus and active states */
+.editable input:focus,
+.editable input:active {
+    background-color: #fff !important;
+    color: #212529;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Add a subtle transition */
+.editable,
+.editable input {
+    transition: all 0.2s ease-in-out;
+}

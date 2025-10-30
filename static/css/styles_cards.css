@@ -1,0 +1,47 @@
+/* Card Styles */
+.card-title {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.card-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.feature-card {
+    transition: transform 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    height: 100%;
+}
+
+.feature-card ul {
+    padding-left: 1.2rem;
+    margin: 0.5rem 0;
+}
+
+.feature-card li {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+    color: #495057;
+}
+
+.feature-card .card-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Push buttons to bottom */
+.feature-card .card-text {
+    flex-grow: 1;
+    margin-bottom: 1rem;
+} 

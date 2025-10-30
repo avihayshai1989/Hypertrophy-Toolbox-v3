@@ -1,0 +1,54 @@
+/* Enhanced Tooltips */
+[title] {
+    position: relative;
+}
+
+[title]:hover::before {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Special handling for collapse toggle tooltips */
+.collapse-toggle[title]:hover::before {
+    z-index: 1050; /* Higher z-index to ensure visibility */
+    bottom: 50%; /* Center vertically */
+    left: calc(100% + 10px); /* Position to the right of the button with some spacing */
+    transform: translateY(50%); /* Adjust vertical centering */
+    white-space: nowrap;
+}
+
+/* Ensure the toggle button itself has proper z-index */
+.collapse-toggle {
+    position: relative;
+    z-index: 1040;
+}
+
+/* Ensure tooltip stays visible and properly positioned in collapsed state */
+.collapsible-frame.collapsed .collapse-toggle[title]:hover::before {
+    z-index: 1060;
+    bottom: 50%;
+    left: calc(100% + 10px);
+    transform: translateY(50%);
+}
+
+/* Add media query for smaller screens */
+@media (max-width: 768px) {
+    .collapse-toggle[title]:hover::before,
+    .collapsible-frame.collapsed .collapse-toggle[title]:hover::before {
+        bottom: auto;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 5px;
+    }
+} 

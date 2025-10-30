@@ -1,0 +1,249 @@
+/* Navbar Styles */
+.navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    min-height: unset;
+    background-color: #212529;  /* Dark background */
+}
+
+/* Navbar items positioning */
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-top: -4px;
+}
+
+/* Navbar brand */
+.navbar-brand {
+    padding: 0 0.5rem !important;
+    font-size: 0.9rem !important;
+    line-height: 36px !important;
+    height: 36px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    margin-top: -4px !important;
+    color: #fff !important;
+    position: relative !important;
+    transition: color 0.3s ease;
+    gap: 0 !important;  /* Remove gap from here since we're handling it in navbar-brand-content */
+}
+
+/* Brand indicator */
+.navbar-brand::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: transparent;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+/* Active state for brand */
+.navbar-brand.active {
+    color: #fff !important;
+}
+
+.navbar-brand.active::before {
+    transform: scaleX(1) !important;
+    background-color: #dc3545 !important;
+}
+
+/* Brand hover effects */
+.navbar-brand:hover {
+    color: #fff !important;
+}
+
+.navbar-brand:not(.active):hover::before {
+    transform: scaleX(1);
+    background-color: rgba(220, 53, 69, 0.5);
+}
+
+/* Icon styling */
+.navbar-brand-icon {
+    width: 24px !important;
+    height: 24px !important;
+    object-fit: contain !important;
+    margin-top: -4px !important;  /* Moved up slightly from -2px to -4px */
+}
+
+/* Ensure icon and text stay together */
+.navbar-brand-content {
+    display: inline-flex !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    gap: 12px !important;  /* Increased spacing between icon and text from 8px to 12px */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 0.85rem !important;
+    }
+    
+    .navbar-brand-icon {
+        width: 20px !important;
+        height: 20px !important;
+    }
+}
+
+/* Nav links */
+.nav-link {
+    padding: 0 0.5rem !important;
+    font-size: 0.9rem !important;
+    line-height: 36px !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    margin-top: -2px !important;
+    position: relative !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    transition: color 0.3s ease;
+}
+
+/* Active tab indicator - base styles */
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: transparent;
+    transform: scaleX(0);
+    transition: all 0.3s ease;
+}
+
+/* Active state */
+.nav-link.active {
+    color: #fff !important;
+}
+
+.nav-link.active::before {
+    transform: scaleX(1) !important;
+    background-color: #dc3545 !important;
+}
+
+/* Hover effects */
+.nav-link:hover {
+    color: #fff !important;
+}
+
+.nav-link:not(.active):hover::before {
+    transform: scaleX(1);
+    background-color: rgba(220, 53, 69, 0.5);
+}
+
+/* Nav item */
+.nav-item {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-top: -2px;
+}
+
+/* Ensure proper spacing between items */
+.nav-item:not(:last-child) {
+    margin-right: 1rem;
+}
+
+/* Navbar toggler for mobile */
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Dark Mode Toggle Button */
+#darkModeToggle {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    margin-left: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Dark mode toggle top bar - default state (red) */
+#darkModeToggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: transparent;
+    transform: scaleX(0);
+    transition: all 0.3s ease;
+}
+
+/* Active state for dark mode toggle (light mode - red bar) */
+#darkModeToggle.active::before {
+    transform: scaleX(1) !important;
+    background-color: #dc3545 !important;
+}
+
+#darkModeToggle:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Dark mode styles */
+[data-theme='dark'] #darkModeToggle {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Dark mode toggle top bar - dark mode state (white bar) */
+[data-theme='dark'] #darkModeToggle::before {
+    background-color: #ffffff;
+    transform: scaleX(1);
+}
+
+#darkModeToggle i {
+    color: #ffd700;  /* Golden color for the moon icon */
+}
+
+#darkModeToggle span {
+    color: #fff !important;
+    margin-left: 0.5rem;
+}
+
+/* Nav link with icon */
+.nav-link-with-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+/* Nav icon styling */
+.nav-icon {
+    width: 20px !important;
+    height: 20px !important;
+    object-fit: contain !important;
+    margin-top: -2px !important;  /* Fine-tune vertical alignment */
+}
+
+/* Responsive adjustments for nav icons */
+@media (max-width: 768px) {
+    .nav-icon {
+        width: 18px !important;
+        height: 18px !important;
+    }
+} 

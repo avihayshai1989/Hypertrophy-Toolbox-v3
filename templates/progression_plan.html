@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="progression-plan-container mt-4">
+    <h2 class="text-center mb-4">Progression Plan</h2>
+    
+    <!-- Exercise Selection -->
+    <div class="exercise-selector mb-4">
+        <h4>Select Exercise to Progress</h4>
+        <div class="debug-info" style="margin-bottom: 1rem; font-size: 0.8rem; color: #666;">
+            Available exercises: {{ exercises|length }}
+        </div>
+        <select id="exerciseSelect" class="form-select">
+            <option value="">Choose an exercise...</option>
+            {% for exercise in exercises %}
+            <option value="{{ exercise.exercise }}" data-routine="{{ exercise.routine }}">
+                {{ exercise.routine }} - {{ exercise.exercise }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <!-- Suggestions Container -->
+    <div id="suggestionsContainer" class="suggestions-container" style="display: none;">
+        <h4>Progression Suggestions</h4>
+        <div id="suggestionsList" class="row g-4">
+            <!-- Suggestions will be populated here -->
+        </div>
+    </div>
+    
+    <!-- Current Goals -->
+    <div class="current-goals mt-4">
+        <h4>Current Goals</h4>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Goal Type</th>
+                        <th>Current Value</th>
+                        <th>Target Value</th>
+                        <th>Goal Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for goal in goals %}
+                    <tr>
+                        <td>{{ goal.exercise }}</td>
+                        <td>{{ goal.goal_type }}</td>
+                        <td>{{ goal.current_value }}</td>
+                        <td>{{ goal.target_value }}</td>
+                        <td>{{ goal.goal_date }}</td>
+                        <td>
+                            <span class="badge bg-primary">In Progress</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-sm delete-goal" 
+                                    data-goal-id="{{ goal.id }}"
+                                    title="Delete Goal">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Goal Setting Modal -->
+<div class="modal"
+     id="goalSettingModal" 
+     tabindex="-1" 
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="goalSettingModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="goalSettingModalLabel">Set Progression Goal</h5>
+                <button type="button" 
+                        class="btn-close" 
+                        data-bs-dismiss="modal" 
+                        aria-label="Close"
+                        id="modalCloseBtn">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="goalForm" role="form">
+                    <input type="hidden" id="goalType">
+                    <input type="hidden" id="exerciseName">
+                    
+                    <div class="mb-3">
+                        <label for="currentValue" class="form-label">Current Value</label>
+                        <input type="number" 
+                               class="form-control" 
+                               id="currentValue" 
+                               required 
+                               min="0" 
+                               step="any" 
+                               autocomplete="off"
+                               aria-describedby="currentValueHelp">
+                        <div id="currentValueHelp" class="form-text">Enter the current value for this goal</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="targetValue" class="form-label">Target Value</label>
+                        <input type="number" class="form-control" id="targetValue" required min="0" step="any" autocomplete="off">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="goalDate" class="form-label">Goal Date</label>
+                        <input type="date" class="form-control" id="goalDate" required autocomplete="off">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" 
+                        class="btn btn-secondary" 
+                        data-bs-dismiss="modal" 
+                        id="closeGoalModal">Close</button>
+                <button type="button" 
+                        class="btn btn-primary"
+                        form="goalForm"
+                        id="saveGoal">Save Goal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
