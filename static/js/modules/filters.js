@@ -1,16 +1,36 @@
 import { showToast } from './toast.js';
 
+/**
+ * Helper function to handle standardized API responses
+ * @param {Response} response - Fetch response object
+ * @returns {Promise<Object>} Extracted data or throws error
+ */
+async function handleApiResponse(response) {
+    const data = await response.json();
+    
+    // Check if response is in standardized format
+    if (data.ok === false) {
+        const errorMsg = data.error?.message || data.error || 'An error occurred';
+        throw new Error(errorMsg);
+    }
+    
+    // If response.ok is true, return the data property, otherwise return the entire object (backward compatibility)
+    return data.ok === true ? (data.data !== undefined ? data.data : data) : data;
+}
+
 // Debounce timer for filtering
 let filterDebounceTimer = null;
 
-export async function filterExercises() {
+export async function filterExercises(preserveSelection = false) {
     try {
         const filters = {};
         const filterElements = document.querySelectorAll('#filters-form select');
         const exerciseDropdown = document.getElementById("exercise");
         
         filterElements.forEach(select => {
-            if (select.value && select.id !== 'exercise') {  // Exclude exercise dropdown from filters
+            // Exclude exercise dropdown and routine dropdown from filters sent to backend
+            // Routine is handled separately - it's not a property of exercises
+            if (select.value && select.id !== 'exercise' && select.id !== 'routine') {
                 filters[select.id] = select.value;
             }
         });
@@ -21,10 +41,10 @@ export async function filterExercises() {
         if (Object.keys(filters).length === 0) {
             const response = await fetch("/get_all_exercises");
             if (response.ok) {
-                const data = await response.json();
-                if (exerciseDropdown && Array.isArray(data)) {
-                    updateExerciseDropdown(data);
-                    showToast(`Showing all ${data.length} exercises`);
+                const exercises = await handleApiResponse(response);
+                if (exerciseDropdown && Array.isArray(exercises)) {
+                    updateExerciseDropdown(exercises, preserveSelection);
+                    showToast(`Showing all ${exercises.length} exercises`);
                 }
             }
             return;
@@ -36,13 +56,19 @@ export async function filterExercises() {
             body: JSON.stringify(filters)
         });
 
-        const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.error || "Failed to filter exercises");
+            const errorData = await response.json();
+            const errorMsg = errorData.error?.message || errorData.error || "Failed to filter exercises";
+            throw new Error(errorMsg);
         }
 
-        updateExerciseDropdown(data);
-        showToast(`Found ${data.length} matching exercise${data.length !== 1 ? 's' : ''}`);
+        const exercises = await handleApiResponse(response);
+        updateExerciseDropdown(exercises, preserveSelection);
+        
+        // Show message about filtered results
+        const filterCount = Object.keys(filters).length;
+        const filterNames = Object.keys(filters).map(k => k.replace(/_/g, ' ')).join(', ');
+        showToast(`Found ${exercises.length} exercise${exercises.length !== 1 ? 's' : ''} matching ${filterNames}`);
     } catch (error) {
         console.error("Error filtering exercises:", error);
         showToast("Failed to filter exercises", true);
@@ -75,7 +101,8 @@ export function initializeFilters() {
             if (select.tagName === 'SELECT' && 
                 select.closest('#filters-form') && 
                 select.classList.contains('filter-dropdown') &&
-                select.id !== 'exercise') {
+                select.id !== 'exercise' &&
+                select.id !== 'routine') {  // Also exclude routine from auto-filtering
                 
                 // Update visual feedback
                 if (select.value) {
@@ -139,13 +166,13 @@ async function clearFilters() {
     try {
         const response = await fetch("/get_all_exercises");
         if (response.ok) {
-            const data = await response.json();
-            if (exerciseDropdown && Array.isArray(data)) {
+            const exercises = await handleApiResponse(response);
+            if (exerciseDropdown && Array.isArray(exercises)) {
                 // Clear existing options
                 exerciseDropdown.innerHTML = '<option value="">Select Exercise</option>';
                 
                 // Add all exercises
-                data.forEach(exercise => {
+                exercises.forEach(exercise => {
                     if (exercise) {
                         const option = document.createElement("option");
                         option.value = exercise;
@@ -163,22 +190,34 @@ async function clearFilters() {
         }
     } catch (error) {
         console.error("Error reloading exercises:", error);
+        showToast(error.message || "Failed to reload exercises", true);
     }
     
     // Show success toast notification
     showToast('Filters cleared successfully');
 }
 
-function updateExerciseDropdown(exercises) {
+function updateExerciseDropdown(exercises, preserveSelection = false) {
     const exerciseDropdown = document.getElementById("exercise");
     if (!exerciseDropdown) return;
 
+    // Store current selection if we want to preserve it
+    const currentSelection = preserveSelection ? exerciseDropdown.value : '';
+
     exerciseDropdown.innerHTML = '<option value="">Select Exercise</option>';
     
+    let selectionRestored = false;
     exercises.forEach(exercise => {
         const option = document.createElement("option");
         option.value = exercise;
         option.textContent = exercise;
+        
+        // Restore selection if it exists in the new list
+        if (preserveSelection && exercise === currentSelection) {
+            option.selected = true;
+            selectionRestored = true;
+        }
+        
         exerciseDropdown.appendChild(option);
     });
 
@@ -190,13 +229,15 @@ function updateExerciseDropdown(exercises) {
         exerciseDropdown.dispatchEvent(rebuildEvent);
     }
 
-    // Add glow effect
-    exerciseDropdown.classList.add('filter-applied');
-    
-    // Remove glow effect after 2 seconds
-    setTimeout(() => {
-        exerciseDropdown.classList.remove('filter-applied');
-    }, 2000);
+    // Add glow effect only if selection was not preserved (meaning filters changed results)
+    if (!selectionRestored || !preserveSelection) {
+        exerciseDropdown.classList.add('filter-applied');
+        
+        // Remove glow effect after 2 seconds
+        setTimeout(() => {
+            exerciseDropdown.classList.remove('filter-applied');
+        }, 2000);
+    }
 }
 
 export function initializeAdvancedFilters() {

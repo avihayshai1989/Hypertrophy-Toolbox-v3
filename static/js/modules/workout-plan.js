@@ -1,20 +1,38 @@
 import { showToast } from './toast.js';
 
+/**
+ * Helper function to handle standardized API responses
+ * @param {Response} response - Fetch response object
+ * @returns {Promise<Object>} Extracted data or throws error
+ */
+async function handleApiResponse(response) {
+    const data = await response.json();
+    
+    // Check if response is in standardized format
+    if (data.ok === false) {
+        const errorMsg = data.error?.message || data.error || 'An error occurred';
+        throw new Error(errorMsg);
+    }
+    
+    // If response.ok is true, return the data property, otherwise return the entire object (backward compatibility)
+    return data.ok === true ? (data.data !== undefined ? data.data : data) : data;
+}
+
 // Workout plan functionality
 export async function fetchWorkoutPlan() {
     try {
         const response = await fetch('/get_workout_plan');
-        const data = await response.json();
-
+        
         if (!response.ok) {
-            throw new Error(data.error || 'Failed to fetch workout plan');
+            throw new Error('Failed to fetch workout plan');
         }
 
-        updateWorkoutPlanTable(data);
-        updateWorkoutPlanUI(data);
+        const exercises = await handleApiResponse(response);
+        updateWorkoutPlanTable(exercises);
+        updateWorkoutPlanUI(exercises);
     } catch (error) {
         console.error('Error loading workout plan:', error);
-        showToast('Failed to load workout plan', true);
+        showToast(error.message || 'Failed to load workout plan', true);
     }
 }
 
@@ -70,8 +88,12 @@ export function updateExerciseDetails(exercise) {
     if (!detailsContainer) return;
 
     fetch(`/get_exercise_info/${exercise}`)
-        .then(response => response.json())
-        .then(data => {
+        .then(async response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch exercise details');
+            }
+            const data = await handleApiResponse(response);
+            
             detailsContainer.innerHTML = `
                 <div class="exercise-info">
                     <h5>Exercise Details</h5>
@@ -104,7 +126,7 @@ export function updateExerciseDetails(exercise) {
         })
         .catch(error => {
             console.error('Error fetching exercise details:', error);
-            showToast('Failed to load exercise details', true);
+            showToast(error.message || 'Failed to load exercise details', true);
         });
 }
 
@@ -126,8 +148,12 @@ export function updateExerciseForm(exercise) {
 
     // Update form fields based on selected exercise
     fetch(`/get_exercise_info/${exercise}`)
-        .then(response => response.json())
-        .then(data => {
+        .then(async response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch exercise info');
+            }
+            const data = await handleApiResponse(response);
+            
             // Set values with fallback to defaults
             document.getElementById('sets').value = data.recommended_sets || defaultValues.sets;
             document.getElementById('min_rep').value = data.min_reps || defaultValues.min_rep;
@@ -143,7 +169,7 @@ export function updateExerciseForm(exercise) {
         })
         .catch(error => {
             console.error('Error updating exercise form:', error);
-            showToast('Failed to load exercise recommendations', true);
+            showToast(error.message || 'Failed to load exercise recommendations', true);
             
             // On error, set default values
             document.getElementById('sets').value = defaultValues.sets;
@@ -177,24 +203,43 @@ export function handleRoutineSelection() {
         try {
             const selectedRoutine = e.target.value;
             if (!selectedRoutine) {
-                exerciseSelect.innerHTML = '<option value="">Select Exercise</option>';
+                // If routine is cleared, reapply filters (if any) or show all exercises
+                const { filterExercises } = await import('./filters.js');
+                await filterExercises(true); // Preserve selection when clearing routine
                 return;
             }
 
             // Store the selected routine
             routineSelect.dataset.selectedRoutine = selectedRoutine;
 
-            // Fetch exercises for the selected routine
-            const response = await fetch(`/get_routine_exercises/${encodeURIComponent(selectedRoutine)}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch exercises for routine');
-            }
+            // Check if there are active filters
+            const filters = {};
+            const filterElements = document.querySelectorAll('#filters-form select.filter-dropdown');
+            filterElements.forEach(select => {
+                if (select.value && select.id !== 'exercise' && select.id !== 'routine') {
+                    filters[select.id] = select.value;
+                }
+            });
 
-            const exercises = await response.json();
-            
-            // Update exercise dropdown and maintain selection if possible
-            const currentExercise = exerciseSelect.value;
-            updateExerciseDropdown(exercises, currentExercise);
+            // If there are active filters, apply them to get filtered exercises
+            if (Object.keys(filters).length > 0) {
+                console.log("DEBUG: Applying filters after routine selection:", filters);
+                const { filterExercises } = await import('./filters.js');
+                // Preserve the currently selected exercise when reapplying filters
+                await filterExercises(true);
+            } else {
+                // No active filters, fetch exercises for the selected routine
+                const response = await fetch(`/get_routine_exercises/${encodeURIComponent(selectedRoutine)}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch exercises for routine');
+                }
+
+                const exercises = await handleApiResponse(response);
+                
+                // Update exercise dropdown and maintain selection if possible
+                const currentExercise = exerciseSelect.value;
+                updateExerciseDropdown(exercises, currentExercise);
+            }
 
         } catch (error) {
             console.error('Error fetching routine exercises:', error);
@@ -314,13 +359,16 @@ async function sendExerciseData(exerciseData) {
             body: JSON.stringify(exerciseData)
         });
 
-        const data = await response.json();
-        
         if (!response.ok) {
-            throw new Error(data.error || 'Failed to add exercise');
+            const errorData = await response.json();
+            const errorMsg = errorData.error?.message || errorData.error || 'Failed to add exercise';
+            throw new Error(errorMsg);
         }
         
-        showToast('Exercise added successfully');
+        const data = await handleApiResponse(response);
+        const message = data.message || 'Exercise added successfully';
+        
+        showToast(message);
         fetchWorkoutPlan(); // Refresh the table
         resetFormFields();
     } catch (error) {
@@ -330,8 +378,9 @@ async function sendExerciseData(exerciseData) {
 }
 
 function resetFormFields() {
-    // Preserve the current routine
+    // Preserve the current routine and exercise
     const currentRoutine = document.getElementById('routine').value;
+    const currentExercise = document.getElementById('exercise').value;
     
     // Reset form fields to default values
     document.getElementById('sets').value = '3';
@@ -341,9 +390,14 @@ function resetFormFields() {
     document.getElementById('max_rep_range').value = '8';
     document.getElementById('rpe').value = '7';
 
-    // Restore the routine
+    // Restore the routine and exercise
     if (currentRoutine) {
         document.getElementById('routine').value = currentRoutine;
+    }
+    if (currentExercise) {
+        document.getElementById('exercise').value = currentExercise;
+        // Trigger change event for enhanced dropdown to update display
+        document.getElementById('exercise').dispatchEvent(new Event('change', { bubbles: true }));
     }
 }
 
@@ -533,11 +587,9 @@ async function updateExerciseField(exerciseId, fieldName, value) {
         })
     });
     
-    if (!response.ok) {
-        throw new Error('Failed to update exercise');
-    }
-    
-    return response;
+    // Let handleApiResponse handle all response parsing to avoid consuming body twice
+    const data = await handleApiResponse(response);
+    return data;
 }
 
 // Add this function to initialize drag-and-drop
@@ -565,13 +617,17 @@ function initializeDragAndDrop() {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to update exercise order');
+                    const errorData = await response.json();
+                    const errorMsg = errorData.error?.message || errorData.error || 'Failed to update exercise order';
+                    throw new Error(errorMsg);
                 }
 
-                showToast('Exercise order updated successfully');
+                const data = await handleApiResponse(response);
+                const message = data.message || 'Exercise order updated successfully';
+                showToast(message);
             } catch (error) {
                 console.error('Error updating exercise order:', error);
-                showToast('Failed to update exercise order', true);
+                showToast(error.message || 'Failed to update exercise order', true);
                 // Optionally refresh the table to restore original order
                 fetchWorkoutPlan();
             }

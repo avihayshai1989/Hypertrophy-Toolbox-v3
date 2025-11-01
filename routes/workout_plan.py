@@ -4,18 +4,33 @@ from utils.exercise_manager import (
     add_exercise as add_exercise_to_db,
     get_exercises,
 )
+from utils.errors import success_response, error_response
+from utils.logger import get_logger
+from routes.filters import ALLOWED_COLUMNS, validate_column_name
 
 workout_plan_bp = Blueprint('workout_plan', __name__)
+logger = get_logger()
 
 def fetch_unique_values(column):
     """Fetch unique values for a specified column from the exercises table."""
-    query = f"SELECT DISTINCT {column} FROM exercises WHERE {column} IS NOT NULL ORDER BY {column} ASC"
+    # Validate column name is whitelisted
+    if not validate_column_name(column):
+        logger.warning(f"Invalid column name in fetch_unique_values: {column}")
+        return []
+    
+    # Get safe column name from whitelist
+    safe_column = ALLOWED_COLUMNS.get(column.lower())
+    if not safe_column:
+        logger.warning(f"Column not found in whitelist: {column}")
+        return []
+    
+    query = f"SELECT DISTINCT {safe_column} FROM exercises WHERE {safe_column} IS NOT NULL ORDER BY {safe_column} ASC"
     try:
         with DatabaseHandler() as db:
             results = db.fetch_all(query)
-            return [row[column] for row in results if row[column]]
+            return [row[safe_column] for row in results if row.get(safe_column)]
     except Exception as e:
-        print(f"Error fetching unique values for {column}: {e}")
+        logger.error(f"Error fetching unique values for {column}: {e}", exc_info=True)
         return []
 
 @workout_plan_bp.route("/workout_plan")
@@ -46,6 +61,9 @@ def add_exercise():
     """Add a new exercise to the workout plan."""
     try:
         data = request.get_json()
+        if not data:
+            return error_response("VALIDATION_ERROR", "No data provided", 400)
+        
         result = add_exercise_to_db(
             routine=data.get('routine'),
             exercise=data.get('exercise'),
@@ -56,10 +74,14 @@ def add_exercise():
             weight=data.get('weight'),
             rpe=data.get('rpe')
         )
-        return jsonify({"message": "Exercise added successfully"}), 200
+        
+        if result and "Error" in result:
+            return error_response("VALIDATION_ERROR", result, 400)
+        
+        return jsonify(success_response(message="Exercise added successfully"))
     except Exception as e:
-        print(f"Error adding exercise: {e}")
-        return jsonify({"error": str(e)}), 500
+        logger.exception("Error adding exercise")
+        return error_response("INTERNAL_ERROR", "Failed to add exercise", 500)
 
 @workout_plan_bp.route("/get_exercise_details/<int:exercise_id>")
 def get_exercise_details(exercise_id):
@@ -78,9 +100,12 @@ def get_exercise_details(exercise_id):
     try:
         with DatabaseHandler() as db:
             result = db.fetch_one(query, (exercise_id,))
-            return jsonify(result) if result else jsonify({"error": "Exercise not found"}), 404
+            if result:
+                return jsonify(success_response(data=result))
+            return error_response("NOT_FOUND", "Exercise not found", 404)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500 
+        logger.exception(f"Error fetching exercise details for id {exercise_id}")
+        return error_response("INTERNAL_ERROR", "Failed to fetch exercise details", 500) 
 
 @workout_plan_bp.route("/get_workout_plan")
 def get_workout_plan():
@@ -88,11 +113,11 @@ def get_workout_plan():
     try:
         # First check if exercise_order column exists
         with DatabaseHandler() as db:
-            try:
-                db.fetch_one("SELECT exercise_order FROM user_selection LIMIT 1")
+            # Check if column exists using PRAGMA
+            if column_exists(db, 'user_selection', 'exercise_order'):
                 order_by_clause = "ORDER BY us.exercise_order, us.routine, us.exercise"
                 include_order = ", us.exercise_order"
-            except:
+            else:
                 order_by_clause = "ORDER BY us.routine, us.exercise"
                 include_order = ""
 
@@ -121,31 +146,39 @@ def get_workout_plan():
             """
             
             results = db.fetch_all(query)
-            return jsonify(results)
+            return jsonify(success_response(data=results))
             
     except Exception as e:
-        print(f"Error fetching workout plan: {e}")
-        return jsonify({"error": str(e)}), 500
+        logger.exception("Error fetching workout plan")
+        return error_response("INTERNAL_ERROR", "Failed to fetch workout plan", 500)
 
 @workout_plan_bp.route("/remove_exercise", methods=["POST"])
 def remove_exercise():
     try:
         data = request.get_json()
-        print(f"DEBUG: Received data for remove_exercise: {data}")
+        if not data:
+            return error_response("VALIDATION_ERROR", "No data provided", 400)
+        
+        logger.debug(f"Received data for remove_exercise: {data}")
 
         exercise_id = data.get("id")
         if not exercise_id or not str(exercise_id).isdigit():
-            return jsonify({"message": "Invalid exercise ID"}), 400
+            return error_response("VALIDATION_ERROR", "Invalid exercise ID", 400)
 
-        query = "DELETE FROM user_selection WHERE id = ?"
         with DatabaseHandler() as db_handler:
-            db_handler.execute_query(query, (int(exercise_id),))
+            # First delete related workout logs to avoid foreign key constraint error
+            delete_logs_query = "DELETE FROM workout_log WHERE workout_plan_id = ?"
+            db_handler.execute_query(delete_logs_query, (int(exercise_id),))
+            
+            # Then delete the exercise from user_selection
+            delete_exercise_query = "DELETE FROM user_selection WHERE id = ?"
+            db_handler.execute_query(delete_exercise_query, (int(exercise_id),))
 
-        print(f"DEBUG: Deleted exercise with ID = {exercise_id}")
-        return jsonify({"message": "Exercise removed successfully"}), 200
+        logger.info(f"Deleted exercise with ID = {exercise_id}")
+        return jsonify(success_response(message="Exercise removed successfully"))
     except Exception as e:
-        print(f"Error in remove_exercise: {e}")
-        return jsonify({"error": "Unable to remove exercise"}), 500 
+        logger.exception("Error in remove_exercise")
+        return error_response("INTERNAL_ERROR", "Unable to remove exercise", 500) 
 
 @workout_plan_bp.route("/get_routine_options")
 def get_routine_options():
@@ -246,10 +279,10 @@ def get_user_selection():
         """
         with DatabaseHandler() as db:
             results = db.fetch_all(query)
-            return jsonify(results)
+            return jsonify(success_response(data=results))
     except Exception as e:
-        print(f"Error fetching user selection: {e}")
-        return jsonify({"error": str(e)}), 500 
+        logger.exception("Error fetching user selection")
+        return error_response("INTERNAL_ERROR", "Failed to fetch user selection", 500) 
 
 @workout_plan_bp.route("/get_exercise_info/<exercise_name>")
 def get_exercise_info(exercise_name):
@@ -263,11 +296,11 @@ def get_exercise_info(exercise_name):
         with DatabaseHandler() as db:
             result = db.fetch_one(query, (exercise_name,))
             if result:
-                return jsonify(result)
-            return jsonify({"error": "Exercise not found"}), 404
+                return jsonify(success_response(data=result))
+            return error_response("NOT_FOUND", "Exercise not found", 404)
     except Exception as e:
-        print(f"Error fetching exercise info: {e}")
-        return jsonify({"error": str(e)}), 500 
+        logger.exception(f"Error fetching exercise info for {exercise_name}")
+        return error_response("INTERNAL_ERROR", "Failed to fetch exercise info", 500) 
 
 @workout_plan_bp.route("/get_routine_exercises/<routine>")
 def get_routine_exercises(routine):
@@ -290,12 +323,12 @@ def get_routine_exercises(routine):
                 # If no exercises found, get all available exercises
                 exercises = get_exercises()
             
-            print(f"DEBUG: Found {len(exercises)} exercises for routine {routine}")
-            return jsonify(exercises)
+            logger.debug(f"Found {len(exercises)} exercises for routine {routine}")
+            return jsonify(success_response(data=exercises))
             
     except Exception as e:
-        print(f"Error fetching exercises for routine {routine}: {e}")
-        return jsonify({"error": f"Failed to fetch exercises for routine: {str(e)}"}), 500 
+        logger.exception(f"Error fetching exercises for routine {routine}")
+        return error_response("INTERNAL_ERROR", "Failed to fetch exercises for routine", 500) 
 
 @workout_plan_bp.route("/update_exercise", methods=["POST"])
 def update_exercise():
@@ -307,7 +340,7 @@ def update_exercise():
         
         # Validate the input data
         if not exercise_id or not updates:
-            return jsonify({"error": "Missing required data"}), 400
+            return error_response("VALIDATION_ERROR", "Missing required data", 400)
             
         # Build the update query dynamically based on provided fields
         update_fields = []
@@ -320,7 +353,7 @@ def update_exercise():
                 params.append(value)
         
         if not update_fields:
-            return jsonify({"error": "No valid fields to update"}), 400
+            return error_response("VALIDATION_ERROR", "No valid fields to update", 400)
             
         query = f"""
             UPDATE user_selection 
@@ -332,22 +365,27 @@ def update_exercise():
         with DatabaseHandler() as db:
             db.execute_query(query, tuple(params))
             
-        return jsonify({"message": "Exercise updated successfully"}), 200
+        return jsonify(success_response(message="Exercise updated successfully"))
         
     except Exception as e:
-        print(f"Error updating exercise: {e}")
-        return jsonify({"error": str(e)}), 500
+        logger.exception(f"Error updating exercise {exercise_id}")
+        return error_response("INTERNAL_ERROR", "Failed to update exercise", 500)
+
+def column_exists(db, table_name, column_name):
+    """Check if a column exists in a table using PRAGMA."""
+    query = f"PRAGMA table_info({table_name})"
+    columns = db.fetch_all(query)
+    return any(col['name'] == column_name for col in columns)
 
 def initialize_exercise_order():
     """Initialize or update the order column in user_selection table."""
     try:
         with DatabaseHandler() as db:
-            # Check if column exists
-            try:
-                db.fetch_one("SELECT exercise_order FROM user_selection LIMIT 1")
-                print("Exercise order column already exists")
-            except:
-                print("Adding exercise_order column")
+            # Check if column exists using PRAGMA
+            if column_exists(db, 'user_selection', 'exercise_order'):
+                logger.debug("Exercise order column already exists")
+            else:
+                logger.info("Adding exercise_order column")
                 # Add the column
                 db.execute_query("ALTER TABLE user_selection ADD COLUMN exercise_order INTEGER")
                 
@@ -360,11 +398,11 @@ def initialize_exercise_order():
                         WHERE t2.id = user_selection.id
                     )
                 """)
-                print("Exercise order column initialized")
+                logger.info("Exercise order column initialized")
                 
         return True
     except Exception as e:
-        print(f"Error initializing exercise order: {e}")
+        logger.exception("Error initializing exercise order")
         return False
 
 @workout_plan_bp.route("/update_exercise_order", methods=["POST"])
@@ -373,14 +411,19 @@ def update_exercise_order():
     try:
         data = request.get_json()
         
+        if not data:
+            return error_response("VALIDATION_ERROR", "No data provided", 400)
+        
         with DatabaseHandler() as db:
             for entry in data:
+                if not entry.get("id") or not entry.get("order"):
+                    return error_response("VALIDATION_ERROR", "Invalid entry data", 400)
                 db.execute_query(
                     "UPDATE user_selection SET exercise_order = ? WHERE id = ?",
                     (entry["order"], entry["id"])
                 )
                 
-        return jsonify({"message": "Exercise order updated successfully"}), 200
+        return jsonify(success_response(message="Exercise order updated successfully"))
     except Exception as e:
-        print(f"Error updating exercise order: {e}")
-        return jsonify({"error": str(e)}), 500
+        logger.exception("Error updating exercise order")
+        return error_response("INTERNAL_ERROR", "Failed to update exercise order", 500)

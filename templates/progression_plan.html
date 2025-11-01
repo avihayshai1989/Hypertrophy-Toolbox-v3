@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
+{% block title %}Progression Plan - Hypertrophy Toolbox{% endblock %}
+
+{% block page_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_progression.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_dropdowns.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="progression-plan-container mt-4">
     <h2 class="text-center mb-4">Progression Plan</h2>

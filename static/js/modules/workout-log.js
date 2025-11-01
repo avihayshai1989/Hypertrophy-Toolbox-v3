@@ -1,4 +1,5 @@
 import { showToast } from './toast.js';
+import { api } from './fetch-wrapper.js';
 
 export function initializeWorkoutLog() {
     console.log('Initializing workout log');
@@ -62,23 +63,12 @@ function initializeDateInputs() {
 
 export async function updateProgressionDate(logId, newDate) {
     try {
-        const response = await fetch('/update_progression_date', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: logId,
-                date: newDate
-            })
+        const response = await api.post('/update_progression_date', {
+            id: logId,
+            date: newDate
         });
 
-        if (!response.ok) {
-            throw new Error('Failed to update progression date');
-        }
-
-        const data = await response.json();
-        showToast('Progression date updated successfully');
+        showToast('success', response.message || 'Progression date updated successfully');
 
         // Update UI
         const dateCell = document.querySelector(`tr[data-log-id="${logId}"] .progression-date`);
@@ -90,51 +80,35 @@ export async function updateProgressionDate(logId, newDate) {
         checkProgressiveOverload(logId);
 
     } catch (error) {
-        console.error('Error:', error);
-        showToast('Failed to update progression date', true);
+        // Error already logged and toast shown by fetch wrapper
+        console.error('Error updating progression date:', error);
     }
 }
 
 export async function updateProgressionStatus(logId) {
     try {
-        const response = await fetch(`/check_progression/${logId}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || 'Failed to check progression');
-        }
+        const response = await api.get(`/check_progression/${logId}`);
 
         const badge = document.querySelector(`tr[data-log-id="${logId}"] .progression-badge`);
-        if (badge) {
-            badge.className = `badge ${data.achieved ? 'bg-success' : 'bg-warning'}`;
-            badge.textContent = data.achieved ? 'Achieved' : 'Pending';
+        if (badge && response.data) {
+            badge.className = `badge ${response.data.is_progressive ? 'bg-success' : 'bg-warning'}`;
+            badge.textContent = response.data.status;
         }
 
     } catch (error) {
+        // Error already logged and toast shown by fetch wrapper
         console.error('Error checking progression:', error);
-        showToast('Failed to check progression status', true);
     }
 }
 
 export async function updateScoredValue(logId, field, value) {
     try {
-        const response = await fetch('/update_workout_log', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: logId,
-                updates: {
-                    [field]: value === '' ? null : value
-                }
-            })
+        const response = await api.post('/update_workout_log', {
+            id: logId,
+            updates: {
+                [field]: value === '' ? null : value
+            }
         });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.error || 'Failed to update value');
-        }
 
         // Update the display text
         const row = document.querySelector(`tr[data-log-id="${logId}"]`);

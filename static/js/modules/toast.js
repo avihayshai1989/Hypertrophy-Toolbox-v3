@@ -1,13 +1,41 @@
-// Toast notification functionality
-export function showToast(message, isError = false, duration = 3000) {
-    const toastBody = document.getElementById("toast-body");
+/**
+ * Toast notification functionality with standardized types.
+ * 
+ * @param {string} type - Type of toast: 'success', 'error', 'warning', 'info'
+ * @param {string} message - Message to display
+ * @param {Object} options - Optional configuration
+ * @param {number} options.duration - Duration in ms (default: 3000)
+ * @param {string} options.requestId - Optional request ID for debugging
+ */
+export function showToast(type, message, options = {}) {
+    const validTypes = new Set(['success', 'error', 'warning', 'info']);
 
+    // Backward compatibility: detect legacy signature showToast(message, isError?, duration?)
+    if (!validTypes.has(type)) {
+        const legacyMessage = type;
+        const legacyIsError = typeof message === 'boolean' ? message : false;
+        const legacyDuration = typeof options === 'number' ? options : undefined;
+        const legacyOptions = typeof options === 'object' && options !== null ? { ...options } : {};
+
+        type = legacyIsError ? 'error' : 'success';
+        message = legacyMessage;
+        options = legacyOptions;
+
+        if (legacyDuration !== undefined) {
+            options.duration = legacyDuration;
+        }
+    } else if (typeof options === 'number') {
+        // Support showToast('success', 'Message', 5000)
+        options = { duration: options };
+    }
+
+    const { duration = 3000, requestId = null } = options;
+    
+    const toastBody = document.getElementById("toast-body");
     if (!toastBody) {
         console.error("Error: toast-body not found in the DOM!");
         return;
     }
-
-    toastBody.innerText = message;
 
     const toastElement = document.getElementById("liveToast");
     if (!toastElement) {
@@ -15,9 +43,104 @@ export function showToast(message, isError = false, duration = 3000) {
         return;
     }
 
-    toastElement.classList.remove("bg-success", "bg-danger");
-    toastElement.classList.add(isError ? "bg-danger" : "bg-success");
+    // Ensure message is a readable string
+    let displayMessage;
+    if (message !== undefined && message !== null) {
+        displayMessage = String(message);
+    } else {
+        displayMessage = type === 'error' ? 'An unexpected error occurred.' : 'Action completed successfully.';
+    }
+
+    // Set message with optional request ID for debugging
+    if (requestId && type === 'error') {
+        displayMessage += ` (Request ID: ${requestId})`;
+    }
+    toastBody.innerText = displayMessage;
+
+    // Remove all possible background classes
+    toastElement.classList.remove("bg-success", "bg-danger", "bg-warning", "bg-info");
+    
+    // Map type to Bootstrap background class
+    const typeToClass = {
+        'success': 'bg-success',
+        'error': 'bg-danger',
+        'warning': 'bg-warning',
+        'info': 'bg-info'
+    };
+    
+    const bgClass = typeToClass[type] || 'bg-success';
+    toastElement.classList.add(bgClass);
 
     const toast = new bootstrap.Toast(toastElement, { delay: duration });
     toast.show();
+}
+
+/**
+ * Backward compatibility: Legacy function signature
+ * @deprecated Use showToast(type, message, options) instead
+ */
+export function showToastLegacy(message, isError = false, duration = 3000) {
+    showToast(isError ? 'error' : 'success', message, { duration });
+}
+
+/**
+ * Show inline error message near a form field
+ * @param {string} fieldId - ID of the form field
+ * @param {string} message - Error message to display
+ */
+export function showInlineError(fieldId, message) {
+    const field = document.getElementById(fieldId);
+    if (!field) {
+        console.warn(`Field with ID '${fieldId}' not found`);
+        return;
+    }
+
+    // Remove any existing error message
+    const existingError = field.parentElement.querySelector('.inline-error');
+    if (existingError) {
+        existingError.remove();
+    }
+
+    // Create and insert error message
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'inline-error text-danger small mt-1';
+    errorDiv.setAttribute('role', 'alert');
+    errorDiv.textContent = message;
+    
+    // Add error styling to field
+    field.classList.add('is-invalid');
+    
+    // Insert after the field
+    field.parentElement.insertBefore(errorDiv, field.nextSibling);
+}
+
+/**
+ * Clear inline error for a form field
+ * @param {string} fieldId - ID of the form field
+ */
+export function clearInlineError(fieldId) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+
+    field.classList.remove('is-invalid');
+    
+    const errorDiv = field.parentElement.querySelector('.inline-error');
+    if (errorDiv) {
+        errorDiv.remove();
+    }
+}
+
+/**
+ * Clear all inline errors in a form
+ * @param {string} formId - ID of the form
+ */
+export function clearAllInlineErrors(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+
+    const errors = form.querySelectorAll('.inline-error');
+    errors.forEach(error => error.remove());
+    
+    const invalidFields = form.querySelectorAll('.is-invalid');
+    invalidFields.forEach(field => field.classList.remove('is-invalid'));
 } 

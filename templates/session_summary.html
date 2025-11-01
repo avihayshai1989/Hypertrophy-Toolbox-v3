@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
+{% block title %}Session Summary - Hypertrophy Toolbox{% endblock %}
+
+{% block page_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/session_summary.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_frames.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid px-4">
     <div class="page-header text-center mb-4">
@@ -148,9 +155,9 @@
 
         <!-- Export Button -->
         <div class="export-section mt-3 text-center">
-            <a href="/export_to_excel" class="btn btn-export-excel">
+            <button type="button" class="btn btn-export-excel" onclick="exportToExcel()" aria-label="Export session summary to Excel">
                 <i class="fas fa-file-excel"></i> Export All Tables
-            </a>
+            </button>
         </div>
     </div>
 </div>

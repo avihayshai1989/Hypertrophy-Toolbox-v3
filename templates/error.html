@@ -1,24 +1,52 @@
 {% extends "base.html" %}
 
+{% block title %}{{ error_title }} - Hypertrophy Toolbox{% endblock %}
+
+{% block page_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_error.css') }}">
+{% endblock %}
+
 {% block content %}
-<div class="container text-center mt-5 error-container">
-    <!-- Main Error Message -->
-    <h1 class="display-4 text-danger">
-        <i class="fas fa-exclamation-triangle"></i> An Error Occurred
-    </h1>
-    <p class="lead text-muted">
-        {{ message }}
-    </p>
-
-    <!-- Return to Home Button -->
-    <a href="/" class="btn btn-primary mt-3">Return to Home</a>
-
-    <!-- Debug Information Section (Optional) -->
-    {% if debug %}
-    <div class="alert alert-secondary mt-4 text-left">
-        <h5>Debug Information:</h5>
-        <pre>{{ debug_info }}</pre>
+<div class="error-page-container">
+    <div class="error-page-content">
+        <!-- Error Status Code -->
+        <h1 class="error-status-code">{{ error_code }}</h1>
+        
+        <!-- Error Title -->
+        <h2 class="error-title">{{ error_title }}</h2>
+        
+        <!-- Error Message -->
+        <p class="error-message">{{ error_message }}</p>
+        
+        <!-- Action Buttons -->
+        <div class="error-actions">
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-home"></i> Return to Home
+            </a>
+            <button onclick="history.back()" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left"></i> Go Back
+            </button>
+        </div>
+        
+        <!-- Error Details (for debugging) -->
+        {% if error_detail_code or request_id %}
+        <div class="error-details mt-4">
+            {% if error_detail_code %}
+            <div class="error-code">
+                Error Code: <strong>{{ error_detail_code }}</strong>
+            </div>
+            {% endif %}
+            
+            {% if request_id %}
+            <div class="request-id">
+                Request ID: {{ request_id }}
+            </div>
+            <p class="text-muted small mt-2">
+                Please include this Request ID when contacting support.
+            </p>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
 {% endblock %}

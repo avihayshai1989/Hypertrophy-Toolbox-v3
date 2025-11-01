@@ -6,11 +6,14 @@ from utils.volume_classifier import (
     get_volume_label,
     get_volume_tooltip
 )
+from utils.errors import success_response, error_response
+from utils.logger import get_logger
 import pandas as pd
 from io import BytesIO
 from datetime import datetime
 
 workout_log_bp = Blueprint('workout_log', __name__)
+logger = get_logger()
 
 @workout_log_bp.route("/workout_log")
 def workout_log():
@@ -24,8 +27,8 @@ def workout_log():
             enumerate=enumerate,
         )
     except Exception as e:
-        print(f"Error in workout_log: {e}")
-        return render_template("error.html", message="Unable to load workout log."), 500
+        logger.exception("Error loading workout log page")
+        return error_response("INTERNAL_ERROR", "Unable to load workout log.", 500)
 
 @workout_log_bp.route("/update_workout_log", methods=["POST"])
 def update_workout_log():
@@ -35,6 +38,9 @@ def update_workout_log():
         log_id = data.get("id")
         updates = data.get("updates", {})
 
+        if not log_id:
+            return error_response("VALIDATION_ERROR", "Log ID is required", 400)
+
         valid_fields = {
             "scored_weight", "scored_min_reps", "scored_max_reps", 
             "scored_rir", "scored_rpe", "last_progression_date"
@@ -43,7 +49,7 @@ def update_workout_log():
         valid_updates = {k: v for k, v in updates.items() if k in valid_fields}
 
         if not valid_updates:
-            return jsonify({"message": "No valid fields to update"}), 400
+            return error_response("VALIDATION_ERROR", "No valid fields to update", 400)
 
         set_clause = ", ".join(f"{k} = ?" for k in valid_updates.keys())
         query = f"UPDATE workout_log SET {set_clause} WHERE id = ?"
@@ -52,10 +58,11 @@ def update_workout_log():
         with DatabaseHandler() as db:
             db.execute_query(query, params)
 
-        return jsonify({"message": "Workout log updated successfully"}), 200
+        logger.info(f"Updated workout log {log_id}")
+        return jsonify(success_response(message="Workout log updated successfully"))
     except Exception as e:
-        print(f"Error updating workout log: {e}")
-        return jsonify({"error": "Failed to update workout log"}), 500
+        logger.exception("Error updating workout log")
+        return error_response("INTERNAL_ERROR", "Failed to update workout log", 500)
 
 @workout_log_bp.route('/delete_workout_log', methods=['POST'])
 def delete_workout_log():
@@ -64,17 +71,18 @@ def delete_workout_log():
         log_id = data.get('id')
         
         if not log_id:
-            return jsonify({"error": "No log ID provided"}), 400
+            return error_response("VALIDATION_ERROR", "No log ID provided", 400)
         
         with DatabaseHandler() as db:
             query = "DELETE FROM workout_log WHERE id = ?"
             db.execute_query(query, (log_id,))
-            
-        return jsonify({"message": "Log entry deleted successfully"}), 200
+        
+        logger.info(f"Deleted workout log {log_id}")
+        return jsonify(success_response(message="Log entry deleted successfully"))
         
     except Exception as e:
-        print(f"Error deleting workout log: {str(e)}")
-        return jsonify({"error": str(e)}), 500 
+        logger.exception(f"Error deleting workout log")
+        return error_response("INTERNAL_ERROR", "Failed to delete workout log", 500)
 
 @workout_log_bp.route("/update_progression_date", methods=["POST"])
 def update_progression_date():
@@ -84,17 +92,21 @@ def update_progression_date():
         log_id = data.get("id")
         new_date = data.get("date")
 
+        if not log_id or not new_date:
+            return error_response("VALIDATION_ERROR", "Log ID and date are required", 400)
+
         query = "UPDATE workout_log SET last_progression_date = ? WHERE id = ?"
         with DatabaseHandler() as db:
             db.execute_query(query, (new_date, log_id))
 
-        return jsonify({"message": "Progression date updated successfully"}), 200
+        logger.info(f"Updated progression date for log {log_id}")
+        return jsonify(success_response(message="Progression date updated successfully"))
     except Exception as e:
-        print(f"Error updating progression date: {e}")
-        return jsonify({"error": "Failed to update progression date"}), 500 
+        logger.exception("Error updating progression date")
+        return error_response("INTERNAL_ERROR", "Failed to update progression date", 500) 
 
 @workout_log_bp.route("/check_progression/<int:log_id>")
-def check_progression(log_id):
+def check_progression_route(log_id):
     """Check if progressive overload was achieved for a specific log entry."""
     try:
         query = """
@@ -109,7 +121,7 @@ def check_progression(log_id):
         with DatabaseHandler() as db:
             log = db.fetch_one(query, (log_id,))
             if not log:
-                return jsonify({"error": "Log entry not found"}), 404
+                return error_response("NOT_FOUND", "Log entry not found", 404)
 
             is_progressive = (
                 (log['scored_rir'] is not None and 
@@ -133,14 +145,14 @@ def check_progression(log_id):
                  log['scored_weight'] > log['planned_weight'])
             )
 
-            return jsonify({
+            return jsonify(success_response(data={
                 "is_progressive": is_progressive,
                 "status": "Achieved" if is_progressive else "Pending"
-            })
+            }))
 
     except Exception as e:
-        print(f"Error checking progression: {e}")
-        return jsonify({"error": str(e)}), 500 
+        logger.exception("Error checking progression")
+        return error_response("INTERNAL_ERROR", "Failed to check progression status", 500)
 
 @workout_log_bp.route("/get_workout_logs")
 def get_logs():
@@ -157,16 +169,19 @@ def get_logs():
         """
         with DatabaseHandler() as db:
             results = db.fetch_all(query)
-            return jsonify(results)
+            return jsonify(success_response(data=results))
     except Exception as e:
-        print(f"Error fetching workout logs: {e}")
-        return jsonify({"error": str(e)}), 500 
+        logger.exception("Error fetching workout logs")
+        return error_response("INTERNAL_ERROR", "Failed to fetch workout logs", 500) 
 
 @workout_log_bp.route('/export_workout_log')
 def export_workout_log():
     try:
         # Get workout log data
-        logs = get_workout_logs()  # Your existing function to get workout logs
+        logs = get_workout_logs()
+        
+        if not logs:
+            return error_response("NOT_FOUND", "No workout logs found to export", 404)
         
         # Convert to DataFrame
         df = pd.DataFrame(logs)
@@ -201,6 +216,7 @@ def export_workout_log():
         # Generate filename with timestamp
         filename = f'workout_log_{datetime.now().strftime("%Y%m%d_%H%M%S")}.xlsx'
         
+        logger.info(f"Exported workout log to {filename}")
         return send_file(
             output,
             mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -209,15 +225,13 @@ def export_workout_log():
         )
         
     except Exception as e:
-        print(f"Export error: {e}")
-        return {'error': 'Failed to export workout log'}, 500 
+        logger.exception("Error exporting workout log")
+        return error_response("INTERNAL_ERROR", "Failed to export workout log", 500)
 
 @workout_log_bp.route('/export_to_workout_log', methods=['POST'])
 def export_to_workout_log():
-    print("Export to workout log endpoint hit")
     try:
         with DatabaseHandler() as db:
-            print("Getting workout plans from database")
             query = """
             SELECT 
                 us.routine,
@@ -232,14 +246,12 @@ def export_to_workout_log():
             """
             workout_plans = db.fetch_all(query)
             
-            print(f"Found {len(workout_plans)} workout plans to export")
-            
             if not workout_plans:
-                return jsonify({"error": "No workout plans found to export"}), 404
+                return error_response("NOT_FOUND", "No workout plans found to export", 404)
             
             # Insert each entry into workout_log
+            exported_count = 0
             for plan in workout_plans:
-                print(f"Exporting plan: {plan}")
                 insert_query = """
                 INSERT INTO workout_log (
                     routine,
@@ -267,12 +279,13 @@ def export_to_workout_log():
                 )
                 
                 db.execute_query(insert_query, params)
+                exported_count += 1
             
-            print("Export completed successfully")
-            return jsonify({
-                "message": f"Successfully exported {len(workout_plans)} exercises to workout log"
-            }), 200
+            logger.info(f"Exported {exported_count} exercises to workout log")
+            return jsonify(success_response(
+                message=f"Successfully exported {exported_count} exercises to workout log"
+            ))
             
     except Exception as e:
-        print(f"Error during export: {e}")
-        return jsonify({"error": str(e)}), 500 
+        logger.exception("Error exporting to workout log")
+        return error_response("INTERNAL_ERROR", "Failed to export to workout log", 500) 

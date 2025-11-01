@@ -16,13 +16,11 @@
 /* UI Components */
 @import "styles_navbar.css";
 @import "styles_notifications.css";
-@import "styles_chat.css";
 @import "styles_muscle_groups.css";
 @import "styles_tooltips.css";
 @import "styles_filters.css";
 @import "styles_volume.css";
 @import "styles_frames.css";
-@import "styles_action_buttons.css";
 @import "styles_modals.css";
 @import "styles_volume_splitter.css";
 
@@ -31,7 +29,6 @@
 @import "styles_science.css";
 @import "styles_error.css";
 @import "workout_log.css";
-@import "volume_indicators.css";
 @import "styles_progression.css";
 @import "styles_workout_plan.css";
 @import "styles_workout_dropdowns.css";

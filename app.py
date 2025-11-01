@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, jsonify
+from flask import Flask, render_template, url_for, jsonify, request
 from utils import initialize_database
 from utils.database import DatabaseHandler, add_progression_goals_table, add_volume_tracking_tables
 from routes.workout_log import workout_log_bp
@@ -12,37 +12,52 @@ from routes.progression_plan import progression_plan_bp
 from routes.volume_splitter import volume_splitter_bp
 from datetime import datetime
 from werkzeug.middleware.proxy_fix import ProxyFix
+from utils.logger import setup_logging
+from utils.errors import error_response, register_error_handlers
+from utils.request_id import add_request_id_middleware
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False  # This makes Flask handle URLs with or without trailing slashes
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
+# Setup structured logging
+logger = setup_logging(app)
+
+# Add request ID middleware for tracking and correlation
+add_request_id_middleware(app)
+
+# Register standardized error handlers
+register_error_handlers(app)
+
 # Initialize the database
-print("Initializing database...")
+logger.info("Initializing database...")
 initialize_database()
-print("Adding progression goals table...")
+logger.info("Adding progression goals table...")
 add_progression_goals_table()
-print("Adding volume tracking tables...")
+logger.info("Adding volume tracking tables...")
 add_volume_tracking_tables()
-print("Initializing exercise order...")
+logger.info("Initializing exercise order...")
 initialize_exercise_order()
-print("Database initialization complete")
+logger.info("Database initialization complete")
 
 # Register blueprints
 app.register_blueprint(main_bp)
 app.register_blueprint(workout_log_bp)
 app.register_blueprint(weekly_summary_bp)
 app.register_blueprint(session_summary_bp)
+
 app.register_blueprint(exports_bp)
+
 app.register_blueprint(filters_bp)
 app.register_blueprint(workout_plan_bp)
 app.register_blueprint(progression_plan_bp)
 app.register_blueprint(volume_splitter_bp)
 
-# Print registered routes
-print("\nRegistered routes:")
+# Log registered routes (debug level only)
+logger.debug("Registered routes:")
 for rule in app.url_map.iter_rules():
-    print(f"{rule.endpoint}: {rule.rule} [{', '.join(rule.methods)}]")
+    methods = ', '.join(sorted(rule.methods)) if rule.methods else ''
+    logger.debug(f"{rule.endpoint}: {rule.rule} [{methods}]")
 
 @app.template_filter('datetime')
 def format_datetime(value, format='%d-%m-%Y'):
@@ -65,6 +80,8 @@ def clear_trailing():
     if rp != '/' and rp.endswith('/'):
         return redirect(rp[:-1])
 
+# Test routes removed - no longer needed
+
 @app.route('/erase-data', methods=['POST'])
 def erase_data():
     try:
@@ -82,25 +99,52 @@ def erase_data():
                 db.execute_query(f"DROP TABLE IF EXISTS {table}")
         
         # Reinitialize database
-        print("Reinitializing database...")
+        logger.info("Reinitializing database...")
         initialize_database()
-        print("Adding progression goals table...")
+        logger.info("Adding progression goals table...")
         add_progression_goals_table()
-        print("Adding volume tracking tables...")
+        logger.info("Adding volume tracking tables...")
         add_volume_tracking_tables()
-        print("Initializing exercise order...")
+        logger.info("Initializing exercise order...")
         initialize_exercise_order()
         
-        return jsonify({
-            "success": True, 
-            "message": "All data has been erased and tables reinitialized successfully."
-        })
+        from utils.errors import success_response
+        return jsonify(success_response(message="All data has been erased and tables reinitialized successfully."))
     except Exception as e:
-        print(f"Error erasing data: {e}")
-        return jsonify({
-            "success": False, 
-            "message": str(e)
-        }), 500
+        logger.exception("Error erasing data")
+        return error_response("INTERNAL_ERROR", "Failed to erase data", 500)
+
+@app.errorhandler(404)
+def handle_404(e):
+    """Handle 404 errors gracefully without logging stack traces for common requests."""
+    # Don't log full exception for common missing resources like favicon
+    if request.path == '/favicon.ico':
+        # Return a simple 204 No Content response for favicon
+        from flask import make_response
+        return make_response('', 204)
+    
+    logger.warning(f"404 Not Found: {request.path}")
+    return error_response("NOT_FOUND", "The requested resource was not found", 404)
+
+# Global error handler for unhandled exceptions
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """Global exception handler that logs stack traces."""
+    import sys
+    import traceback
+    # Don't log 404 errors as exceptions
+    if isinstance(e, Exception) and "404" in str(e):
+        return handle_404(e)
+    
+    # Log to both logger and stderr for export routes
+    if hasattr(e, '__class__'):
+        print(f"=== EXCEPTION: {e.__class__.__name__}: {e} ===", file=sys.stderr, flush=True)
+        traceback.print_exc(file=sys.stderr)
+    
+    logger.exception(f"Unhandled exception: {e}")
+    
+    # Return error response
+    return error_response("INTERNAL_ERROR", "An unexpected error occurred", 500)
 
 if __name__ == "__main__":
     app.run(debug=True)

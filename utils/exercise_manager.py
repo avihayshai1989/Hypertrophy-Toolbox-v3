@@ -1,56 +1,23 @@
 from utils.database import DatabaseHandler
+from utils.filter_predicates import FilterPredicates
 import sqlite3
 
 class ExerciseManager:
     """
     Handles operations for fetching and managing exercises.
+    Filtering logic is now delegated to FilterPredicates.
     """
 
     @staticmethod
     def get_exercises(filters=None):
         """
         Fetch exercises from the database, optionally filtered.
+        Uses consolidated FilterPredicates for filtering logic.
+        
         :param filters: Dictionary containing filter criteria.
         :return: List of exercise names.
         """
-        base_query = """
-        SELECT exercise_name 
-        FROM exercises 
-        WHERE exercise_name IS NOT NULL
-        """
-        
-        params = []
-        if filters:
-            conditions = []
-            for field, value in filters.items():
-                if field in [
-                    "primary_muscle_group", 
-                    "secondary_muscle_group",
-                    "tertiary_muscle_group",
-                    "advanced_isolated_muscles",
-                    "grips",
-                    "stabilizers",
-                    "synergists"
-                ]:
-                    conditions.append(f"{field} LIKE ?")
-                    params.append(f"%{value}%")
-                else:
-                    conditions.append(f"LOWER({field}) = LOWER(?)")
-                    params.append(value)
-            
-            if conditions:
-                base_query += " AND " + " AND ".join(conditions)
-
-        base_query += " ORDER BY exercise_name ASC"
-        print(f"DEBUG: Final query: {base_query} with params: {params}")
-
-        with DatabaseHandler() as db:
-            try:
-                results = db.fetch_all(base_query, params if params else None)
-                return [row["exercise_name"] for row in results if row["exercise_name"]]
-            except Exception as e:
-                print(f"Error fetching exercises: {e}")
-                return []
+        return FilterPredicates.get_exercises(filters)
 
     @staticmethod
     def add_exercise(routine, exercise, sets, min_rep_range, max_rep_range, rir, weight, rpe=None):
@@ -121,23 +88,6 @@ class ExerciseManager:
             except Exception as e:
                 print(f"Error fetching unique values: {e}")
                 return []
-
-    @staticmethod
-    def build_query(base_query, filters, valid_fields):
-        """
-        Dynamically build a SQL query with conditions based on filters.
-        """
-        query_conditions = []
-        params = []
-        for field, value in (filters or {}).items():
-            if field in valid_fields and value:
-                query_conditions.append(f"LOWER({field}) LIKE ?")
-                params.append(f"%{value.lower()}%")
-        if query_conditions:
-            base_query += " AND " + " AND ".join(query_conditions)
-        base_query += " ORDER BY exercise_name ASC"
-        print(f"DEBUG: Built query - {base_query} with params {params}")
-        return base_query, params
 
 # Publicly expose key functions
 get_exercises = ExerciseManager.get_exercises

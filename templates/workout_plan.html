@@ -1,5 +1,15 @@
 {% extends "base.html" %}
 
+{% block title %}Workout Plan - Hypertrophy Toolbox{% endblock %}
+
+{% block page_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_filters.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_dropdowns.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_workout_dropdowns.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_workout_plan.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_frames.css') }}">
+{% endblock %}
+
 {% block content %}
 <main id="workout" data-page="workout-plan" role="main">
     <div class="container-fluid">
@@ -180,9 +190,9 @@
 
                                 <!-- Export All Tables Button -->
                                 <div class="inline-control-item" data-order="5">
-                                    <a href="/export_to_excel" class="btn btn-export-excel" aria-label="Export workout plan to Excel">
+                                    <button type="button" class="btn btn-export-excel" onclick="exportToExcel()" aria-label="Export workout plan to Excel">
                                         <i class="fas fa-file-excel" aria-hidden="true"></i> Export All Tables
-                                    </a>
+                                    </button>
                                 </div>
 
                                 <!-- Export to Workout Log Button -->

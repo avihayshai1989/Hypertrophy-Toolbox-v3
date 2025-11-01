@@ -1,9 +1,15 @@
 from utils.config import DB_FILE
 import sqlite3
+from utils.logger import get_logger
+
+logger = get_logger()
 
 def get_db_connection():
     """Get a database connection."""
-    return sqlite3.connect(DB_FILE)
+    conn = sqlite3.connect(DB_FILE)
+    # Enable foreign keys
+    conn.execute("PRAGMA foreign_keys = ON;")
+    return conn
 
 class DatabaseHandler:
     """
@@ -17,7 +23,10 @@ class DatabaseHandler:
         self.connection = sqlite3.connect(DB_FILE)
         self.connection.row_factory = sqlite3.Row  # Return results as dictionaries
         self.cursor = self.connection.cursor()
-        self.connection.execute("PRAGMA journal_mode=WAL;")  # Enable Write-Ahead Logging (WAL) mode
+        # Enable Write-Ahead Logging (WAL) mode
+        self.connection.execute("PRAGMA journal_mode=WAL;")
+        # Enable foreign keys (must be enabled per connection in SQLite)
+        self.connection.execute("PRAGMA foreign_keys = ON;")
 
     def execute_query(self, query, params=None):
         """
@@ -31,9 +40,9 @@ class DatabaseHandler:
             else:
                 self.cursor.execute(query)
             self.connection.commit()
-            print(f"Query executed successfully: {query} | Params: {params}")
+            logger.debug(f"Query executed successfully: {query[:100]}... | Params: {params}")
         except sqlite3.Error as e:
-            print(f"Database error during query execution: {e} | Query: {query} | Params: {params}")
+            logger.error(f"Database error during query execution: {e} | Query: {query[:100]}... | Params: {params}", exc_info=True)
             raise e
 
     def fetch_all(self, query, params=None):
@@ -53,7 +62,7 @@ class DatabaseHandler:
             results = self.cursor.fetchall()
             return [dict(row) for row in results] if results else []
         except sqlite3.Error as e:
-            print(f"Database error: {e} | Query: {query} | Params: {params}")
+            logger.error(f"Database error: {e} | Query: {query[:100]}... | Params: {params}", exc_info=True)
             raise e
 
     def fetch_one(self, query, params=None):
@@ -69,10 +78,10 @@ class DatabaseHandler:
             else:
                 self.cursor.execute(query)
             result = self.cursor.fetchone()
-            print(f"Fetch one successful: {query} | Params: {params}")
+            logger.debug(f"Fetch one successful: {query[:100]}... | Params: {params}")
             return dict(result) if result else None
         except sqlite3.Error as e:
-            print(f"Database fetch error: {e} | Query: {query} | Params: {params}")
+            logger.error(f"Database fetch error: {e} | Query: {query[:100]}... | Params: {params}", exc_info=True)
             raise e
 
     def close(self):
@@ -80,7 +89,7 @@ class DatabaseHandler:
         Close the database connection.
         """
         self.connection.close()
-        print("Database connection closed.")
+        logger.debug("Database connection closed.")
 
     def __enter__(self):
         """
@@ -127,9 +136,9 @@ class DatabaseHandler:
                     completed_at DATETIME
                 )
             """)
-            print("Progression goals table created successfully")
+            logger.info("Progression goals table created successfully")
         except sqlite3.Error as e:
-            print(f"Error creating progression_goals table: {e}")
+            logger.error(f"Error creating progression_goals table: {e}", exc_info=True)
             raise e
 
 def initialize_database():
@@ -167,7 +176,7 @@ def initialize_database():
                 rir INTEGER DEFAULT 0,
                 rpe REAL,
                 weight REAL NOT NULL,
-                FOREIGN KEY (exercise) REFERENCES exercises(exercise_name)
+                FOREIGN KEY (exercise) REFERENCES exercises(exercise_name) ON DELETE CASCADE
             )
         """)
 
@@ -191,7 +200,7 @@ def initialize_database():
                 last_progression_date DATE,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 workout_plan_id INTEGER,
-                FOREIGN KEY (workout_plan_id) REFERENCES user_selection(id)
+                FOREIGN KEY (workout_plan_id) REFERENCES user_selection(id) ON DELETE CASCADE
             )
         """)
         
@@ -215,10 +224,10 @@ def add_rpe_column():
         for query in alter_queries:
             try:
                 db_handler.execute_query(query)
-                print(f"Added RPE column: {query}")
+                logger.info(f"Added RPE column: {query[:100]}...")
             except sqlite3.OperationalError as e:
                 if "duplicate column name" not in str(e).lower():
-                    print(f"Error adding RPE column: {e}")
+                    logger.error(f"Error adding RPE column: {e}", exc_info=True)
                     raise e
 
 def add_progression_goals_table():
@@ -249,7 +258,7 @@ def add_volume_tracking_tables():
             weekly_sets INTEGER NOT NULL,
             sets_per_session REAL NOT NULL,
             status TEXT NOT NULL,
-            FOREIGN KEY (plan_id) REFERENCES volume_plans (id)
+            FOREIGN KEY (plan_id) REFERENCES volume_plans (id) ON DELETE CASCADE
         )
     ''')
     

@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
+{% block title %}Workout Log - Hypertrophy Toolbox{% endblock %}
+
+{% block page_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/workout_log.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_frames.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid px-4">
     <div class="page-header text-center mb-4">
