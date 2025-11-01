@@ -1,28 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
+<main id="welcome" data-page="welcome">
 <div class="welcome-container">
     <!-- 1. Hero Section - Welcome to Hypertrophy Toolbox -->
-    <div class="hero-section text-center mb-5">
-        <h1 class="display-4">Welcome to Hypertrophy Toolbox</h1>
+    <section class="hero-section text-center mb-5" aria-labelledby="hero-heading">
+        <h1 id="hero-heading" class="display-4">Welcome to Hypertrophy Toolbox</h1>
         <p class="lead">Your intelligent companion for science-based muscle building</p>
-    </div>
+    </section>
 
     <!-- 2. Science Section -->
-    <div class="science-section mb-5">
-        <h2 class="text-center mb-4">The Science of Hypertrophy Made Simple</h2>
+    <section class="science-section mb-5" aria-labelledby="science-heading">
+        <h2 id="science-heading" class="text-center mb-4">The Science of Hypertrophy Made Simple</h2>
         <div class="developer-signature text-center">
-            <p>Developed, planned, designed By: <span class="developer-name">Yaakov Avihai Shai</span></p>
+            <p>Developed, planned, designed By: <span class="developer-name" tabindex="0" role="text">Yaakov Avihai Shai</span></p>
         </div>
         <!-- Science content here -->
-    </div>
+    </section>
 
     <!-- 3. Getting Started Guide -->
-    <div class="guide-container">
-        <div class="guide-header">
-            <h2>Getting Started Guide</h2>
+    <section class="guide-container" aria-labelledby="getting-started-heading">
+        <header class="guide-header">
+            <h2 id="getting-started-heading">Getting Started Guide</h2>
             <p>Follow our step-by-step process to create, track, and optimize your personalized workout routine</p>
-        </div>
+        </header>
         
         <!-- Volume Planning Section -->
         <div class="guide-section">
@@ -95,11 +96,11 @@
     </div>
 
     <!-- 4. How to Use Guide -->
-    <div class="guide-container">
-        <div class="guide-header">
-            <h2>How to Use Hypertrophy Toolbox</h2>
+    <section class="guide-container" aria-labelledby="how-to-use-heading">
+        <header class="guide-header">
+            <h2 id="how-to-use-heading">How to Use Hypertrophy Toolbox</h2>
             <p>Master your fitness journey with our comprehensive guide to building and tracking your perfect workout routine</p>
-        </div>
+        </header>
         
         <!-- Exercise Filtering Section -->
         <div class="guide-section">
@@ -177,7 +178,7 @@
     </div>
 
     <!-- 5. Features Grid -->
-    <div class="features-grid row g-4 mb-5">
+    <section class="features-grid row g-4 mb-5" aria-label="Feature highlights">
         <!-- Workout Planner -->
         <div class="col-md-6 col-lg-4">
             <div class="feature-card card h-100">
@@ -192,7 +193,7 @@
                         </ul>
                         Choose exercises based on muscle groups, equipment, and difficulty levels.
                     </p>
-                    <a href="{{ url_for('workout_plan.workout_plan') }}" class="btn btn-primary">Plan Your Workout</a>
+                    <a href="{{ url_for('workout_plan.workout_plan') }}" class="btn btn-primary" aria-label="Navigate to Workout Planner">Plan Your Workout</a>
                 </div>
             </div>
         </div>
@@ -206,7 +207,7 @@
                         Log your sets, reps, and weights to monitor growth over time.
                         Track your progressive overload and performance trends.
                     </p>
-                    <a href="{{ url_for('workout_log.workout_log') }}" class="btn btn-primary">Track Progress</a>
+                    <a href="{{ url_for('workout_log.workout_log') }}" class="btn btn-primary" aria-label="Navigate to Progress Tracker">Track Progress</a>
                 </div>
             </div>
         </div>
@@ -225,8 +226,8 @@
                         </ul>
                     </p>
                     <div class="btn-group">
-                        <a href="{{ url_for('weekly_summary.weekly_summary') }}" class="btn btn-primary">Weekly Summary</a>
-                        <a href="{{ url_for('session_summary.session_summary') }}" class="btn btn-primary">Session Summary</a>
+                        <a href="{{ url_for('weekly_summary.weekly_summary') }}" class="btn btn-primary" aria-label="Navigate to Weekly Summary">Weekly Summary</a>
+                        <a href="{{ url_for('session_summary.session_summary') }}" class="btn btn-primary" aria-label="Navigate to Session Summary">Session Summary</a>
                     </div>
                 </div>
             </div>
@@ -246,7 +247,7 @@
                             <li>Tertiary muscle groups</li>
                         </ul>
                     </p>
-                    <a href="{{ url_for('workout_plan.workout_plan') }}#exercise-library" class="btn btn-primary">Explore Exercises</a>
+                    <a href="{{ url_for('workout_plan.workout_plan') }}#exercise-library" class="btn btn-primary" aria-label="Navigate to Exercise Library">Explore Exercises</a>
                 </div>
             </div>
         </div>
@@ -264,7 +265,7 @@
                             <li>Recovery strategies</li>
                         </ul>
                     </p>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#insightsModal">Learn More</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#insightsModal" aria-label="Open Hypertrophy Insights modal">Learn More</button>
                 </div>
             </div>
         </div>
@@ -282,24 +283,26 @@
                             <li>Optimizing exercise selection</li>
                         </ul>
                     </p>
-                    <button class="btn btn-primary" id="ai-help-button">Get AI Help</button>
+                    <button class="btn btn-primary" id="ai-help-button" aria-label="Get AI Assistant help (feature under development)">Get AI Help</button>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Erase Data Section - Only available on welcome page -->
-    <div class="erase-data-section mt-5 text-center">
-        <div class="alert alert-warning mb-3" role="alert">
-            <i class="fas fa-exclamation-triangle me-2"></i>
+    <section class="erase-data-section mt-5 text-center" aria-labelledby="erase-data-heading">
+        <h2 id="erase-data-heading" class="visually-hidden">Data Management</h2>
+        <div class="alert alert-warning mb-3" role="alert" aria-live="polite">
+            <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
             Warning: This action cannot be undone
         </div>
-        <button id="eraseDataBtn" class="btn btn-danger btn-lg">
-            <i class="fas fa-trash-alt me-2"></i>
+        <button id="eraseDataBtn" class="btn btn-danger btn-lg" aria-describedby="erase-data-warning" aria-label="Erase all data and start from scratch">
+            <i class="fas fa-trash-alt me-2" aria-hidden="true"></i>
             Erase All Data, Start from Scratch
         </button>
-    </div>
+    </section>
 </div>
+</main>
 
 <!-- Keep the modals at the end -->
 <!-- Insights Modal -->

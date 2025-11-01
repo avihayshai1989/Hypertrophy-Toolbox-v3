@@ -33,6 +33,8 @@
 @import "workout_log.css";
 @import "volume_indicators.css";
 @import "styles_progression.css";
+@import "styles_workout_plan.css";
+@import "styles_workout_dropdowns.css";
 
 /* Add this import at the end of the file */
 @import "styles_dark_mode.css";
@@ -71,4 +73,13 @@
 
 .form-label {
     margin-bottom: 0.5rem;
+}
+
+/* Instant theme switch (2025) - completely instant, no transitions during change */
+html.theme-animating,
+html.theme-animating *,
+html.theme-animating *::before,
+html.theme-animating *::after {
+    transition: none !important;
+    animation: none !important;
 }

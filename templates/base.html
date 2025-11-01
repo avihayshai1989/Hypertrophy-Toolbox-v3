@@ -20,7 +20,7 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <header id="navbar" data-component="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Main navigation">
         <div class="container-fluid">
             <!-- Updated Brand with Icon -->
             <a class="navbar-brand nav-link" 
@@ -30,35 +30,39 @@
                aria-current="page">
                <span class="navbar-brand-content">
                    <img src="{{ url_for('static', filename='images/icons8-bench-press.gif') }}"
-                        alt="Bench Press Icon"
+                        alt=""
                         class="navbar-brand-icon"
-                        aria-hidden="true">
-                   Hypertrophy Toolbox
+                        aria-hidden="true"
+                        width="24"
+                        height="24">
+                   <span>Hypertrophy Toolbox</span>
                </span>
             </a>
 
             <!-- Toggler for Responsive Navbar -->
             <button 
-                class="navbar-toggler" 
+                class="navbar-toggler nb-menu-btn" 
                 type="button" 
                 data-bs-toggle="collapse" 
                 data-bs-target="#navbarNav" 
                 aria-controls="navbarNav" 
                 aria-expanded="false" 
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                aria-label="Toggle navigation menu">
+                <span class="navbar-toggler-icon" aria-hidden="true"></span>
             </button>
 
             <!-- Navbar Links -->
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <nav class="collapse navbar-collapse" id="navbarNav" aria-label="Primary navigation">
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link nav-link-with-icon" id="nav-workout-plan" href="/workout_plan">
                             <img src="{{ url_for('static', filename='images/icons8-to-do.gif') }}"
                                  alt=""
                                  class="nav-icon"
-                                 aria-hidden="true">
-                            Workout Plan
+                                 aria-hidden="true"
+                                 width="20"
+                                 height="20">
+                            <span>Workout Plan</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -66,8 +70,10 @@
                             <img src="{{ url_for('static', filename='images/7-days.gif') }}"
                                  alt=""
                                  class="nav-icon"
-                                 aria-hidden="true">
-                            Weekly Summary
+                                 aria-hidden="true"
+                                 width="20"
+                                 height="20">
+                            <span>Weekly Summary</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -75,8 +81,10 @@
                             <img src="{{ url_for('static', filename='images/icons8-session-50.png') }}"
                                  alt=""
                                  class="nav-icon"
-                                 aria-hidden="true">
-                            Session Summary
+                                 aria-hidden="true"
+                                 width="20"
+                                 height="20">
+                            <span>Session Summary</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -84,8 +92,10 @@
                             <img src="{{ url_for('static', filename='images/notebook.gif') }}"
                                  alt=""
                                  class="nav-icon"
-                                 aria-hidden="true">
-                            Workout Log
+                                 aria-hidden="true"
+                                 width="20"
+                                 height="20">
+                            <span>Workout Log</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -93,8 +103,10 @@
                             <img src="{{ url_for('static', filename='images/icons8-growth.gif') }}"
                                  alt=""
                                  class="nav-icon"
-                                 aria-hidden="true">
-                            Progression Plan
+                                 aria-hidden="true"
+                                 width="20"
+                                 height="20">
+                            <span>Progression Plan</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -102,22 +114,24 @@
                             <img src="{{ url_for('static', filename='images/dividers.gif') }}"
                                  alt=""
                                  class="nav-icon"
-                                 aria-hidden="true">
-                            Volume Splitter
+                                 aria-hidden="true"
+                                 width="20"
+                                 height="20">
+                            <span>Volume Splitter</span>
                         </a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <button id="darkModeToggle" class="nav-link" type="button" aria-label="Toggle Dark Mode">
-                            <i class="fas fa-moon text-primary"></i>
+                            <i class="fas fa-moon text-primary" aria-hidden="true"></i>
                             <span class="d-none d-lg-inline ms-1 text-primary">Dark Mode</span>
                         </button>
                     </li>
                 </ul>
-            </div>
+            </nav>
         </div>
-    </nav>
+    </header>
 
     <!-- Main Content Area -->
     <div class="container-fluid mt-4">
@@ -167,10 +181,6 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module">
-        import { initializeNavbar } from "{{ url_for('static', filename='js/modules/navbar.js') }}";
-        initializeNavbar();
-    </script>
     <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
     <script src="{{ url_for('static', filename='js/darkMode.js') }}"></script>
 </body>

@@ -552,6 +552,7 @@
 } 
 
 /* Dark mode for input fields group */
+/* Keep original dark mode for other pages - Workout Plan overrides this */
 [data-theme='dark'] .input-fields-group {
     background-color: #212529;
 }

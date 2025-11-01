@@ -23,8 +23,10 @@ import {
 } from './modules/workout-log.js';
 import { initializeNavHighlighting } from './modules/navbar.js';
 import { initializeNavbar } from './modules/navbar.js';
+import { initializeNavbarEnhancements } from './modules/navbar-enhancements.js';
 import { initializeProgressionPlan } from './modules/progression-plan.js';
 import { initializeVolumeSplitter } from './modules/volume-splitter.js';
+import { initializeWorkoutDropdowns } from './modules/workout-dropdowns.js';
 
 // Make certain functions globally available
 window.addExercise = addExercise;
@@ -45,6 +47,10 @@ window.handleDateChange = handleDateChange;
 
 // Initialize navbar
 initializeNavbar();
+initializeNavbarEnhancements();
+
+// Initialize workout plan dropdowns
+initializeWorkoutDropdowns();
 
 // Page initializer functions
 function initializeHomePage() {

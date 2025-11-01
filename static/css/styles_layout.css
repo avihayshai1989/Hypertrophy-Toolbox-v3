@@ -4,10 +4,12 @@ body {
     display: flex;
     flex-direction: column;
     overflow-x: hidden;  /* Prevent horizontal scroll */
+    overflow-y: auto;
 }
 
-/* Navbar container */
-.navbar {
+/* Navbar container - Only apply if NOT inside #navbar */
+body:not(:has(#navbar)) .navbar,
+.navbar:not(#navbar) {
     flex-shrink: 0;
     width: 100%;
     position: fixed;

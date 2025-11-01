@@ -1,5 +1,8 @@
 import { showToast } from './toast.js';
 
+// Debounce timer for filtering
+let filterDebounceTimer = null;
+
 export async function filterExercises() {
     try {
         const filters = {};
@@ -14,8 +17,16 @@ export async function filterExercises() {
 
         console.log("DEBUG: Collected filters:", filters);
 
+        // If no filters are selected, reload all exercises
         if (Object.keys(filters).length === 0) {
-            showToast("Please select at least one filter", true);
+            const response = await fetch("/get_all_exercises");
+            if (response.ok) {
+                const data = await response.json();
+                if (exerciseDropdown && Array.isArray(data)) {
+                    updateExerciseDropdown(data);
+                    showToast(`Showing all ${data.length} exercises`);
+                }
+            }
             return;
         }
 
@@ -31,31 +42,53 @@ export async function filterExercises() {
         }
 
         updateExerciseDropdown(data);
-        showToast(`Found ${data.length} matching exercises`);
+        showToast(`Found ${data.length} matching exercise${data.length !== 1 ? 's' : ''}`);
     } catch (error) {
         console.error("Error filtering exercises:", error);
         showToast("Failed to filter exercises", true);
     }
 }
 
-export function initializeFilters() {
-    // Add filter button click handler
-    const filterBtn = document.getElementById("filter-btn");
-    if (filterBtn) {
-        filterBtn.addEventListener("click", filterExercises);
+// Debounced version of filterExercises to avoid too many API calls
+function debouncedFilterExercises() {
+    // Clear existing timer
+    if (filterDebounceTimer) {
+        clearTimeout(filterDebounceTimer);
     }
+    
+    // Set new timer (300ms debounce)
+    filterDebounceTimer = setTimeout(() => {
+        filterExercises();
+    }, 300);
+}
 
-    // Add interaction effects for filter dropdowns
-    document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
-        dropdown.addEventListener('change', function() {
-            if (this.value) {
-                this.style.backgroundColor = '#fff';
-                filterExercises();
-            } else {
-                this.style.backgroundColor = '#e3f2fd';
+export function initializeFilters() {
+    // Add auto-filtering on change for all filter dropdowns
+    // Use event delegation to catch changes from both native selects and enhanced dropdowns
+    const workoutContainer = document.getElementById('workout');
+    if (workoutContainer) {
+        workoutContainer.addEventListener('change', function(event) {
+            const select = event.target;
+            
+            // Only process filter dropdowns (not exercise dropdown or routine dropdown)
+            // Check if it's a select element in the filters form
+            if (select.tagName === 'SELECT' && 
+                select.closest('#filters-form') && 
+                select.classList.contains('filter-dropdown') &&
+                select.id !== 'exercise') {
+                
+                // Update visual feedback
+                if (select.value) {
+                    select.style.backgroundColor = '#fff';
+                } else {
+                    select.style.backgroundColor = '#e3f2fd';
+                }
+                
+                // Auto-filter with debounce
+                debouncedFilterExercises();
             }
         });
-    });
+    }
 
     // Add clear filters button event listener
     const clearFiltersBtn = document.getElementById('clear-filters-btn');
@@ -68,33 +101,68 @@ export function initializeFilters() {
     if (filterForm) {
         filterForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            // Clear debounce and filter immediately
+            if (filterDebounceTimer) {
+                clearTimeout(filterDebounceTimer);
+            }
             filterExercises();
         });
     }
-
-    // Initialize live search
-    initializeLiveSearch();
 }
 
-function clearFilters() {
-    // Get all filter dropdowns
-    const filterDropdowns = document.querySelectorAll('.filter-dropdown');
+async function clearFilters() {
+    // Get all select dropdowns in the filters form
+    const allSelects = document.querySelectorAll('#filters-form select');
     
-    // Reset each dropdown to default value
-    filterDropdowns.forEach(dropdown => {
-        dropdown.value = '';
+    // Reset each dropdown to empty/default value and trigger change event
+    allSelects.forEach(select => {
+        select.value = '';
+        // Manually dispatch change event to ensure enhanced dropdowns update
+        select.dispatchEvent(new Event('change', { bubbles: true }));
     });
     
     // Reset routine dropdown if it exists
     const routineDropdown = document.getElementById('routine');
     if (routineDropdown) {
         routineDropdown.value = '';
+        routineDropdown.dispatchEvent(new Event('change', { bubbles: true }));
     }
     
     // Reset exercise dropdown if it exists
     const exerciseDropdown = document.getElementById('exercise');
     if (exerciseDropdown) {
         exerciseDropdown.value = '';
+        exerciseDropdown.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    
+    // Reload all exercises in the exercise dropdown
+    try {
+        const response = await fetch("/get_all_exercises");
+        if (response.ok) {
+            const data = await response.json();
+            if (exerciseDropdown && Array.isArray(data)) {
+                // Clear existing options
+                exerciseDropdown.innerHTML = '<option value="">Select Exercise</option>';
+                
+                // Add all exercises
+                data.forEach(exercise => {
+                    if (exercise) {
+                        const option = document.createElement("option");
+                        option.value = exercise;
+                        option.textContent = exercise;
+                        exerciseDropdown.appendChild(option);
+                    }
+                });
+                
+                // Remove filter-applied class if it exists
+                exerciseDropdown.classList.remove('filter-applied', 'filtered');
+                
+                // Trigger rebuild event for enhanced dropdown
+                exerciseDropdown.dispatchEvent(new CustomEvent('wpdd-rebuild', { bubbles: true }));
+            }
+        }
+    } catch (error) {
+        console.error("Error reloading exercises:", error);
     }
     
     // Show success toast notification
@@ -113,6 +181,14 @@ function updateExerciseDropdown(exercises) {
         option.textContent = exercise;
         exerciseDropdown.appendChild(option);
     });
+
+    // Trigger rebuild of enhanced dropdown if it exists
+    const enhancedContainer = exerciseDropdown.closest('.wpdd');
+    if (enhancedContainer) {
+        // Dispatch a custom event to trigger rebuild
+        const rebuildEvent = new CustomEvent('wpdd-rebuild', { bubbles: true });
+        exerciseDropdown.dispatchEvent(rebuildEvent);
+    }
 
     // Add glow effect
     exerciseDropdown.classList.add('filter-applied');
@@ -172,48 +248,3 @@ export function initializeFilterKeyboardEvents() {
         });
     });
 }
-
-export function initializeLiveSearch() {
-    const searchInput = document.getElementById('exercise-search');
-    const exerciseDropdown = document.getElementById('exercise');
-    
-    if (!searchInput || !exerciseDropdown) return;
-
-    // Store original options for filtering
-    const originalOptions = Array.from(exerciseDropdown.options).slice(1); // Skip first "Select Exercise" option
-    
-    // Add debounce to avoid showing toast too frequently
-    let debounceTimer;
-    
-    searchInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        
-        // Reset dropdown to only include the first "Select Exercise" option
-        exerciseDropdown.innerHTML = exerciseDropdown.options[0].outerHTML;
-        
-        // Filter and add matching options
-        const matchingOptions = originalOptions.filter(option => 
-            option.text.toLowerCase().includes(searchTerm)
-        );
-        
-        matchingOptions.forEach(option => {
-            exerciseDropdown.appendChild(option.cloneNode(true));
-        });
-        
-        // Visual feedback
-        exerciseDropdown.classList.add('filtered');
-        setTimeout(() => exerciseDropdown.classList.remove('filtered'), 300);
-
-        // Clear previous timer
-        clearTimeout(debounceTimer);
-        
-        // Set new timer to show toast after user stops typing (500ms delay)
-        debounceTimer = setTimeout(() => {
-            const matchCount = matchingOptions.length;
-            const message = searchTerm 
-                ? `Found ${matchCount} matching exercise${matchCount !== 1 ? 's' : ''}`
-                : `Showing all ${originalOptions.length} exercises`;
-            showToast(message, false);
-        }, 500);
-    });
-} 

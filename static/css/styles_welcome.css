@@ -1,337 +1,764 @@
-/* Base Welcome Page Styles */
-.welcome-container {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 2rem;
+/* ==========================================================================
+   Welcome Screen - Modern 2025 Refresh
+   Scoped to #welcome wrapper, using CSS cascade layers
+   ========================================================================== */
+
+@layer welcome {
+  /* ========================================================================
+     CSS Custom Properties (Welcome-scoped tokens)
+     ======================================================================== */
+  :root {
+    /* Typography */
+    --welcome-font-sans: ui-sans-serif, system-ui, "Inter", "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+    --fs-display: clamp(2rem, 2.5vw + 1rem, 3.5rem);
+    --fs-lead: clamp(1.125rem, 0.6vw + 1rem, 1.5rem);
+    --fs-h2: clamp(1.75rem, 2vw + 0.75rem, 2.5rem);
+    --fs-h3: clamp(1.375rem, 1.5vw + 0.5rem, 1.875rem);
+    --fs-h4: clamp(1.125rem, 1vw + 0.5rem, 1.5rem);
+    --fs-body: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+    --fs-small: clamp(0.875rem, 0.4vw + 0.75rem, 1rem);
+    
+    /* Colors - Light Mode (WCAG AA+ compliant) */
+    --welcome-bg: #ffffff;
+    --welcome-surface: #f8f9fa;
+    --welcome-surface-elevated: #ffffff;
+    --welcome-text: #1a1d29;
+    --welcome-text-muted: #6b7280;
+    --welcome-accent: #4f8cff;
+    --welcome-accent-hover: #3c6ed1;
+    --welcome-accent-press: #2e5aa3;
+    --welcome-border: #e5e7eb;
+    --welcome-border-subtle: #f3f4f6;
+    --welcome-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --welcome-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --welcome-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --welcome-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* Spacing (8px/4px scale) */
+    --welcome-space-xs: 0.25rem;   /* 4px */
+    --welcome-space-sm: 0.5rem;    /* 8px */
+    --welcome-space-md: 1rem;      /* 16px */
+    --welcome-space-lg: 1.5rem;    /* 24px */
+    --welcome-space-xl: 2rem;      /* 32px */
+    --welcome-space-2xl: 3rem;    /* 48px */
+    --welcome-space-3xl: 4rem;     /* 64px */
+    
+    /* Border Radius */
+    --welcome-radius-sm: 0.375rem;  /* 6px */
+    --welcome-radius-md: 0.5rem;    /* 8px */
+    --welcome-radius-lg: 0.75rem;   /* 12px */
+    --welcome-radius-xl: 1rem;      /* 16px */
+    --welcome-radius-2xl: 1.5rem;   /* 24px */
+    
+    /* Transitions */
+    --welcome-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --welcome-transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --welcome-transition-slow: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Container */
+    --welcome-container-max-width: min(90%, 72rem); /* ~1152px */
+    --welcome-container-max-width-narrow: min(90%, 45rem); /* ~720px */
+  }
+  
+  /* Dark Mode Overrides */
+  [data-theme='dark'] {
+    --welcome-bg: #0b0d12;
+    --welcome-surface: #121620;
+    --welcome-surface-elevated: #1a1d29;
+    --welcome-text: #e9eef7;
+    --welcome-text-muted: #a8b2c1;
+    --welcome-accent: #4f8cff;
+    --welcome-accent-hover: #6ba3ff;
+    --welcome-accent-press: #3c6ed1;
+    --welcome-border: #2a2f3d;
+    --welcome-border-subtle: #1f2330;
+    --welcome-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --welcome-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --welcome-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    --welcome-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --welcome-transition-fast: 0ms;
+      --welcome-transition-base: 0ms;
+      --welcome-transition-slow: 0ms;
+    }
+  }
+  
+  /* ========================================================================
+     Base Container & Typography
+     ======================================================================== */
+  #welcome {
+    font-family: var(--welcome-font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--welcome-text);
+    background-color: var(--welcome-bg);
+    min-height: 100vh;
+    width: 100%;
+  }
+  
+  #welcome .welcome-container {
+    max-width: var(--welcome-container-max-width);
+    margin-inline: auto;
+    padding-inline: var(--welcome-space-xl);
+    padding-block: var(--welcome-space-2xl);
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    min-height: 80vh;
-    text-align: center;
-}
-
-/* Responsive Typography */
-.welcome-container h1 {
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin-bottom: 1.5rem;
-    color: #2c3e50;
-}
-
-.welcome-container p {
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    max-width: 80ch;
-    margin: 0 auto;
-}
-
-/* Hero Section */
-.hero-section {
-    background: linear-gradient(45deg, #2c3e50, #3498db);
-    color: white;
-    padding: clamp(2rem, 5vw, 4rem);
-    border-radius: 1rem;
-    margin-bottom: 3rem;
-    width: clamp(300px, 90%, 1200px);
-}
-
-/* Responsive Breakpoints */
-@media (min-width: 1440px) {
-    .welcome-container {
-        padding: 3rem;
-    }
-    
-    .hero-section {
-        padding: 3rem 4rem;
-    }
-}
-
-@media (min-width: 2560px) {
-    .welcome-container {
-        padding: 4rem;
-    }
-    
-    .hero-section {
-        padding: 4rem 5rem;
-    }
-}
-
-/* Enhanced Guide Section Styling */
-.guide-container {
-    background: linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(249,250,251,0.9) 100%);
-    border-radius: 20px;
-    padding: 3rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    margin: 4rem auto;
+    gap: var(--welcome-space-3xl);
+  }
+  
+  /* Typography */
+  #welcome h1 {
+    font-size: var(--fs-display);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--welcome-text);
+    margin-block-end: var(--welcome-space-lg);
+  }
+  
+  #welcome h2 {
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--welcome-text);
+    margin-block-end: var(--welcome-space-md);
+  }
+  
+  #welcome h3 {
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--welcome-text);
+    margin-block-end: var(--welcome-space-md);
+  }
+  
+  #welcome h4 {
+    font-size: var(--fs-h4);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--welcome-text);
+    margin-block-end: var(--welcome-space-sm);
+  }
+  
+  #welcome p {
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--welcome-text-muted);
+    max-width: 72ch;
+  }
+  
+  #welcome .lead {
+    font-size: var(--fs-lead);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--welcome-text-muted);
+  }
+  
+  /* ========================================================================
+     Hero Section
+     ======================================================================== */
+  #welcome .hero-section {
+    background: linear-gradient(135deg, var(--welcome-accent) 0%, var(--welcome-accent-hover) 100%);
+    color: #ffffff;
+    padding: var(--welcome-space-3xl) var(--welcome-space-2xl);
+    border-radius: var(--welcome-radius-2xl);
+    margin-block-end: var(--welcome-space-2xl);
+    width: 100%;
     position: relative;
     overflow: hidden;
-    width: clamp(300px, 90%, 1400px);
-    align-self: stretch;
-}
-
-.guide-container::before {
+    box-shadow: var(--welcome-shadow-xl);
+  }
+  
+  #welcome .hero-section::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #3498db, #2c3e50);
-}
-
-.guide-header {
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  
+  #welcome .hero-section h1 {
+    color: #ffffff;
+    margin-block-end: var(--welcome-space-md);
+    position: relative;
+    z-index: 1;
+  }
+  
+  #welcome .hero-section .lead {
+    color: rgba(255, 255, 255, 0.95);
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* ========================================================================
+     Science Section
+     ======================================================================== */
+  #welcome .science-section {
     text-align: center;
-    margin-bottom: 3rem;
-    position: relative;
-}
-
-.guide-header h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #2c3e50;
-    margin-bottom: 1rem;
-    letter-spacing: -0.5px;
-}
-
-.guide-header p {
-    font-size: 1.1rem;
-    color: #6c757d;
-    max-width: 700px;
-    margin: 0 auto;
-    line-height: 1.6;
-}
-
-.guide-section {
-    margin-bottom: 3.5rem;
-    position: relative;
-    width: 100%;
-}
-
-.section-title {
-    font-size: 1.8rem;
-    color: #2c3e50;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid #e9ecef;
-    position: relative;
-}
-
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 60px;
-    height: 2px;
-    background: #3498db;
-}
-
-.guide-card {
-    width: 100%;
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 2rem;
-    height: 100%;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid #e9ecef;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-.guide-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-}
-
-.guide-card h4 {
-    color: #2c3e50;
-    font-size: 1.4rem;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-    position: relative;
-    padding-bottom: 0.5rem;
-}
-
-.guide-card h4::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 40px;
-    height: 3px;
-    background: #3498db;
-    border-radius: 2px;
-}
-
-/* Dark mode support */
-[data-theme='dark'] .guide-container {
-    background: linear-gradient(145deg, rgba(33,37,41,0.9) 0%, rgba(42,48,56,0.9) 100%);
-}
-
-[data-theme='dark'] .guide-header h2 {
-    color: #fff;
-}
-
-[data-theme='dark'] .guide-header p {
-    color: #adb5bd;
-}
-
-[data-theme='dark'] .section-title {
-    color: #fff;
-    border-bottom-color: #495057;
-}
-
-[data-theme='dark'] .guide-card {
-    background: #343a40;
-    border-color: #495057;
-}
-
-[data-theme='dark'] .guide-card h4 {
-    color: #fff;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .welcome-container {
-        padding: 1rem;
-    }
-
-    .guide-container {
-        padding: 1.5rem;
-        width: 95%;
-    }
-    
-    .guide-section .row {
-        margin: 0 -0.5rem;
-        width: calc(100% + 1rem);
-    }
-    
-    .guide-section .col-md-6,
-    .guide-section .col-lg-4 {
-        padding: 0 0.5rem;
-    }
-}
-
-/* Developer Signature Styling */
-.developer-signature {
-    margin-top: 1.5rem;
-    margin-bottom: 2rem;
-    font-family: 'Inter', Arial, sans-serif;
-    color: #6c757d;  /* Subtle gray color */
-    font-size: 0.95rem;
-    letter-spacing: 0.5px;
-    opacity: 0.9;
-    transition: opacity 0.3s ease;
-}
-
-.developer-signature:hover {
+    margin-block-end: var(--welcome-space-2xl);
+    padding: var(--welcome-space-xl);
+    background: var(--welcome-surface);
+    border-radius: var(--welcome-radius-xl);
+    border: 1px solid var(--welcome-border-subtle);
+  }
+  
+  #welcome .science-section h2 {
+    margin-block-end: var(--welcome-space-lg);
+  }
+  
+  /* ========================================================================
+     Developer Signature
+     ======================================================================== */
+  #welcome .developer-signature {
+    margin-block-start: var(--welcome-space-lg);
+    margin-block-end: var(--welcome-space-xl);
+    font-size: var(--fs-small);
+    color: var(--welcome-text-muted);
+    letter-spacing: 0.025em;
+    transition: opacity var(--welcome-transition-base);
+  }
+  
+  #welcome .developer-signature:hover {
     opacity: 1;
-}
-
-.developer-signature .developer-name {
-    color: #2196f3;  /* Accent blue color */
+  }
+  
+  #welcome .developer-signature .developer-name {
+    color: var(--welcome-accent);
     font-weight: 600;
     position: relative;
     display: inline-block;
-}
-
-/* Subtle underline animation on hover */
-.developer-signature .developer-name::after {
+    text-decoration: none;
+  }
+  
+  #welcome .developer-signature .developer-name::after {
     content: '';
     position: absolute;
     width: 0;
     height: 2px;
     bottom: -2px;
     left: 0;
-    background-color: #2196f3;
-    transition: width 0.3s ease;
-}
-
-.developer-signature:hover .developer-name::after {
+    background-color: var(--welcome-accent);
+    transition: width var(--welcome-transition-base);
+  }
+  
+  #welcome .developer-signature:hover .developer-name::after {
     width: 100%;
-}
-
-/* Dark mode support */
-[data-theme='dark'] .developer-signature {
-    color: #adb5bd;
-}
-
-[data-theme='dark'] .developer-signature .developer-name {
-    color: #90caf9;
-}
-
-[data-theme='dark'] .developer-signature .developer-name::after {
-    background-color: #90caf9;
-}
-
-/* Adjust card grid layout */
-.guide-section .row {
-    margin: 0 -1rem;
-    width: calc(100% + 2rem);
+  }
+  
+  /* Focus state for accessibility */
+  #welcome .developer-signature .developer-name:focus-visible {
+    outline: 2px solid var(--welcome-accent);
+    outline-offset: 2px;
+    border-radius: var(--welcome-radius-sm);
+  }
+  
+  /* ========================================================================
+     Guide Container & Sections
+     ======================================================================== */
+  #welcome .guide-container {
+    background: var(--welcome-surface-elevated);
+    border-radius: var(--welcome-radius-2xl);
+    padding: var(--welcome-space-2xl);
+    box-shadow: var(--welcome-shadow-md);
+    margin-block: var(--welcome-space-2xl);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    border: 1px solid var(--welcome-border-subtle);
+  }
+  
+  #welcome .guide-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--welcome-accent), var(--welcome-accent-hover));
+  }
+  
+  #welcome .guide-header {
+    text-align: center;
+    margin-block-end: var(--welcome-space-2xl);
+    position: relative;
+  }
+  
+  #welcome .guide-header h2 {
+    margin-block-end: var(--welcome-space-md);
+  }
+  
+  #welcome .guide-header p {
+    max-width: 45rem;
+    margin-inline: auto;
+  }
+  
+  #welcome .guide-section {
+    margin-block-end: var(--welcome-space-2xl);
+    position: relative;
+    width: 100%;
+  }
+  
+  #welcome .guide-section:last-child {
+    margin-block-end: 0;
+  }
+  
+  #welcome .section-title {
+    font-size: var(--fs-h3);
+    color: var(--welcome-text);
+    margin-block-end: var(--welcome-space-xl);
+    padding-block-end: var(--welcome-space-md);
+    border-block-end: 2px solid var(--welcome-border);
+    position: relative;
+  }
+  
+  #welcome .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 4rem;
+    height: 2px;
+    background: var(--welcome-accent);
+    border-radius: var(--welcome-radius-sm);
+  }
+  
+  /* ========================================================================
+     Guide Cards
+     ======================================================================== */
+  #welcome .guide-card {
+    width: 100%;
+    background: var(--welcome-surface-elevated);
+    border-radius: var(--welcome-radius-lg);
+    padding: var(--welcome-space-xl);
+    height: 100%;
+    transition: transform var(--welcome-transition-base), box-shadow var(--welcome-transition-base), border-color var(--welcome-transition-base);
+    border: 1px solid var(--welcome-border);
+    box-shadow: var(--welcome-shadow-sm);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    #welcome .guide-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--welcome-shadow-lg);
+      border-color: var(--welcome-accent);
+    }
+  }
+  
+  #welcome .guide-card:focus-within {
+    outline: 2px solid var(--welcome-accent);
+    outline-offset: 2px;
+  }
+  
+  #welcome .guide-card h4 {
+    margin-block-end: var(--welcome-space-md);
+    padding-block-end: var(--welcome-space-sm);
+    position: relative;
+  }
+  
+  #welcome .guide-card h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 2.5rem;
+    height: 3px;
+    background: var(--welcome-accent);
+    border-radius: var(--welcome-radius-sm);
+  }
+  
+  #welcome .guide-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--welcome-space-md);
+    flex-grow: 1;
+  }
+  
+  #welcome .guide-list li {
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--welcome-text-muted);
+    padding-inline-start: var(--welcome-space-lg);
+    position: relative;
+  }
+  
+  #welcome .guide-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--welcome-accent);
+    font-weight: 600;
+  }
+  
+  #welcome .guide-list strong {
+    color: var(--welcome-text);
+    font-weight: 600;
+  }
+  
+  /* ========================================================================
+     Features Grid
+     ======================================================================== */
+  #welcome .features-grid {
+    margin-block-end: var(--welcome-space-2xl);
+    width: 100%;
+  }
+  
+  #welcome .feature-card {
+    transition: transform var(--welcome-transition-base), box-shadow var(--welcome-transition-base);
+    border: 1px solid var(--welcome-border);
+    box-shadow: var(--welcome-shadow-sm);
+    height: 100%;
+    border-radius: var(--welcome-radius-lg);
+    overflow: hidden;
+    background: var(--welcome-surface-elevated);
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    #welcome .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--welcome-shadow-lg);
+    }
+  }
+  
+  #welcome .feature-card:focus-within {
+    outline: 2px solid var(--welcome-accent);
+    outline-offset: 2px;
+  }
+  
+  #welcome .feature-card .card-body {
+    padding: var(--welcome-space-xl);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  #welcome .feature-card .card-title {
+    color: var(--welcome-text);
+    font-weight: 600;
+    font-size: var(--fs-h4);
+    margin-block-end: var(--welcome-space-md);
+  }
+  
+  #welcome .feature-card .card-text {
+    color: var(--welcome-text-muted);
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    flex-grow: 1;
+    margin-block-end: var(--welcome-space-lg);
+  }
+  
+  #welcome .feature-card ul {
+    padding-inline-start: var(--welcome-space-lg);
+    margin: var(--welcome-space-sm) 0;
+    list-style-type: disc;
+  }
+  
+  #welcome .feature-card li {
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    margin-block-end: var(--welcome-space-sm);
+    color: var(--welcome-text-muted);
+  }
+  
+  /* Button styling within feature cards */
+  #welcome .feature-card .btn {
+    min-height: 44px; /* Accessibility: minimum touch target */
+    padding: var(--welcome-space-sm) var(--welcome-space-lg);
+    font-weight: 500;
+    border-radius: var(--welcome-radius-md);
+    transition: background-color var(--welcome-transition-fast), transform var(--welcome-transition-fast);
+    align-self: flex-start;
+    margin-block-start: auto;
+  }
+  
+  #welcome .feature-card .btn:focus-visible {
+    outline: 2px solid var(--welcome-accent);
+    outline-offset: 2px;
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    #welcome .feature-card .btn:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  #welcome .feature-card .btn-group {
     display: flex;
     flex-wrap: wrap;
-}
-
-.guide-section .col-md-6,
-.guide-section .col-lg-4 {
-    padding: 0 1rem;
-    display: flex;
-}
-
-/* Ensure consistent width with hero section */
-.hero-section,
-.guide-container,
-.features-grid {
-    width: clamp(300px, 90%, 1400px);
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Erase Data Section */
-.erase-data-section {
-    margin-top: 4rem;
-    padding: 2rem;
-    border-top: 1px solid #dee2e6;
-    display: none;  /* Hidden by default */
-}
-
-/* Only show on welcome page */
-body:has(.welcome-container) .erase-data-section {
-    display: block;
-}
-
-/* Modal Styling */
-#eraseDataModal .modal-header {
+    gap: var(--welcome-space-sm);
+    margin-block-start: auto;
+  }
+  
+  /* ========================================================================
+     Erase Data Section
+     ======================================================================== */
+  #welcome .erase-data-section {
+    margin-block-start: var(--welcome-space-3xl);
+    padding: var(--welcome-space-xl);
+    border-block-start: 1px solid var(--welcome-border);
+    text-align: center;
+  }
+  
+  #welcome .erase-data-section .alert {
+    margin-block-end: var(--welcome-space-lg);
+    border-radius: var(--welcome-radius-md);
+    border: 1px solid var(--welcome-border);
+  }
+  
+  #welcome .erase-data-section #eraseDataBtn {
+    min-height: 44px;
+    padding: var(--welcome-space-md) var(--welcome-space-xl);
+    font-weight: 500;
+    border-radius: var(--welcome-radius-md);
+    transition: background-color var(--welcome-transition-fast), transform var(--welcome-transition-fast);
+  }
+  
+  #welcome .erase-data-section #eraseDataBtn:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    #welcome .erase-data-section #eraseDataBtn:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  /* ========================================================================
+     Modal Enhancements (Welcome-scoped)
+     ======================================================================== */
+  #welcome ~ #eraseDataModal .modal-header {
     background-color: #dc3545;
     color: white;
-}
-
-#eraseDataModal .modal-body {
-    padding: 1.5rem;
-}
-
-#eraseDataModal .alert {
-    margin-bottom: 0;
-}
-
-#eraseDataModal .alert ul {
-    margin-top: 0.5rem;
-    padding-left: 1.2rem;
-}
-
-/* Dark mode support */
-[data-theme='dark'] .erase-data-section {
-    border-top-color: #495057;
-}
-
-[data-theme='dark'] #eraseDataModal .modal-content {
-    background-color: #343a40;
-    color: #fff;
-}
-
-[data-theme='dark'] #eraseDataModal .modal-footer {
-    border-top-color: #495057;
-}
-
-[data-theme='dark'] #eraseDataModal .alert-warning {
+    border-radius: var(--welcome-radius-md) var(--welcome-radius-md) 0 0;
+  }
+  
+  #welcome ~ #eraseDataModal .modal-content {
+    border-radius: var(--welcome-radius-lg);
+    border: none;
+    box-shadow: var(--welcome-shadow-xl);
+  }
+  
+  #welcome ~ #eraseDataModal .modal-body {
+    padding: var(--welcome-space-xl);
+  }
+  
+  #welcome ~ #eraseDataModal .alert {
+    margin-block-end: 0;
+    border-radius: var(--welcome-radius-md);
+  }
+  
+  #welcome ~ #eraseDataModal .alert ul {
+    margin-block-start: var(--welcome-space-sm);
+    padding-inline-start: var(--welcome-space-xl);
+  }
+  
+  /* ========================================================================
+     Responsive Design
+     ======================================================================== */
+  @media (max-width: 768px) {
+    #welcome .welcome-container {
+      padding-inline: var(--welcome-space-md);
+      padding-block: var(--welcome-space-xl);
+      gap: var(--welcome-space-2xl);
+    }
+    
+    #welcome .hero-section {
+      padding: var(--welcome-space-xl) var(--welcome-space-lg);
+      border-radius: var(--welcome-radius-xl);
+    }
+    
+    #welcome .guide-container {
+      padding: var(--welcome-space-lg);
+      border-radius: var(--welcome-radius-xl);
+    }
+    
+    #welcome .guide-section .row {
+      margin-inline: calc(var(--welcome-space-sm) * -1);
+      width: calc(100% + var(--welcome-space-md));
+    }
+    
+    #welcome .guide-section .col-md-6,
+    #welcome .guide-section .col-lg-4 {
+      padding-inline: var(--welcome-space-sm);
+    }
+    
+    #welcome .feature-card .btn-group {
+      flex-direction: column;
+    }
+    
+    #welcome .feature-card .btn-group .btn {
+      width: 100%;
+    }
+  }
+  
+  @media (min-width: 1440px) {
+    #welcome .welcome-container {
+      padding-inline: var(--welcome-space-2xl);
+      padding-block: var(--welcome-space-3xl);
+    }
+    
+    #welcome .hero-section {
+      padding: var(--welcome-space-3xl) var(--welcome-space-2xl);
+    }
+  }
+  
+  @media (min-width: 2560px) {
+    #welcome .welcome-container {
+      padding-inline: var(--welcome-space-3xl);
+      padding-block: calc(var(--welcome-space-3xl) * 1.5);
+    }
+    
+    #welcome .hero-section {
+      padding: calc(var(--welcome-space-3xl) * 1.25) var(--welcome-space-3xl);
+    }
+  }
+  
+  /* Container Queries for feature cards (progressive enhancement) */
+  @supports (container-type: inline-size) {
+    #welcome .features-grid {
+      container-type: inline-size;
+    }
+    
+    @container (max-width: 600px) {
+      #welcome .feature-card .btn-group {
+        flex-direction: column;
+      }
+      
+      #welcome .feature-card .btn-group .btn {
+        width: 100%;
+      }
+    }
+  }
+  
+  /* ========================================================================
+     Dark Mode Specific Adjustments
+     ======================================================================== */
+  [data-theme='dark'] #welcome .guide-container {
+    background: var(--welcome-surface-elevated);
+  }
+  
+  [data-theme='dark'] #welcome .guide-card {
+    background: var(--welcome-surface-elevated);
+    border-color: var(--welcome-border);
+  }
+  
+  [data-theme='dark'] #welcome .feature-card {
+    background: var(--welcome-surface-elevated);
+    border-color: var(--welcome-border);
+  }
+  
+  [data-theme='dark'] #welcome ~ #eraseDataModal .modal-content {
+    background-color: var(--welcome-surface-elevated);
+    color: var(--welcome-text);
+  }
+  
+  [data-theme='dark'] #welcome ~ #eraseDataModal .modal-footer {
+    border-block-start-color: var(--welcome-border);
+  }
+  
+  [data-theme='dark'] #welcome ~ #eraseDataModal .alert-warning {
     background-color: rgba(255, 193, 7, 0.1);
     border-color: rgba(255, 193, 7, 0.2);
     color: #ffc107;
-} 
+  }
+  
+  /* ========================================================================
+     Accessibility Improvements
+     ======================================================================== */
+  
+  /* Visually hidden utility (for screen readers) */
+  #welcome .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  /* Skip link for keyboard navigation */
+  #welcome .wl-skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--welcome-accent);
+    color: white;
+    padding: var(--welcome-space-sm) var(--welcome-space-md);
+    text-decoration: none;
+    border-radius: var(--welcome-radius-md);
+    z-index: 1000;
+  }
+  
+  #welcome .wl-skip-link:focus {
+    top: 0;
+  }
+  
+  /* Focus visible styles for all interactive elements */
+  #welcome a:focus-visible,
+  #welcome button:focus-visible {
+    outline: 2px solid var(--welcome-accent);
+    outline-offset: 2px;
+    border-radius: var(--welcome-radius-sm);
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    #welcome .guide-card,
+    #welcome .feature-card {
+      border-width: 2px;
+    }
+  }
+  
+  /* Print styles */
+  @media print {
+    #welcome .hero-section {
+      background: #ffffff;
+      color: #000000;
+      box-shadow: none;
+    }
+    
+    #welcome .guide-card,
+    #welcome .feature-card {
+      box-shadow: none;
+      border: 1px solid #000000;
+      page-break-inside: avoid;
+    }
+  }
+}
+
+/* ==========================================================================
+   Legacy Support - Preserve existing classes for JS compatibility
+   These styles are maintained for backward compatibility but are overridden
+   by the scoped styles above when within #welcome
+   ========================================================================== */
+
+/* Deprecated: Use #welcome scoped styles instead */
+.welcome-container {
+  /* Legacy fallback - only applies outside #welcome wrapper */
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Only apply legacy styles if NOT inside #welcome */
+body:not(:has(#welcome)) .welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 80vh;
+  text-align: center;
+}
