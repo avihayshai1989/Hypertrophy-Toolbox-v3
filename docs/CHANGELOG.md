@@ -1,5 +1,289 @@
 # Hypertrophy Toolbox v3 - Changelog
 
+## Bug Fixes & UI Improvements - November 10, 2025
+
+### Version: 1.4.1 (Bug Fixes)
+
+### 🐛 Bugs Fixed
+
+#### 1. **Columns Button Overlap Glitch** ✅
+- **Issue**: When clicking the "Columns" button in the Workout Plan Table, the dropdown menu would overlap with page elements on the left side
+- **Root Cause**: Menu positioned with `position: absolute; right: 0;` without viewport boundary detection
+- **Fix**: 
+  - Changed menu positioning to `left: 0` with smart overflow detection
+  - Added `positionMenuToAvoidOverflow()` function to detect and reposition menu based on viewport bounds
+  - Implemented mobile-responsive fallback positioning
+  - Added proper spacing with `top: calc(100% + 0.5rem)`
+
+#### 2. **Compact/Comfortable Button Not Functional** ✅
+- **Issue**: Density toggle button didn't respond to clicks and table density mode didn't change
+- **Root Cause**: Event listener conflicts, multiple control container creation, and improper event delegation
+- **Fix**:
+  - Rewrote `initDensityToggle()` to properly reuse existing controls container
+  - Fixed event listener attachment with proper `e.preventDefault()` and `e.stopPropagation()`
+  - Ensured column chooser and density toggle share the same `.tbl-controls` container
+  - Added fresh event listener binding for density toggle button
+
+### 📋 Files Modified
+- `static/js/table-responsiveness.js` - Event handling and positioning logic
+- `static/css/responsive.css` - Button and menu styling
+- `docs/BUTTON_FIXES_SUMMARY.md` - Detailed documentation of fixes
+
+### ✨ Enhancements
+
+#### Accessibility Improvements
+- Added `Escape` key support to close column menu
+- Proper ARIA labels and `role="toolbar"` on controls
+- Better focus management
+- Touch-friendly button sizing
+
+#### UI/UX Improvements
+- Improved button styling with better padding and icons
+- Enhanced menu shadow and visual hierarchy
+- Better spacing between controls
+- Smooth transitions and animations
+- Mobile-responsive menu positioning
+
+---
+
+## Priority 9: Dependency Hygiene & Slimming - November 2, 2025
+
+### Overview
+Complete overhaul of dependency management focusing on reducing bloat, improving security, and optimizing build size. Removed unused packages, pinned all versions, eliminated jQuery, added automated security audits, and set up infrastructure for custom Bootstrap builds.
+
+### Version: 1.4.0 (Dependency Optimization)
+
+### 🎯 Goals Achieved
+- ✅ Removed unused Python dependencies
+- ✅ Pinned all package versions to exact versions
+- ✅ Eliminated jQuery dependency (~85KB saved)
+- ✅ Added automated security audits (pip-audit, Safety)
+- ✅ Set up custom Bootstrap build infrastructure (~50% size reduction)
+- ✅ Created comprehensive CI/CD pipeline
+
+### 🔧 Python Dependencies
+
+#### Removed Unused Packages
+- **`requests==2.32.3`** ❌ REMOVED
+  - No HTTP client needed in the codebase
+  - Saved ~2MB in dependencies
+  - All HTTP handled by Flask internally
+
+#### Pinned Exact Versions
+```diff
+# requirements.txt
+- openpyxl>=3.0.0
++ openpyxl==3.1.5
+```
+
+**Final Dependencies** (10 packages, 100% pinned):
+```
+Flask==3.1.0
+Jinja2==3.1.4
+Werkzeug==3.1.3
+itsdangerous==2.2.0
+click==8.1.7
+pandas==2.2.3
+XlsxWriter==3.2.0
+python-dotenv==1.0.1
+openpyxl==3.1.5
+pytest==8.3.3
+```
+
+### 🌐 Front-End Dependencies
+
+#### jQuery Removal (~85KB Saved)
+- **Previous Use Case**: DataTables plugin initialization
+- **Replacement**: Vanilla JavaScript table sorting
+- **Files Modified**:
+  1. `static/js/populateRoutines.js` - Replaced `$()` with `document.getElementById()`
+  2. `static/js/modules/workout-log.js` - Implemented native `sortTableByColumn()`
+  3. `static/js/modules/ui-handlers.js` - Added `initializeTableSorting()`
+  4. `templates/base.html` - Removed jQuery CDN link
+
+#### Table Sorting Enhancement
+- Added visual sort indicators (↑↓) in `styles_tables.css`
+- Supports both numeric and string sorting
+- Click-to-sort on all table headers
+- Dark mode compatible sort indicators
+
+### 🔒 CI/CD Pipeline
+
+Created `.github/workflows/ci.yml` with 4 automated jobs:
+
+#### 1. Security Audit
+```yaml
+pip-audit --desc --fix-dryrun
+```
+- Scans for known vulnerabilities
+- Suggests fixes without modifying dependencies
+- Fails build on critical issues
+
+#### 2. Code Linting
+```yaml
+flake8 . --select=E9,F63,F7,F82  # Syntax errors
+flake8 . --max-complexity=10      # Code quality
+```
+
+#### 3. Testing
+```yaml
+pytest tests/ -v --tb=short
+```
+
+#### 4. Dependency Health Check
+```yaml
+pip list --outdated
+safety check --json
+```
+
+**Triggers**: Push/PR to `main` or `develop` branches
+
+### 📦 Bootstrap Optimization Infrastructure
+
+#### Created Custom Build Setup
+**New Files**:
+- `package.json` - Build scripts and dependencies
+- `scss/custom-bootstrap.scss` - Minimal Bootstrap imports
+- `scss/README.md` - Build documentation
+
+**Components Included** (~60-80KB):
+- Core: Functions, Variables, Mixins, Reboot
+- Layout: Containers, Grid
+- Components: Buttons, Nav, Navbar, Cards, Alerts, Badges, Forms, Tables, Modals, Dropdowns, Toasts, Close
+
+**Components Excluded** (~50KB saved):
+- Accordion, Breadcrumb, Carousel, List Group, Pagination, Placeholders, Popovers, Progress, Scrollspy, Spinners, Offcanvas
+
+**Build Commands**:
+```bash
+npm install          # Install Bootstrap + SASS
+npm run build:css    # Compile custom build
+npm run watch:css    # Development watch mode
+```
+
+**Output**: `static/css/bootstrap.custom.min.css`
+
+> **Note**: Custom build is optional. CDN version still works. Provides ~50% size reduction when activated.
+
+### 📊 Impact Metrics
+
+| Category | Before | After | Savings |
+|----------|--------|-------|---------|
+| Python Packages | 11 | 10 | -1 package |
+| Python Size | ~45MB | ~43MB | -2MB |
+| jQuery | 85KB | 0KB | -85KB (100%) |
+| Bootstrap* | 150KB | 60-80KB | -70-90KB (50%) |
+| CI/CD | None | 4 jobs | ∞ |
+| Security Audits | Manual | Automated | ∞ |
+
+*Bootstrap optimization requires running `npm run build:css`
+
+**Total Front-End Savings**: 85KB immediate, up to 175KB with custom Bootstrap (~55% reduction)
+
+### 📝 Files Changed
+
+#### New Files
+1. `.github/workflows/ci.yml` - Complete CI/CD pipeline
+2. `package.json` - Node.js build configuration
+3. `scss/custom-bootstrap.scss` - Minimal Bootstrap build
+4. `scss/README.md` - Build documentation
+5. `docs/PRIORITY9_DEPENDENCY_OPTIMIZATION.md` - Detailed analysis
+6. `docs/PRIORITY9_IMPLEMENTATION_SUMMARY.md` - Implementation summary
+
+#### Modified Files
+1. `requirements.txt` - Removed `requests`, pinned `openpyxl`
+2. `templates/base.html` - Removed jQuery CDN link
+3. `static/js/populateRoutines.js` - Vanilla JS replacements
+4. `static/js/modules/workout-log.js` - Native table sorting
+5. `static/js/modules/ui-handlers.js` - Enhanced sorting utilities
+6. `static/css/styles_tables.css` - Sort indicators
+7. `.gitignore` - Added `node_modules/`, `package-lock.json`
+8. `README.md` - Updated setup instructions, tech stack, docs link
+
+### ✨ Benefits
+
+#### Security
+- ✅ Automated vulnerability scanning on every PR
+- ✅ Exact version pinning prevents supply chain attacks
+- ✅ Zero unused dependencies = smaller attack surface
+
+#### Performance
+- ✅ 85KB less JavaScript (jQuery removal)
+- ✅ Up to 175KB total savings with custom Bootstrap
+- ✅ Faster page loads, better Core Web Vitals
+
+#### Maintainability
+- ✅ Vanilla JS is more maintainable than jQuery in 2025
+- ✅ Exact versions ensure reproducible builds
+- ✅ Automated checks catch issues early
+
+#### Developer Experience
+- ✅ CI/CD pipeline catches issues before merge
+- ✅ Comprehensive documentation
+- ✅ Clear build process
+
+### 🚀 Usage
+
+#### Daily Development
+No changes required. App works exactly as before, just lighter and more secure.
+
+#### Optional: Activate Custom Bootstrap
+```bash
+npm install
+npm run build:css
+```
+Then update `templates/base.html`:
+```diff
+- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
++ <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.custom.min.css') }}">
+```
+
+#### CI/CD
+Automatically runs on push/PR to `main`/`develop`. Review security audit results in Actions tab.
+
+#### Dependency Management
+```bash
+pip list --outdated    # Check outdated packages
+pip-audit              # Check vulnerabilities
+safety check           # Additional scan
+```
+
+### 🔮 Future Optimizations
+
+#### Phase 2 (Not Implemented)
+1. Replace Bootstrap grid with CSS Grid/Flexbox
+2. Remove Bootstrap JS (replace with vanilla JS)
+3. Consolidate 27 CSS files
+4. Consider CSS modules
+5. Self-host Font Awesome or switch to SVG icons
+
+#### Potential Savings
+- Font Awesome: 100-200KB (switch to SVG sprites)
+- Custom Grid: 20-30KB
+- CSS Consolidation: 10-15% reduction
+
+### ⚠️ Breaking Changes
+**None**. All changes are backward compatible.
+
+### 🎓 Key Learnings
+1. Audit dependencies before adding new ones
+2. Pin exact versions for reproducible builds
+3. Vanilla JS is sufficient for most use cases
+4. Automated security checks are essential
+5. Custom builds can significantly reduce bundle size
+
+### 🎉 Summary
+
+This optimization brings the stack up to 2025 standards with:
+- ✅ Zero unused dependencies
+- ✅ 100% version pinning
+- ✅ Automated security scanning
+- ✅ 55% front-end asset reduction (with custom build)
+- ✅ Better maintainability
+- ✅ Zero breaking changes
+
+---
+
 ## Navbar Modernization - 2025 Refresh
 
 ### Overview

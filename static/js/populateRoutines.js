@@ -57,7 +57,14 @@ function populateRoutines() {
 
 function updateFilters(exercise) {
     // Update filter dropdowns based on exercise details
-    $("#muscle_filter").val(exercise.primary_muscle_group);
-    $("#isolated_muscles_filter").val(exercise.advanced_isolated_muscles);
+    const muscleFilter = document.getElementById("muscle_filter");
+    const isolatedMusclesFilter = document.getElementById("isolated_muscles_filter");
+    
+    if (muscleFilter) {
+        muscleFilter.value = exercise.primary_muscle_group;
+    }
+    if (isolatedMusclesFilter) {
+        isolatedMusclesFilter.value = exercise.advanced_isolated_muscles;
+    }
     // ...
 }

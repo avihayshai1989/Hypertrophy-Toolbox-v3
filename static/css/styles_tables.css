@@ -162,27 +162,40 @@
 }
 
 /* Sortable Headers */
-.table th.sortable {
+.table th.sortable,
+.table th {
     cursor: pointer;
     position: relative;
     padding-right: 24px;
+    user-select: none;
 }
 
-.table th.sortable::after {
+.table th.sortable::after,
+.table th.sort-asc::after,
+.table th.sort-desc::after {
     content: "↕";
     position: absolute;
     right: 8px;
     opacity: 0.5;
+    font-size: 0.9em;
 }
 
-.table th.sortable.asc::after {
+.table th.sort-asc::after {
     content: "↑";
     opacity: 1;
+    color: #007bff;
 }
 
-.table th.sortable.desc::after {
+.table th.sort-desc::after {
     content: "↓";
     opacity: 1;
+    color: #007bff;
+}
+
+/* Dark mode sorting indicators */
+[data-theme='dark'] .table th.sort-asc::after,
+[data-theme='dark'] .table th.sort-desc::after {
+    color: #3498db;
 }
 
 /* Table Styles */

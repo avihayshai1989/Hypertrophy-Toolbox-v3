@@ -22,13 +22,17 @@
     <!-- Filters for Exercises -->
     <div class="unified-frames-container">
         <!-- Filters Section -->
-        <div class="collapsible-frame filters-section">
-            <div class="frame-header">
-                <div class="filters-title">Filter Exercises</div>
-                <button class="collapse-toggle" aria-expanded="true" aria-controls="filters-content" aria-label="Toggle Filters Panel">
-                    <i class="fas fa-chevron-up" aria-hidden="true"></i>
-                    <span class="toggle-text">Hide</span>
-                </button>
+        <div class="collapsible-frame filters-section" data-section="filters">
+            <div class="frame-header frame-header-2025">
+                <div class="frame-header-left">
+                    <span class="filters-title">Filter Exercises</span>
+                </div>
+                <div class="frame-header-right">
+                    <button class="collapse-toggle" type="button" title="Collapse filters" aria-expanded="true" aria-controls="filters-content">
+                        <i class="fas fa-chevron-up toggle-icon" aria-hidden="true"></i>
+                        <span class="toggle-text">Hide</span>
+                    </button>
+                </div>
             </div>
             <div class="frame-content" id="filters-content">
                 <div class="filters dropdown-group">
@@ -208,13 +212,17 @@
         </div>
 
         <!-- Workout Controls Section -->
-        <div class="collapsible-frame action-frame">
-            <div class="frame-header">
-                <div class="frame-title">Workout Controls</div>
-                <button class="collapse-toggle" aria-expanded="true" aria-controls="controls-content" aria-label="Toggle Controls Panel">
-                    <i class="fas fa-chevron-up" aria-hidden="true"></i>
-                    <span class="toggle-text">Hide</span>
-                </button>
+        <div class="collapsible-frame action-frame" data-section="controls">
+            <div class="frame-header frame-header-2025">
+                <div class="frame-header-left">
+                    <span class="frame-title">Workout Controls</span>
+                </div>
+                <div class="frame-header-right">
+                    <button class="collapse-toggle" type="button" title="Collapse workout controls" aria-expanded="true" aria-controls="controls-content">
+                        <i class="fas fa-chevron-up toggle-icon" aria-hidden="true"></i>
+                        <span class="toggle-text">Hide</span>
+                    </button>
+                </div>
             </div>
             <div class="frame-content" id="controls-content">
                 <div class="horizontal-layout">
@@ -251,33 +259,37 @@
     </div>
 
         <!-- Display the Workout Plan -->
+        <!-- AGENT:START B-1 PRIORITY-CLASSES -->
         <section class="workout-plan table-container mt-5" aria-labelledby="workout-plan-table-heading">
             <div class="table-header">
                 <h2 id="workout-plan-table-heading" class="text-center">Workout Plan Table</h2>
                 <div class="table-header-underline" aria-hidden="true"></div>
             </div>
-            <div class="table-responsive" role="region" aria-label="Workout plan exercises table">
-                <table class="table table-striped workout-plan-table" role="table" aria-label="Workout plan exercises">
+            <div class="tbl-wrap" role="region" aria-label="Workout plan exercises table">
+                <table class="table table-striped workout-plan-table tbl tbl--responsive" 
+                       role="table" 
+                       aria-label="Workout plan exercises"
+                       data-table-responsive="workout_plan">
                     <thead>
                         <tr>
                             <th scope="col" width="30" aria-label="Drag handle"></th>
-                            <th scope="col">Routine</th>
-                            <th scope="col">Exercise</th>
-                            <th scope="col">Primary Muscle</th>
-                            <th scope="col">Secondary Muscle</th>
-                            <th scope="col">Tertiary Muscle</th>
-                            <th scope="col">Isolated Muscles</th>
-                            <th scope="col">Utility</th>
-                            <th scope="col">Sets</th>
-                            <th scope="col">Min Rep</th>
-                            <th scope="col">Max Rep</th>
-                            <th scope="col">RIR</th>
-                            <th scope="col">RPE</th>
-                            <th scope="col">Weight</th>
-                            <th scope="col">Grips</th>
-                            <th scope="col">Stabilizers</th>
-                            <th scope="col">Synergists</th>
-                            <th scope="col">Actions</th>
+                            <th scope="col" class="col--high" data-label="Routine">Routine</th>
+                            <th scope="col" class="col--high" data-label="Exercise">Exercise</th>
+                            <th scope="col" class="col--med" data-label="Primary Muscle">Primary Muscle</th>
+                            <th scope="col" class="col--low" data-label="Secondary Muscle">Secondary Muscle</th>
+                            <th scope="col" class="col--low" data-label="Tertiary Muscle">Tertiary Muscle</th>
+                            <th scope="col" class="col--low" data-label="Isolated Muscles">Isolated Muscles</th>
+                            <th scope="col" class="col--low" data-label="Utility">Utility</th>
+                            <th scope="col" class="col--high is-num" data-label="Sets">Sets</th>
+                            <th scope="col" class="col--high is-num" data-label="Min Rep">Min Rep</th>
+                            <th scope="col" class="col--high is-num" data-label="Max Rep">Max Rep</th>
+                            <th scope="col" class="col--med is-num" data-label="RIR">RIR</th>
+                            <th scope="col" class="col--med is-num" data-label="RPE">RPE</th>
+                            <th scope="col" class="col--high is-num" data-label="Weight">Weight</th>
+                            <th scope="col" class="col--low" data-label="Grips">Grips</th>
+                            <th scope="col" class="col--low" data-label="Stabilizers">Stabilizers</th>
+                            <th scope="col" class="col--low" data-label="Synergists">Synergists</th>
+                            <th scope="col" class="col--high" data-label="Actions">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="workout_plan_table_body">
@@ -286,6 +298,7 @@
                 </table>
             </div>
         </section>
+        <!-- AGENT:END B-1 PRIORITY-CLASSES -->
     </div>
 </main>
 
@@ -313,9 +326,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update button text
             toggleText.textContent = isExpanded ? 'Show' : 'Hide';
             
-            // Rotate the chevron icon
-            const icon = this.querySelector('i');
-            icon.style.transform = isExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+            // Update title attribute for tooltip
+            const sectionName = frame.getAttribute('data-section');
+            const titleText = isExpanded ? `Expand ${sectionName}` : `Collapse ${sectionName}`;
+            this.setAttribute('title', titleText);
+            
+            // CSS handles icon rotation via .collapsed class
+            // No need for inline styles
             
             // Adjust spacing
             setTimeout(() => {

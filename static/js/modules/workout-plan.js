@@ -467,28 +467,28 @@ export function updateWorkoutPlanTable(exercises) {
         const row = document.createElement('tr');
         row.dataset.exerciseId = exercise.id;
         
-        // Add drag handle and other cells
+        // Add drag handle and other cells with priority classes and data-labels
         row.innerHTML = `
             <td class="drag-handle" title="Drag to reorder">
                 <i class="fas fa-grip-vertical"></i>
             </td>
-            <td>${exercise.routine || 'N/A'}</td>
-            <td>${exercise.exercise || 'N/A'}</td>
-            <td>${exercise.primary_muscle_group || 'N/A'}</td>
-            <td>${exercise.secondary_muscle_group || 'N/A'}</td>
-            <td>${exercise.tertiary_muscle_group || 'N/A'}</td>
-            <td>${exercise.advanced_isolated_muscles || 'N/A'}</td>
-            <td>${exercise.utility || 'N/A'}</td>
-            <td class="editable" data-field="sets">${exercise.sets || 'N/A'}</td>
-            <td class="editable" data-field="min_rep_range">${exercise.min_rep_range || 'N/A'}</td>
-            <td class="editable" data-field="max_rep_range">${exercise.max_rep_range || 'N/A'}</td>
-            <td class="editable" data-field="rir">${exercise.rir || 'N/A'}</td>
-            <td class="editable" data-field="rpe">${exercise.rpe || 'N/A'}</td>
-            <td class="editable" data-field="weight">${exercise.weight || 'N/A'}</td>
-            <td>${exercise.grips || 'N/A'}</td>
-            <td>${exercise.stabilizers || 'N/A'}</td>
-            <td>${exercise.synergists || 'N/A'}</td>
-            <td>
+            <td class="col--high" data-label="Routine">${exercise.routine || 'N/A'}</td>
+            <td class="col--high" data-label="Exercise">${exercise.exercise || 'N/A'}</td>
+            <td class="col--med" data-label="Primary Muscle">${exercise.primary_muscle_group || 'N/A'}</td>
+            <td class="col--low" data-label="Secondary Muscle">${exercise.secondary_muscle_group || 'N/A'}</td>
+            <td class="col--low" data-label="Tertiary Muscle">${exercise.tertiary_muscle_group || 'N/A'}</td>
+            <td class="col--low" data-label="Isolated Muscles">${exercise.advanced_isolated_muscles || 'N/A'}</td>
+            <td class="col--low" data-label="Utility">${exercise.utility || 'N/A'}</td>
+            <td class="col--high is-num editable" data-field="sets" data-label="Sets">${exercise.sets || 'N/A'}</td>
+            <td class="col--high is-num editable" data-field="min_rep_range" data-label="Min Rep">${exercise.min_rep_range || 'N/A'}</td>
+            <td class="col--high is-num editable" data-field="max_rep_range" data-label="Max Rep">${exercise.max_rep_range || 'N/A'}</td>
+            <td class="col--med is-num editable" data-field="rir" data-label="RIR">${exercise.rir || 'N/A'}</td>
+            <td class="col--med is-num editable" data-field="rpe" data-label="RPE">${exercise.rpe || 'N/A'}</td>
+            <td class="col--high is-num editable" data-field="weight" data-label="Weight">${exercise.weight || 'N/A'}</td>
+            <td class="col--low" data-label="Grips">${exercise.grips || 'N/A'}</td>
+            <td class="col--low" data-label="Stabilizers">${exercise.stabilizers || 'N/A'}</td>
+            <td class="col--low" data-label="Synergists">${exercise.synergists || 'N/A'}</td>
+            <td class="col--high" data-label="Actions">
                 <button class="btn btn-danger btn-sm text-white" onclick="removeExercise(${exercise.id})">
                     <i class="fas fa-trash"></i> Remove
                 </button>

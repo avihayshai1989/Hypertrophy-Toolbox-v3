@@ -24,15 +24,58 @@ export function initializeWorkoutLog() {
     // Initialize filters
     initializeWorkoutLogFilters();
 
-    // Initialize DataTables
+    // Initialize simple table sorting
     const workoutLogTable = document.querySelector('#workout-log-table');
     if (workoutLogTable) {
-        $(workoutLogTable).DataTable({
-            pageLength: 25,
-            order: [[0, 'desc']],
-            responsive: true
-        });
+        initializeSimpleTableSorting(workoutLogTable);
     }
+}
+
+function initializeSimpleTableSorting(table) {
+    const headers = table.querySelectorAll('th');
+    headers.forEach((header, index) => {
+        header.style.cursor = 'pointer';
+        header.title = 'Click to sort';
+        header.addEventListener('click', () => {
+            sortTableByColumn(table, index);
+        });
+    });
+}
+
+function sortTableByColumn(table, columnIndex) {
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    const header = table.querySelectorAll('th')[columnIndex];
+    const isAscending = header.classList.contains('sort-asc');
+    
+    // Remove sort classes from all headers
+    table.querySelectorAll('th').forEach(h => {
+        h.classList.remove('sort-asc', 'sort-desc');
+    });
+    
+    // Add appropriate sort class
+    header.classList.add(isAscending ? 'sort-desc' : 'sort-asc');
+    
+    rows.sort((a, b) => {
+        const aValue = a.cells[columnIndex]?.textContent.trim() || '';
+        const bValue = b.cells[columnIndex]?.textContent.trim() || '';
+        
+        // Try to parse as number
+        const aNum = parseFloat(aValue);
+        const bNum = parseFloat(bValue);
+        
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+            return isAscending ? bNum - aNum : aNum - bNum;
+        }
+        
+        // String comparison
+        return isAscending ? 
+            bValue.localeCompare(aValue) : 
+            aValue.localeCompare(bValue);
+    });
+    
+    // Re-append sorted rows
+    rows.forEach(row => tbody.appendChild(row));
 }
 
 export function initializeProgressionChecks() {
@@ -151,7 +194,7 @@ export async function updateScoredValue(logId, field, value) {
         showToast('Value updated successfully');
     } catch (error) {
         console.error('Error updating value:', error);
-        showToast('Failed to update value', true);
+        showToast('error', 'Failed to update value');
     }
 }
 
@@ -231,7 +274,7 @@ export function initializeEditableCells() {
                     display.style.display = 'block';
                 } catch (error) {
                     console.error('Error updating value:', error);
-                    showToast('Failed to update value', true);
+                    showToast('error', 'Failed to update value');
                 }
             });
         }
@@ -267,7 +310,7 @@ async function filterWorkoutLogs() {
         updateWorkoutLogTable(data);
     } catch (error) {
         console.error('Error filtering workout logs:', error);
-        showToast('Failed to filter workout logs', true);
+        showToast('error', 'Failed to filter workout logs');
     }
 }
 
@@ -332,7 +375,7 @@ export function checkProgressionStatus(logId) {
         })
         .catch(error => {
             console.error('Error checking progression:', error);
-            showToast('Failed to check progression status', true);
+            showToast('error', 'Failed to check progression status');
         });
 }
 
@@ -358,10 +401,10 @@ export async function deleteWorkoutLog(logId) {
             row.remove();
         }
 
-        showToast('Log entry deleted successfully');
+        showToast('success', 'Log entry deleted successfully');
     } catch (error) {
         console.error('Error:', error);
-        showToast('Failed to delete log entry', true);
+        showToast('error', 'Failed to delete log entry');
     }
 }
 
@@ -421,9 +464,9 @@ export async function handleDateChange(event, logId) {
             badge.textContent = isProgressive ? 'Achieved' : 'Pending';
         }
 
-        showToast('Progression date updated successfully');
+        showToast('success', 'Progression date updated successfully');
     } catch (error) {
         console.error('Error updating progression date:', error);
-        showToast('Failed to update progression date', true);
+        showToast('error', 'Failed to update progression date');
     }
 } 

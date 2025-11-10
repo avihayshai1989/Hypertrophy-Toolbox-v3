@@ -1,0 +1,17 @@
+{
+  "name": "hypertrophy-toolbox",
+  "version": "3.0.0",
+  "description": "Hypertrophy Toolbox - Workout Planning & Tracking Application",
+  "scripts": {
+    "build:css": "sass --load-path=node_modules scss/custom-bootstrap.scss static/css/bootstrap.custom.min.css --style compressed",
+    "watch:css": "sass --load-path=node_modules scss/custom-bootstrap.scss static/css/bootstrap.custom.min.css --watch"
+  },
+  "devDependencies": {
+    "bootstrap": "5.1.3",
+    "sass": "^1.69.5"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
+

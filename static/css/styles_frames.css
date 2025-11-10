@@ -678,4 +678,293 @@
 [data-theme='dark'] .btn-secondary:hover {
     background-color: #5c636a;
     border-color: #565e64;
+}
+
+/* ==========================================================================
+   2025 Modern Collapsible Frame Enhancement
+   ========================================================================== */
+
+/* 2025 Header Layout - Grid-based for no-overlap positioning */
+.frame-header-2025 {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    min-height: 60px; /* Prevent layout shift */
+}
+
+/* Left container for floating title */
+.frame-header-2025 .frame-header-left {
+    min-width: 0; /* Allow text to wrap if needed */
+    display: flex;
+    align-items: center;
+}
+
+/* Right container for toggle button - guarantees no overlap */
+.frame-header-2025 .frame-header-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-right: 1rem; /* Add consistent spacing from edge */
+}
+
+/* Ensure floating titles have proper z-index */
+.frame-header-2025 .frame-title,
+.frame-header-2025 .filters-title {
+    z-index: 11;
+    position: relative;
+}
+
+/* ==========================================================================
+   2025 Icon Rotation Animation
+   ========================================================================== */
+
+/* Smooth rotation for chevron */
+.collapse-toggle .toggle-icon {
+    display: inline-block;
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+/* Rotate 180° when collapsed */
+.collapsible-frame.collapsed .collapse-toggle .toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   2025 Content Expand/Collapse Animation
+   ========================================================================== */
+
+/* Modern height animation using CSS grid technique */
+.frame-content {
+    overflow: clip; /* Modern clipping (fallback to hidden) */
+    display: grid;
+    transition: grid-template-rows 250ms cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Expanded state - content visible */
+.collapsible-frame:not(.collapsed) .frame-content {
+    grid-template-rows: 1fr;
+    opacity: 1;
+}
+
+/* Collapsed state - content hidden with smooth animation */
+.collapsible-frame.collapsed .frame-content {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    pointer-events: none; /* Prevent interaction when collapsed */
+}
+
+/* Inner wrapper for grid animation to work properly */
+.frame-content > * {
+    min-height: 0; /* Required for grid animation */
+}
+
+/* ==========================================================================
+   Enhanced Toggle Button Styling (2025 Polish)
+   ========================================================================== */
+
+/* Modern glassy button appearance */
+.frame-header-2025 .collapse-toggle {
+    /* Soft glass morphism effect */
+    background: linear-gradient(135deg, rgba(224, 247, 250, 0.9) 0%, rgba(224, 242, 254, 0.85) 100%) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(186, 230, 253, 0.6) !important;
+    box-shadow: 
+        0 2px 8px rgba(2, 132, 199, 0.12),
+        0 1px 3px rgba(2, 132, 199, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+    
+    /* Modern rounded corners */
+    border-radius: 12px !important;
+    
+    /* Better spacing */
+    padding: 8px 16px !important;
+    min-height: 40px !important;
+    gap: 8px !important;
+    
+    /* Typography */
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
+    
+    /* Remove old overrides */
+    margin: 0 !important;
+    height: auto !important;
+    min-width: auto !important;
+}
+
+/* Hover state - subtle lift */
+.frame-header-2025 .collapse-toggle:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(224, 242, 254, 0.95) 0%, rgba(186, 230, 253, 0.9) 100%) !important;
+    border-color: rgba(125, 211, 252, 0.7) !important;
+    box-shadow: 
+        0 4px 12px rgba(2, 132, 199, 0.18),
+        0 2px 6px rgba(2, 132, 199, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+    transform: translateY(-1px);
+}
+
+/* Active/Press state */
+.frame-header-2025 .collapse-toggle:active:not(:disabled) {
+    background: linear-gradient(135deg, rgba(219, 234, 254, 0.85) 0%, rgba(191, 219, 254, 0.8) 100%) !important;
+    border-color: rgba(96, 165, 250, 0.8) !important;
+    transform: translateY(0) scale(0.98);
+    box-shadow: 
+        0 1px 4px rgba(2, 132, 199, 0.15),
+        0 1px 2px rgba(2, 132, 199, 0.1),
+        inset 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Focus state - accessibility */
+.frame-header-2025 .collapse-toggle:focus-visible {
+    outline: 3px solid #4f8cff !important;
+    outline-offset: 3px !important;
+    box-shadow: 
+        0 0 0 4px rgba(79, 140, 255, 0.2),
+        0 4px 12px rgba(2, 132, 199, 0.2) !important;
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+
+[data-theme='dark'] .frame-header-2025 .collapse-toggle {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.18) 0%, rgba(56, 189, 248, 0.15) 100%) !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    color: #7dd3fc !important;
+    box-shadow: 
+        0 2px 8px rgba(14, 165, 233, 0.25),
+        0 1px 3px rgba(14, 165, 233, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme='dark'] .frame-header-2025 .collapse-toggle:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.28) 0%, rgba(56, 189, 248, 0.25) 100%) !important;
+    border-color: rgba(56, 189, 248, 0.5) !important;
+    color: #bae6fd !important;
+    box-shadow: 
+        0 4px 12px rgba(14, 165, 233, 0.35),
+        0 2px 6px rgba(14, 165, 233, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme='dark'] .frame-header-2025 .collapse-toggle:active:not(:disabled) {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.22) 0%, rgba(56, 189, 248, 0.18) 100%) !important;
+    border-color: rgba(56, 189, 248, 0.4) !important;
+    color: #93c5fd !important;
+    box-shadow: 
+        0 1px 4px rgba(14, 165, 233, 0.25),
+        0 1px 2px rgba(14, 165, 233, 0.2),
+        inset 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ==========================================================================
+   Respect Reduced Motion Preference
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .collapse-toggle .toggle-icon,
+    .frame-content {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    .frame-header-2025 .collapse-toggle {
+        transition: opacity 200ms ease !important;
+    }
+    
+    .frame-header-2025 .collapse-toggle:hover:not(:disabled),
+    .frame-header-2025 .collapse-toggle:active:not(:disabled) {
+        transform: none !important;
+    }
+}
+
+/* ==========================================================================
+   Tooltip Enhancement
+   ========================================================================== */
+
+@media (max-width: 767.98px) {
+    .frame-header-2025 .collapse-toggle .toggle-text {
+        display: inline;
+    }
+}
+
+.collapse-toggle[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0;
+    animation: tooltipFadeIn 200ms ease-in-out forwards;
+}
+
+[data-theme='dark'] .collapse-toggle[title]:hover::after {
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #000;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+
+@media (max-width: 991.98px) {
+    .frame-header-2025 {
+        gap: 0.75rem;
+    }
+    
+    .frame-header-2025 .frame-header-right {
+        padding-right: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .frame-header-2025 {
+        gap: 0.5rem;
+    }
+    
+    .frame-header-2025 .collapse-toggle {
+        padding: 6px 12px !important;
+        min-height: 36px !important;
+        font-size: 0.8125rem !important;
+    }
+}
+
+/* ==========================================================================
+   High Contrast Mode Support
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+    .frame-header-2025 .collapse-toggle {
+        border-width: 2px !important;
+        box-shadow: none !important;
+    }
+    
+    .frame-header-2025 .collapse-toggle:hover:not(:disabled),
+    .frame-header-2025 .collapse-toggle:focus-visible {
+        border-width: 3px !important;
+    }
 } 
