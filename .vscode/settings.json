@@ -11,10 +11,6 @@
         "editor.defaultFormatter": "ms-python.python",
         "editor.formatOnSave": true
     },
-    "python.analysis.typeCheckingMode": "basic",
-    "python.analysis.extraPaths": [
-        "${workspaceFolder}"
-    ],
     "files.exclude": {
         "**/__pycache__": true,
         "**/*.pyc": true,
