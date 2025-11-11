@@ -1,3 +1,13 @@
+# SSH Keys - Never commit these!
+key.txt
+key.txt.pub
+*.pem
+*.key
+
+# Log files
+logs/
+*.log
+
 __pycache__/app.cpython-314.pyc
 app.py
 __pycache__/app.cpython-312.pyc
