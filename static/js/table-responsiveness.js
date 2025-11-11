@@ -1,3 +1,5 @@
+console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
+
 /**
  * Table Responsiveness JavaScript
  * 
@@ -14,6 +16,9 @@
 
 (function () {
   'use strict';
+
+  // Track last time any column chooser menu opened to avoid instant auto-close
+  let lastMenuOpenTimestamp = 0;
 
   // ============================================================
   // UTILITY FUNCTIONS
@@ -68,6 +73,42 @@
     };
   }
 
+  /**
+   * Ensure a shared controls container exists for the responsive table
+   * @param {HTMLElement} wrapper - The table wrapper element
+   * @returns {HTMLElement|null} Controls container element
+   */
+  function getOrCreateControlsContainer(wrapper) {
+    if (!wrapper) {
+      return null;
+    }
+
+    // Prefer controls container inside the wrapper so it stays visually tied to the table
+    let controls = qs('.tbl-controls', wrapper);
+
+    // If an older container exists on the parent, move it inside the wrapper
+    if (!controls && wrapper.parentElement) {
+      const parentControls = qs('.tbl-controls', wrapper.parentElement);
+      if (parentControls) {
+        controls = parentControls;
+        wrapper.insertBefore(controls, wrapper.firstChild);
+      }
+    }
+
+    if (!controls) {
+      controls = document.createElement('div');
+      controls.className = 'tbl-controls';
+      wrapper.insertBefore(controls, wrapper.firstChild);
+    }
+
+    if (!controls.getAttribute('role')) {
+      controls.setAttribute('role', 'toolbar');
+      controls.setAttribute('aria-label', 'Table controls');
+    }
+
+    return controls;
+  }
+
   // ============================================================
   // COLUMN CHOOSER
   // ============================================================
@@ -78,24 +119,39 @@
    * @param {string} pageKey - Unique identifier for the page (e.g., 'workout_plan')
    */
   function initColumnChooser(tableEl, pageKey) {
+    console.log('[initColumnChooser] Starting for pageKey:', pageKey);
+    
     if (!tableEl || !pageKey) {
       console.warn('initColumnChooser: tableEl and pageKey are required');
       return;
     }
 
     const wrapper = tableEl.closest('.tbl-wrap');
-    if (!wrapper) return;
-
-    // Find or create column chooser UI in the parent container
-    let chooserEl = qs('[data-col-chooser]', wrapper.parentElement);
-
-    if (!chooserEl) {
-      // Create column chooser UI
-      chooserEl = createColumnChooserUI(tableEl, pageKey);
+    if (!wrapper || !wrapper.parentElement) {
+      console.warn('[initColumnChooser] No wrapper found');
+      return;
     }
 
+  // Check if already initialized for this specific table
+  const existingChooser = qs('.tbl-col-chooser[data-table-key="' + pageKey + '"]', wrapper);
+    if (existingChooser) {
+      console.log('[initColumnChooser] Already initialized for', pageKey, '- exiting');
+      return; // Already initialized
+    }
+    
+    console.log('[initColumnChooser] Creating new column chooser for', pageKey);
+    console.trace('[initColumnChooser] Called from:');
+
+    // Create column chooser UI
+    const chooserEl = createColumnChooserUI(tableEl, pageKey);
+    if (!chooserEl) return;
+
+    // Mark with page key to prevent duplicate initialization
+    chooserEl.dataset.tableKey = pageKey;
+
     const menu = qs('[data-col-chooser-menu]', chooserEl);
-    if (!menu) return;
+    const trigger = qs('[data-col-chooser-trigger]', chooserEl);
+    if (!menu || !trigger) return;
 
     // Load preferences
     const prefs = getPrefs();
@@ -103,163 +159,217 @@
 
     // Setup checkboxes
     qsa('input[type=checkbox][data-col]', menu).forEach(checkbox => {
-      const colClass = checkbox.dataset.col;
-      checkbox.checked = !hiddenCols.has(colClass);
+      const colIdentifier = checkbox.dataset.col; // Now stores data-label value
+      checkbox.checked = !hiddenCols.has(colIdentifier);
+      console.log('[Checkbox Setup] Column:', colIdentifier, 'Checked:', checkbox.checked);
 
       checkbox.addEventListener('change', () => {
-        toggleColumn(tableEl, colClass, checkbox.checked, pageKey);
+        console.log('[Checkbox Change] Column:', colIdentifier, 'New state:', checkbox.checked);
+        toggleColumn(tableEl, colIdentifier, checkbox.checked, pageKey);
       });
 
       // Apply initial visibility
       if (!checkbox.checked) {
-        applyColumnVisibility(tableEl, colClass, false);
+        applyColumnVisibility(tableEl, colIdentifier, false);
       }
     });
 
-    // Setup trigger button
-    const trigger = qs('[data-col-chooser-trigger]', chooserEl);
-    if (trigger) {
-      trigger.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        menu.classList.toggle('active');
-        trigger.setAttribute('aria-expanded', menu.classList.contains('active'));
+    // Setup trigger button click handler - no need to check for duplicate since
+    // initColumnChooser already prevents duplicate initialization
+    console.log('[initColumnChooser] Attaching click listener to trigger:', trigger);
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const isActive = menu.classList.contains('active');
+      console.log('[Columns Button] Clicked, isActive:', isActive, 'trigger element:', trigger);
+      
+      if (isActive) {
+        // Close menu
+        console.log('[Columns Button] Closing menu');
+        menu.classList.remove('active');
+        trigger.setAttribute('aria-expanded', 'false');
+        // Reset positioning when closed
+        menu.style.position = '';
+        menu.style.top = '';
+        menu.style.left = '';
+        menu.style.right = '';
+        menu.style.bottom = '';
+        menu.style.width = '';
+      } else {
+        // Open menu
+        console.log('[Columns Button] Opening menu');
+        lastMenuOpenTimestamp = Date.now();
+        menu.classList.add('active');
+        trigger.setAttribute('aria-expanded', 'true');
+        positionMenuToAvoidOverflow(trigger, menu);
+      }
+    });
 
-        // Smart positioning to prevent overflow
-        if (menu.classList.contains('active')) {
-          positionMenuToAvoidOverflow(trigger, menu);
-        }
-      });
-
+    // Set up global event handlers only once
+    if (!window._tblControlsGlobalHandlersSet) {
+      window._tblControlsGlobalHandlersSet = true;
+      
       // Close menu when clicking outside
       document.addEventListener('click', (e) => {
-        if (!chooserEl.contains(e.target)) {
-          menu.classList.remove('active');
-          trigger.setAttribute('aria-expanded', 'false');
-        }
+        // Use setTimeout to allow the trigger button's click handler to run first
+        setTimeout(() => {
+          const allMenus = qsa('.tbl-col-chooser-menu.active');
+          allMenus.forEach(activeMenu => {
+            const chooser = activeMenu.closest('[data-col-chooser]');
+            const trigger = chooser ? qs('[data-col-chooser-trigger]', chooser) : null;
+            
+            // Close if clicking outside the chooser AND not clicking the trigger
+            if (chooser && !chooser.contains(e.target)) {
+              console.log('[Global Click] Closing menu - clicked outside');
+              activeMenu.classList.remove('active');
+              if (trigger) {
+                trigger.setAttribute('aria-expanded', 'false');
+              }
+              // Reset positioning
+              activeMenu.style.position = '';
+              activeMenu.style.top = '';
+              activeMenu.style.left = '';
+              activeMenu.style.right = '';
+              activeMenu.style.bottom = '';
+              activeMenu.style.width = '';
+            }
+          });
+        }, 0);
       });
+
+      // Close menu when scrolling
+      const closeOnScroll = () => {
+        if (Date.now() - lastMenuOpenTimestamp < 200) {
+          return; // Ignore scroll events fired immediately after opening
+        }
+        if (qsa('.tbl-col-chooser-menu.active').length) {
+          console.log('[Global Scroll] Closing menu');
+        }
+        const allMenus = qsa('.tbl-col-chooser-menu.active');
+        allMenus.forEach(activeMenu => {
+          activeMenu.classList.remove('active');
+          const chooser = activeMenu.closest('[data-col-chooser]');
+          if (chooser) {
+            const menuTrigger = qs('[data-col-chooser-trigger]', chooser);
+            if (menuTrigger) {
+              menuTrigger.setAttribute('aria-expanded', 'false');
+            }
+          }
+          // Reset positioning
+          activeMenu.style.position = '';
+          activeMenu.style.top = '';
+          activeMenu.style.left = '';
+          activeMenu.style.right = '';
+          activeMenu.style.bottom = '';
+          activeMenu.style.width = '';
+        });
+      };
+      
+      window.addEventListener('scroll', closeOnScroll, { passive: true });
 
       // Handle escape key
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && menu.classList.contains('active')) {
-          menu.classList.remove('active');
-          trigger.setAttribute('aria-expanded', 'false');
-          trigger.focus();
+        if (e.key === 'Escape') {
+          console.log('[Global Keydown] Escape pressed, closing menus');
+          const allMenus = qsa('.tbl-col-chooser-menu.active');
+          allMenus.forEach(activeMenu => {
+            activeMenu.classList.remove('active');
+            const chooser = activeMenu.closest('[data-col-chooser]');
+            if (chooser) {
+              const menuTrigger = qs('[data-col-chooser-trigger]', chooser);
+              if (menuTrigger) {
+                menuTrigger.setAttribute('aria-expanded', 'false');
+                menuTrigger.focus();
+              }
+            }
+            // Reset positioning
+            activeMenu.style.position = '';
+            activeMenu.style.top = '';
+            activeMenu.style.left = '';
+            activeMenu.style.right = '';
+            activeMenu.style.bottom = '';
+            activeMenu.style.width = '';
+          });
         }
       });
+    }
+    
+    // Also close on scroll within the table container (per-instance handler)
+    const tableContainer = trigger.closest('.tbl-wrap');
+    if (tableContainer && !tableContainer.dataset.scrollHandlerSet) {
+      tableContainer.dataset.scrollHandlerSet = 'true';
+      tableContainer.addEventListener('scroll', () => {
+        if (Date.now() - lastMenuOpenTimestamp < 200) {
+          return;
+        }
+        if (menu.classList.contains('active')) {
+          console.log('[Table Scroll] Closing menu');
+          menu.classList.remove('active');
+          trigger.setAttribute('aria-expanded', 'false');
+          // Reset positioning
+          menu.style.position = '';
+          menu.style.top = '';
+          menu.style.left = '';
+          menu.style.right = '';
+          menu.style.bottom = '';
+          menu.style.width = '';
+        }
+      }, { passive: true });
     }
   }
 
   /**
    * Position menu to avoid viewport overflow
-   * Forces layout and uses ResizeObserver for reliable timing
+   * Uses fixed positioning to avoid being clipped by parent overflow containers
    * @param {HTMLElement} trigger - Trigger button
    * @param {HTMLElement} menu - Menu element
    */
   function positionMenuToAvoidOverflow(trigger, menu) {
-    let hasPositioned = false;
-
-    // Force the browser to apply display: block from CSS
-    // by triggering a reflow
-    const computedDisplay = window.getComputedStyle(menu).display;
-
-    if (computedDisplay === 'none') {
-      console.warn('Menu still has display: none, forcing layout...');
-      // This shouldn't happen, but if it does, force it
-      menu.style.display = 'block';
-    }
-
-    // Use requestAnimationFrame to ensure CSS is applied
+    // Use requestAnimationFrame to get accurate measurements after menu is visible
     requestAnimationFrame(() => {
-      // Use ResizeObserver to position menu when it finishes rendering
-      const resizeObserver = new ResizeObserver(() => {
-        if (hasPositioned) return; // Only position once
-        hasPositioned = true;
+      const triggerRect = trigger.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const padding = 10;
+      
+      // Estimate menu height (it should be visible now with visibility:visible)
+      // Force a layout to get dimensions
+      const menuHeight = menu.offsetHeight || 400; // fallback to max-height
+      const menuWidth = 280; // max-width from CSS
 
-        performMenuPositioning(trigger, menu);
-        resizeObserver.disconnect();
-      });
+      // Calculate available space
+      const spaceBelow = viewportHeight - triggerRect.bottom - padding;
+      const spaceAbove = triggerRect.top - padding;
 
-      // Start observing immediately
-      resizeObserver.observe(menu);
+      // Use fixed positioning to escape parent overflow clipping
+      menu.style.position = 'fixed';
+      menu.style.width = menuWidth + 'px';
 
-      // Fallback: if ResizeObserver doesn't fire, use timeout
-      setTimeout(() => {
-        if (!hasPositioned) {
-          hasPositioned = true;
-          performMenuPositioning(trigger, menu);
-          resizeObserver.disconnect();
-        }
-      }, 100);
+      // Vertical positioning - prefer below, only go above if necessary
+      if (spaceBelow < menuHeight && spaceAbove > spaceBelow && spaceAbove > menuHeight) {
+        // Position ABOVE the trigger
+        menu.style.top = 'auto';
+        menu.style.bottom = (viewportHeight - triggerRect.top + 10) + 'px';
+      } else {
+        // Position BELOW the trigger (default and preferred)
+        menu.style.top = (triggerRect.bottom + 10) + 'px';
+        menu.style.bottom = 'auto';
+      }
+
+      // Horizontal positioning
+      const idealLeft = triggerRect.left;
+      
+      if (idealLeft + menuWidth > viewportWidth - padding) {
+        // Align to right edge of trigger
+        menu.style.left = 'auto';
+        menu.style.right = (viewportWidth - triggerRect.right) + 'px';
+      } else {
+        // Align to left edge of trigger
+        menu.style.left = idealLeft + 'px';
+        menu.style.right = 'auto';
+      }
     });
-  }
-
-  /**
-   * Perform actual menu positioning calculations
-   * @param {HTMLElement} trigger - Trigger button
-   * @param {HTMLElement} menu - Menu element
-   */
-  function performMenuPositioning(trigger, menu) {
-    const triggerRect = trigger.getBoundingClientRect();
-    const menuRect = menu.getBoundingClientRect();
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const padding = 10; // Keep 10px away from viewport edges
-
-    // Validate that menu has rendered with actual dimensions
-    if (menuRect.height === 0 || menuRect.width === 0) {
-      console.warn('Menu has zero dimensions, deferring positioning');
-      setTimeout(() => performMenuPositioning(trigger, menu), 50);
-      return;
-    }
-
-    // Calculate available space
-    const spaceBelow = viewportHeight - triggerRect.bottom - padding;
-    const spaceAbove = triggerRect.top - padding;
-    const menuHeight = menuRect.height;
-
-    console.log('Menu positioning:', {
-      menuHeight,
-      spaceAbove,
-      spaceBelow,
-      triggerTop: triggerRect.top,
-      triggerBottom: triggerRect.bottom,
-      viewportHeight
-    });
-
-    // Switch to fixed positioning to avoid being clipped by parent overflow
-    menu.style.position = 'fixed';
-
-    // Vertical positioning - calculate fixed position relative to viewport
-    let fixedTop;
-    if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
-      // Position ABOVE the trigger
-      fixedTop = triggerRect.top - menuHeight - 10;
-      menu.setAttribute('data-menu-position', 'above');
-      console.log('Positioning menu ABOVE trigger at fixedTop:', fixedTop);
-    } else {
-      // Position BELOW the trigger (default)
-      fixedTop = triggerRect.bottom + 10;
-      menu.setAttribute('data-menu-position', 'below');
-      console.log('Positioning menu BELOW trigger at fixedTop:', fixedTop);
-    }
-
-    // Horizontal positioning - align left but check for right edge
-    let fixedLeft = triggerRect.left;
-
-    if (fixedLeft + 280 > viewportWidth - padding) {
-      // Align to right if it would overflow
-      fixedLeft = triggerRect.right - 280;
-      console.log('Aligning menu to right at fixedLeft:', fixedLeft);
-    } else {
-      console.log('Aligning menu to left at fixedLeft:', fixedLeft);
-    }
-
-    // Apply fixed positioning with calculated pixel values
-    menu.style.top = Math.max(padding, fixedTop) + 'px';
-    menu.style.left = Math.max(padding, fixedLeft) + 'px';
-    menu.style.bottom = 'auto';
-    menu.style.right = 'auto';
   }
 
   /**
@@ -272,10 +382,8 @@
     const wrapper = tableEl.closest('.tbl-wrap');
     if (!wrapper) return null;
 
-    // Create controls container
-    const controls = document.createElement('div');
-    controls.className = 'tbl-controls';
-    controls.setAttribute('data-col-chooser', '');
+    const controls = getOrCreateControlsContainer(wrapper);
+    if (!controls) return null;
 
     // Create trigger button
     const trigger = document.createElement('button');
@@ -292,23 +400,31 @@
     menu.setAttribute('data-col-chooser-menu', '');
     menu.setAttribute('role', 'menu');
 
-    // Find columns with priority classes
+    // Find all columns with data-label attributes (each column individually)
     const columns = [];
-    qsa('th[class*="col--"]', tableEl).forEach(th => {
+    qsa('th[data-label]', tableEl).forEach((th, index) => {
+      const dataLabel = th.getAttribute('data-label');
       const classList = Array.from(th.classList);
       const priorityClass = classList.find(c => c.startsWith('col--'));
-      if (priorityClass && th.textContent.trim()) {
+      
+      if (dataLabel && priorityClass) {
         columns.push({
-          class: priorityClass,
-          label: th.textContent.trim(),
-          priority: priorityClass.split('--')[1] // 'high', 'med', 'low'
+          dataLabel: dataLabel,
+          label: dataLabel, // Use data-label as display text
+          priority: priorityClass.split('--')[1], // 'high', 'med', 'low'
+          index: index // Keep track of column index for uniqueness
         });
       }
     });
 
-    // Sort by priority (high -> med -> low)
+    console.log('[createColumnChooserUI] Found columns:', columns.map(c => ({ label: c.label, priority: c.priority, index: c.index })));
+
+    // Sort by priority (high -> med -> low) then by index
     const priorityOrder = { high: 1, med: 2, low: 3 };
-    columns.sort((a, b) => (priorityOrder[a.priority] || 99) - (priorityOrder[b.priority] || 99));
+    columns.sort((a, b) => {
+      const priorityDiff = (priorityOrder[a.priority] || 99) - (priorityOrder[b.priority] || 99);
+      return priorityDiff !== 0 ? priorityDiff : a.index - b.index;
+    });
 
     // Create checkboxes for each column
     columns.forEach(col => {
@@ -318,7 +434,7 @@
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.checked = true;
-      checkbox.dataset.col = col.class;
+      checkbox.dataset.col = col.dataLabel; // Use data-label as identifier
       checkbox.setAttribute('aria-label', `Toggle ${col.label} column`);
 
       const span = document.createElement('span');
@@ -332,34 +448,24 @@
     // Assemble
     const chooserContainer = document.createElement('div');
     chooserContainer.className = 'tbl-col-chooser';
+    chooserContainer.setAttribute('data-col-chooser', '');
     chooserContainer.appendChild(trigger);
     chooserContainer.appendChild(menu);
 
-    // Add attributes to controls container if not present
-    if (!controls.getAttribute('role')) {
-      controls.setAttribute('role', 'toolbar');
-      controls.setAttribute('aria-label', 'Table controls');
-    }
-
     controls.appendChild(chooserContainer);
-
-    // Insert before table wrapper if not already in DOM
-    if (!controls.parentElement) {
-      wrapper.parentElement.insertBefore(controls, wrapper);
-    }
-
-    return controls;
+    return chooserContainer;
   }
 
   /**
    * Toggle column visibility
    * @param {HTMLElement} tableEl - Table element
-   * @param {string} colClass - Column class to toggle
+   * @param {string} colIdentifier - Column identifier (data-label value)
    * @param {boolean} show - Whether to show the column
    * @param {string} pageKey - Page identifier
    */
-  function toggleColumn(tableEl, colClass, show, pageKey) {
-    applyColumnVisibility(tableEl, colClass, show);
+  function toggleColumn(tableEl, colIdentifier, show, pageKey) {
+    console.log('[toggleColumn] Called with:', { colIdentifier, show, pageKey });
+    applyColumnVisibility(tableEl, colIdentifier, show);
 
     // Update preferences
     const prefs = getPrefs();
@@ -370,24 +476,55 @@
     const hiddenSet = new Set(prefs[pageKey].hidden || []);
 
     if (show) {
-      hiddenSet.delete(colClass);
+      hiddenSet.delete(colIdentifier);
     } else {
-      hiddenSet.add(colClass);
+      hiddenSet.add(colIdentifier);
     }
 
     prefs[pageKey].hidden = Array.from(hiddenSet);
+    console.log('[toggleColumn] Updated hidden columns:', prefs[pageKey].hidden);
     setPrefs(prefs);
   }
 
   /**
    * Apply column visibility to table
    * @param {HTMLElement} tableEl - Table element
-   * @param {string} colClass - Column class
+   * @param {string} colIdentifier - Column identifier (data-label value)
    * @param {boolean} show - Whether to show the column
    */
-  function applyColumnVisibility(tableEl, colClass, show) {
-    const cells = qsa(`.${colClass}`, tableEl);
-    cells.forEach(cell => {
+  function applyColumnVisibility(tableEl, colIdentifier, show) {
+    console.log('[applyColumnVisibility] Called with:', { colIdentifier, show });
+    
+    // Find the column index by matching the data-label in the header
+    const headers = qsa('th[data-label]', tableEl);
+    let columnIndex = -1;
+    
+    headers.forEach((th, index) => {
+      if (th.getAttribute('data-label') === colIdentifier) {
+        columnIndex = index;
+        console.log('[applyColumnVisibility] Found column at index:', index, 'Header text:', th.textContent.trim());
+      }
+    });
+    
+    if (columnIndex === -1) {
+      console.warn(`[applyColumnVisibility] Column with data-label "${colIdentifier}" not found`);
+      return;
+    }
+    
+    // Hide/show the header cell
+    const header = headers[columnIndex];
+    if (header) {
+      header.style.display = show ? '' : 'none';
+      console.log('[applyColumnVisibility] Header display set to:', header.style.display || 'default');
+    }
+    
+    // Hide/show all corresponding body cells using nth-child selector
+    // Note: nth-child is 1-indexed, and we need to account for the drag handle column
+    const nthChildIndex = columnIndex + 2; // +1 for nth-child indexing, +1 for drag handle
+    console.log('[applyColumnVisibility] Using nth-child selector:', nthChildIndex);
+    const bodyCells = qsa(`tbody tr td:nth-child(${nthChildIndex})`, tableEl);
+    console.log('[applyColumnVisibility] Found', bodyCells.length, 'body cells to toggle');
+    bodyCells.forEach(cell => {
       cell.style.display = show ? '' : 'none';
     });
   }
@@ -421,12 +558,15 @@
     const density = prefs[pageKey]?.density || 'comfortable';
     applyDensity(tableEl, density);
 
-    // Remove any existing click listeners by cloning
-    const newBtn = toggleBtn.cloneNode(true);
-    toggleBtn.parentElement.replaceChild(newBtn, toggleBtn);
-    toggleBtn = newBtn;
+    // Remove existing listeners by replacing with a clone
+    // This ensures we don't have duplicate listeners
+    const newToggleBtn = toggleBtn.cloneNode(true);
+    if (toggleBtn.parentElement) {
+      toggleBtn.parentElement.replaceChild(newToggleBtn, toggleBtn);
+      toggleBtn = newToggleBtn;
+    }
 
-    // Setup toggle with fresh listener
+    // Setup toggle with listener
     toggleBtn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -459,8 +599,8 @@
    * @returns {HTMLElement} Toggle button
    */
   function createDensityToggle(tableEl, pageKey) {
-    const wrapper = tableEl.closest('.tbl-wrap');
-    if (!wrapper || !wrapper.parentElement) return null;
+  const wrapper = tableEl.closest('.tbl-wrap');
+  if (!wrapper) return null;
 
     const button = document.createElement('button');
     button.type = 'button';
@@ -471,14 +611,8 @@
     button.innerHTML = '<i class="fas fa-compress-arrows-alt" aria-hidden="true"></i> <span class="density-text">Comfortable</span>';
 
     // Find or reuse existing controls container
-    let controls = qs('.tbl-controls', wrapper.parentElement);
-    if (!controls) {
-      controls = document.createElement('div');
-      controls.className = 'tbl-controls';
-      controls.setAttribute('role', 'toolbar');
-      controls.setAttribute('aria-label', 'Table controls');
-      wrapper.parentElement.insertBefore(controls, wrapper);
-    }
+    const controls = getOrCreateControlsContainer(wrapper);
+    if (!controls) return null;
 
     controls.appendChild(button);
     return button;
@@ -592,7 +726,9 @@
    */
   function autoInit() {
     // Find all tables with data-responsive attribute
-    qsa('[data-table-responsive]').forEach(table => {
+    const tables = qsa('[data-table-responsive]');
+    
+    tables.forEach(table => {
       const pageKey = table.dataset.tableResponsive;
       if (!pageKey) return;
 

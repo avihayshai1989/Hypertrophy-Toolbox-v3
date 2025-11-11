@@ -30,6 +30,9 @@ export async function fetchWorkoutPlan() {
         const exercises = await handleApiResponse(response);
         updateWorkoutPlanTable(exercises);
         updateWorkoutPlanUI(exercises);
+        
+        // Table responsiveness is already initialized by table-responsiveness.js autoInit
+        // No need to reinitialize here
     } catch (error) {
         console.error('Error loading workout plan:', error);
         showToast(error.message || 'Failed to load workout plan', true);

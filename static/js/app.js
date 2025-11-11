@@ -92,7 +92,7 @@ function initializeWorkoutPlan() {
     initializeSearchFilter();
     handleRoutineSelection();
     initializeWorkoutPlanHandlers();
-    fetchWorkoutPlan();
+    // fetchWorkoutPlan is already called inside initializeWorkoutPlanHandlers
     return {
         cleanup: () => {
             console.log('Cleaning up Workout Plan page');

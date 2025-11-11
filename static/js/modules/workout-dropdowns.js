@@ -529,34 +529,40 @@ function enhanceSelect(select, prefersReducedMotion) {
       return;
     }
     
-    // Desktop: position below or above button based on available space
-    // getBoundingClientRect() already gives viewport-relative positions for fixed positioning
+    // Desktop: default to positioning below the control for consistency
+    popover.style.bottom = '';
+    popover.style.right = '';
     
-    // Default: position below button
-    let top = buttonRect.bottom + 6;
-    let maxHeight = Math.min(280, spaceBelow - 10);
-    
-    // If not enough space below, position above
-    if (spaceBelow < 280 && spaceAbove > spaceBelow) {
-      // Position above: calculate top so bottom of popover is 6px above button
-      maxHeight = Math.min(280, spaceAbove - 10);
-      top = buttonRect.top - maxHeight - 6;
-      // Ensure it doesn't go off-screen at top
-      if (top < 10) {
-        top = 10;
+    let openDirection = 'down';
+    if (spaceBelow < 140 && spaceAbove > spaceBelow) {
+      openDirection = 'up';
+    }
+
+    let top;
+    let maxHeight;
+    if (openDirection === 'up') {
+      maxHeight = Math.min(280, Math.max(spaceAbove - 12, 160));
+      top = Math.max(10, buttonRect.top - maxHeight - 6);
+      if (top === 10) {
         maxHeight = buttonRect.top - top - 6;
       }
       popover.style.marginTop = '0';
       popover.style.marginBottom = '6px';
     } else {
+      maxHeight = Math.min(280, Math.max(spaceBelow - 12, 160));
+      // Ensure we have a positive height fallback
+      if (maxHeight < 160) {
+        maxHeight = Math.max(spaceBelow - 12, 120);
+      }
+      top = Math.max(10, buttonRect.bottom + 6);
       popover.style.marginTop = '6px';
       popover.style.marginBottom = '0';
     }
-    
+
     popover.style.top = `${top}px`;
-    popover.style.left = `${buttonRect.left}px`;
-    popover.style.width = `${Math.max(220, buttonRect.width)}px`;
-    popover.style.maxHeight = `${maxHeight}px`;
+    popover.style.left = `${Math.max(10, Math.min(buttonRect.left, viewportWidth - Math.max(220, buttonRect.width) - 10))}px`;
+    popover.style.width = `${Math.max(220, Math.min(buttonRect.width, viewportWidth - 20))}px`;
+    popover.style.maxHeight = `${Math.max(160, Math.min(320, maxHeight))}px`;
   }
 }
 

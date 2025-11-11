@@ -37,6 +37,7 @@
 .table-container {
     overflow-x: auto;
     margin: 1rem 0;
+    position: relative;
 }
 
 /* Table Workout Specific */

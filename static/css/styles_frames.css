@@ -158,7 +158,7 @@
     border: 1px solid #ddd;
     border-radius: 0.25rem;
     margin-bottom: 1rem;
-    overflow: hidden;
+    overflow: visible;
     transition: all 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
@@ -228,6 +228,7 @@
 .collapsible-frame.collapsed {
     margin-bottom: 0.5rem;
     min-height: 60px;
+    overflow: hidden;
 }
 
 .collapsible-frame.collapsed .frame-content {
@@ -539,10 +540,6 @@
     transition: all 0.3s ease-in-out;
 }
 
-.input-frame,
-.action-frame {
-}
-
 /* Split layout for frames */
 .split-layout {
     display: flex;
@@ -748,6 +745,7 @@
 .collapsible-frame:not(.collapsed) .frame-content {
     grid-template-rows: 1fr;
     opacity: 1;
+    overflow: visible;
 }
 
 /* Collapsed state - content hidden with smooth animation */
@@ -755,6 +753,7 @@
     grid-template-rows: 0fr;
     opacity: 0;
     pointer-events: none; /* Prevent interaction when collapsed */
+    overflow: clip;
 }
 
 /* Inner wrapper for grid animation to work properly */

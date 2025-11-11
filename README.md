@@ -20,13 +20,12 @@ Design your workout plan using science, all the toolbox you need in order to des
    pip install -r requirements.txt
    ```
 
-4. **(Optional)** Build optimized Bootstrap CSS:
+4. Install Node.js dependencies and build CSS:
    ```bash
    npm install
    npm run build:css
    ```
-   > This creates a custom, minimal Bootstrap build (~60-80KB vs. ~150KB CDN version)
-   > If skipped, the app will use the Bootstrap CDN fallback
+   > This compiles the custom Bootstrap CSS required by the application
 
 5. Run the application:
    ```bash
