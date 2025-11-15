@@ -1,96 +1,157 @@
+from typing import Any, Dict, Optional
+
 from utils.database import DatabaseHandler
 from utils.filter_predicates import FilterPredicates
-import sqlite3
+from utils.logger import get_logger
+from utils.normalization import normalize_exercise_row, split_csv
+
+
+logger = get_logger()
+
 
 class ExerciseManager:
-    """
-    Handles operations for fetching and managing exercises.
-    Filtering logic is now delegated to FilterPredicates.
-    """
+    """High-level operations for querying and mutating exercise data."""
 
     @staticmethod
-    def get_exercises(filters=None):
-        """
-        Fetch exercises from the database, optionally filtered.
-        Uses consolidated FilterPredicates for filtering logic.
-        
-        :param filters: Dictionary containing filter criteria.
-        :return: List of exercise names.
-        """
+    def get_exercises(filters: Optional[Dict[str, Any]] = None):
+        """Fetch exercises from the database, optionally filtered via predicates."""
         return FilterPredicates.get_exercises(filters)
 
     @staticmethod
-    def add_exercise(routine, exercise, sets, min_rep_range, max_rep_range, rir, weight, rpe=None):
-        """
-        Add a new exercise entry to the user_selection table.
-        Ensures duplicate entries are not allowed.
-        """
+    def add_exercise(
+        routine: str,
+        exercise: str,
+        sets: int,
+        min_rep_range: int,
+        max_rep_range: int,
+        rir: Optional[int],
+        weight: float,
+        rpe: Optional[float] = None,
+    ) -> str:
+        """Add a selection entry, preventing duplicate routine/exercise pairs."""
         if not all([routine, exercise, sets, min_rep_range, max_rep_range, weight]):
-            print("Error: Missing required fields for adding an exercise.")
+            logger.warning("Rejecting add_exercise due to missing fields")
             return "Error: Missing required fields."
 
-        duplicate_check_query = """
-        SELECT COUNT(*) AS count FROM user_selection
-        WHERE routine = ? 
-        AND exercise = ?
-        """
-
-        insert_query = """
-        INSERT INTO user_selection 
-        (routine, exercise, sets, min_rep_range, max_rep_range, rir, weight, rpe)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """
+        duplicate_check_query = (
+            "SELECT COUNT(*) AS count FROM user_selection WHERE routine = ? AND exercise = ?"
+        )
+        insert_query = (
+            "INSERT INTO user_selection "
+            "(routine, exercise, sets, min_rep_range, max_rep_range, rir, weight, rpe) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        )
 
         try:
             with DatabaseHandler() as db:
-                # Check for duplicates only by routine and exercise
-                params = (routine, exercise)
-                existing_count = db.fetch_one(duplicate_check_query, params)
-                
-                if existing_count and existing_count["count"] > 0:
-                    print(f"Duplicate exercise found: {routine}, {exercise}")
+                duplicate = db.fetch_one(duplicate_check_query, (routine, exercise))
+                if duplicate and duplicate.get("count", 0) > 0:
+                    logger.info("Duplicate exercise rejected for routine=%s exercise=%s", routine, exercise)
                     return "Exercise already exists in this routine."
 
-                # Insert new exercise
-                insert_params = (routine, exercise, sets, min_rep_range, max_rep_range, rir, weight, rpe)
-                db.execute_query(insert_query, insert_params)
-                print(f"DEBUG: Exercise added - {exercise} in routine {routine}")
+                db.execute_query(
+                    insert_query,
+                    (routine, exercise, sets, min_rep_range, max_rep_range, rir, weight, rpe),
+                )
+                logger.debug("Inserted exercise '%s' into routine '%s'", exercise, routine)
                 return "Exercise added successfully."
-
-        except Exception as e:
-            print(f"Database error in add_exercise: {e}")
-            return f"Database error: {e}"
+        except Exception as exc:  # pragma: no cover - logged for observability
+            logger.exception("Database error while adding exercise")
+            return f"Database error: {exc}"
 
     @staticmethod
-    def delete_exercise(exercise_id):
-        """
-        Delete an exercise from the user_selection table using its unique ID.
-        """
-        query = "DELETE FROM user_selection WHERE id = ?"
+    def delete_exercise(exercise_id: int) -> None:
+        """Delete a user_selection entry by primary key."""
         with DatabaseHandler() as db:
-            try:
-                db.execute_query(query, (exercise_id,))
-                print(f"DEBUG: Exercise with ID {exercise_id} deleted.")
-            except sqlite3.Error as e:
-                print(f"Error deleting exercise: {e}")
+            db.execute_query("DELETE FROM user_selection WHERE id = ?", (exercise_id,))
+            logger.debug("Removed user_selection row id=%s", exercise_id)
+
+    # -- Exercise catalogue maintenance -------------------------------------
+    @staticmethod
+    def save_exercise(exercise_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Insert or update an exercise row after normalising its payload."""
+        normalised = normalize_exercise_row(exercise_data)
+        exercise_name = normalised.get("exercise_name")
+        if not exercise_name:
+            raise ValueError("exercise_name is required")
+
+        columns = [
+            "exercise_name",
+            "primary_muscle_group",
+            "secondary_muscle_group",
+            "tertiary_muscle_group",
+            "advanced_isolated_muscles",
+            "utility",
+            "grips",
+            "stabilizers",
+            "synergists",
+            "force",
+            "equipment",
+            "mechanic",
+            "difficulty",
+        ]
+
+        placeholders = ", ".join([":" + col for col in columns])
+        update_clause = ", ".join(
+            [f"{col} = excluded.{col}" for col in columns if col != "exercise_name"]
+        )
+
+        with DatabaseHandler() as db:
+            conflict = db.fetch_one(
+                "SELECT exercise_name FROM exercises WHERE exercise_name = ? COLLATE NOCASE",
+                (exercise_name,),
+            )
+            if conflict and conflict["exercise_name"] != exercise_name:
+                raise ValueError(
+                    f"Exercise '{exercise_name}' conflicts with existing entry '{conflict['exercise_name']}'"
+                )
+
+            db.execute_query(
+                (
+                    "INSERT INTO exercises ({cols}) VALUES ({vals}) "
+                    "ON CONFLICT(exercise_name) DO UPDATE SET {updates}"
+                ).format(cols=", ".join(columns), vals=placeholders, updates=update_clause),
+                normalised,
+            )
+            ExerciseManager._sync_isolated_muscles(db, exercise_name, normalised.get("advanced_isolated_muscles"))
+
+        return normalised
 
     @staticmethod
-    def fetch_unique_values(table, column):
-        """
-        Fetch unique values from a specific column in a table.
-        """
+    def remove_exercise_by_name(exercise_name: str) -> None:
+        """Delete an exercise and any associated isolated muscle mappings."""
+        with DatabaseHandler() as db:
+            db.execute_query("DELETE FROM exercise_isolated_muscles WHERE exercise_name = ?", (exercise_name,))
+            db.execute_query("DELETE FROM exercises WHERE exercise_name = ?", (exercise_name,))
+            logger.debug("Removed exercise '%s'", exercise_name)
+
+    @staticmethod
+    def fetch_unique_values(table: str, column: str):
+        """Fetch distinct values for a given table/column pair."""
         query = f"SELECT DISTINCT {column} FROM {table} WHERE {column} IS NOT NULL ORDER BY {column} ASC"
         with DatabaseHandler() as db:
-            try:
-                results = db.fetch_all(query)
-                print(f"DEBUG: Unique values fetched for {column} in {table}")
-                return [row[column] for row in results]
-            except Exception as e:
-                print(f"Error fetching unique values: {e}")
-                return []
+            results = db.fetch_all(query)
+            return [row[column] for row in results]
 
-# Publicly expose key functions
+    # -- Internal helpers ---------------------------------------------------
+    @staticmethod
+    def _sync_isolated_muscles(db: DatabaseHandler, exercise_name: str, csv_muscles: Optional[str]) -> None:
+        db.execute_query(
+            "DELETE FROM exercise_isolated_muscles WHERE exercise_name = ?",
+            (exercise_name,),
+        )
+        muscles = [muscle for muscle in split_csv(csv_muscles) if muscle]
+        if muscles:
+            db.executemany(
+                "INSERT OR IGNORE INTO exercise_isolated_muscles (exercise_name, muscle) VALUES (?, ?)",
+                [(exercise_name, muscle) for muscle in muscles],
+            )
+
+
+# Public interface shortcuts -------------------------------------------------
 get_exercises = ExerciseManager.get_exercises
 add_exercise = ExerciseManager.add_exercise
 delete_exercise = ExerciseManager.delete_exercise
 fetch_unique_values = ExerciseManager.fetch_unique_values
+save_exercise = ExerciseManager.save_exercise
+remove_exercise_by_name = ExerciseManager.remove_exercise_by_name

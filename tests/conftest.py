@@ -7,7 +7,8 @@ import tempfile
 import os
 from pathlib import Path
 from flask import Flask
-from utils.database import DatabaseHandler, initialize_database, add_progression_goals_table, add_volume_tracking_tables
+from utils.database import DatabaseHandler, add_progression_goals_table, add_volume_tracking_tables
+from utils.db_initializer import initialize_database
 from routes.workout_plan import workout_plan_bp, initialize_exercise_order
 from routes.filters import filters_bp
 from routes.workout_log import workout_log_bp
@@ -121,7 +122,15 @@ def clean_db(db_handler):
     """Clean database before each test."""
     # Delete all data but keep tables
     with db_handler.connection:
-        tables = ['user_selection', 'workout_log', 'progression_goals', 'muscle_volumes', 'volume_plans']
+        tables = [
+            'exercise_isolated_muscles',
+            'workout_log',
+            'user_selection',
+            'progression_goals',
+            'muscle_volumes',
+            'volume_plans',
+            'exercises',
+        ]
         for table in tables:
             db_handler.execute_query(f"DELETE FROM {table}")
     

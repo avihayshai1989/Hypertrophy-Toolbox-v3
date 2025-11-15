@@ -1,3 +1,13 @@
+:root {
+    --volume-track-bg: #e9ecef;
+    --volume-track-optimal: #0d6efd;
+}
+
+[data-theme='dark'] {
+    --volume-track-bg: #343a40;
+    --volume-track-optimal: #4dabf7;
+}
+
 /* Optimized Volume Splitter Layout */
 .volume-splitter-container {
     max-width: 100%;
@@ -393,3 +403,47 @@
 .volume-controls .btn i {
     font-size: 1rem;
 } 
+
+.volume-sliders .current-value {
+    min-width: 3rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.volume-value-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid #b5c2d1;
+    color: #0a1f44;
+    font-size: 0.85rem;
+    line-height: 1;
+    box-shadow: 0 1px 1px rgba(10, 31, 68, 0.08);
+}
+
+.volume-value-pill--low {
+    background: #fff3cd;
+    border-color: #f9d87a;
+    color: #664d03;
+}
+
+.volume-value-pill--optimal {
+    background: #d1f7d6;
+    border-color: #7adf8a;
+    color: #0f5132;
+}
+
+.volume-value-pill--high {
+    background: #ffe8cc;
+    border-color: #f5b97a;
+    color: #7a3b06;
+}
+
+.volume-value-pill--excessive {
+    background: #f8d7da;
+    border-color: #f0919a;
+    color: #842029;
+}

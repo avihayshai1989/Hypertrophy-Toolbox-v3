@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, jsonify, request
+from flask import Flask, render_template, url_for, jsonify, request, make_response
 from utils import initialize_database
 from utils.database import DatabaseHandler, add_progression_goals_table, add_volume_tracking_tables
 from routes.workout_log import workout_log_bp
@@ -13,7 +13,7 @@ from routes.volume_splitter import volume_splitter_bp
 from datetime import datetime
 from werkzeug.middleware.proxy_fix import ProxyFix
 from utils.logger import setup_logging
-from utils.errors import error_response, register_error_handlers
+from utils.errors import error_response, register_error_handlers, is_xhr_request
 from utils.request_id import add_request_id_middleware
 
 app = Flask(__name__)
@@ -124,7 +124,20 @@ def handle_404(e):
         return make_response('', 204)
     
     logger.warning(f"404 Not Found: {request.path}")
-    return error_response("NOT_FOUND", "The requested resource was not found", 404)
+    if is_xhr_request():
+        return error_response("NOT_FOUND", "The requested resource was not found", 404)
+
+    html = (
+        "<!DOCTYPE html>"
+        "<html lang='en'>"
+        "<head><meta charset='utf-8'><title>Not Found</title></head>"
+        "<body><h1>Not Found</h1><p>The requested resource was not found.</p></body>"
+        "</html>"
+    )
+    from flask import make_response
+    response = make_response(html, 404)
+    response.headers['Content-Type'] = 'text/html; charset=utf-8'
+    return response
 
 # Global error handler for unhandled exceptions
 @app.errorhandler(Exception)
@@ -143,8 +156,19 @@ def handle_exception(e):
     
     logger.exception(f"Unhandled exception: {e}")
     
-    # Return error response
-    return error_response("INTERNAL_ERROR", "An unexpected error occurred", 500)
+    if is_xhr_request():
+        return error_response("INTERNAL_ERROR", "An unexpected error occurred", 500)
+
+    html = (
+        "<!DOCTYPE html>"
+        "<html lang='en'>"
+        "<head><meta charset='utf-8'><title>Internal Server Error</title></head>"
+        "<body><h1>Internal Server Error</h1><p>An unexpected error occurred.</p></body>"
+        "</html>"
+    )
+    response = make_response(html, 500)
+    response.headers['Content-Type'] = 'text/html; charset=utf-8'
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)

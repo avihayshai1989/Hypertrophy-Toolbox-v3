@@ -12,16 +12,16 @@ from .exercise_manager import (
     get_exercises,
     add_exercise,
     delete_exercise,
-    fetch_unique_values
+    fetch_unique_values,
+    save_exercise,
+    remove_exercise_by_name,
 )
 
 # Summary calculations
 from .weekly_summary import (
     calculate_weekly_summary,
-    get_weekly_summary,
-    calculate_total_sets,
     calculate_exercise_categories,
-    calculate_isolated_muscles_stats
+    calculate_isolated_muscles_stats,
 )
 from .session_summary import calculate_session_summary
 
@@ -59,11 +59,11 @@ __all__ = [
     "add_exercise",
     "delete_exercise",
     "fetch_unique_values",
+    "save_exercise",
+    "remove_exercise_by_name",
     
     # Summary calculations
     "calculate_weekly_summary",
-    "get_weekly_summary",
-    "calculate_total_sets",
     "calculate_session_summary",
     "calculate_exercise_categories",
     "calculate_isolated_muscles_stats",

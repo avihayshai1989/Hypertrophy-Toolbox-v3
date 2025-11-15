@@ -338,6 +338,13 @@ class TestExportErrorHandling:
         # Response might be JSON error or HTML page
         # Both are acceptable for this test
 
+    def test_export_summary_returns_empty_workbook(self, client):
+        """Ensure summary export returns a valid workbook even with no data."""
+        response = client.post('/export_summary', json={'method': 'Total'})
+        assert response.status_code == 200
+        assert response.mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        assert int(response.headers.get('Content-Length', '0')) > 0
+
 
 # Fixtures for tests
 
@@ -347,6 +354,22 @@ def sample_workout_plan(client):
     from utils.database import DatabaseHandler
     
     with DatabaseHandler() as db:
+        db.execute_query(
+            """
+            INSERT OR IGNORE INTO exercises (
+                exercise_name,
+                primary_muscle_group,
+                secondary_muscle_group,
+                tertiary_muscle_group,
+                force,
+                equipment,
+                mechanic,
+                utility,
+                difficulty
+            )
+            VALUES ('Bench Press', 'Chest', 'Triceps', 'Shoulders', 'Push', 'Barbell', 'Compound', 'Basic', 'Intermediate')
+            """
+        )
         db.execute_query("""
             INSERT INTO user_selection (routine, exercise, sets, min_rep_range, max_rep_range, weight)
             VALUES ('A', 'Bench Press', 3, 8, 12, 100)
@@ -357,6 +380,7 @@ def sample_workout_plan(client):
     # Cleanup
     with DatabaseHandler() as db:
         db.execute_query("DELETE FROM user_selection")
+        db.execute_query("DELETE FROM exercises WHERE exercise_name = 'Bench Press'")
 
 
 @pytest.fixture

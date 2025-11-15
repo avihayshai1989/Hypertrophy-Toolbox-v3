@@ -16,9 +16,22 @@ weekly_summary_bp = Blueprint('weekly_summary', __name__)
 
 @weekly_summary_bp.route("/weekly_summary")
 def weekly_summary():
-    method = request.args.get("method", "Total")
     try:
-        results = calculate_weekly_summary(method)
+        summary_map = calculate_weekly_summary()
+        results = [
+            {
+                'muscle_group': muscle,
+                'weekly_sets': data['weekly_sets'],
+                'sets_per_session': data['sets_per_session'],
+                'status': data['status'],
+                'volume_class': data['volume_class'],
+                'total_sets': data['weekly_sets'],
+                'total_reps': data['total_reps'],
+                'total_volume': data['total_volume'],
+                'total_weight': data['total_volume'],
+            }
+            for muscle, data in summary_map.items()
+        ]
         category_results = calculate_exercise_categories()
         isolated_muscles_stats = calculate_isolated_muscles_stats()
         

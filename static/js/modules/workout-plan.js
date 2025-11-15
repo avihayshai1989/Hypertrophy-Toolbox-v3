@@ -39,6 +39,12 @@ export async function fetchWorkoutPlan() {
     }
 }
 
+    const WORKOUT_PLAN_DEBUG = false;
+    const workoutPlanDebugLog = (...args) => {
+        if (WORKOUT_PLAN_DEBUG) {
+            console.log(...args);
+        }
+    };
 export function reloadWorkoutPlan(data) {
     const workoutTable = document.querySelector("#workout-plan-table tbody");
     if (!workoutTable) {
@@ -220,13 +226,14 @@ export function handleRoutineSelection() {
             const filterElements = document.querySelectorAll('#filters-form select.filter-dropdown');
             filterElements.forEach(select => {
                 if (select.value && select.id !== 'exercise' && select.id !== 'routine') {
-                    filters[select.id] = select.value;
+                    const filterKey = select.dataset.filterKey || select.id;
+                    filters[filterKey] = select.value;
                 }
             });
 
             // If there are active filters, apply them to get filtered exercises
             if (Object.keys(filters).length > 0) {
-                console.log("DEBUG: Applying filters after routine selection:", filters);
+                    workoutPlanDebugLog('DEBUG: Applying filters after routine selection:', filters);
                 const { filterExercises } = await import('./filters.js');
                 // Preserve the currently selected exercise when reapplying filters
                 await filterExercises(true);
@@ -330,8 +337,8 @@ export function handleAddExercise(e) {
 
     if (missingFields.length > 0) {
         const message = `Please fill in the following required fields: ${missingFields.join(', ')}`;
-        console.log('Validation failed:', message);
-        console.log('Current form values:', { exercise, routine, sets, minRepRange, maxRepRange, weight });
+            workoutPlanDebugLog('Validation failed:', message);
+            workoutPlanDebugLog('Current form values:', { exercise, routine, sets, minRepRange, maxRepRange, weight });
         showToast(message, true);
         return;
     }
@@ -348,7 +355,7 @@ export function handleAddExercise(e) {
         rpe: rpe ? parseFloat(rpe) : null
     };
 
-    console.log('Sending exercise data:', exerciseData);
+        workoutPlanDebugLog('Sending exercise data:', exerciseData);
     sendExerciseData(exerciseData);
 }
 

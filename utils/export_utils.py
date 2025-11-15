@@ -68,6 +68,9 @@ def sanitize_filename(filename: str, max_length: int = None) -> str:
         name_part = name_part[:max_length - len(ext) - 1]
         filename = f"{name_part}.{ext}"
     
+    # Trim underscores that end up directly before the extension
+    filename = re.sub(r'_+(\.xlsx)$', r'\1', filename)
+
     # Fallback to default if sanitization results in empty name
     if not filename or filename == '.xlsx':
         filename = 'export.xlsx'

@@ -1,4 +1,16 @@
-console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
+const TABLE_RESPONSIVENESS_DEBUG = false;
+const tableDebugLog = (...args) => {
+  if (TABLE_RESPONSIVENESS_DEBUG) {
+    console.log(...args);
+  }
+};
+const tableDebugTrace = (...args) => {
+  if (TABLE_RESPONSIVENESS_DEBUG) {
+    console.trace(...args);
+  }
+};
+
+tableDebugLog('[TableResponsiveness] Version 2024-11-11-03 loaded');
 
 /**
  * Table Responsiveness JavaScript
@@ -119,7 +131,7 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
    * @param {string} pageKey - Unique identifier for the page (e.g., 'workout_plan')
    */
   function initColumnChooser(tableEl, pageKey) {
-    console.log('[initColumnChooser] Starting for pageKey:', pageKey);
+  tableDebugLog('[initColumnChooser] Starting for pageKey:', pageKey);
     
     if (!tableEl || !pageKey) {
       console.warn('initColumnChooser: tableEl and pageKey are required');
@@ -135,12 +147,12 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
   // Check if already initialized for this specific table
   const existingChooser = qs('.tbl-col-chooser[data-table-key="' + pageKey + '"]', wrapper);
     if (existingChooser) {
-      console.log('[initColumnChooser] Already initialized for', pageKey, '- exiting');
+  tableDebugLog('[initColumnChooser] Already initialized for', pageKey, '- exiting');
       return; // Already initialized
     }
     
-    console.log('[initColumnChooser] Creating new column chooser for', pageKey);
-    console.trace('[initColumnChooser] Called from:');
+  tableDebugLog('[initColumnChooser] Creating new column chooser for', pageKey);
+  tableDebugTrace('[initColumnChooser] Called from:');
 
     // Create column chooser UI
     const chooserEl = createColumnChooserUI(tableEl, pageKey);
@@ -161,10 +173,10 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
     qsa('input[type=checkbox][data-col]', menu).forEach(checkbox => {
       const colIdentifier = checkbox.dataset.col; // Now stores data-label value
       checkbox.checked = !hiddenCols.has(colIdentifier);
-      console.log('[Checkbox Setup] Column:', colIdentifier, 'Checked:', checkbox.checked);
+  tableDebugLog('[Checkbox Setup] Column:', colIdentifier, 'Checked:', checkbox.checked);
 
       checkbox.addEventListener('change', () => {
-        console.log('[Checkbox Change] Column:', colIdentifier, 'New state:', checkbox.checked);
+  tableDebugLog('[Checkbox Change] Column:', colIdentifier, 'New state:', checkbox.checked);
         toggleColumn(tableEl, colIdentifier, checkbox.checked, pageKey);
       });
 
@@ -176,17 +188,17 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
 
     // Setup trigger button click handler - no need to check for duplicate since
     // initColumnChooser already prevents duplicate initialization
-    console.log('[initColumnChooser] Attaching click listener to trigger:', trigger);
+  tableDebugLog('[initColumnChooser] Attaching click listener to trigger:', trigger);
     trigger.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
       
       const isActive = menu.classList.contains('active');
-      console.log('[Columns Button] Clicked, isActive:', isActive, 'trigger element:', trigger);
+  tableDebugLog('[Columns Button] Clicked, isActive:', isActive, 'trigger element:', trigger);
       
       if (isActive) {
         // Close menu
-        console.log('[Columns Button] Closing menu');
+  tableDebugLog('[Columns Button] Closing menu');
         menu.classList.remove('active');
         trigger.setAttribute('aria-expanded', 'false');
         // Reset positioning when closed
@@ -198,7 +210,7 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
         menu.style.width = '';
       } else {
         // Open menu
-        console.log('[Columns Button] Opening menu');
+  tableDebugLog('[Columns Button] Opening menu');
         lastMenuOpenTimestamp = Date.now();
         menu.classList.add('active');
         trigger.setAttribute('aria-expanded', 'true');
@@ -221,7 +233,7 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
             
             // Close if clicking outside the chooser AND not clicking the trigger
             if (chooser && !chooser.contains(e.target)) {
-              console.log('[Global Click] Closing menu - clicked outside');
+              tableDebugLog('[Global Click] Closing menu - clicked outside');
               activeMenu.classList.remove('active');
               if (trigger) {
                 trigger.setAttribute('aria-expanded', 'false');
@@ -244,7 +256,7 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
           return; // Ignore scroll events fired immediately after opening
         }
         if (qsa('.tbl-col-chooser-menu.active').length) {
-          console.log('[Global Scroll] Closing menu');
+          tableDebugLog('[Global Scroll] Closing menu');
         }
         const allMenus = qsa('.tbl-col-chooser-menu.active');
         allMenus.forEach(activeMenu => {
@@ -271,7 +283,7 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
       // Handle escape key
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-          console.log('[Global Keydown] Escape pressed, closing menus');
+          tableDebugLog('[Global Keydown] Escape pressed, closing menus');
           const allMenus = qsa('.tbl-col-chooser-menu.active');
           allMenus.forEach(activeMenu => {
             activeMenu.classList.remove('active');
@@ -304,7 +316,7 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
           return;
         }
         if (menu.classList.contains('active')) {
-          console.log('[Table Scroll] Closing menu');
+          tableDebugLog('[Table Scroll] Closing menu');
           menu.classList.remove('active');
           trigger.setAttribute('aria-expanded', 'false');
           // Reset positioning
@@ -417,7 +429,7 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
       }
     });
 
-    console.log('[createColumnChooserUI] Found columns:', columns.map(c => ({ label: c.label, priority: c.priority, index: c.index })));
+  tableDebugLog('[createColumnChooserUI] Found columns:', columns.map(c => ({ label: c.label, priority: c.priority, index: c.index })));
 
     // Sort by priority (high -> med -> low) then by index
     const priorityOrder = { high: 1, med: 2, low: 3 };
@@ -464,7 +476,7 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
    * @param {string} pageKey - Page identifier
    */
   function toggleColumn(tableEl, colIdentifier, show, pageKey) {
-    console.log('[toggleColumn] Called with:', { colIdentifier, show, pageKey });
+  tableDebugLog('[toggleColumn] Called with:', { colIdentifier, show, pageKey });
     applyColumnVisibility(tableEl, colIdentifier, show);
 
     // Update preferences
@@ -482,7 +494,7 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
     }
 
     prefs[pageKey].hidden = Array.from(hiddenSet);
-    console.log('[toggleColumn] Updated hidden columns:', prefs[pageKey].hidden);
+  tableDebugLog('[toggleColumn] Updated hidden columns:', prefs[pageKey].hidden);
     setPrefs(prefs);
   }
 
@@ -493,7 +505,7 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
    * @param {boolean} show - Whether to show the column
    */
   function applyColumnVisibility(tableEl, colIdentifier, show) {
-    console.log('[applyColumnVisibility] Called with:', { colIdentifier, show });
+  tableDebugLog('[applyColumnVisibility] Called with:', { colIdentifier, show });
     
     // Find the column index by matching the data-label in the header
     const headers = qsa('th[data-label]', tableEl);
@@ -502,7 +514,7 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
     headers.forEach((th, index) => {
       if (th.getAttribute('data-label') === colIdentifier) {
         columnIndex = index;
-        console.log('[applyColumnVisibility] Found column at index:', index, 'Header text:', th.textContent.trim());
+  tableDebugLog('[applyColumnVisibility] Found column at index:', index, 'Header text:', th.textContent.trim());
       }
     });
     
@@ -515,15 +527,15 @@ console.log('[TableResponsiveness] Version 2024-11-11-03 loaded');
     const header = headers[columnIndex];
     if (header) {
       header.style.display = show ? '' : 'none';
-      console.log('[applyColumnVisibility] Header display set to:', header.style.display || 'default');
+  tableDebugLog('[applyColumnVisibility] Header display set to:', header.style.display || 'default');
     }
     
     // Hide/show all corresponding body cells using nth-child selector
     // Note: nth-child is 1-indexed, and we need to account for the drag handle column
     const nthChildIndex = columnIndex + 2; // +1 for nth-child indexing, +1 for drag handle
-    console.log('[applyColumnVisibility] Using nth-child selector:', nthChildIndex);
-    const bodyCells = qsa(`tbody tr td:nth-child(${nthChildIndex})`, tableEl);
-    console.log('[applyColumnVisibility] Found', bodyCells.length, 'body cells to toggle');
+  tableDebugLog('[applyColumnVisibility] Using nth-child selector:', nthChildIndex);
+  const bodyCells = qsa(`tbody tr td:nth-child(${nthChildIndex})`, tableEl);
+  tableDebugLog('[applyColumnVisibility] Found', bodyCells.length, 'body cells to toggle');
     bodyCells.forEach(cell => {
       cell.style.display = show ? '' : 'none';
     });

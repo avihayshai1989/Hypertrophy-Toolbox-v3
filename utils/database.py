@@ -1,256 +1,240 @@
-from utils.config import DB_FILE
+"""Database connection helpers and lightweight data-access abstraction."""
+from __future__ import annotations
+
 import sqlite3
+from collections.abc import Iterable, Mapping, Sequence
+from datetime import date as _date, datetime as _datetime
+from typing import Any, Optional, Union
+
+from utils.config import DB_FILE
 from utils.logger import get_logger
 
 logger = get_logger()
 
-def get_db_connection():
-    """Get a database connection."""
-    conn = sqlite3.connect(DB_FILE)
-    # Enable foreign keys
-    conn.execute("PRAGMA foreign_keys = ON;")
-    return conn
+
+_SQLITE_CONVERTERS_REGISTERED = False
+
+
+def _register_sqlite_converters() -> None:
+    """Register custom adapters/converters to silence deprecated defaults."""
+    global _SQLITE_CONVERTERS_REGISTERED
+    if _SQLITE_CONVERTERS_REGISTERED:
+        return
+
+    def _adapt_datetime(value: _datetime) -> str:
+        return value.isoformat(sep=" ")
+
+    def _adapt_date(value: _date) -> str:
+        return value.isoformat()
+
+    def _parse_timestamp(raw: bytes) -> Union[_datetime, str]:
+        text = raw.decode("utf-8") if raw is not None else ""
+        if not text:
+            return text
+        for fmt in (
+            "%Y-%m-%d %H:%M:%S.%f",
+            "%Y-%m-%d %H:%M:%S",
+            "%Y-%m-%dT%H:%M:%S.%f",
+            "%Y-%m-%dT%H:%M:%S",
+        ):
+            try:
+                return _datetime.strptime(text, fmt)
+            except ValueError:
+                continue
+        return text
+
+    def _parse_date(raw: bytes) -> Union[_date, str]:
+        text = raw.decode("utf-8") if raw is not None else ""
+        if not text:
+            return text
+        try:
+            return _date.fromisoformat(text)
+        except ValueError:
+            return text
+
+    sqlite3.register_adapter(_datetime, _adapt_datetime)
+    sqlite3.register_adapter(_date, _adapt_date)
+    sqlite3.register_converter("timestamp", _parse_timestamp)
+    sqlite3.register_converter("datetime", _parse_timestamp)
+    sqlite3.register_converter("date", _parse_date)
+    _SQLITE_CONVERTERS_REGISTERED = True
+
+
+_register_sqlite_converters()
+
+
+def _configure_connection(connection: sqlite3.Connection) -> sqlite3.Connection:
+    """Apply the required PRAGMAs for every new connection."""
+    connection.row_factory = sqlite3.Row
+    connection.execute("PRAGMA foreign_keys = ON;")
+    connection.execute("PRAGMA busy_timeout = 5000;")
+    connection.execute("PRAGMA journal_mode = WAL;")
+    connection.execute("PRAGMA synchronous = NORMAL;")
+    return connection
+
+
+def get_db_connection(database_path: Optional[str] = None) -> sqlite3.Connection:
+    """Create a new SQLite connection with the canonical configuration."""
+    db_path = database_path or DB_FILE
+    connection = sqlite3.connect(
+        db_path,
+        detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
+        check_same_thread=False,
+    )
+    return _configure_connection(connection)
+
 
 class DatabaseHandler:
-    """
-    Handles low-level database operations with context management.
-    """
+    """Context-friendly helper around SQLite connections."""
 
-    def __init__(self):
-        """
-        Initialize the database connection and cursor.
-        """
-        self.connection = sqlite3.connect(DB_FILE)
-        self.connection.row_factory = sqlite3.Row  # Return results as dictionaries
-        self.cursor = self.connection.cursor()
-        # Enable Write-Ahead Logging (WAL) mode
-        self.connection.execute("PRAGMA journal_mode=WAL;")
-        # Enable foreign keys (must be enabled per connection in SQLite)
-        self.connection.execute("PRAGMA foreign_keys = ON;")
+    def __init__(self, database_path: Optional[str] = None) -> None:
+        self.database_path = database_path or DB_FILE
+        self.connection: sqlite3.Connection = get_db_connection(self.database_path)
+        self.cursor: sqlite3.Cursor = self.connection.cursor()
 
-    def execute_query(self, query, params=None):
-        """
-        Executes a query with optional parameters.
-        :param query: SQL query to execute.
-        :param params: Optional parameters for parameterized queries.
-        """
+    # -- Core query helpers -------------------------------------------------
+    def execute_query(
+        self,
+        query: str,
+        params: Optional[Union[Sequence[Any], Mapping[str, Any], Any]] = None,
+        *,
+        commit: bool = True,
+    ) -> int:
+        """Execute a single statement and optionally commit."""
+        prepared = self._prepare_params(params)
         try:
-            if params:
-                self.cursor.execute(query, params)
-            else:
+            if prepared is None:
                 self.cursor.execute(query)
-            self.connection.commit()
-            logger.debug(f"Query executed successfully: {query[:100]}... | Params: {params}")
-        except sqlite3.Error as e:
-            logger.error(f"Database error during query execution: {e} | Query: {query[:100]}... | Params: {params}", exc_info=True)
-            raise e
+            else:
+                self.cursor.execute(query, prepared)
+            if commit:
+                self.connection.commit()
+            logger.debug("SQL exec: %s | params=%s", query[:120], prepared)
+            return self.cursor.rowcount
+        except sqlite3.Error as exc:  # pragma: no cover - logged for observability
+            if commit:
+                self.connection.rollback()
+            logger.error("SQL error: %s | params=%s", query[:120], prepared, exc_info=True)
+            raise
 
-    def fetch_all(self, query, params=None):
-        """
-        Fetch all rows for a query.
-        :param query: SQL query to execute.
-        :param params: Optional parameters for parameterized queries.
-        :return: List of all rows fetched as dictionaries.
-        """
+    def executemany(
+        self,
+        query: str,
+        param_sets: Iterable[Union[Sequence[Any], Mapping[str, Any], Any]],
+        *,
+        commit: bool = True,
+    ) -> int:
+        """Execute the same statement for multiple parameter sets."""
+        prepared_sets = (self._prepare_params(params, for_many=True) for params in param_sets)
         try:
-            if not isinstance(params, (list, tuple)) and params is not None:
-                params = [params]  # Convert single parameter to list
-            if params:
-                self.cursor.execute(query, params)
-            else:
-                self.cursor.execute(query)
-            results = self.cursor.fetchall()
-            return [dict(row) for row in results] if results else []
-        except sqlite3.Error as e:
-            logger.error(f"Database error: {e} | Query: {query[:100]}... | Params: {params}", exc_info=True)
-            raise e
+            self.cursor.executemany(query, prepared_sets)
+            if commit:
+                self.connection.commit()
+            logger.debug("SQL executemany: %s", query[:120])
+            return self.cursor.rowcount
+        except sqlite3.Error as exc:  # pragma: no cover - logged for observability
+            if commit:
+                self.connection.rollback()
+            logger.error("SQL executemany error: %s", query[:120], exc_info=True)
+            raise
 
-    def fetch_one(self, query, params=None):
-        """
-        Fetch a single row for a query.
-        :param query: SQL query to execute.
-        :param params: Optional parameters for parameterized queries.
-        :return: Single row fetched as a dictionary.
-        """
-        try:
-            if params:
-                self.cursor.execute(query, params)
-            else:
-                self.cursor.execute(query)
-            result = self.cursor.fetchone()
-            logger.debug(f"Fetch one successful: {query[:100]}... | Params: {params}")
-            return dict(result) if result else None
-        except sqlite3.Error as e:
-            logger.error(f"Database fetch error: {e} | Query: {query[:100]}... | Params: {params}", exc_info=True)
-            raise e
+    def fetch_one(
+        self,
+        query: str,
+        params: Optional[Union[Sequence[Any], Mapping[str, Any], Any]] = None,
+    ) -> Optional[dict[str, Any]]:
+        prepared = self._prepare_params(params)
+        if prepared is None:
+            self.cursor.execute(query)
+        else:
+            self.cursor.execute(query, prepared)
+        row = self.cursor.fetchone()
+        return dict(row) if row is not None else None
 
-    def close(self):
-        """
-        Close the database connection.
-        """
-        self.connection.close()
-        logger.debug("Database connection closed.")
+    def fetch_all(
+        self,
+        query: str,
+        params: Optional[Union[Sequence[Any], Mapping[str, Any], Any]] = None,
+    ) -> list[dict[str, Any]]:
+        prepared = self._prepare_params(params)
+        if prepared is None:
+            self.cursor.execute(query)
+        else:
+            self.cursor.execute(query, prepared)
+        rows = self.cursor.fetchall()
+        return [dict(row) for row in rows]
 
-    def __enter__(self):
-        """
-        Context management entry.
-        :return: The instance itself for use in `with` statements.
-        """
+    # -- Lifetime management -------------------------------------------------
+    def close(self) -> None:
+        if getattr(self, "connection", None):
+            self.connection.close()
+            logger.debug("SQLite connection closed")
+            self.connection = None  # type: ignore[assignment]
+            self.cursor = None  # type: ignore[assignment]
+
+    def __enter__(self) -> "DatabaseHandler":
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """
-        Context management exit.
-        Automatically closes the database connection.
-        """
-        self.close()
-
-    def get_exercise_details(self, exercise_name):
-        query = """
-        SELECT 
-            primary_muscle_group,
-            secondary_muscle_group,
-            tertiary_muscle_group,
-            advanced_isolated_muscles,
-            utility,
-            grips,
-            stabilizers,
-            synergists
-        FROM exercises 
-        WHERE exercise_name = ?
-        """
-
-    def add_progression_goals_table(self):
-        """Add progression_goals table if it doesn't exist."""
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         try:
-            self.execute_query("""
-                CREATE TABLE IF NOT EXISTS progression_goals (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    exercise TEXT NOT NULL,
-                    goal_type TEXT NOT NULL,
-                    current_value REAL,
-                    target_value REAL,
-                    goal_date DATE NOT NULL,
-                    created_at DATETIME NOT NULL,
-                    completed BOOLEAN DEFAULT 0,
-                    completed_at DATETIME
-                )
-            """)
-            logger.info("Progression goals table created successfully")
-        except sqlite3.Error as e:
-            logger.error(f"Error creating progression_goals table: {e}", exc_info=True)
-            raise e
+            if getattr(self, "connection", None):
+                if exc_type:
+                    self.connection.rollback()
+                else:
+                    self.connection.commit()
+        finally:
+            self.close()
 
-def initialize_database():
-    """Initialize the database with required tables."""
-    with DatabaseHandler() as db:
-        # Create exercises table
-        db.execute_query("""
-            CREATE TABLE IF NOT EXISTS exercises (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                exercise_name TEXT UNIQUE NOT NULL,
-                primary_muscle_group TEXT,
-                secondary_muscle_group TEXT,
-                tertiary_muscle_group TEXT,
-                advanced_isolated_muscles TEXT,
-                utility TEXT,
-                grips TEXT,
-                stabilizers TEXT,
-                synergists TEXT,
-                force TEXT,
-                equipment TEXT,
-                mechanic TEXT,
-                difficulty TEXT
-            )
-        """)
+    # -- Internal helpers ---------------------------------------------------
+    @staticmethod
+    def _prepare_params(
+        params: Optional[Union[Sequence[Any], Mapping[str, Any], Any]],
+        *,
+        for_many: bool = False,
+    ) -> Optional[Union[Sequence[Any], Mapping[str, Any]]]:
+        if params is None:
+            return () if for_many else None
+        if isinstance(params, Mapping):
+            return params
+        if isinstance(params, Sequence) and not isinstance(params, (str, bytes, bytearray)):
+            return tuple(params)
+        return (params,)
 
-        # Create user_selection table
-        db.execute_query("""
-            CREATE TABLE IF NOT EXISTS user_selection (
+    # -- Convenience DDL helpers --------------------------------------------
+    def add_progression_goals_table(self) -> None:
+        """Ensure the progression_goals table exists."""
+        ddl = """
+            CREATE TABLE IF NOT EXISTS progression_goals (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                routine TEXT NOT NULL,
                 exercise TEXT NOT NULL,
-                sets INTEGER NOT NULL,
-                min_rep_range INTEGER NOT NULL,
-                max_rep_range INTEGER NOT NULL,
-                rir INTEGER DEFAULT 0,
-                rpe REAL,
-                weight REAL NOT NULL,
-                FOREIGN KEY (exercise) REFERENCES exercises(exercise_name) ON DELETE CASCADE
+                goal_type TEXT NOT NULL,
+                current_value REAL,
+                target_value REAL,
+                goal_date DATE NOT NULL,
+                created_at DATETIME NOT NULL,
+                completed BOOLEAN DEFAULT 0,
+                completed_at DATETIME
             )
-        """)
-
-        # Create workout_log table
-        db.execute_query("""
-            CREATE TABLE IF NOT EXISTS workout_log (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                routine TEXT,
-                exercise TEXT,
-                planned_sets INTEGER,
-                planned_min_reps INTEGER,
-                planned_max_reps INTEGER,
-                planned_rir INTEGER,
-                planned_rpe REAL,
-                planned_weight REAL,
-                scored_min_reps INTEGER,
-                scored_max_reps INTEGER,
-                scored_rir INTEGER,
-                scored_rpe REAL,
-                scored_weight REAL,
-                last_progression_date DATE,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                workout_plan_id INTEGER,
-                FOREIGN KEY (workout_plan_id) REFERENCES user_selection(id) ON DELETE CASCADE
-            )
-        """)
-        
-        # Create progression_goals table
-        db.add_progression_goals_table()
-
-def add_rpe_column():
-    """Add RPE column to existing tables if it doesn't exist."""
-    alter_queries = [
         """
-        ALTER TABLE user_selection 
-        ADD COLUMN rpe REAL;
-        """,
-        """
-        ALTER TABLE workout_log
-        ADD COLUMN planned_rpe REAL;
-        """
-    ]
+        self.execute_query(ddl)
 
-    with DatabaseHandler() as db_handler:
-        for query in alter_queries:
-            try:
-                db_handler.execute_query(query)
-                logger.info(f"Added RPE column: {query[:100]}...")
-            except sqlite3.OperationalError as e:
-                if "duplicate column name" not in str(e).lower():
-                    logger.error(f"Error adding RPE column: {e}", exc_info=True)
-                    raise e
 
-def add_progression_goals_table():
-    """Add progression_goals table if it doesn't exist."""
+def add_progression_goals_table() -> None:
+    """Module-level helper to create the progression goals table."""
     with DatabaseHandler() as db:
         db.add_progression_goals_table()
 
-def add_volume_tracking_tables():
-    """Add tables for volume tracking"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    # Volume Plans table
-    cursor.execute('''
+
+def add_volume_tracking_tables() -> None:
+    """Ensure the volume tracking supporting tables exist."""
+    ddl_volume_plans = """
         CREATE TABLE IF NOT EXISTS volume_plans (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             training_days INTEGER NOT NULL,
             created_at DATETIME NOT NULL
         )
-    ''')
-    
-    # Muscle Volumes table
-    cursor.execute('''
+    """
+    ddl_muscle_volumes = """
         CREATE TABLE IF NOT EXISTS muscle_volumes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             plan_id INTEGER NOT NULL,
@@ -260,7 +244,7 @@ def add_volume_tracking_tables():
             status TEXT NOT NULL,
             FOREIGN KEY (plan_id) REFERENCES volume_plans (id) ON DELETE CASCADE
         )
-    ''')
-    
-    conn.commit()
-    conn.close()
+    """
+    with DatabaseHandler() as db:
+        db.execute_query(ddl_volume_plans)
+        db.execute_query(ddl_muscle_volumes)

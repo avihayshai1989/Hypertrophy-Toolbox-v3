@@ -34,6 +34,24 @@ Design your workout plan using science, all the toolbox you need in order to des
 
 6. Open your browser and navigate to `http://localhost:5000`
 
+## 🧭 Operations Runbook
+
+1. **Create and activate a virtual environment** (see steps above) and install dependencies with `pip install -r requirements.txt`.
+2. **Point the app at the container-mounted database** by exporting `DB_FILE=/mnt/data/database.db`. On PowerShell use ` $Env:DB_FILE = "C:\\mnt\\data\\database.db" ` for the current session.
+3. **Initialize the schema**:
+   ```bash
+   python -c "from utils.db_initializer import initialize_database; initialize_database()"
+   ```
+4. **Populate the isolated muscle junction table** (idempotent and safe to rerun):
+   ```bash
+   python scripts/migrate_isolated_muscles.py
+   ```
+5. **Start the Flask service** with `python app.py`.
+6. **Smoke test**:
+   - `/get_unique_values/exercises/advanced_isolated_muscles` returns canonical muscles from the junction table.
+   - Weekly/session summary pages show weighted sets with clean volume buckets.
+7. **Rollback plan**: restore the most recent `database.backup-<timestamp>.sqlite` created during migrations and rerun steps 3-5.
+
 ## 📚 Documentation
 
 For comprehensive documentation, see the [`docs/`](docs/) folder:
@@ -44,6 +62,8 @@ For comprehensive documentation, see the [`docs/`](docs/) folder:
 - **[Consolidation Summary](docs/PRIORITY5_CONSOLIDATION_SUMMARY.md)** - Codebase consolidation details
 - **[Test Results](docs/PRIORITY5_TEST_RESULTS.md)** - Test coverage and results
 - **[Dependency Optimization](docs/PRIORITY9_DEPENDENCY_OPTIMIZATION.md)** - Dependency hygiene & slimming analysis
+- **[Backend Refactor Roadmap](docs/BACKEND_REFACTOR_TODO.md)** - Current security/export stabilization and normalization plan
+- **Export Behavior** - Summary endpoints always return a valid Excel workbook, even when no data is available, with a "No Data" tab that explains the situation.
 
 ## ✨ Features
 
@@ -52,7 +72,8 @@ For comprehensive documentation, see the [`docs/`](docs/) folder:
 - **Workout Logging** - Track actual performance vs. planned workouts
 - **Analytics** - Weekly and session summaries with data visualization
 - **Volume Management** - Volume splitting and distribution tools
-- **Data Export** - Export to Excel and workout log
+- **Data Export** - Export to Excel and workout log (summary exports return a valid empty workbook if no data is available)
+   - Summary exports always include a `No Data` worksheet when there are no results.
 - **Dark Mode** - System-aware theme with smooth transitions
 - **Modern UI** - 2025-refreshed design with accessibility features
 - **Responsive Tables** - Zoom-friendly, adaptive tables with column prioritization

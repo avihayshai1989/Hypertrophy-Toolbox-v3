@@ -1,93 +1,369 @@
+"""Database bootstrap helpers used at application start and in tests."""
+from __future__ import annotations
+
+import os
 import sqlite3
-from utils.config import DB_FILE
-from .database import DatabaseHandler
+from pathlib import Path
 
-def initialize_exercises_table():
-    """Create the exercises table if it doesn't exist."""
-    query = """
-    CREATE TABLE IF NOT EXISTS exercises (
-        exercise_name TEXT PRIMARY KEY,
-        primary_muscle_group TEXT,
-        secondary_muscle_group TEXT,
-        tertiary_muscle_group TEXT,
-        advanced_isolated_muscles TEXT,
-        utility TEXT,
-        grips TEXT,
-        stabilizers TEXT,
-        synergists TEXT,
-        force TEXT,
-        equipment TEXT,
-        mechanic TEXT,
-        difficulty TEXT
-    );
-    """
-    try:
-        with DatabaseHandler() as db:
-            db.execute_query(query)
-            print("Exercises table initialized successfully")
-    except Exception as e:
-        print(f"Error initializing exercises table: {e}")
+from utils.database import DatabaseHandler
+from utils.logger import get_logger
+from utils.normalization import normalize_equipment, normalize_muscle
 
-def initialize_user_selection_table():
-    """Create the user_selection table if it doesn't exist."""
-    query = """
-    CREATE TABLE IF NOT EXISTS user_selection (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        routine TEXT NOT NULL,
-        exercise TEXT NOT NULL,
-        sets INTEGER NOT NULL,
-        min_rep_range INTEGER NOT NULL,
-        max_rep_range INTEGER NOT NULL,
-        rir INTEGER,
-        rpe REAL,
-        weight REAL NOT NULL,
-        UNIQUE (routine, exercise, sets, min_rep_range, max_rep_range, rir, rpe, weight)
-    );
-    """
-    try:
-        with DatabaseHandler() as db:
-            db.execute_query(query)
-            print("User selection table initialized successfully")
-    except Exception as e:
-        print(f"Error initializing user selection table: {e}")
+logger = get_logger()
 
-def initialize_workout_log_table():
-    """Create the workout_log table if it doesn't exist."""
-    query = """
-    CREATE TABLE IF NOT EXISTS workout_log (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        workout_plan_id INTEGER,
-        routine TEXT NOT NULL,
-        exercise TEXT NOT NULL,
-        planned_sets INTEGER,
-        planned_min_reps INTEGER,
-        planned_max_reps INTEGER,
-        planned_rir INTEGER,
-        planned_rpe REAL,
-        planned_weight REAL,
-        scored_weight REAL,
-        scored_min_reps INTEGER,
-        scored_max_reps INTEGER,
-        scored_rir INTEGER,
-        scored_rpe REAL,
-        last_progression_date TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (workout_plan_id) REFERENCES user_selection(id)
-    );
-    """
-    try:
-        with DatabaseHandler() as db:
-            db.execute_query(query)
-            print("Workout log table initialized successfully")
-    except Exception as e:
-        print(f"Error initializing workout log table: {e}")
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SEED_DB_PATH = REPO_ROOT / "data" / "Database_backup" / "database.db"
+MIN_EXERCISE_ROWS = 100
 
-def initialize_database():
-    """Initialize all database tables."""
+
+def _initialize_exercises_table(db: DatabaseHandler) -> None:
+    existing = db.fetch_all(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='exercises'"
+    )
+    if existing:
+        cols = db.fetch_all("PRAGMA table_info(exercises)")
+        pk_column = next((row['name'] for row in cols if row.get('pk') == 1), None)
+        if pk_column != 'exercise_name':
+            db.execute_query("DROP TABLE IF EXISTS exercises")
+
+    db.execute_query(
+        """
+        CREATE TABLE IF NOT EXISTS exercises (
+            exercise_name TEXT PRIMARY KEY,
+            primary_muscle_group TEXT,
+            secondary_muscle_group TEXT,
+            tertiary_muscle_group TEXT,
+            advanced_isolated_muscles TEXT,
+            utility TEXT,
+            grips TEXT,
+            stabilizers TEXT,
+            synergists TEXT,
+            force TEXT,
+            equipment TEXT,
+            mechanic TEXT,
+            difficulty TEXT
+        )
+        """
+    )
+    db.execute_query(
+        """
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_exercise_name_nocase
+        ON exercises(exercise_name COLLATE NOCASE)
+        """
+    )
+
+
+def _initialize_isolated_muscles_table(db: DatabaseHandler) -> None:
+    existing = db.fetch_all(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='exercise_isolated_muscles'"
+    )
+    if existing:
+        columns = {
+            row['name'] for row in db.fetch_all("PRAGMA table_info(exercise_isolated_muscles)")
+        }
+        fk_info = db.fetch_all("PRAGMA foreign_key_list(exercise_isolated_muscles)")
+        expected_columns = {'exercise_name', 'muscle'}
+        fk_valid = bool(
+            fk_info
+            and fk_info[0].get('table') == 'exercises'
+            and fk_info[0].get('from') == 'exercise_name'
+            and fk_info[0].get('to') == 'exercise_name'
+        )
+        if columns != expected_columns or not fk_valid:
+            db.execute_query("DROP TABLE IF EXISTS exercise_isolated_muscles")
+
+    db.execute_query(
+        """
+        CREATE TABLE IF NOT EXISTS exercise_isolated_muscles (
+            exercise_name TEXT NOT NULL,
+            muscle TEXT NOT NULL,
+            PRIMARY KEY (exercise_name, muscle),
+            FOREIGN KEY (exercise_name) REFERENCES exercises(exercise_name) ON DELETE CASCADE
+        )
+        """
+    )
+    db.execute_query(
+        """
+        CREATE INDEX IF NOT EXISTS idx_eim_muscle
+        ON exercise_isolated_muscles(muscle)
+        """
+    )
+
+
+def _initialize_user_selection_table(db: DatabaseHandler) -> None:
+    if os.getenv("TESTING") == "1":
+        db.execute_query("DROP TABLE IF EXISTS user_selection")
+    else:
+        existing = db.fetch_all(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='user_selection'"
+        )
+        if existing:
+            fk_info = db.fetch_all("PRAGMA foreign_key_list(user_selection)")
+            exercise_fk = next(
+                (
+                    row
+                    for row in fk_info
+                    if row.get('from') == 'exercise'
+                    and row.get('table') == 'exercises'
+                    and row.get('to') == 'exercise_name'
+                ),
+                None,
+            )
+            cascade_ok = exercise_fk and exercise_fk.get('on_delete', '').upper() == 'CASCADE'
+            if not cascade_ok:
+                db.execute_query("DROP TABLE IF EXISTS user_selection")
+
+    db.execute_query(
+        """
+        CREATE TABLE IF NOT EXISTS user_selection (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            routine TEXT NOT NULL,
+            exercise TEXT NOT NULL,
+            sets INTEGER NOT NULL,
+            min_rep_range INTEGER NOT NULL,
+            max_rep_range INTEGER NOT NULL,
+            rir INTEGER,
+            rpe REAL,
+            weight REAL NOT NULL,
+            FOREIGN KEY (exercise) REFERENCES exercises(exercise_name) ON DELETE CASCADE,
+            UNIQUE (routine, exercise, sets, min_rep_range, max_rep_range, rir, rpe, weight)
+        )
+        """
+    )
+    db.execute_query(
+        """
+        CREATE INDEX IF NOT EXISTS idx_user_selection_exercise
+        ON user_selection(exercise)
+        """
+    )
+
+
+def _initialize_workout_log_table(db: DatabaseHandler) -> None:
+    if os.getenv("TESTING") == "1":
+        db.execute_query("DROP TABLE IF EXISTS workout_log")
+    else:
+        existing = db.fetch_all(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='workout_log'"
+        )
+        if existing:
+            fk_info = db.fetch_all("PRAGMA foreign_key_list(workout_log)")
+            plan_fk = next(
+                (
+                    row
+                    for row in fk_info
+                    if row.get('from') == 'workout_plan_id'
+                    and row.get('table') == 'user_selection'
+                    and row.get('to') == 'id'
+                ),
+                None,
+            )
+            cascade_ok = plan_fk and plan_fk.get('on_delete', '').upper() == 'CASCADE'
+            if not cascade_ok:
+                db.execute_query("DROP TABLE IF EXISTS workout_log")
+
+    db.execute_query(
+        """
+        CREATE TABLE IF NOT EXISTS workout_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            workout_plan_id INTEGER,
+            routine TEXT NOT NULL,
+            exercise TEXT NOT NULL,
+            planned_sets INTEGER,
+            planned_min_reps INTEGER,
+            planned_max_reps INTEGER,
+            planned_rir INTEGER,
+            planned_rpe REAL,
+            planned_weight REAL,
+            scored_weight REAL,
+            scored_min_reps INTEGER,
+            scored_max_reps INTEGER,
+            scored_rir INTEGER,
+            scored_rpe REAL,
+            last_progression_date TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (workout_plan_id) REFERENCES user_selection(id) ON DELETE CASCADE
+        )
+        """
+    )
+
+
+def _seed_exercises_from_backup_if_needed(db: DatabaseHandler) -> None:
+    """Populate the exercises catalogue from the canonical backup when empty."""
+    if os.getenv("TESTING") == "1":
+        logger.debug("Skipping seed from backup while TESTING flag is set")
+        return
+
     try:
-        initialize_exercises_table()
-        initialize_user_selection_table()
-        initialize_workout_log_table()
-        print("All database tables initialized successfully")
-    except Exception as e:
-        print(f"Error during database initialization: {e}")
+        row = db.fetch_one("SELECT COUNT(*) AS count FROM exercises")
+        existing_count = int(row["count"]) if row and row.get("count") is not None else 0
+    except sqlite3.Error:
+        logger.exception("Unable to inspect exercises table for seeding")
+        return
+
+    if existing_count >= MIN_EXERCISE_ROWS:
+        logger.debug("Exercises catalogue already populated (%s rows)", existing_count)
+        return
+
+    if not SEED_DB_PATH.exists():
+        logger.warning("Seed database missing at %s; skipping automatic restore", SEED_DB_PATH)
+        return
+
+    logger.info("Seeding exercises catalogue from backup (existing rows: %s)", existing_count)
+    attached = False
+    columns = (
+        "exercise_name",
+        "primary_muscle_group",
+        "secondary_muscle_group",
+        "tertiary_muscle_group",
+        "advanced_isolated_muscles",
+        "utility",
+        "grips",
+        "stabilizers",
+        "synergists",
+        "force",
+        "equipment",
+        "mechanic",
+        "difficulty",
+    )
+    column_list = ", ".join(columns)
+
+    try:
+        db.execute_query("ATTACH DATABASE ? AS seed_db", (str(SEED_DB_PATH),))
+        attached = True
+        db.execute_query(
+            f"INSERT OR IGNORE INTO exercises ({column_list}) "
+            f"SELECT {column_list} FROM seed_db.exercises"
+        )
+        isolated_exists = db.fetch_one(
+            "SELECT name FROM seed_db.sqlite_master WHERE type='table' AND name='exercise_isolated_muscles'"
+        )
+        if isolated_exists:
+            db.execute_query(
+                "INSERT OR IGNORE INTO exercise_isolated_muscles (exercise_name, muscle) "
+                "SELECT exercise_name, muscle FROM seed_db.exercise_isolated_muscles"
+            )
+        else:
+            logger.debug("Seed database missing exercise_isolated_muscles table; skipping copy")
+    except sqlite3.Error:
+        logger.exception("Failed to seed exercises from backup database")
+    finally:
+        if attached:
+            try:
+                db.execute_query("DETACH DATABASE seed_db")
+            except sqlite3.Error:
+                logger.exception("Failed to detach seed database after seeding attempt")
+
+    try:
+        row = db.fetch_one("SELECT COUNT(*) AS count FROM exercises")
+        final_count = int(row["count"]) if row and row.get("count") is not None else existing_count
+        isolated_row = db.fetch_one("SELECT COUNT(*) AS count FROM exercise_isolated_muscles")
+        isolated_count = int(isolated_row["count"]) if isolated_row and isolated_row.get("count") is not None else 0
+        logger.info(
+            "Exercises catalogue now holds %s rows (%s isolated muscle mappings)",
+            final_count,
+            isolated_count,
+        )
+    except sqlite3.Error:
+        logger.exception("Unable to confirm row counts after seeding")
+
+
+def _normalize_equipment_values(db: DatabaseHandler) -> None:
+    """Ensure equipment values align with canonical normalization rules."""
+    try:
+        rows = db.fetch_all(
+            "SELECT DISTINCT TRIM(equipment) AS equipment FROM exercises "
+            "WHERE equipment IS NOT NULL AND TRIM(equipment) <> ''"
+        )
+    except sqlite3.Error:
+        logger.exception("Failed to read distinct equipment values for normalization")
+        return
+
+    if not rows:
+        return
+
+    changes = 0
+    for row in rows:
+        original = row.get("equipment")
+        if not original:
+            continue
+        normalised = normalize_equipment(original)
+        if normalised is None or normalised == original:
+            continue
+        try:
+            db.execute_query(
+                "UPDATE exercises SET equipment = ? WHERE equipment = ?",
+                (normalised, original),
+            )
+            changes += 1
+        except sqlite3.Error:
+            logger.exception("Failed to normalise equipment value '%s'", original)
+
+    if changes:
+        logger.info("Normalised %s equipment label%s", changes, "s" if changes != 1 else "")
+
+
+def _normalize_muscle_group_values(db: DatabaseHandler) -> None:
+    """Standardise muscle group columns to canonical casing and aliases."""
+    muscle_columns = (
+        "primary_muscle_group",
+        "secondary_muscle_group",
+        "tertiary_muscle_group",
+    )
+
+    for column in muscle_columns:
+        try:
+            rows = db.fetch_all(
+                f"SELECT exercise_name, {column} FROM exercises "
+                f"WHERE {column} IS NOT NULL AND TRIM({column}) <> ''"
+            )
+        except sqlite3.Error:
+            logger.exception("Failed to read values for column '%s'", column)
+            continue
+
+        if not rows:
+            continue
+
+        updates = 0
+        for row in rows:
+            original = row.get(column)
+            if not original:
+                continue
+
+            normalised = normalize_muscle(original)
+            if normalised is None or normalised == original:
+                continue
+
+            try:
+                db.execute_query(
+                    f"UPDATE exercises SET {column} = ? WHERE exercise_name = ?",
+                    (normalised, row.get("exercise_name")),
+                )
+                updates += 1
+            except sqlite3.Error:
+                logger.exception(
+                    "Failed to normalise %s value '%s' -> '%s' for exercise '%s'",
+                    column,
+                    original,
+                    normalised,
+                    row.get("exercise_name"),
+                )
+
+        if updates:
+            logger.info(
+                "Normalised %s %s value%s",
+                updates,
+                column,
+                "s" if updates != 1 else "",
+            )
+
+
+def initialize_database() -> None:
+    """Initialise all required tables and supporting indexes."""
+    with DatabaseHandler() as db:
+        _initialize_exercises_table(db)
+        _initialize_isolated_muscles_table(db)
+        _initialize_user_selection_table(db)
+        _initialize_workout_log_table(db)
+        _seed_exercises_from_backup_if_needed(db)
+        _normalize_equipment_values(db)
+        _normalize_muscle_group_values(db)

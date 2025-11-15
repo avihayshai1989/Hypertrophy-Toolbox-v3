@@ -7,6 +7,7 @@ from utils.exercise_manager import (
 from utils.errors import success_response, error_response
 from utils.logger import get_logger
 from routes.filters import ALLOWED_COLUMNS, validate_column_name
+from utils.constants import DIFFICULTY, FORCE, MECHANIC, UTILITY
 
 workout_plan_bp = Blueprint('workout_plan', __name__)
 logger = get_logger()
@@ -24,11 +25,53 @@ def fetch_unique_values(column):
         logger.warning(f"Column not found in whitelist: {column}")
         return []
     
-    query = f"SELECT DISTINCT {safe_column} FROM exercises WHERE {safe_column} IS NOT NULL ORDER BY {safe_column} ASC"
+    enum_map = {
+        'force': sorted(set(FORCE.values())),
+        'mechanic': sorted(set(MECHANIC.values())),
+        'utility': sorted(set(UTILITY.values())),
+        'difficulty': sorted(set(DIFFICULTY.values())),
+    }
+
     try:
         with DatabaseHandler() as db:
-            results = db.fetch_all(query)
-            return [row[safe_column] for row in results if row.get(safe_column)]
+            if safe_column in enum_map:
+                return enum_map[safe_column]
+
+            if safe_column == 'advanced_isolated_muscles':
+                rows = db.fetch_all(
+                    "SELECT DISTINCT muscle FROM exercise_isolated_muscles ORDER BY muscle"
+                )
+                return [row['muscle'] for row in rows]
+
+            if safe_column in {
+                'primary_muscle_group',
+                'secondary_muscle_group',
+                'tertiary_muscle_group',
+            }:
+                query = (
+                    f"SELECT DISTINCT {safe_column} AS value FROM exercises "
+                    f"WHERE {safe_column} IS NOT NULL AND TRIM({safe_column}) <> '' "
+                    f"ORDER BY {safe_column}"
+                )
+                rows = db.fetch_all(query)
+                return [row['value'] for row in rows]
+
+            if safe_column == 'equipment':
+                query = (
+                    f"SELECT DISTINCT TRIM({safe_column}) AS value FROM exercises "
+                    f"WHERE {safe_column} IS NOT NULL AND TRIM({safe_column}) <> '' "
+                    f"ORDER BY value"
+                )
+                rows = db.fetch_all(query)
+                return [row['value'] for row in rows if row.get('value')]
+
+            query = (
+                f"SELECT DISTINCT {safe_column} AS value FROM exercises "
+                f"WHERE {safe_column} IS NOT NULL AND TRIM({safe_column}) <> '' "
+                f"ORDER BY {safe_column}"
+            )
+            rows = db.fetch_all(query)
+            return [row['value'] for row in rows if row.get('value')]
     except Exception as e:
         logger.error(f"Error fetching unique values for {column}: {e}", exc_info=True)
         return []

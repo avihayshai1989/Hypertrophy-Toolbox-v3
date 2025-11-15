@@ -74,8 +74,19 @@ class FilterPredicates:
             if not value:  # Skip empty values
                 continue
             
+            # Special handling for advanced_isolated_muscles - use mapping table
+            if field == "advanced_isolated_muscles":
+                conditions.append("""
+                    EXISTS (
+                        SELECT 1
+                        FROM exercise_isolated_muscles m
+                        WHERE m.exercise_name = exercises.exercise_name
+                          AND m.muscle LIKE ?
+                    )
+                """)
+                params.append(f"%{value}%")
             # Use LIKE for partial matching fields, exact match for others
-            if field in cls.PARTIAL_MATCH_FIELDS:
+            elif field in cls.PARTIAL_MATCH_FIELDS:
                 conditions.append(f"{field} LIKE ?")
                 params.append(f"%{value}%")
             else:

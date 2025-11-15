@@ -3,6 +3,7 @@ from utils.filter_predicates import FilterPredicates
 from utils.database import DatabaseHandler
 from utils.errors import success_response, error_response
 from utils.logger import get_logger
+from utils.constants import DIFFICULTY, FORCE, MECHANIC, UTILITY
 
 filters_bp = Blueprint('filters', __name__)
 logger = get_logger()
@@ -67,6 +68,14 @@ def validate_column_name(column: str) -> bool:
     """Validate that column name is in whitelist."""
     return column.lower() in {k.lower(): v for k, v in ALLOWED_COLUMNS.items()}
 
+
+ENUM_VALUE_MAP = {
+    'force': sorted(set(FORCE.values())),
+    'mechanic': sorted(set(MECHANIC.values())),
+    'utility': sorted(set(UTILITY.values())),
+    'difficulty': sorted(set(DIFFICULTY.values())),
+}
+
 @filters_bp.route("/filter_exercises", methods=["POST"])
 def filter_exercises():
     try:
@@ -83,7 +92,7 @@ def filter_exercises():
             
             #  NEW CODE VERIFICATION: Check if field is in mapping
             if db_field is None:
-                logger.warning(f"🔴 NEW CODE: Unknown filter field rejected: {key}")
+                logger.warning(f"New code guard: unknown filter field rejected: {key}")
                 return error_response("VALIDATION_ERROR", f"Invalid filter column: {key}", 400)
             
             if value:  # Only include non-empty values
@@ -134,10 +143,48 @@ def get_unique_values(table, column):
             return error_response("VALIDATION_ERROR", "Invalid table or column", 400)
         
         # Use parameterized query with safe names
-        query = f"SELECT DISTINCT {safe_column} FROM {safe_table} WHERE {safe_column} IS NOT NULL ORDER BY {safe_column} ASC"
         with DatabaseHandler() as db:
+            if safe_table == 'exercises' and safe_column == 'advanced_isolated_muscles':
+                records = db.fetch_all(
+                    "SELECT DISTINCT muscle FROM exercise_isolated_muscles ORDER BY muscle"
+                )
+                values = [row['muscle'] for row in records]
+                return jsonify(success_response(data=values))
+
+            if safe_column in ENUM_VALUE_MAP:
+                return jsonify(success_response(data=ENUM_VALUE_MAP[safe_column]))
+
+            if safe_column in {
+                'primary_muscle_group',
+                'secondary_muscle_group',
+                'tertiary_muscle_group',
+            }:
+                query = (
+                    f"SELECT DISTINCT {safe_column} AS value FROM {safe_table} "
+                    f"WHERE {safe_column} IS NOT NULL AND TRIM({safe_column}) <> '' "
+                    f"ORDER BY {safe_column}"
+                )
+                rows = db.fetch_all(query)
+                values = [row['value'] for row in rows]
+                return jsonify(success_response(data=values))
+
+            if safe_column == 'equipment':
+                query = (
+                    f"SELECT DISTINCT TRIM({safe_column}) AS value FROM {safe_table} "
+                    f"WHERE {safe_column} IS NOT NULL AND TRIM({safe_column}) <> '' "
+                    f"ORDER BY value"
+                )
+                rows = db.fetch_all(query)
+                values = [row['value'] for row in rows if row.get('value')]
+                return jsonify(success_response(data=values))
+
+            query = (
+                f"SELECT DISTINCT {safe_column} AS value FROM {safe_table} "
+                f"WHERE {safe_column} IS NOT NULL AND TRIM({safe_column}) <> '' "
+                f"ORDER BY {safe_column}"
+            )
             results = db.fetch_all(query)
-            values = [row[safe_column] for row in results if row.get(safe_column)]
+            values = [row['value'] for row in results if row.get('value')]
             return jsonify(success_response(data=values))
     except Exception as e:
         logger.exception(f"Error fetching unique values for {table}.{column}")
@@ -166,8 +213,20 @@ def get_filtered_exercises():
             
             if value:
                 safe_column = ALLOWED_COLUMNS.get(field.lower())
-                query += f" AND {safe_column} LIKE ?"
-                params.append(f"%{value}%")
+                # Special handling for advanced_isolated_muscles - use mapping table
+                if safe_column == "advanced_isolated_muscles":
+                    query += """
+                        AND EXISTS (
+                            SELECT 1
+                            FROM exercise_isolated_muscles m
+                            WHERE m.exercise_name = exercises.exercise_name
+                              AND m.muscle LIKE ?
+                        )
+                    """
+                    params.append(f"%{value}%")
+                else:
+                    query += f" AND {safe_column} LIKE ?"
+                    params.append(f"%{value}%")
                 
         query += " ORDER BY exercise_name ASC"
         

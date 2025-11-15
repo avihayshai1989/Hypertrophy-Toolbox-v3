@@ -16,9 +16,28 @@ session_summary_bp = Blueprint('session_summary', __name__)
 
 @session_summary_bp.route("/session_summary", methods=["GET"])
 def session_summary():
-    method = request.args.get("method", "Total")
+    routine = request.args.get("routine")
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+    time_window = (start_date, end_date) if (start_date or end_date) else None
     try:
-        results = calculate_session_summary(method)
+        summary_map = calculate_session_summary(routine=routine, time_window=time_window)
+        results = [
+            {
+                'routine': routine_name,
+                'muscle_group': muscle,
+                'weekly_sets': data['weekly_sets'],
+                'sets_per_session': data['sets_per_session'],
+                'status': data['status'],
+                'volume_class': data['volume_class'],
+                'total_sets': data['weekly_sets'],
+                'total_reps': data['total_reps'],
+                'total_volume': data['total_volume'],
+                'weight': 0,
+            }
+            for routine_name, muscles in summary_map.items()
+            for muscle, data in muscles.items()
+        ]
         category_results = calculate_exercise_categories()
         isolated_muscles_stats = calculate_isolated_muscles_stats()
         

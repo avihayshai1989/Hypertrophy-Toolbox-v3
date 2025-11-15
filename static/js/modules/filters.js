@@ -1,5 +1,12 @@
 import { showToast } from './toast.js';
 
+const FILTERS_DEBUG = false;
+const filtersDebugLog = (...args) => {
+    if (FILTERS_DEBUG) {
+        console.log(...args);
+    }
+};
+
 /**
  * Helper function to handle standardized API responses
  * @param {Response} response - Fetch response object
@@ -30,12 +37,13 @@ export async function filterExercises(preserveSelection = false) {
         filterElements.forEach(select => {
             // Exclude exercise dropdown and routine dropdown from filters sent to backend
             // Routine is handled separately - it's not a property of exercises
+            const filterKey = select.dataset.filterKey || select.id;
             if (select.value && select.id !== 'exercise' && select.id !== 'routine') {
-                filters[select.id] = select.value;
+                filters[filterKey] = select.value;
             }
         });
 
-        console.log("DEBUG: Collected filters:", filters);
+    filtersDebugLog('DEBUG: Collected filters:', filters);
 
         // If no filters are selected, reload all exercises
         if (Object.keys(filters).length === 0) {

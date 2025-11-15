@@ -5,6 +5,12 @@ import pytest
 import json
 from flask import g
 from app import app
+if '__trigger_internal_error' not in app.view_functions:
+
+    @app.route('/__trigger_internal_error')
+    def __trigger_internal_error():
+        raise RuntimeError('forced test error')
+
 from utils.errors import error_response, success_response, is_xhr_request
 from utils.request_id import generate_request_id, get_request_id
 
@@ -59,7 +65,23 @@ class TestErrorHandlers:
         """Test 404 handler returns HTML for browser requests."""
         response = client.get('/nonexistent')
         assert response.status_code == 404
+        assert response.mimetype == 'text/html'
         assert b'<!DOCTYPE html>' in response.data or b'<html' in response.data
+
+    def test_500_json_response(self, client):
+        """Test 500 handler returns JSON for AJAX requests."""
+        response = client.get('/__trigger_internal_error', headers={'Accept': 'application/json'})
+        assert response.status_code == 500
+        data = json.loads(response.data)
+        assert data['ok'] is False
+        assert data['error']['code'] == 'INTERNAL_ERROR'
+
+    def test_500_html_response(self, client):
+        """Test 500 handler returns HTML for browser requests."""
+        response = client.get('/__trigger_internal_error', headers={'Accept': 'text/html'})
+        assert response.status_code == 500
+        assert response.mimetype == 'text/html'
+        assert b'Internal Server Error' in response.data
     
     def test_error_response_helper(self):
         """Test error_response helper function."""

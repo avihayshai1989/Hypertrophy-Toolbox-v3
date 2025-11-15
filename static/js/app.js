@@ -28,6 +28,13 @@ import { initializeProgressionPlan } from './modules/progression-plan.js';
 import { initializeVolumeSplitter } from './modules/volume-splitter.js';
 import { initializeWorkoutDropdowns } from './modules/workout-dropdowns.js';
 
+const APP_DEBUG = false;
+const appDebugLog = (...args) => {
+    if (APP_DEBUG) {
+        console.log(...args);
+    }
+};
+
 // Make certain functions globally available
 window.addExercise = addExercise;
 window.removeExercise = removeExercise;
@@ -54,38 +61,38 @@ initializeWorkoutDropdowns();
 
 // Page initializer functions
 function initializeHomePage() {
-    console.log('Initializing Home page');
+    appDebugLog('Initializing Home page');
     return {
         cleanup: () => {
-            console.log('Cleaning up Home page');
+            appDebugLog('Cleaning up Home page');
         }
     };
 }
 
 function initializeWeeklySummary() {
-    console.log('Initializing Weekly Summary page');
+    appDebugLog('Initializing Weekly Summary page');
     initializeCharts();
     fetchWeeklySummary();
     return {
         cleanup: () => {
-            console.log('Cleaning up Weekly Summary page');
+            appDebugLog('Cleaning up Weekly Summary page');
         }
     };
 }
 
 function initializeSessionSummary() {
-    console.log('Initializing Session Summary page');
+    appDebugLog('Initializing Session Summary page');
     initializeCharts();
     fetchSessionSummary();
     return {
         cleanup: () => {
-            console.log('Cleaning up Session Summary page');
+            appDebugLog('Cleaning up Session Summary page');
         }
     };
 }
 
 function initializeWorkoutPlan() {
-    console.log('Initializing Workout Plan page');
+    appDebugLog('Initializing Workout Plan page');
     initializeFilters();
     initializeFilterKeyboardEvents();
     initializeAdvancedFilters();
@@ -95,13 +102,13 @@ function initializeWorkoutPlan() {
     // fetchWorkoutPlan is already called inside initializeWorkoutPlanHandlers
     return {
         cleanup: () => {
-            console.log('Cleaning up Workout Plan page');
+            appDebugLog('Cleaning up Workout Plan page');
         }
     };
 }
 
 function initializeProgressionPage() {
-    console.log('Initializing Progression Plan page');
+    appDebugLog('Initializing Progression Plan page');
     initializeProgressionPlan();
 }
 
@@ -135,18 +142,18 @@ document.addEventListener("DOMContentLoaded", () => {
     if (initializer) {
         initializer();
     } else {
-        console.log(`No specific initialization for path: ${currentPath}`);
+        appDebugLog(`No specific initialization for path: ${currentPath}`);
     }
 });
 
 function initializeModules() {
     const path = window.location.pathname;
-    console.log(`Initializing modules for path: ${path}`);
+    appDebugLog(`Initializing modules for path: ${path}`);
 
     switch (path) {
         // ... other cases ...
         case '/progression':
-            console.log('Initializing Progression Plan page');
+            appDebugLog('Initializing Progression Plan page');
             initializeProgressionPage();
             break;
     }

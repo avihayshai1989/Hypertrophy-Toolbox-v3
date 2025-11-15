@@ -98,7 +98,7 @@ class TestFilterExercisesWhitelist:
         assert data['ok'] is False
         assert 'error' in data
         assert data['error']['code'] == 'VALIDATION_ERROR'
-        assert 'Invalid filter column' in data['error']['message'].lower()
+        assert 'invalid filter column' in data['error']['message'].lower()
     
     def test_injection_attempt_rejected(self, client):
         """Test that SQL injection attempts in filter values are rejected (even if column is valid)."""
@@ -200,5 +200,5 @@ class TestGetFilteredExercisesWhitelist:
         data = response.get_json()
         assert data['ok'] is False
         assert data['error']['code'] == 'VALIDATION_ERROR'
-        assert 'Invalid filter column' in data['error']['message'].lower()
+        assert 'invalid filter column' in data['error']['message'].lower()
 

@@ -38,9 +38,10 @@
                     <div class="filters dropdown-group">
                         <form id="filters-form" class="row gx-4 gy-3" role="search" aria-label="Filter workout plan exercises">
                             {% for filter_name, filter_options in filters.items() %}
+                            {% set filter_id = filter_name | lower | replace(' ', '_') %}
                             <div class="col-lg-3 col-md-4 col-sm-6">
-                                <label for="{{ filter_name }}" class="form-label">{{ filter_name.replace('_', ' ').capitalize() }}</label>
-                                <select id="{{ filter_name }}" name="{{ filter_name }}" class="form-select uniform-dropdown filter-dropdown" aria-label="{{ filter_name.replace('_', ' ').capitalize() }} filter">
+                                <label for="{{ filter_id }}" class="form-label">{{ filter_name }}</label>
+                                <select id="{{ filter_id }}" name="{{ filter_id }}" data-filter-key="{{ filter_name }}" class="form-select uniform-dropdown filter-dropdown" aria-label="{{ filter_name }} filter">
                                     <option value="">All</option>
                                     {% for option in filter_options %}
                                     <option value="{{ option }}">{{ option }}</option>

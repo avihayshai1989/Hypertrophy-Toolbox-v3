@@ -30,10 +30,12 @@ def get_user_selection():
     JOIN exercises e ON us.exercise = e.exercise_name;
     """
     try:
-        with sqlite3.connect(DB_FILE) as connection:
-            cursor = connection.cursor()
-            cursor.execute(query)
-            results = cursor.fetchall()
+        connection = sqlite3.connect(DB_FILE)
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
+        cursor.execute(query)
+        results = cursor.fetchall()
+        connection.close()
 
         if not results:
             print("DEBUG: No user selection data found.")  # Debugging log
@@ -52,7 +54,7 @@ def get_user_selection():
                 "primary_muscle_group": row["primary_muscle_group"],
                 "secondary_muscle_group": row["secondary_muscle_group"],
                 "tertiary_muscle_group": row["tertiary_muscle_group"],
-                "target_muscles": row["target_muscles"],
+                "advanced_isolated_muscles": row["advanced_isolated_muscles"],
                 "utility": row["utility"],
                 "grips": row["grips"],
                 "stabilizers": row["stabilizers"],

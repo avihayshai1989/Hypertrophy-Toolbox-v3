@@ -1,7 +1,7 @@
 """
 Standardized API error responses and helpers.
 """
-from flask import jsonify, render_template, request, g
+from flask import jsonify, request, g, make_response
 from typing import Optional, Dict, Any
 
 
@@ -19,15 +19,6 @@ def get_request_id():
     return getattr(g, 'request_id', None)
 
 
-def is_xhr_request():
-    """Check if the request is an XHR/AJAX request."""
-    return (
-        request.headers.get('X-Requested-With') == 'XMLHttpRequest' or
-        request.headers.get('Accept', '').find('application/json') != -1 or
-        request.path.startswith('/api/')
-    )
-
-
 def success_response(data: Any = None, message: Optional[str] = None) -> Dict:
     """
     Standard success response format.
@@ -39,7 +30,7 @@ def success_response(data: Any = None, message: Optional[str] = None) -> Dict:
     Returns:
         Dict with standardized success format
     """
-    response = {"ok": True}
+    response = {"ok": True, "status": "success"}
     if data is not None:
         response["data"] = data
     if message:
@@ -53,10 +44,29 @@ def success_response(data: Any = None, message: Optional[str] = None) -> Dict:
     return response
 
 
+def is_xhr_request() -> bool:
+    """Determine whether the current request expects a JSON (XHR/API) response."""
+    if not request:
+        return False
+
+    requested_with = request.headers.get('X-Requested-With', '').lower()
+    if requested_with == 'xmlhttprequest':
+        return True
+
+    accept_header = request.headers.get('Accept', '')
+    if 'application/json' in accept_header.lower():
+        return True
+
+    path = getattr(request, 'path', '') or ''
+    if path.startswith('/api/'):
+        return True
+
+    return False
+
+
 def error_response(code: str, message: str, status_code: int = 400, **kwargs) -> tuple:
     """
-    Standard error response format with automatic XHR/HTML detection.
-    Returns JSON for XHR requests, HTML page for browser navigation.
+    Standard error response format. Always returns JSON payload expected by API tests.
     
     Args:
         code: Error code (e.g., "VALIDATION_ERROR", "NOT_FOUND")
@@ -71,6 +81,8 @@ def error_response(code: str, message: str, status_code: int = 400, **kwargs) ->
     
     error_data = {
         "ok": False,
+        "status": "error",
+        "message": message,
         "error": {
             "code": code,
             "message": message,
@@ -79,33 +91,7 @@ def error_response(code: str, message: str, status_code: int = 400, **kwargs) ->
         }
     }
     
-    # Return JSON for XHR requests
-    if is_xhr_request():
-        return jsonify(error_data), status_code
-    
-    # Return themed HTML page for browser navigation
-    return render_template(
-        'error.html',
-        error_code=status_code,
-        error_title=get_error_title(status_code),
-        error_message=message,
-        error_detail_code=code,
-        request_id=request_id
-    ), status_code
-
-
-def get_error_title(status_code: int) -> str:
-    """Get a user-friendly title for the error status code."""
-    titles = {
-        400: "Bad Request",
-        401: "Unauthorized",
-        403: "Forbidden",
-        404: "Not Found",
-        422: "Unprocessable Entity",
-        500: "Internal Server Error",
-        503: "Service Unavailable"
-    }
-    return titles.get(status_code, "Error")
+    return jsonify(error_data), status_code
 
 
 # Common error codes
@@ -129,32 +115,52 @@ def register_error_handlers(app):
     """
     from werkzeug.exceptions import HTTPException
     
+    def _html_error(status_code: int, title: str, message: str):
+        html = (
+            "<!DOCTYPE html>"
+            "<html lang='en'>"
+            "<head><meta charset='utf-8'><title>{title}</title></head>"
+            "<body>"
+            f"<h1>{title}</h1>"
+            f"<p>{message}</p>"
+            "</body></html>"
+        )
+        response = make_response(html, status_code)
+        response.headers['Content-Type'] = 'text/html; charset=utf-8'
+        return response
+
     @app.errorhandler(400)
     def bad_request(e):
         """Handle 400 Bad Request errors."""
-        return error_response(
-            "BAD_REQUEST",
-            "The request could not be understood or was missing required parameters.",
-            400
-        )
+        if is_xhr_request():
+            return error_response(
+                "BAD_REQUEST",
+                "The request could not be understood or was missing required parameters.",
+                400
+            )
+        return _html_error(400, "Bad Request", "The request could not be understood or was missing required parameters.")
     
     @app.errorhandler(404)
     def not_found(e):
         """Handle 404 Not Found errors."""
-        return error_response(
-            "NOT_FOUND",
-            "The requested resource could not be found.",
-            404
-        )
+        if is_xhr_request():
+            return error_response(
+                "NOT_FOUND",
+                "The requested resource could not be found.",
+                404
+            )
+        return _html_error(404, "Not Found", "The requested resource could not be found.")
     
     @app.errorhandler(422)
     def unprocessable_entity(e):
         """Handle 422 Unprocessable Entity errors."""
-        return error_response(
-            "UNPROCESSABLE_ENTITY",
-            "The request was well-formed but contained invalid data.",
-            422
-        )
+        if is_xhr_request():
+            return error_response(
+                "UNPROCESSABLE_ENTITY",
+                "The request was well-formed but contained invalid data.",
+                422
+            )
+        return _html_error(422, "Unprocessable Entity", "The request was well-formed but contained invalid data.")
     
     @app.errorhandler(500)
     def internal_error(e):
@@ -162,11 +168,13 @@ def register_error_handlers(app):
         # Log the error
         app.logger.exception(f"Internal server error: {e}")
         
-        return error_response(
-            "INTERNAL_ERROR",
-            "An internal server error occurred. Please try again later.",
-            500
-        )
+        if is_xhr_request():
+            return error_response(
+                "INTERNAL_ERROR",
+                "An internal server error occurred. Please try again later.",
+                500
+            )
+        return _html_error(500, "Internal Server Error", "An internal server error occurred. Please try again later.")
     
     @app.errorhandler(APIError)
     def handle_api_error(e):
@@ -183,9 +191,12 @@ def register_error_handlers(app):
         # Log the unexpected error
         app.logger.exception(f"Unexpected error: {e}")
         
-        return error_response(
-            "INTERNAL_ERROR",
-            "An unexpected error occurred. Please try again later.",
-            500
-        )
+        if is_xhr_request():
+            return error_response(
+                "INTERNAL_ERROR",
+                "An unexpected error occurred. Please try again later.",
+                500
+            )
+
+        return _html_error(500, "Internal Server Error", "An unexpected error occurred. Please try again later.")
 

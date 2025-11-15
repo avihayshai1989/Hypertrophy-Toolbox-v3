@@ -9,7 +9,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="volume-splitter-container">
+<div id="volume-splitter-app"
+     class="volume-splitter-container"
+     data-basic-muscles='{{ basic_muscle_groups|tojson }}'
+     data-advanced-muscles='{{ advanced_muscle_groups|tojson }}'
+     data-basic-ranges='{{ basic_recommended_ranges|tojson }}'
+     data-advanced-ranges='{{ advanced_recommended_ranges|tojson }}'
+     data-default-mode='{{ default_mode }}'>
     <!-- Header Section -->
     <div class="section-header text-center mb-4">
         <h2>Volume Splitter</h2>
@@ -37,30 +43,19 @@
         <!-- Volume Input Section -->
         <div class="volume-input-section mb-4">
             <h3>Step 2: Muscle Group Volume</h3>
-            <p class="text-muted mb-3">Enter your desired weekly sets for each muscle group</p>
-            
-            <div class="volume-inputs">
-                {% for muscle in muscle_groups %}
-                <div class="volume-input-group">
-                    <label for="{{ muscle|lower }}-volume">{{ muscle }}</label>
-                    <div class="input-group">
-                        <input type="number" 
-                               id="{{ muscle|lower }}-volume" 
-                               class="form-control volume-input"
-                               data-muscle="{{ muscle }}"
-                               min="0" 
-                               value="0"
-                               placeholder="Weekly sets">
-                        <div class="input-group-append">
-                            <span class="input-group-text">sets/week</span>
-                        </div>
-                    </div>
-                    <small class="form-text text-muted">
-                        Recommended: {{ recommended_ranges[muscle]['min'] }}-{{ recommended_ranges[muscle]['max'] }} sets/week
-                    </small>
+            <p class="text-muted mb-3">Adjust the weekly sets for each muscle group. Toggle modes to choose between concise or granular muscle lists.</p>
+
+            <div class="mode-toggle mb-3" role="radiogroup" aria-label="Muscle list detail level">
+                <div class="btn-group" role="group">
+                    <input type="radio" class="btn-check" name="volume-mode" id="mode-basic" value="basic" {% if default_mode == 'basic' %}checked{% endif %}>
+                    <label class="btn btn-outline-primary" for="mode-basic">Basic</label>
+
+                    <input type="radio" class="btn-check" name="volume-mode" id="mode-advanced" value="advanced" {% if default_mode == 'advanced' %}checked{% endif %}>
+                    <label class="btn btn-outline-primary" for="mode-advanced">Advanced</label>
                 </div>
-                {% endfor %}
             </div>
+
+            <div id="sliders" class="volume-sliders"></div>
 
             <div class="volume-controls">
                 <button id="calculate-volume" class="btn btn-primary">

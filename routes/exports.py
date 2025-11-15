@@ -35,13 +35,18 @@ def calculate_volume_for_category(category, muscle_group):
                 e.primary_muscle_group = ? 
                 OR e.secondary_muscle_group = ?
                 OR e.tertiary_muscle_group = ?
-                OR e.advanced_isolated_muscles LIKE ?
+                OR EXISTS (
+                    SELECT 1
+                    FROM exercise_isolated_muscles m
+                    WHERE m.exercise_name = e.exercise_name
+                      AND m.muscle = ?
+                )
             )
             AND scored_weight IS NOT NULL
             AND scored_max_reps IS NOT NULL
             AND planned_sets IS NOT NULL
             """
-            result = db.fetch_one(query, (muscle_group, muscle_group, muscle_group, f"%{muscle_group}%"))
+            result = db.fetch_one(query, (muscle_group, muscle_group, muscle_group, muscle_group))
             return result['total_volume'] if result and result['total_volume'] else 0
     except Exception as e:
         print(f"Error calculating volume: {e}")
@@ -59,11 +64,16 @@ def calculate_frequency_for_category(category, muscle_group):
                 e.primary_muscle_group = ? 
                 OR e.secondary_muscle_group = ?
                 OR e.tertiary_muscle_group = ?
-                OR e.advanced_isolated_muscles LIKE ?
+                OR EXISTS (
+                    SELECT 1
+                    FROM exercise_isolated_muscles m
+                    WHERE m.exercise_name = e.exercise_name
+                      AND m.muscle = ?
+                )
             )
             AND created_at >= date('now', '-7 days')
             """
-            result = db.fetch_one(query, (muscle_group, muscle_group, muscle_group, f"%{muscle_group}%"))
+            result = db.fetch_one(query, (muscle_group, muscle_group, muscle_group, muscle_group))
             return result['frequency'] if result and result['frequency'] else 0
     except Exception as e:
         print(f"Error calculating frequency: {e}")
@@ -358,13 +368,8 @@ def export_summary():
             logger.info(f"Generated {len(categories)} category rows")
         
         if not sheets_data:
-            logger.warning("No data available for export")
-            return error_response(
-                "NO_DATA",
-                "No data available to export",
-                400
-            )
-        
+            logger.warning("No data available for export; returning empty workbook")
+
         # Generate filename with method and timestamp
         base_name = f'workout_summary_{method}'
         filename = generate_timestamped_filename(base_name)
