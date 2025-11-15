@@ -1,0 +1,1733 @@
+exercise_name,primary muscle group,secondary muscle group,tertiary muscle group,force,equipment,mechanic,difficulty,advanced_isolated_muscles
+Barbell Curl,Biceps,,,Pull,Barbell,Isolation,Intermediate,
+Dumbbell Curl,Biceps,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Hammer Curl,Biceps,,,Pull,Dumbbells,Isolation,Novice,
+Barbell Bench Press,Chest,Triceps; Lateral Head Triceps; Medial Head Triceps,Shoulders,Push,Barbell,Compound,Intermediate,Chest; Lateral Head Triceps; Medial Head Triceps
+Box Dips,Chest,Triceps,Shoulders,Push,Bodyweight,Compound,Intermediate,Chest
+Dumbbell Incline Chest Flys,Chest,,,Push,Dumbbells,Isolation,Beginner,Chest
+Barbell Squat,Quads,Glutes,Lower back; Groin,Push,Barbell,Compound,Intermediate,
+Machine Leg Press,Glutes; Quads,,,Push,Machine,Compound,Novice,
+Machine Leg Extension,Quads,,,Push,Machine,Isolation,Novice,
+Dumbbell Goblet Squat,Glutes; Quads,,Groin,Push,Dumbbells,Compound,Novice,
+Dumbbell Seated Shrug,Traps,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Seated Overhead Tricep Extension,Triceps; Long Head Tricep,,,Push,Dumbbells,Isolation,Intermediate,Long Head Tricep
+Machine Cable V Bar Push Downs,Triceps,,,,Machine,,Beginner,
+Bench Dips,Triceps,,,Push,Bodyweight,Compound,Novice,
+Dumbbell Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Pull,Dumbbells,Isolation,Novice,Lateral Deltoid
+Dumbbell Rear Delt Fly,Shoulders; Posterior Deltoid; Rear Shoulders,,,,Dumbbells,,Beginner,Posterior Deltoid
+Cable Rope Face Pulls,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Cables,Isolation,Novice,Posterior Deltoid
+Machine Pulldown,Lats,Biceps,Lower Traps,Pull,Machine,Compound,Novice,Lower Traps
+Machine Seated Cable Row,Lats,Biceps,Traps (mid-back),Pull,Machine,Compound,Novice,Traps (mid-back)
+Pull Ups,Lats,Biceps; Traps (mid-back),Biceps,Pull,Bodyweight,Compound,Intermediate,Traps (mid-back)
+Dumbbell Row Bilateral,Traps (mid-back); Lats,Biceps,Lower back,,Dumbbells,,Beginner,Traps (mid-back)
+Barbell Stiff Leg Deadlifts,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Barbell,Compound,Intermediate,Gluteus Maximus; Lateral Hamstrings
+Machine Hamstring Curl,Hamstrings,,,Pull,Machine,Isolation,Novice,
+Glute Bridge,Glutes,,,,Bodyweight,,Novice,
+Barbell Hip Thrust,Glutes,,,Push,Barbell,Compound,Beginner,
+Barbell Behind The Back Wrist Curl,Forearms,,,,Barbell,,Intermediate,
+Dumbbell Wrist Curl,Forearms,,,Pull,Dumbbells,Isolation,Novice,
+Machine Standing Calf Raises,Calves,,,Push,Machine,Isolation,Novice,
+Machine Seated Calf Raises,Calves,,,Push,Machine,Isolation,Novice,
+Crunches,Abdominals,,,Push,Bodyweight,Isolation,Novice,
+Laying Leg Raises,Abdominals,,,Pull,Bodyweight,Isolation,Novice,
+Barbell Deadlift,Traps (mid-back); Lower back,Glutes,,Pull,Barbell,Compound,Intermediate,Traps (mid-back)
+Machine 45 Degree Back Extension,Lower back,,,Pull,Machine,Isolation,Beginner,
+Bulgarian Split Squat,Glutes; Quads,,,Push,Bodyweight,Compound,Beginner,
+Smith Machine Standing Shrugs,Traps,,,Pull,Machine,Isolation,Beginner,
+Barbell Laying Triceps Extensions,Triceps,,,,Barbell,,Intermediate,
+Dumbbell Seated Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Compound,Novice,Anterior Deltoid; Lateral Deltoid
+Dumbbell Front Raise,Shoulders; Anterior Deltoid; Front Shoulders,,,Push,Dumbbells,Isolation,Novice,Anterior Deltoid
+Dumbbell Seated Rear Delt Fly,Shoulders; Posterior Deltoid; Rear Shoulders,,,,Dumbbells,,Novice,Posterior Deltoid
+Barbell Bent Over Row,Lats,Biceps,Forearms,Pull,Barbell,Compound,Intermediate,
+Single Leg Glute Bridge,Glutes,,,,Bodyweight,,Beginner,
+Barbell Wrist Curl,Forearms,,,,Barbell,,Novice,
+Machine Roll Outs,Abdominals,,,,Machine,,Intermediate,
+Barbell Incline Bench Press,Chest,Shoulders; Triceps,,Push,Barbell,Compound,Intermediate,Chest
+Kettlebell Skull Crusher,Triceps,,,,Kettlebells,,Intermediate,
+Kettlebell Situp,Abdominals,,,,Kettlebells,,Beginner,
+Kettlebell Russian Twist,Obliques,Abdominals,,,Kettlebells,,Novice,Obliques
+Kettlebell Wood Chopper,Obliques,,,Pull,Kettlebells,Isolation,Beginner,Obliques
+Kettlebell Windmill,Obliques,Abdominals,,Push,Kettlebells,Isolation,Advanced,Obliques
+Kettlebell Goblet Curl,Biceps,,,,Kettlebells,,Novice,
+Kettlebell Concentration Curl,Biceps,,,Pull,Kettlebells,Isolation,Intermediate,
+Kettlebell Preacher Curl,Biceps; Short Head Bicep,,,Pull,Kettlebells,Isolation,Intermediate,Short Head Bicep
+Kettlebell Single Leg Calf Raise,Calves,,,Push,Kettlebells,Isolation,Beginner,
+Kettlebell Calf Raise,Calves; Gastrocnemius,,,,Kettlebells,,Novice,Gastrocnemius
+Kettlebell Seated Calf Raise,Calves,,,Push,Kettlebells,Isolation,Novice,
+Kettlebell Chest Press (Single),Chest,Triceps,,Push,Kettlebells,Compound,Beginner,Chest
+Kettlebell Single Arm Chest Fly,Chest,,,,Kettlebells,,Beginner,Chest
+Kettlebell Single Arm Press,Chest,Triceps,,Push,Kettlebells,Compound,Beginner,Chest
+Kettlebell Walkover Pushup,Chest,Triceps,,Push,Kettlebells,Compound,Advanced,Chest
+Kettlebell Farmers Carry,Forearms,,,Pull,Kettlebells,Compound,Beginner,
+Kettlebell Wrist Extension,Forearms,,,,Kettlebells,,Novice,
+Kettlebell Wrist Curl,Forearms,,,,Kettlebells,,Novice,
+Kettlebell Glute Bridge,Glutes,,,,Kettlebells,,Novice,
+Kettlebell Single Leg Glute Bridge,Glutes,,,,Kettlebells,,Intermediate,
+Kettlebell Hip Thrust,Glutes,,,,Kettlebells,,Novice,
+Kettlebell Single Leg Hip Thrust,Glutes,,,,Kettlebells,,Advanced,
+Kettlebell Deadlift (Single),Traps (mid-back); Glutes; Hamstrings,Lower back,,Pull,Kettlebells,Compound,Beginner,Traps (mid-back)
+Kettlebell Swing,Glutes; Hamstrings,Lower back,,Pull,Kettlebells,Compound,Intermediate,
+Kettlebell Row (Single),Traps (mid-back); Lats,Biceps,Forearms,Pull,Kettlebells,Compound,Beginner,Traps (mid-back)
+Kettlebell Single Leg Deadlift,Glutes; Hamstrings,Lower back,,Pull,Kettlebells,Compound,Advanced,
+Kettlebell Shoulder Extension,Lats,,,,Kettlebells,,Intermediate,
+Kettlebell Staggered Deadlift (Single),Glutes; Hamstrings,Lower back,,Pull,Kettlebells,Compound,Beginner,
+Kettlebell Goblet Good Morning,Glutes; Hamstrings,Lower back,,Pull,Kettlebells,Compound,Novice,
+Kettlebell Rear Delt Row,Shoulders; Posterior Deltoid; Rear Shoulders,Biceps,,Pull,Kettlebells,Compound,Novice,Posterior Deltoid
+Kettlebell Front Raise,Shoulders; Anterior Deltoid; Front Shoulders,,,Push,Kettlebells,Isolation,Novice,Anterior Deltoid
+Kettlebell Single Arm Rear Delt Fly,Shoulders; Posterior Deltoid; Rear Shoulders,,,,Kettlebells,,Intermediate,Posterior Deltoid
+Kettlebell Single Arm Curl,Biceps,,,,Kettlebells,,Beginner,
+Kettlebell Standing Tricep Extension,Triceps,,,Push,Kettlebells,Isolation,Novice,
+Kettlebell Decline Skull Crusher,Triceps,,,Push,Kettlebells,Isolation,Advanced,
+Kettlebell Single Arm Row,Lats,Biceps,Forearms,Pull,Kettlebells,Compound,Novice,
+Kettlebell Pullover,Lats,,,,Kettlebells,,Advanced,
+Kettlebell Long Lever Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,,Kettlebells,,Intermediate,Lateral Deltoid
+Kettlebell Single Arm Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,,Kettlebells,,Beginner,Lateral Deltoid
+Kettlebell Shrug (Single),Traps,,,Pull,Kettlebells,Isolation,Novice,
+Kettlebell Upright Row,Shoulders; Lateral Deltoid; Traps; Front Shoulders,,,Pull,Kettlebells,Isolation,Novice,Lateral Deltoid
+Kettlebell Silverback Shrug (Single),Traps,Traps (mid-back),,Pull,Kettlebells,Isolation,Beginner,Traps (mid-back)
+Kettlebell Incline Shrug,Traps (mid-back),Traps,,Pull,Kettlebells,Isolation,Beginner,Traps (mid-back)
+Kettlebell Step Up,Glutes; Quads,,,Push,Kettlebells,Compound,Beginner,
+Kettlebell Goblet Squat,Glutes; Quads,Lower back,,Push,Kettlebells,Compound,Novice,
+Kettlebell Heels Up Goblet Squat,Glutes; Quads,,,Push,Kettlebells,Compound,Novice,
+Kettlebell Single Arm Reverse Lunge,Glutes; Quads,,,Push,Kettlebells,Compound,Beginner,
+Kettlebell Single Arm Forward Lunge,Glutes; Quads,,,Push,Kettlebells,Compound,Beginner,
+Kettlebell Lateral Lunge (Single),Glutes; Gluteus Medius; Quads,,,Push,Kettlebells,Compound,Intermediate,Gluteus Medius
+Kettlebell Tate Press,Triceps,,,,Kettlebells,,Intermediate,
+Biceps Stretch Variation Five,Biceps,,,Hold,Stretches,Isolation,Novice,
+Biceps Stretch Variation Four,Biceps,,,Hold,Stretches,Isolation,Novice,
+Biceps Stretch Variation Three,Biceps,,,Hold,Stretches,Isolation,Novice,
+Biceps Stretch Variation Two,Biceps,,,Hold,Stretches,Isolation,Novice,
+Biceps Stretch Variation One,Biceps,,,,Stretches,,Novice,
+Chest Stretch Variation Four,Chest,,,,Stretches,,Novice,Chest
+Chest Stretch Variation Three,Chest,,,,Stretches,,Novice,Chest
+Chest Stretch Variation Two,Chest,,,,Stretches,,Novice,Chest
+Chest Stretch Variation One,Chest,,,,Stretches,,Novice,Chest
+Quads Stretch Variation Four,Quads,,,,Stretches,,Novice,
+Quads Stretch Variation Three,Quads,,,,Stretches,,Novice,
+Quads Stretch Variation Two,Quads,,,,Stretches,,Novice,
+Quads Stretch Variation One,Quads,,,,Stretches,,Novice,
+Traps Stretch Variation Three,Traps,,,,Stretches,,Novice,
+Traps Stretch Variation Two,Traps,,,,Stretches,,Novice,
+Traps Stretch Variation One,Traps,,,,Stretches,,Novice,
+Triceps Stretch Variation Three,Triceps,,,,Stretches,,Novice,
+Triceps Stretch Variation Two,Triceps,,,,Stretches,,Novice,
+Triceps Stretch Variation One,Triceps,,,,Stretches,,Novice,
+Shoulders Stretch Variation Four,Shoulders; Posterior Deltoid; Rear Shoulders,,,Hold,Stretches,Isolation,Beginner,Posterior Deltoid
+Shoulders Stretch Variation Three,Shoulders; Anterior Deltoid; Front Shoulders,,,,Stretches,,Novice,Anterior Deltoid
+Shoulders Stretch Variation Two,Shoulders; Anterior Deltoid; Posterior Deltoid; Front Shoulders; Rear Shoulders,,,Hold,Stretches,Isolation,Beginner,Anterior Deltoid; Posterior Deltoid
+Shoulders Stretch Variation One,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,,,,Stretches,,Novice,Lateral Deltoid; Anterior Deltoid
+Lats Stretch Variation Three,Lats,,,,Stretches,,Novice,
+Lats Stretch Variation Two,Lats,,,,Stretches,,Novice,
+Lats Stretch Variation One,Lats,,,,Stretches,,Novice,
+Hamstrings Stretch Variation Four,Hamstrings,,,,Stretches,,Beginner,
+Hamstrings Stretch Variation Three,Hamstrings,,,,Stretches,,Beginner,
+Hamstrings Stretch Variation Two,Hamstrings,,,,Stretches,,Beginner,
+Hamstrings Stretch Variation One,Hamstrings,,,,Stretches,,Beginner,
+Glutes Stretch Variation Three,Glutes,,,,Stretches,,Novice,
+Glutes Stretch Variation Two,Glutes,,,,Stretches,,Novice,
+Glutes Stretch Variation One,Glutes,,,,Stretches,,Novice,
+Forearms Stretch Variation Four,Forearms,,,,Stretches,,Novice,
+Forearms Stretch Variation Three,Forearms,,,,Stretches,,Novice,
+Forearms Stretch Variation Two,Forearms,,,,Stretches,,Novice,
+Forearms Stretch Variation One,Forearms,,,,Stretches,,Novice,
+Calves Stretch Variation Three,Calves,,,,Stretches,,Beginner,
+Calves Stretch Variation Two,Calves,,,,Stretches,,Beginner,
+Calves Stretch Variation One,Calves,,,,Stretches,,Beginner,
+Abdominals Stretch Variation Four,Abdominals,,,,Stretches,,Beginner,
+Abdominals Stretch Variation Three,Abdominals; Obliques,,,,Stretches,,Novice,Obliques
+Abdominals Stretch Variation Two,Abdominals; Obliques,,,,Stretches,,Novice,Obliques
+Abdominals Stretch Variation One,Abdominals,,,,Stretches,,Novice,
+Lower back Stretch Variation Four,Lower back,,,,Stretches,,Novice,
+Lower back Stretch Variation Three,Lower back,,,,Stretches,,Novice,
+Lower back Stretch Variation Two,Lower back,,,,Stretches,,Novice,
+Lower back Stretch Variation One,Lower back,,,,Stretches,,Novice,
+Traps mid back Stretch Variation Two,Traps (mid-back),,,,Stretches,,Beginner,Traps (mid-back)
+Traps mid back Stretch Variation One,Traps (mid-back),,,,Stretches,,Beginner,Traps (mid-back)
+Push Up,Chest,Anterior Deltoid; Triceps,,Push,Bodyweight,Compound,Beginner,Chest; Anterior Deltoid
+Inverted Row,Traps (mid-back); Lats,Biceps,Forearms,Pull,Bodyweight,Compound,Beginner,Traps (mid-back)
+Chin Ups,Lats,Biceps,Forearms,Pull,Bodyweight,Compound,Intermediate,
+Incline Push Up,Chest,Triceps,,Push,Bodyweight,Compound,Beginner,Chest
+Decline Push Up,Chest,Triceps,,Push,Bodyweight,Compound,Beginner,Chest
+Elevated Pike Shoulder Shrug,Traps; Upper Traps,,,,Bodyweight,,Intermediate,Upper Traps
+Side Lunges,Quads,Glutes,,,Bodyweight,,Novice,
+Forward Lunges,Glutes; Quads,,,Push,Bodyweight,Compound,Novice,
+Jump Squats,Glutes; Quads,,,Push,Bodyweight,Compound,Beginner,
+Bodyweight Squat,Glutes; Quads,Groin,,Push,Bodyweight,Compound,Novice,
+Diamond Push Ups,Triceps,,,Push,Bodyweight,Compound,Beginner,
+Good Mornings,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Bodyweight,Compound,Novice,Gluteus Maximus; Lateral Hamstrings
+Supermans,Lower back,,,Pull,Bodyweight,Isolation,Beginner,
+Kickbacks,Hamstrings,,,,Bodyweight,,Novice,
+Single Legged Romanian Deadlifts,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Bodyweight,Compound,Beginner,Gluteus Maximus; Lateral Hamstrings
+Elevated Pike Press,Traps (mid-back); Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Traps; Upper Traps,Triceps,Push,Bodyweight,Compound,Intermediate,Traps (mid-back); Lateral Deltoid; Anterior Deltoid; Upper Traps
+Tip Toe Walking,Calves; Gastrocnemius,,,,Bodyweight,,Novice,Gastrocnemius
+Calf Raises,Calves,,,Push,Bodyweight,Isolation,Novice,
+Forearm Plank,Abdominals,,,Hold,Bodyweight,Isolation,Novice,
+Hanging Knee Raises,Abdominals,,,Pull,Bodyweight,Isolation,Beginner,
+Walking Calf Raises,Calves,,,Push,Bodyweight,Isolation,Novice,
+Nordic Hamstring Curl,Hamstrings,,,Pull,Bodyweight,Isolation,Intermediate,
+Barbell Roll Outs,Abdominals; Lower Abdominals; Upper Abdominals,,,Pull,Barbell,Isolation,Advanced,Lower Abdominals; Upper Abdominals
+Barbell Calf Raises,Calves,,,Push,Barbell,Isolation,Intermediate,
+Barbell Close Grip Bench Press,Triceps,Chest,,Push,Barbell,Compound,Intermediate,Chest
+Barbell Curtsy Lunge,Glutes; Gluteus Medius; Quads,,,Push,Barbell,Compound,Advanced,Gluteus Medius
+Barbell Silverback Shrug,Traps,,,Pull,Barbell,Isolation,Intermediate,
+Barbell Landmine Side Bend,Obliques,,,Pull,Barbell,Isolation,Intermediate,Obliques
+Cable Pec Fly,Chest,,,Push,Cables,Isolation,Beginner,Chest
+Cable Chest Press,Chest,Anterior Deltoid; Triceps,,Push,Cables,Compound,Novice,Chest; Anterior Deltoid
+Cable Goblet Squat,Glutes; Quads,Lower back,,Push,Cables,Compound,Novice,
+Cable Split Squat,Glutes; Quads,,,Push,Cables,Compound,Advanced,
+Cable Bar Romanian Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Cables,Compound,Beginner,Gluteus Maximus; Lateral Hamstrings
+Cable Single Leg Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Cables,Compound,Advanced,Gluteus Maximus; Lateral Hamstrings
+Cable Pull Through,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Cables,Isolation,Beginner,Gluteus Maximus; Lateral Hamstrings
+Cable Standing Hip Abduction,Glutes,,,Push,Cables,Isolation,Beginner,
+Cable Standing Straight Leg Glute Kickback,Lower back; Glutes,,,Push,Cables,Isolation,Beginner,
+Cable Hamstring Curl,Hamstrings; Medial Hamstrings,,,,Cables,,Advanced,Medial Hamstrings
+Cable Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Cables,Compound,Novice,Anterior Deltoid; Lateral Deltoid
+Cable Low Single Arm Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Push,Cables,Isolation,Novice,Lateral Deltoid
+Cable High Single Arm Rear Delt Fly,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Cables,Isolation,Beginner,Posterior Deltoid
+Cable Upright Row,Shoulders; Lateral Deltoid; Front Shoulders,Traps,,Pull,Cables,Compound,Advanced,Lateral Deltoid
+Cable Wrist Curl,Forearms,,,,Cables,,Beginner,
+Cable Wrist Extension,Forearms,,,,Cables,,Beginner,
+Cable Lat Prayer,Lats,,,Pull,Cables,Isolation,Advanced,
+Cable Bent Over Bar Pullover,Lats,,,Pull,Cables,Isolation,Beginner,
+Cable Pull In,Lats,Biceps,,Pull,Cables,Compound,Novice,
+Cable 30 Degree Shrug,Traps,,,Pull,Cables,Isolation,Beginner,
+Cable Silverback Shrug,Traps (mid-back),Traps,,,Cables,,Novice,Traps (mid-back)
+Cable Twisting Curl,Biceps,,,Pull,Cables,Isolation,Advanced,
+Cable Single Arm Bayesian Curl,Biceps,,,Pull,Cables,Isolation,Beginner,
+Cable Single Arm Reverse Curl,Biceps,Forearms,,Pull,Cables,Isolation,Beginner,
+Cable Single Arm Hammer Curl,Biceps,,,Pull,Cables,Isolation,Beginner,
+Cable Rope Pushdown,Triceps,,,Push,Cables,Isolation,Novice,
+Cable Cross Pushdown,Triceps,,,,Cables,,Advanced,
+Cable Rope Skullcrusher,Triceps; Long Head Tricep,,,,Cables,,Beginner,Long Head Tricep
+Cable Rope Overhead Tricep Extension,Triceps,,,Push,Cables,Isolation,Beginner,
+Cable Calve Raise,Calves; Gastrocnemius,,,,Cables,,Beginner,Gastrocnemius
+Cable Standing Leg Extension,Quads,,,Push,Cables,Isolation,Advanced,
+Cable Wood Chopper,Obliques,,,Pull,Cables,Isolation,Beginner,Obliques
+Cable Standing Crunch,Abdominals; Upper Abdominals,,,,Cables,,Advanced,Upper Abdominals
+Cable Row Bar Kneeling Crunch,Abdominals,,,Pull,Cables,Isolation,Beginner,
+Cable Pallof Press,Obliques,,,Push,Cables,Isolation,Beginner,Obliques
+Band Calf Raise,Calves; Gastrocnemius,,,Push,Band,Isolation,Novice,Gastrocnemius
+Band Single Arm Pec Fly,Chest,,,,Band,,Beginner,Chest
+Band Single Arm Chest Press,Chest,Triceps,,Push,Band,Compound,Beginner,Chest
+Band Wood Chopper,Obliques,,,Pull,Band,Isolation,Advanced,Obliques
+Band Face Pull,Shoulders; Posterior Deltoid; Rear Shoulders,,,,Band,,Novice,Posterior Deltoid
+Band Spanish Squat,Glutes; Quads,,,Push,Band,Compound,Advanced,
+Band Crunch,Abdominals; Upper Abdominals,,,Pull,Band,Isolation,Intermediate,Upper Abdominals
+Band Bayesian Curl,Biceps; Long Head Bicep,,,Pull,Band,Isolation,Beginner,Long Head Bicep
+Band Front Raise,Shoulders; Anterior Deltoid; Front Shoulders,,,Push,Band,Isolation,Novice,Anterior Deltoid
+Band Good Morning,Glutes; Hamstrings,Lower back,,Push,Band,Compound,Novice,
+Band Bayesian Hammer Curl,Biceps; Long Head Bicep; Forearms,Long Head Bicep,,,Band,,Intermediate,Long Head Bicep
+Band Horizontal Shrug,Traps (mid-back); Traps,,,Pull,Band,Isolation,Novice,Traps (mid-back)
+Band Glute Kickback,Glutes,,,Push,Band,Isolation,Beginner,
+Band Kneeling Single Arm Pulldown,Lats,Biceps,,Pull,Band,Compound,Novice,
+Band Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Push,Band,Isolation,Novice,Lateral Deltoid
+Band Leg Press,Glutes; Quads,,,Push,Band,Compound,Advanced,
+Band Overhead Tricep Extension,Triceps,,,Push,Band,Isolation,Advanced,
+Band Pallof Press,Obliques,,,Push,Band,Isolation,Beginner,Obliques
+Band Pull Apart,Shoulders; Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,Band,Isolation,Novice,Posterior Deltoid; Traps (mid-back)
+Band Pullover,Lats,,,Pull,Band,Isolation,Novice,
+Band Pullthrough,Glutes; Hamstrings,Lower back,,Pull,Band,Compound,Beginner,
+Band Pushdown,Triceps,,,,Band,,Novice,
+Band Pushup,Chest,Triceps,,Push,Band,Compound,Intermediate,Chest
+Band Romanian Deadlift,Glutes; Hamstrings,Lower back,,Pull,Band,Compound,Novice,
+Band Bayesian Reverse Curl,Biceps; Long Head Bicep,Forearms,,Pull,Band,Isolation,Beginner,Long Head Bicep
+Band Row,Lats,Biceps,,Pull,Band,Compound,Novice,
+Band Single Arm Overhead Press,Shoulders; Lateral Deltoid; Anterior Deltoid; Triceps; Traps; Front Shoulders,Triceps,Traps,Push,Band,Compound,Novice,Lateral Deltoid; Anterior Deltoid
+Band Shrug,Traps,,,Pull,Band,Isolation,Novice,
+Band Skullcrusher,Triceps,,,Push,Band,Isolation,Advanced,
+Band Squat,Glutes; Quads,,,Push,Band,Compound,Novice,
+Dumbbell Reverse Curl,Biceps,Forearms,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Row Unilateral,Traps (mid-back); Lats,Biceps,Forearms,Pull,Dumbbells,Compound,Novice,Traps (mid-back)
+Dumbbell Goblet Good Morning,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Dumbbells,Compound,Beginner,Gluteus Maximus; Lateral Hamstrings
+Dumbbell Goblet Bulgarian Split Squat,Glutes; Quads,,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Skullcrusher,Triceps; Long Head Tricep,,,Push,Dumbbells,Isolation,Beginner,Long Head Tricep
+Dumbbell Hip Thrust,Glutes,,,,Dumbbells,,Novice,
+Dumbbell Wood Chopper,Obliques,,,Pull,Dumbbells,Isolation,Intermediate,Obliques
+Dumbbell Situp,Abdominals,,,,Dumbbells,,Intermediate,
+Dumbbell Russian Twist,Obliques,Abdominals,,Pull,Dumbbells,Isolation,Intermediate,Obliques
+Dumbbell Shrug,Traps,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Romanian Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Dumbbells,Compound,Beginner,Gluteus Maximus; Lateral Hamstrings
+Dumbbell Plank Pullthrough,Abdominals,,,,Dumbbells,,Intermediate,
+Dumbbell Glute Bridge,Glutes; Hamstrings; Quads,,,,Dumbbells,,Novice,
+Dumbbell Calf Raise,Calves,,,Push,Dumbbells,Isolation,Novice,
+Barbell Bulgarian Split Squat,Glutes; Quads,,,,Barbell,,Advanced,
+Barbell Floor Press,Triceps,Chest,,Push,Barbell,Compound,Advanced,Chest
+Barbell Front Raise,Shoulders; Anterior Deltoid; Front Shoulders,,,Push,Barbell,Isolation,Intermediate,Anterior Deltoid
+Barbell Front Squat Olympic,Glutes; Quads,Abdominals,,Push,Barbell,Compound,Advanced,
+Barbell Front Squat Bodybuilding,Glutes; Quads,Abdominals,,Push,Barbell,Compound,Advanced,
+Barbell High Bar Good Morning,Glutes; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Barbell,Compound,Advanced,Lateral Hamstrings
+Barbell Low Bar Good Morning,Hamstrings; Lateral Hamstrings,Glutes,Lower back,Pull,Barbell,Isolation,Advanced,Lateral Hamstrings
+Barbell Overhead Press,Shoulders; Front Shoulders,Triceps,,Push,Barbell,Compound,Intermediate,
+Barbell Upright Row,Shoulders; Lateral Deltoid; Front Shoulders,Anterior Deltoid; Traps,,Pull,Barbell,Isolation,Advanced,Lateral Deltoid; Anterior Deltoid
+Barbell Sumo Deadlift,Glutes,Quads,Lower back,Pull,Barbell,Compound,Intermediate,
+Barbell Staggered Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Barbell,Compound,Advanced,Gluteus Maximus; Lateral Hamstrings
+Barbell Skullcrusher,Triceps,,,,Barbell,,Intermediate,
+Barbell Single Leg Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Barbell,Compound,Advanced,Gluteus Maximus; Lateral Hamstrings
+Barbell Situp,Abdominals,,,Push,Barbell,Isolation,Intermediate,
+Barbell Reverse Curl,Biceps,Forearms,,Pull,Barbell,Isolation,Advanced,
+Barbell Overhead Tricep Extension,Triceps,,,,Barbell,,Advanced,
+Barbell Romanian Deadlift,Glutes; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Barbell,Compound,Intermediate,Lateral Hamstrings
+Barbell High Bar Squat,Glutes; Quads,,,Push,Barbell,Compound,Beginner,
+Barbell Low Bar Squat,Glutes; Quads,Lower back,,Push,Barbell,Compound,Intermediate,
+Dumbbell Wrist Extension,Forearms,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Bulgarian Split Squat,Glutes; Quads,,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Rear Delt Row,Shoulders; Posterior Deltoid; Rear Shoulders,Traps (mid-back),Biceps,Pull,Dumbbells,Compound,Intermediate,Posterior Deltoid; Traps (mid-back)
+Bodyweight Russian Twist,Obliques,Abdominals,,Pull,Bodyweight,Isolation,Beginner,Obliques
+Side Plank Up Down,Obliques,,,Pull,Bodyweight,Isolation,Intermediate,Obliques
+Side Plank Reach Through,Obliques,,,Pull,Bodyweight,Isolation,Advanced,Obliques
+Long Lever Plank,Abdominals,,,Hold,Bodyweight,Isolation,Advanced,
+Elbow Side Plank,Obliques,,,Hold,Bodyweight,Isolation,Novice,Obliques
+Hand Side Plank,Obliques,,,Hold,Bodyweight,Isolation,Beginner,Obliques
+Hand Plank,Abdominals,,,Hold,Bodyweight,Isolation,Novice,
+Hollow Hold,Abdominals,,,Hold,Bodyweight,Isolation,Intermediate,
+Barbell Calf Jump,Calves,,,Push,Barbell,Isolation,Advanced,
+Barbell Coan Deadlift,Glutes; Quads,Lower back,,Pull,Barbell,Compound,Intermediate,
+Barbell Forward Lunge,Glutes; Quads,,,Push,Barbell,Compound,Advanced,
+Barbell Front Rack Step Up,Glutes; Quads,,,Push,Barbell,Compound,Advanced,
+Barbell Glute Bridge,Glutes,,,Push,Barbell,Compound,Beginner,
+Barbell Heels Up Back Squat,Glutes; Quads,,,Push,Barbell,Compound,Advanced,
+Barbell Heels Up Front Squat,Glutes; Quads,,,Push,Barbell,Compound,Advanced,
+Barbell Hooklying Bench Press,Chest,Triceps,Abdominals,Push,Barbell,Compound,Advanced,Chest
+Barbell Landmine Row,Traps (mid-back); Lats,Biceps,Forearms,Pull,Barbell,Compound,Intermediate,Traps (mid-back)
+Barbell Larsen Bench Press,Chest,Triceps,Abdominals,Push,Barbell,Compound,Advanced,Chest
+Barbell Lateral Lunge,Glutes; Quads,,,Push,Barbell,Compound,Advanced,
+Barbell Long Landmine Row,Lats,Biceps,Forearms,Pull,Barbell,Compound,Advanced,
+Barbell Meadows Row,Lats,Biceps,Forearms,Pull,Barbell,Compound,Intermediate,
+Barbell Pause Box Squat,Glutes; Quads,Lower back,,Push,Barbell,Compound,Advanced,
+Barbell Pause Squat,Glutes; Quads,Lower back,Lower back,Push,Barbell,Compound,Intermediate,
+Barbell Pronated Pendlay Row,Lats,Biceps,Lower back,Pull,Barbell,Compound,Advanced,
+Barbell Pronated Row,Lats,Biceps,Forearms,Pull,Barbell,Compound,Intermediate,
+Barbell Reverse Deadlift,Quads,Glutes,Lower back,Push,Barbell,Compound,Advanced,
+Barbell Reverse Lunge,Quads,Glutes,,Push,Barbell,Compound,Intermediate,
+Bodyweight Reverse Step Up,Quads,,,Push,Bodyweight,Isolation,Advanced,
+Barbell Seated Calf Raise,Calves,,,Push,Barbell,Isolation,Beginner,
+Barbell Shrug,Traps,,,Pull,Barbell,Isolation,Beginner,
+Barbell Side Step Up,Glutes; Quads,,,Push,Barbell,Compound,Intermediate,
+Barbell Snatch Grip Deadlift,Glutes; Gluteus Maximus; Hamstrings,Lower back,,Pull,Barbell,Compound,Advanced,Gluteus Maximus
+Barbell Snatch Grip Romanian Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Barbell,Compound,Advanced,Gluteus Maximus; Lateral Hamstrings
+Barbell Split Squat,Glutes; Quads,,,Push,Barbell,Compound,Intermediate,
+Barbell Spoto Press,Chest,Triceps,,Push,Barbell,Compound,Advanced,Chest
+Barbell Step Up Balance,Glutes; Quads,,,Push,Barbell,Compound,Intermediate,
+Barbell Step Up,Quads,Glutes,,Push,Barbell,Compound,Beginner,
+Barbell Suitcase Deadlift,Glutes; Hamstrings; Obliques,Lower back,Forearms,Pull,Barbell,Compound,Advanced,Obliques
+Barbell Supinated Pendlay Row,Lats,Biceps,Lower back,Pull,Barbell,Compound,Advanced,
+Barbell Supinated Row,Lats,Biceps,Lower back,Pull,Barbell,Compound,Advanced,
+Barbell Tap Pause Squat,Glutes; Quads,,,Push,Barbell,Compound,Intermediate,
+Barbell Toes Up Calf Raise,Calves; Gastrocnemius,,,Push,Barbell,Isolation,Beginner,Gastrocnemius
+Barbell Zercher Good Morning,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Barbell,Compound,Advanced,Gluteus Maximus; Lateral Hamstrings
+Barbell Zercher Squat,Glutes; Quads,Lower back,,Push,Barbell,Compound,Advanced,
+Barbell Z Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Traps,Triceps,Push,Barbell,Compound,Advanced,Anterior Deltoid; Lateral Deltoid
+Assisted Bulgarian Split Squat,Glutes; Quads,,,Push,Bodyweight,Compound,Novice,
+Curtsy Lunge,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Forward Lunge,Glutes; Quads,,,Push,Bodyweight,Compound,Novice,
+Heels Up Squat,Glutes; Quads,,,Push,Bodyweight,Compound,Beginner,
+Lateral Lunge,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Bodyweight Reverse Lunge,Glutes; Quads,Glutes; Quads,,Push,Bodyweight,Compound,Novice,
+Split Squat,Glutes; Quads,,,Push,Bodyweight,Compound,Beginner,
+Dumbbell Alternating Single Arm Press,Chest,Triceps,,Push,Dumbbells,Compound,Intermediate,Chest
+Dumbbell Bayesian Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Pull,Dumbbells,Compound,Beginner,Lateral Deltoid
+Dumbbell Bench Press,Chest,Triceps,,Push,Dumbbells,Compound,Novice,Chest
+Dumbbell Chest Fly,Chest,,,Push,Dumbbells,Compound,Novice,Chest
+Dumbbell Decline Alternating Single Arm Press,Chest,Triceps,,Push,Dumbbells,Compound,Intermediate,Chest
+Dumbbell Decline Bench Press,Chest,Triceps,,Push,Dumbbells,Compound,Novice,Chest
+Dumbbell Decline Chest Fly,Chest,,,Push,Dumbbells,Isolation,Novice,Chest
+Dumbbell Decline Guillotine Bench Press,Chest,Triceps,,Push,Dumbbells,Compound,Advanced,Chest
+Dumbbell Decline Neutral Bench Press,Shoulders; Anterior Deltoid; Front Shoulders,Triceps; Chest,,Push,Dumbbells,Compound,Beginner,Anterior Deltoid; Chest
+Dumbbell Decline Single Arm Bench Press,Chest,Triceps,,Push,Dumbbells,Compound,Intermediate,Chest
+Dumbbell Decline Skullcrusher,Triceps; Long Head Tricep,,,Push,Dumbbells,Isolation,Beginner,Long Head Tricep
+Dumbbell Decline Squeeze Press,Chest,Triceps,,Push,Dumbbells,Compound,Intermediate,Chest
+Dumbbell Forward Lunge,Glutes; Quads,,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Goblet Curtsy Lunge,Glutes; Quads,,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Goblet Forward Lunge,Glutes; Quads,,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Goblet Lateral Lunge,Glutes; Quads,,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Goblet Reverse Lunge,Glutes; Quads,,,Push,Dumbbells,Compound,Novice,
+Dumbbell Goblet Split Squat,Glutes; Quads,,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Guillotine Bench Press,Chest,Triceps,,Push,Dumbbells,Compound,Advanced,Chest
+Dumbbell Guillotine Incline Bench Press,Chest,Triceps,,Push,Dumbbells,Compound,Advanced,Chest
+Dumbbell Incline Bench Press,Chest,Anterior Deltoid; Triceps,,Push,Dumbbells,Compound,Beginner,Chest; Anterior Deltoid
+Dumbbell Incline Chest Fly,Chest,,,Push,Dumbbells,Isolation,Beginner,Chest
+Dumbbell Incline Hammer Curl,Biceps,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Incline Reverse Curl,Biceps,Forearms,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Incline Zottman Curl,Biceps,Forearms,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Internally Rotated Chest Fly,Chest,,,Push,Dumbbells,Isolation,Intermediate,Chest
+Dumbbell Internally Rotated Incline Chest Fly,Chest,,,Push,Dumbbells,Isolation,Intermediate,Chest
+Dumbbell Lateral Lunge Reach,Glutes; Quads,Lower back,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Laying 30 Degree Shrug,Traps,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Laying Reverse Fly,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Dumbbells,Isolation,Novice,Posterior Deltoid
+Dumbbell Laying Reverse Fly Internally Rotated,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Dumbbells,Isolation,Intermediate,Posterior Deltoid
+Dumbbell Laying Silverback Shrug,Traps (mid-back),Traps,,Pull,Dumbbells,Isolation,Intermediate,Traps (mid-back)
+Dumbbell Neutral Bench Press,Shoulders; Anterior Deltoid; Chest; Front Shoulders,Triceps,,Push,Dumbbells,Compound,Novice,Anterior Deltoid; Chest
+Dumbbell Neutral Incline Bench Press,Shoulders; Anterior Deltoid; Chest; Front Shoulders,Triceps,,Push,Dumbbells,Compound,Novice,Anterior Deltoid; Chest
+Dumbbell Neutral Seated Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Triceps,,Push,Dumbbells,Compound,Novice,Anterior Deltoid
+Dumbbell Pullover,Lats,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Reverse Lunge,Glutes; Quads,,,Push,Dumbbells,Compound,Novice,
+Dumbbell Rolling Tricep Extension,Triceps,,,Push,Dumbbells,Isolation,Advanced,
+Dumbbell Seated Arnold Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Dumbbell Squeeze Press,Chest,Triceps,,Push,Dumbbells,Compound,Novice,Chest
+Dumbbell Single Arm Press,Chest,Triceps,,Push,Dumbbells,Compound,Intermediate,Chest
+Dumbbell Split Squat,Glutes; Quads,,,Push,Dumbbells,Compound,Novice,
+Dumbbell Alternating Arnold Press,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Triceps,,Push,Dumbbells,Compound,Advanced,Lateral Deltoid; Anterior Deltoid
+Dumbbell Alternating Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Dumbbell Alternating Pendlay Row,Lats,Biceps,Lower back,Pull,Dumbbells,Compound,Advanced,
+Dumbbell Arnold Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Dumbbell Figure Four Glute Bridge,Glutes,,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Figure Four Hip Thrust,Glutes,,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Front Rack Pause Squat,Glutes; Quads,Lower back,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Front Rack Squat,Glutes; Quads,Lower back,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Goblet Pulse Squat,Quads,Glutes,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Half Kneeling Wood Chopper,Obliques,Abdominals,,Pull,Dumbbells,Isolation,Intermediate,Obliques
+Dumbbell Heels Up Goblet Squat,Glutes; Quads,,,Push,Dumbbells,Compound,Novice,
+Dumbbell Heels Up Narrow Goblet Squat,Glutes; Quads,,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Hollow Hold,Abdominals,,,Hold,Dumbbells,Isolation,Advanced,
+Dumbbell Kneeling Single Arm Row,Lats,Biceps,,Pull,Dumbbells,Compound,Novice,
+Dumbbell Kneeling Wood Chopper,Obliques,,,Pull,Dumbbells,Isolation,Beginner,Obliques
+Dumbbell Laying Incline Row,Lats,Biceps,,Pull,Dumbbells,Compound,Novice,
+Dumbbell Leg Curl,Hamstrings; Medial Hamstrings,,,Pull,Dumbbells,Isolation,Beginner,Medial Hamstrings
+Dumbbell Leg Extension,Quads,,,Push,Dumbbells,Isolation,Beginner,
+Dumbbell Neutral Alternating Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Triceps,,Push,Dumbbells,Compound,Intermediate,Anterior Deltoid
+Dumbbell Neutral Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Triceps,,Push,Dumbbells,Compound,Novice,Anterior Deltoid
+Dumbbell Offset Squat,Glutes; Quads,Obliques,,Push,Dumbbells,Compound,Intermediate,Obliques
+Dumbbell Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Compound,Novice,Anterior Deltoid; Lateral Deltoid
+Dumbbell Overhead Side Bend,Obliques,,,Pull,Dumbbells,Isolation,Advanced,Obliques
+Dumbbell Overhead Tricep Extension,Triceps; Long Head Tricep,,,Push,Dumbbells,Isolation,Beginner,Long Head Tricep
+Dumbbell Pendlay Row,Lats,Biceps,,Pull,Dumbbells,Compound,Intermediate,
+Dumbbell Push Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Dumbbell Renegade Row,Abdominals,Lats,,Pull,Dumbbells,Compound,Intermediate,
+Dumbbell Seated Calf Raise,Calves,,,Push,Dumbbells,Isolation,Novice,
+Dumbbell Shoulder Extension,Lats,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Side Plank Up Down,Obliques,,,Push,Dumbbells,Isolation,Beginner,Obliques
+Dumbbell Silverback Shrug,Traps (mid-back),Traps,,Pull,Dumbbells,Isolation,Beginner,Traps (mid-back)
+Dumbbell Single Arm Arnold Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Dumbbell Single Arm Neutral Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Compound,Beginner,Anterior Deltoid; Lateral Deltoid
+Dumbbell Single Arm Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Compound,Beginner,Anterior Deltoid; Lateral Deltoid
+Dumbbell Single Arm Preacher Curl,Biceps; Short Head Bicep,Short Head Bicep,,Pull,Dumbbells,Isolation,Novice,Short Head Bicep
+Dumbbell Single Arm Row,Lats,Biceps,,Pull,Dumbbells,Compound,Novice,
+Dumbbell Single Arm Row Knee,Lats,Biceps,,Pull,Dumbbells,Compound,Novice,
+Dumbbell Single Arm Spider Curl,Biceps,,,Pull,Dumbbells,Isolation,Beginner,
+Dumbbell Single Leg Glute Bridge,Glutes,,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Single Leg Hip Thrust,Glutes,,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Single Leg Single Arm Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Dumbbells,Compound,Advanced,Gluteus Maximus; Lateral Hamstrings
+Dumbbell Single Leg Stiff Leg Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Dumbbells,Compound,Intermediate,Gluteus Maximus; Lateral Hamstrings
+Dumbbell Spider Curl,Biceps,,,Pull,Dumbbells,Isolation,Beginner,
+Dumbbell Staggered Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Dumbbells,Compound,Intermediate,Gluteus Maximus; Lateral Hamstrings
+Dumbbell Staggered Glute Bridge,Glutes,,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Staggered Hip thrust,Glutes,,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Sumo Squat,Glutes,Lower back; Quads,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Swing,Glutes; Hamstrings,Lower back,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Thruster,Glutes; Anterior Deltoid; Quads; Front Shoulders,Shoulders; Lateral Deltoid,,Push,Dumbbells,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Dumbbell Tricep Kickback,Triceps,,,Push,Dumbbells,Isolation,Beginner,
+Dumbbell Twisting Curl,Biceps,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Hand Side Plank,Obliques,,,Hold,Dumbbells,Isolation,Intermediate,Obliques
+Dumbbell Elbow Side Plank,Obliques,,,Hold,Dumbbells,Isolation,Beginner,Obliques
+Mountain Climber,Abdominals,,,Pull,Bodyweight,Compound,Novice,
+Burpee,Abdominals; Chest,Quads,Glutes,Push,Bodyweight,Compound,Intermediate,Chest
+Plate Alternating Deadstop Row,Biceps; Lats,Biceps,,Pull,Plate,Compound,Intermediate,
+Plate Bicep Curl,Biceps,,,Pull,Plate,Isolation,Novice,
+Plate Squat,Glutes; Quads,,,Push,Plate,Compound,Novice,
+Plate Clean And Press,Glutes,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,,Push,Plate,Compound,Intermediate,Lateral Deltoid; Anterior Deltoid
+Plate Squat Reach,Shoulders; Anterior Deltoid; Front Shoulders,Glutes; Quads,,Push,Plate,Compound,Beginner,Anterior Deltoid
+Plate Clean,Glutes,,,Pull,Plate,Compound,Intermediate,
+Plate Curl To Overhead Press,Biceps,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid,Push,Plate,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Plate Squat Hold Reach,Shoulders; Anterior Deltoid; Triceps; Front Shoulders,Glutes; Quads,,Push,Plate,Compound,Intermediate,Anterior Deltoid
+Plate Curl To Overhead Press To Tricep Extension,Biceps; Triceps,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid,Push,Plate,Compound,Advanced,Anterior Deltoid; Lateral Deltoid
+Plate Curtsy Lunge,Glutes,Quads,,Push,Plate,Compound,Intermediate,
+Plate Deadlift,Glutes; Hamstrings,Lower back,,Pull,Plate,Compound,Intermediate,
+Plate Squat Hold Curl,Biceps,Glutes; Quads,,Pull,Plate,Compound,Intermediate,
+Plate Single Leg Pinch Grip Deadlift,Forearms; Hamstrings,Glutes,Lower back,Pull,Plate,Compound,Intermediate,
+Plate Car Driver,Shoulders; Anterior Deltoid; Front Shoulders,,,Hold,Plate,Compound,Beginner,Anterior Deltoid
+Plate Front Raise,Shoulders; Anterior Deltoid; Front Shoulders,,,Push,Plate,Isolation,Novice,Anterior Deltoid
+Plate Good Morning Anterior,Glutes; Hamstrings,Lower back,,Pull,Plate,Isolation,Novice,
+Plate Good Morning,Glutes; Hamstrings,Lower back,,Pull,Plate,,Novice,
+Plate Halo,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,,,Push,Plate,Compound,Novice,Lateral Deltoid; Anterior Deltoid
+Plate Lateral Lunge,Glutes,Quads,,Push,Plate,Compound,Novice,
+Plate Forward Lunge,Quads,Glutes,,Push,Plate,Compound,Novice,
+Band High Curl,Biceps,,,Pull,Band,Isolation,Novice,
+Band High Hammer Curl,Biceps,,,Pull,Band,Isolation,Novice,
+Band High Reverse Curl,Biceps,Forearms,,Pull,Band,Isolation,Novice,
+Band Chest Fly,Chest,,,Push,Band,Isolation,Beginner,Chest
+Band Chest Press,Chest,Triceps,,Push,Band,Compound,Novice,Chest
+Band Curl,Biceps,,,Pull,Band,Isolation,Novice,
+Plate Single Leg Deadlift,Glutes; Hamstrings,Lower back,,Pull,Plate,Compound,Advanced,
+Band High Face Pull,Shoulders; Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,Band,Isolation,Novice,Posterior Deltoid; Traps (mid-back)
+Plate Reverse Lunge Twist,Glutes; Quads,Obliques,,Push,Plate,Compound,Intermediate,Obliques
+Plate Reverse Lunge,Glutes; Quads,,,Push,Plate,Compound,Novice,
+Band Hip Abduction,Glutes,,,Push,Band,Isolation,Beginner,
+Band Hip Adduction,Glutes; Groin,,,Pull,Band,Isolation,Intermediate,
+Band Internally Rotated Chest Fly,Chest,,,Push,Band,Isolation,Intermediate,Chest
+Plate Pinch Grip Side Bend,Forearms,Obliques,,Pull,Plate,Isolation,Beginner,Obliques
+Band Leg Curl,Hamstrings,,,Pull,Band,Isolation,Beginner,
+Plate Pinch Grip Row,Forearms,Lats,Biceps,Pull,Plate,Compound,Intermediate,
+Band Leg Extension,Quads,,,Push,Band,Isolation,Beginner,
+Band Low Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Push,Band,Isolation,Intermediate,Lateral Deltoid
+Band Mid Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Push,Band,Isolation,Beginner,Lateral Deltoid
+Plate Pinch Grip Deadlift,Forearms; Lats,Glutes; Hamstrings,Lower back,,Plate,,Intermediate,
+Band Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Band,Compound,Novice,Anterior Deltoid; Lateral Deltoid
+Plate Overhead Tricep Extension,Triceps,,,Push,Plate,Isolation,Novice,
+Band Rapunzel Pushdown,Triceps,,,Push,Band,Isolation,Beginner,
+Plate Overhead Squat,Glutes; Quads,Shoulders,,Push,Plate,Compound,Intermediate,
+Band Rear Delt Fly,Shoulders; Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,Band,Isolation,Intermediate,Posterior Deltoid; Traps (mid-back)
+Band Reverse Curl,Biceps,Forearms,,Pull,Band,Isolation,Novice,
+Plate Overhead Press To Tricep Extension,Triceps,Shoulders; Anterior Deltoid; Front Shoulders,,Push,Plate,Compound,Intermediate,Anterior Deltoid
+Band Single Arm Pushdown,Triceps,,,Push,Band,Isolation,Novice,
+Single Arm Rapunzel Pushdown,Triceps,,,Push,Band,Isolation,Beginner,
+Band Single Arm Skullcrusher,Triceps,,,Push,Band,Isolation,Beginner,
+Plate Deficit Lunge,Glutes; Quads,,,Push,Plate,Compound,Advanced,
+Plate Deficit Pushup,Chest,Triceps,Shoulders,Push,Plate,Compound,Advanced,Chest
+Plate Full Lateral Raise,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,,,Push,Plate,Isolation,Intermediate,Lateral Deltoid; Anterior Deltoid
+Plate Glute Bridge to Chest Press,Chest,Glutes,,Push,Plate,Compound,Beginner,Chest
+Plate Glute Bridge to Pullover,Lats,Glutes,,Pull,Plate,Compound,Beginner,
+Plate Internally Rotated Rear Delt Fly,Traps (mid-back); Shoulders; Posterior Deltoid; Rear Shoulders,Traps,,Pull,Plate,Isolation,Intermediate,Traps (mid-back); Posterior Deltoid
+Plate Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Push,Plate,Isolation,Novice,Lateral Deltoid
+Plate Overhead Carry,Abdominals; Traps,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid,Hold,Plate,Compound,Beginner,Anterior Deltoid; Lateral Deltoid
+Plate Overhead Shrug,Traps,,,Push,Plate,Isolation,Advanced,
+Plate Overhead Walking Lunge,Glutes; Quads,Shoulders,,Push,Plate,Compound,Intermediate,
+Plate Pinch Grip Farmer's Carry,Forearms,,,Hold,Plate,Isolation,Intermediate,
+Plate Rear Delt Fly,Shoulders; Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,Plate,Isolation,Beginner,Posterior Deltoid; Traps (mid-back)
+Plate Russian Twist,Obliques,Abdominals,,Pull,Plate,Isolation,Intermediate,Obliques
+Plate Situp,Abdominals; Upper Abdominals,,,Push,Plate,Isolation,Beginner,Upper Abdominals
+Plate Squat Hold,Glutes; Quads,,,Hold,Plate,Compound,Novice,
+Weighted Forearm Plank,Abdominals,,,Hold,Plate,Compound,Intermediate,
+Plate Staggered Deadlift,Glutes; Hamstrings,Lower back,,Pull,Plate,Compound,Advanced,
+Plate Staggered Pinch Grip Deadlift,Forearms; Hamstrings,Glutes,Lower back,Pull,Plate,Compound,Advanced,
+Plate Thruster,Glutes; Shoulders; Anterior Deltoid; Quads; Front Shoulders,Lateral Deltoid,,Push,Plate,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Plate Reach,Shoulders; Anterior Deltoid; Front Shoulders,,,Push,Plate,Isolation,Beginner,Anterior Deltoid
+Plate Standing Twist,Obliques,,,Pull,Plate,Isolation,Beginner,Obliques
+Weighted Hand Plank,Abdominals,,,Hold,Plate,Compound,Intermediate,
+Plate Hollow Hold,Abdominals,,,Hold,Plate,Isolation,Advanced,
+Plate Wood Chopper,Obliques,,,Pull,Plate,Isolation,Beginner,Obliques
+Barbell Feet Elevated Figure Four Glute Bridge,Glutes,,,Push,Barbell,Compound,Intermediate,
+Barbell Feet Elevated Glute Bridge,Glutes,,,Push,Barbell,Compound,Intermediate,
+Barbell Feet Elevated Single Leg Glute Bridge,Glutes,,,Push,Barbell,Compound,Advanced,
+Barbell Feet Elevated Staggered Glute Bridge,Glutes,,,Push,Barbell,Compound,Intermediate,
+Bodyweight Feet Elevated Figure Four Glute Bridge,Glutes,,,Push,Bodyweight,Compound,Intermediate,
+Bodyweight Feet Elevated Glute Bridge,Glutes,,,Push,Bodyweight,Compound,Novice,
+Bodyweight Feet Elevated Single Leg Glute Bridge,Glutes,,,Push,Bodyweight,Compound,Advanced,
+Bodyweight Feet Elevated Staggered Glute Bridge,Glutes,,,Push,Bodyweight,Compound,Intermediate,
+Lawnmower Row,Lats,Biceps,,Pull,Dumbbells,Compound,Intermediate,
+Dumbbell Concentration Curl,Biceps,,,Pull,Dumbbells,Isolation,Beginner,
+Dumbbell Crunch,Abdominals; Upper Abdominals,,,Push,Dumbbells,Isolation,Intermediate,Upper Abdominals
+Dumbbell Elevated Pushup,Chest,Triceps,,Push,Dumbbells,Compound,Intermediate,Chest
+Dumbbell Feet Elevated Figure Four Glute Bridge,Glutes,,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Feet Elevated Glute Bridge,Glutes,,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Feet Elevated Single Leg Glute Bridge,Glutes,,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Feet Elevated Staggered Glute Bridge,Glutes,,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Knee Lawnmower Row,Lats,Biceps,,Pull,Dumbbells,Compound,Beginner,
+Laying Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Pull,Dumbbells,Isolation,Beginner,Lateral Deltoid
+Dumbbell Long Lever Russian Twist,Obliques,,,Pull,Dumbbells,Isolation,Advanced,Obliques
+Dumbbell Overhead Squat,Glutes; Quads,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,,Push,Dumbbells,Compound,Advanced,Lateral Deltoid; Anterior Deltoid
+Plank IYTW,Abdominals,Shoulders; Lateral Deltoid; Anterior Deltoid; Posterior Deltoid; Front Shoulders; Rear Shoulders,,Hold,Dumbbells,Compound,Intermediate,Lateral Deltoid; Anterior Deltoid; Posterior Deltoid
+Pushup to Renegade Row,Chest,Lats,Abdominals,Push,Dumbbells,Compound,Intermediate,Chest
+Dumbbell Side Bend,Obliques,,,Pull,Dumbbells,Isolation,Novice,Obliques
+Single Arm Overhead Squat,Quads,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Glutes,Push,Dumbbells,Compound,Advanced,Lateral Deltoid; Anterior Deltoid
+Dumbbell Single Arm Overhead Tricep Extension,Triceps; Long Head Tricep,,,Push,Dumbbells,Isolation,Beginner,Long Head Tricep
+Dumbbell Single Arm Upright Row,Shoulders; Lateral Deltoid; Front Shoulders,Traps,,Pull,Dumbbells,Isolation,Novice,Lateral Deltoid
+Dumbbell Upright Row,Shoulders; Lateral Deltoid; Front Shoulders,,,Pull,Dumbbells,Isolation,Novice,Lateral Deltoid
+Dumbbell Standing Hip Abduction,Glutes,,,Push,Dumbbells,Isolation,Beginner,
+Dumbbell Suitcase Crunch,Abdominals; Upper Abdominals,,,Push,Dumbbells,Isolation,Advanced,Upper Abdominals
+Dumbbell Superman,Lower back,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Supinated Row,Lats,Biceps,,Pull,Dumbbells,Compound,Beginner,
+Dumbbell Tate Press,Triceps,,,Push,Dumbbells,Isolation,Intermediate,
+TRX Ab Rollout,Abdominals,Lats,Lower back,Pull,TRX,Compound,Advanced,
+TRX Calf Raise,Calves; Gastrocnemius,,,Push,TRX,Isolation,Novice,Gastrocnemius
+TRX Pec Fly,Chest,,,Push,TRX,Isolation,Intermediate,Chest
+TRX Curl,Biceps,,,Pull,TRX,Isolation,Beginner,
+TRX Curtsy Lunge,Glutes; Quads,,,Push,TRX,Compound,Beginner,
+TRX Forearm Plank,Abdominals,,,Hold,TRX,Compound,Beginner,
+TRX Forearm Side Plank,Obliques,,,Hold,TRX,Compound,Intermediate,Obliques
+TRX Glute Bridge,Glutes,,,Push,TRX,Compound,Beginner,
+TRX Hammer Curl,Biceps,,,Pull,TRX,Isolation,Beginner,
+TRX Hamstring Curl,Hamstrings,,,Pull,TRX,Isolation,Beginner,
+TRX Hand Plank,Abdominals,,,Hold,TRX,Isolation,Intermediate,
+TRX I Raise,Shoulders; Anterior Deltoid; Front Shoulders,,,Pull,TRX,Isolation,Beginner,Anterior Deltoid
+TRX Jumping Squat,Glutes; Quads,,,Push,TRX,Compound,Intermediate,
+TRX Kneeling Ab Rollout,Abdominals,Lats,,Pull,TRX,Compound,Intermediate,
+TRX Knee Tuck,Abdominals,,,Pull,TRX,Isolation,Beginner,
+TRX Lateral Lunge,Glutes; Quads,,,Push,TRX,Compound,Novice,
+TRX Mountain Climber,Abdominals,,,Pull,TRX,Compound,Beginner,
+TRX Oblique Crunch,Obliques,,,Pull,TRX,Compound,Intermediate,Obliques
+TRX Pike,Abdominals,,,Pull,TRX,Compound,Intermediate,
+TRX Pushup,Anterior Deltoid; Chest; Front Shoulders,Triceps,Shoulders,Push,TRX,Compound,Beginner,Anterior Deltoid; Chest
+TRX Rear Delt Fly,Shoulders; Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,TRX,Isolation,Intermediate,Posterior Deltoid; Traps (mid-back)
+TRX Rear Delt Row,Shoulders; Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,TRX,Isolation,Beginner,Posterior Deltoid; Traps (mid-back)
+TRX Reverse Curl,Biceps,Forearms,,Pull,TRX,Isolation,Intermediate,
+TRX Reverse Lunge,Glutes; Quads,,,Push,TRX,Compound,Novice,
+TRX Rotating Row,Lats,Biceps,,Pull,TRX,Compound,Beginner,
+TRX Single Arm row,Lats,Biceps,,Pull,TRX,Compound,Beginner,
+TRX Skullcrusher,Triceps,,,Push,TRX,Isolation,Beginner,
+TRX Split Squat,Glutes; Quads,,,Push,TRX,Compound,Novice,
+TRX Squat,Glutes; Quads,,,Push,TRX,Compound,Novice,
+TRX W Raise,Shoulders; Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,TRX,Isolation,Beginner,Posterior Deltoid; Traps (mid-back)
+TRX Y Raise,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Traps,Traps (mid-back),Pull,TRX,Isolation,Beginner,Lateral Deltoid; Anterior Deltoid; Traps (mid-back)
+Child Pose Arms Extended,Lats,Biceps,Lower back,Hold,Yoga,Compound,Novice,
+Child Pose Arms Extended Left Right,Lats,Obliques,,Hold,Yoga,Compound,Beginner,Obliques
+Child Pose Arms On Side,Lats,Shoulders,Lower back,Hold,Yoga,Compound,Beginner,
+Table Top Pose Variation 1,Forearms,,,Hold,Yoga,Isolation,Beginner,
+Table Top Pose Variation 2,Forearms,,,Hold,Yoga,Isolation,Beginner,
+Table Top Pose Variation 3,Forearms,,,Hold,Yoga,Isolation,Beginner,
+Bow Pose,Chest,Abdominals,Quads,Hold,Yoga,Compound,Intermediate,Chest
+Criss Cross Bow Tie Pose,Traps,Shoulders,Traps (mid-back),Hold,Yoga,Compound,Beginner,Traps (mid-back)
+Cat Pose,Lower back,Traps (mid-back),,Hold,Yoga,Isolation,Beginner,Traps (mid-back)
+Chair Pose,Quads,Shoulders,,Hold,Yoga,Compound,Beginner,
+Child Pose Elbows On Block,Triceps,Lats,,Hold,Yoga,Compound,Beginner,
+Corpse Pose,Biceps,,,Hold,Yoga,Compound,Beginner,
+Crescent Moon Pose,Quads,,,Hold,Yoga,Compound,Beginner,
+Crescent Moon Pose Quad Stretch,Quads,,,Hold,Yoga,Isolation,Intermediate,
+Crescent Moon Pose Quad Stretch With Block,Quads,,,Hold,Yoga,Isolation,Beginner,
+Crow Pose,Biceps,Shoulders,,Hold,Yoga,Compound,Advanced,
+Double Pigeon Pose,Glutes,,,Hold,Yoga,Isolation,Beginner,
+Downward Dog,Biceps,Hamstrings,,Hold,Yoga,Compound,Beginner,
+Downward Dog Toe To Heel,Calves,Hamstrings,,Hold,Yoga,Compound,Beginner,
+Downward Dog With Fingers Facing Feet,Biceps,Forearms,Hamstrings,Hold,Yoga,Compound,Beginner,
+Eagle Arms Chin Into Chest,Traps,Traps (mid-back),Shoulders,Hold,Yoga,Isolation,Beginner,Traps (mid-back)
+Eagle Arm Pose,Shoulders,,,Hold,Yoga,Isolation,Beginner,
+Easy Pose Neck Stretch,Traps,,,Hold,Yoga,Isolation,Beginner,
+Easy Seated Twist Pose,Obliques,Lower back,,Hold,Yoga,Compound,Beginner,Obliques
+extended-side-angle-pose,Lats,,,Hold,Yoga,Compound,Beginner,
+Extended side Angle Pose With Block,Lats,Obliques,,Hold,Yoga,Compound,Beginner,Obliques
+Gate Pose Variation Arm Extended on Side,Obliques,Lats,,Hold,Yoga,Compound,Intermediate,Obliques
+Gate Pose Rounding Spine Looking Up,Lats,Obliques,,Hold,Yoga,Compound,Intermediate,Obliques
+Half Lotus,Glutes,,,Hold,Yoga,Isolation,Beginner,
+Half Monkey Pose,Hamstrings,,,Hold,Yoga,Isolation,Beginner,
+Half Neck Rolls,Traps,,,Hold,Yoga,Isolation,Beginner,
+Happy Baby,Lower back,,,Hold,Yoga,Isolation,Beginner,
+Headstand,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid,,Hold,Yoga,Compound,Advanced,Anterior Deltoid; Lateral Deltoid
+Lord Of The Dance,Quads,,,Hold,Yoga,Compound,Intermediate,
+Monkey Pose,Quads,Hamstrings,,Hold,Yoga,Compound,Advanced,
+Mountain,Chest,,,Hold,Yoga,Isolation,Novice,Chest
+One Arm Cow Face Pose,Triceps,Lats,,Hold,Yoga,Compound,Beginner,
+Seated Forward Bend,Hamstrings,Lower back,,Hold,Yoga,Isolation,Beginner,
+Pigeon Pose,Glutes,Quads,,Hold,Yoga,Compound,Beginner,
+Wide Legged Forward Fall,Shoulders; Anterior Deltoid; Front Shoulders,,,Hold,Yoga,Compound,Beginner,Anterior Deltoid
+Puppy Pose,Shoulders; Posterior Deltoid; Rear Shoulders,Lats,,Hold,Yoga,Compound,Beginner,Posterior Deltoid
+Pyramid Pose Blocks,Hamstrings,Calves,,Hold,Yoga,Compound,Beginner,
+Pyramid Pose Calf Blocks,Calves,Hamstrings,,Hold,Yoga,Isolation,Beginner,
+Pyramid Pose,Hamstrings,Calves,,Hold,Yoga,Compound,Beginner,
+Pyramid Prayer,Triceps,Lats,,Hold,Yoga,Isolation,Beginner,
+Reclining Pigeon Pose,Glutes,,,Hold,Yoga,Isolation,Beginner,
+Restful Cow Face Pose Legs,Glutes,,,Hold,Yoga,Isolation,Intermediate,
+Reverse Prayer,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,,,Hold,Yoga,Isolation,Beginner,Lateral Deltoid; Anterior Deltoid
+Revolved Head To Knee,Obliques,Hamstrings,,Hold,Yoga,Compound,Advanced,Obliques
+Revolved Side Angle Pose With Prayer Hands Beginner,Traps (mid-back),Obliques,,Hold,Yoga,Compound,Beginner,Traps (mid-back); Obliques
+Revolved Side Angle Pose With Prayer Hands,Traps (mid-back),Obliques,,Hold,Yoga,Compound,Intermediate,Traps (mid-back); Obliques
+Runners Lunge,Quads,,,Hold,Yoga,Compound,Beginner,
+Scorpion Twist Pose,Biceps,Chest,Lower back,Hold,Yoga,Compound,Beginner,Chest
+Seated Arm Stretch,Biceps,Forearms,,Hold,Yoga,Isolation,Beginner,
+Seated Side Bend Pose,Obliques,,,Hold,Yoga,Isolation,Beginner,Obliques
+Seated Twist,Traps (mid-back),Obliques,,Hold,Yoga,Compound,Beginner,Traps (mid-back); Obliques
+Sphinx Pose,Lower back,Chest,,Hold,Yoga,Isolation,Beginner,Chest
+Standing Forward Bend Blocks,Hamstrings,Calves,,Hold,Yoga,Isolation,Beginner,
+Standing Forward Bend,Hamstrings,,,Hold,Yoga,Isolation,Beginner,
+Supine Twist Lying,Obliques,Lower back,,Hold,Yoga,Compound,Beginner,Obliques
+Supported Matsyasana Pose,Chest,Traps (mid-back),,Hold,Yoga,Isolation,Beginner,Chest; Traps (mid-back)
+Thread The Needle Hip Over Knees,Traps,Obliques,,Hold,Yoga,Compound,Intermediate,Obliques
+Tree Pose,Chest,,,Hold,Yoga,Compound,Novice,Chest
+Two Arms Cow Face Pose,Lats,Triceps,,Hold,Yoga,Compound,Beginner,
+Urdhva Dhanurasana Wheel Pose,Abdominals,,,Hold,Yoga,Compound,Beginner,
+Vajrasana Variation 1,Forearms,Traps (mid-back),,Hold,Yoga,Compound,Beginner,Traps (mid-back)
+Vajrasana Variation 2,Forearms,Traps (mid-back),,Hold,Yoga,Isolation,Beginner,Traps (mid-back)
+Walk Your Downward Dog,Calves,Hamstrings,,Hold,Yoga,Compound,Beginner,
+Warrior One,Chest,,,Hold,Yoga,Compound,Beginner,Chest
+Warrior Three,Hamstrings,Glutes,,Hold,Yoga,Compound,Intermediate,
+Warrior Two,Chest,,,Hold,Yoga,Isolation,Beginner,Chest
+Wide Legged Standing Forward Bend Holding Heels,Hamstrings,Calves,,Hold,Yoga,Isolation,Beginner,
+Wild Thing Pose,Obliques,,,Hold,Yoga,Compound,Intermediate,Obliques
+Yogi Arm Clock,Chest,Biceps,Shoulders,Hold,Yoga,Compound,Beginner,Chest
+Box Jump,Glutes; Quads,,,Push,Bodyweight,Compound,Beginner,
+Depth Jump,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Seated Box Jump,Glutes; Quads,,,Push,Bodyweight,Compound,Beginner,
+Single Leg Box Jump,Glutes; Quads,,,Push,Bodyweight,Compound,Advanced,
+Toe Tap,Abdominals,,,Push,Cardio,Compound,Novice,
+Glute Ham Raise,Hamstrings,,,Pull,Machine,Isolation,Intermediate,
+Medicine Ball Chest Press Partner Toss,Chest; Mid and Lower Chest,Triceps; Long Head Tricep; Lateral Head Triceps,Anterior Deltoid,Push,Medicine-Ball,Compound,Beginner,Chest; Mid and Lower Chest; Long Head Tricep; Lateral Head Triceps; Anterior Deltoid
+Medicine Ball Chest Press Slam,Chest; Mid and Lower Chest,Triceps; Long Head Tricep; Lateral Head Triceps; Medial Head Triceps,Anterior Deltoid,Push,Medicine-Ball,Compound,Beginner,Chest; Mid and Lower Chest; Long Head Tricep; Lateral Head Triceps; Medial Head Triceps; Anterior Deltoid
+Medicine Ball Chest Press Toss,Chest,Triceps,Anterior Deltoid,Push,Medicine-Ball,Compound,Beginner,Chest; Anterior Deltoid
+Medicine Ball Clean And Press Slam,Glutes,Quads; Inner Quadriceps; Outer Quadricep,Shoulders; Anterior Deltoid; Front Shoulders,Push,Medicine-Ball,Compound,Intermediate,Inner Quadriceps; Outer Quadricep; Anterior Deltoid
+Medicine Ball Half Kneeling Wood Chopper,Obliques,,,Pull,Medicine-Ball,Isolation,Beginner,Obliques
+Medicine Ball Halo,Shoulders; Lateral Deltoid; Anterior Deltoid; Posterior Deltoid; Front Shoulders; Rear Shoulders,Abdominals,,Push,Medicine-Ball,Isolation,Beginner,Lateral Deltoid; Anterior Deltoid; Posterior Deltoid
+Medicine Ball Ball Headlock Squat,Glutes; Quads; Inner Quadriceps; Outer Quadricep,,,Push,Medicine-Ball,Compound,Beginner,Inner Quadriceps; Outer Quadricep
+Medicine Ball Hip Abduction,Glutes; Gluteus Medius,,,Push,Medicine-Ball,Isolation,Beginner,Gluteus Medius
+Medicine Ball Kneeling Wood Chopper,Obliques,,,Pull,Medicine-Ball,Isolation,Beginner,Obliques
+Medicine Ball Lateral Lunge Slam,Glutes; Gluteus Medius,Quads; Inner Quadriceps; Outer Quadricep,,Push,Medicine-Ball,Isolation,Intermediate,Gluteus Medius; Inner Quadriceps; Outer Quadricep
+Medicine Ball Ball Offset Squat,Glutes; Gluteus Maximus; Quads,,,Push,Medicine-Ball,Compound,Novice,Gluteus Maximus
+Medicine Ball Overhead Reverse Lunge,Quads; Inner Quadriceps; Outer Quadricep,Glutes; Gluteus Maximus,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Push,Medicine-Ball,Compound,Intermediate,Inner Quadriceps; Outer Quadricep; Gluteus Maximus; Lateral Deltoid; Anterior Deltoid
+Medicine Ball Overhead Squat,Quads; Inner Quadriceps; Outer Quadricep,Glutes; Gluteus Maximus,Shoulders,Push,Medicine-Ball,Compound,Intermediate,Inner Quadriceps; Outer Quadricep; Gluteus Maximus
+Medicine Ball Partner Side Toss,Obliques,,,Pull,Medicine-Ball,Isolation,Beginner,Obliques
+Medicine Ball Partner Situp Toss,Upper Abdominals,,,Push,Medicine-Ball,Isolation,Beginner,Upper Abdominals
+Medicine Ball Plank,Abdominals; Lower Abdominals; Upper Abdominals,,,Hold,Medicine-Ball,Compound,Beginner,Lower Abdominals; Upper Abdominals
+Medicine Ball Press Jack,Shoulders; Front Shoulders,Gluteus Medius,,Push,Medicine-Ball,Compound,Beginner,Gluteus Medius
+Medicine Ball Pushup,Triceps; Chest; Mid and Lower Chest,,,Push,Medicine-Ball,Compound,Intermediate,Chest; Mid and Lower Chest
+Medicine Ball Rainbow Slam,Obliques,,,Push,Medicine-Ball,Compound,Beginner,Obliques
+Medicine Ball Reverse Lunge,Glutes; Gluteus Maximus; Quads; Inner Quadriceps; Outer Quadricep,,,Push,Medicine-Ball,Compound,Beginner,Gluteus Maximus; Inner Quadriceps; Outer Quadricep
+Medicine Ball Reverse Lunge Twist,Glutes; Quads; Inner Quadriceps; Outer Quadricep,Obliques,,Push,Medicine-Ball,Compound,Intermediate,Inner Quadriceps; Outer Quadricep; Obliques
+Medicine Ball Russian Twist,Obliques,,,Push,Medicine-Ball,Isolation,Intermediate,Obliques
+Medicine Ball Self Toss,Quads; Inner Quadriceps; Outer Quadricep,Glutes; Gluteus Maximus,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Push,Medicine-Ball,Compound,Beginner,Inner Quadriceps; Outer Quadricep; Gluteus Maximus; Lateral Deltoid; Anterior Deltoid
+Medicine Ball Single Leg Deadlift,Hamstrings,Glutes; Gluteus Maximus,Lower back,Pull,Medicine-Ball,Compound,Intermediate,Gluteus Maximus
+Medicine Ball Slam,Abdominals; Upper Abdominals,,,Push,Medicine-Ball,Compound,Beginner,Upper Abdominals
+Medicine Ball Squat Reach,Quads; Inner Quadriceps; Outer Quadricep,Glutes; Gluteus Maximus,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Push,Medicine-Ball,Compound,Beginner,Inner Quadriceps; Outer Quadricep; Gluteus Maximus; Lateral Deltoid; Anterior Deltoid
+Medicine Ball Walkover Pushup,Chest; Mid and Lower Chest,Triceps,Anterior Deltoid,Push,Medicine-Ball,Compound,Intermediate,Chest; Mid and Lower Chest; Anterior Deltoid
+Medicine Ball Wall Ball,Quads,Glutes,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Push,Medicine-Ball,Compound,Beginner,Lateral Deltoid; Anterior Deltoid
+Medicine Ball Wood Chopper,Obliques,,,Push,Medicine-Ball,Compound,Beginner,Obliques
+Medicine Ball Wood Chopper Toss,Obliques,,,Push,Medicine-Ball,Compound,Beginner,Obliques
+Landmine Alternating Lunge And Twist,Obliques,Glutes; Quads,,Push,Barbell,Compound,Advanced,Obliques
+Landmine Alternating Lunge To Chest Press,Quads,Glutes,Chest,Push,Barbell,Compound,Advanced,Chest
+Landmine Alternating Single Arm Press,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Triceps,,Push,Barbell,Isolation,Intermediate,Lateral Deltoid; Anterior Deltoid
+Landmine Bicep Curl,Biceps,,,Pull,Barbell,Isolation,Intermediate,
+Landmine Calf Raise,Calves; Gastrocnemius,,,Push,Barbell,Isolation,Intermediate,Gastrocnemius
+Landmine Concentration Curl,Biceps,,,Pull,Barbell,Isolation,Intermediate,
+Landmine Curtsy Lunge,Glutes; Gluteus Medius,Quads,,Push,Barbell,Compound,Intermediate,Gluteus Medius
+Landmine Glute Kick Back,Glutes,,,Push,Barbell,Isolation,Intermediate,
+Landmine Goblet Curtsy Lunge,Glutes,Quads,,Push,Barbell,Compound,Advanced,
+Landmine Goblet Lateral Lunge,Glutes,Quads,,Push,Barbell,Compound,Advanced,
+Landmine Hack Squat,Glutes; Quads,,,Push,Barbell,Compound,Advanced,
+Landmine Half Kneeling Single Arm Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Barbell,Isolation,Intermediate,Anterior Deltoid; Lateral Deltoid
+Landmine Hollow Hold,Abdominals,Shoulders; Anterior Deltoid,,Hold,Barbell,Isolation,Advanced,Anterior Deltoid
+Landmine Kneeling Alternating Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Barbell,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Landmine Kneeling Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Barbell,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Landmine Kneeling Twist,Obliques,,,Pull,Barbell,Isolation,Intermediate,Obliques
+Landmine Lateral Lunge,Glutes; Quads,,,Push,Barbell,Compound,Intermediate,
+Landmine Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,Anterior Deltoid,,Pull,Barbell,Isolation,Intermediate,Lateral Deltoid; Anterior Deltoid
+Landmine Lunge,Glutes; Quads,,,Push,Barbell,Compound,Intermediate,
+Landmine Lunge To Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Glutes; Quads,Lateral Deltoid,Push,Barbell,Compound,Advanced,Anterior Deltoid; Lateral Deltoid
+Landmine Lying Tricep Extension,Triceps,,,Push,Barbell,Isolation,Intermediate,
+Landmine Oblique Twist,Obliques,,,Pull,Barbell,Compound,Advanced,Obliques
+Landmine Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Barbell,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Landmine Romanian Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Barbell,Compound,Intermediate,Gluteus Maximus; Lateral Hamstrings
+Landmine Rotational Lift To Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Obliques,Glutes; Quads,Pull,Barbell,Compound,Advanced,Anterior Deltoid; Lateral Deltoid; Obliques
+Landmine Russian Twist,Obliques,,,Pull,Barbell,Isolation,Intermediate,Obliques
+Landmine Seated Alternating Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Barbell,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Landmine Seated Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Barbell,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Landmine Seated Single Arm Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Anterior Deltoid; Triceps,,Push,Barbell,Compound,Intermediate,Anterior Deltoid
+Landmine Single Arm Chest Press,Chest,Triceps,,Push,Barbell,Compound,Intermediate,Chest
+Landmine Single Arm Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Barbell,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Landmine Single Arm Push Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Barbell,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Landmine Single Arm Staggered Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Barbell,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Landmine Single Leg Glute Bridge,Glutes; Gluteus Maximus,,,Push,Barbell,Compound,Advanced,Gluteus Maximus
+Landmine Single Leg Romanian Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Barbell,Compound,Intermediate,Gluteus Maximus; Lateral Hamstrings
+Barbell Landmine Sissy Squat,Quads; Rectus Femoris,,,Push,Barbell,Isolation,Advanced,Rectus Femoris
+Landmine Sit Up,Abdominals; Upper Abdominals,,,Pull,Barbell,Isolation,Intermediate,Upper Abdominals
+Landmine Snatch,Glutes; Shoulders,Lower back,Anterior Deltoid; Front Shoulders,Pull,Barbell,Compound,Intermediate,Anterior Deltoid
+Landmine Split Jerk,Shoulders; Anterior Deltoid; Front Shoulders,,,Push,Barbell,Compound,Advanced,Anterior Deltoid
+Landmine Squat,Glutes; Quads,,,Push,Barbell,Compound,Beginner,
+Landmine Staggered Romanian Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Barbell,Compound,Advanced,Gluteus Maximus; Lateral Hamstrings
+Landmine Stationary Twist,Obliques,,,Pull,Barbell,Isolation,Intermediate,Obliques
+Landmine Sumo Deadlift,Glutes; Gluteus Maximus,Quads,,Pull,Barbell,Compound,Beginner,Gluteus Maximus
+Landmine T Bar Rows,Lats,Biceps,Lower back,Pull,Barbell,Compound,Beginner,
+Landmine Thruster,Glutes; Shoulders; Anterior Deltoid; Quads; Front Shoulders,,,Push,Barbell,Compound,Intermediate,Anterior Deltoid
+Medicine Ball Hollow Hold,Abdominals; Lower Abdominals; Upper Abdominals,,,Hold,Medicine-Ball,Isolation,Intermediate,Lower Abdominals; Upper Abdominals
+Bosu Ball Burpee,Glutes; Quads,Chest,,Push,Bosu-Ball,Compound,Intermediate,Chest
+Bosu Ball Calf Raise,Calves,,,Push,Bosu-Ball,Isolation,Beginner,
+Bosu Ball Curl,Biceps,,,Pull,Bosu-Ball,Isolation,Beginner,
+Bosu Ball Feet Elevated Glute Bridge,Glutes,Lower back,,Push,Bosu-Ball,Compound,Beginner,
+Bosu Ball Forearm Plank,Abdominals,,,Hold,Bosu-Ball,Compound,Beginner,
+Bosu Ball Forearm Sideplank,Obliques,,,Hold,Bosu-Ball,Compound,Intermediate,Obliques
+Bosu Ball Front Raise,Anterior Deltoid; Front Shoulders,,,Push,Bosu-Ball,Isolation,Beginner,Anterior Deltoid
+Bosu Ball Half Burpee,Glutes,Quads,Chest,Push,Bosu-Ball,Compound,Beginner,Chest
+Bosu Ball Hand Plank,Abdominals,,,Hold,Bosu-Ball,Compound,Beginner,
+Bosu Ball Hand Sideplank,Obliques,,,Hold,Bosu-Ball,Compound,Intermediate,Obliques
+Bosu Ball Hand Sideplank Hip Abduction,Obliques,Gluteus Medius,,Push,Bosu-Ball,Compound,Advanced,Obliques; Gluteus Medius
+Bosu Ball Hip Thrust,Glutes,Lower back,,Push,Bosu-Ball,Compound,Beginner,
+Bosu Ball Lateral Lunge,Quads,Gluteus Medius,Glutes,Push,Bosu-Ball,Compound,Intermediate,Gluteus Medius
+Bosu Ball Offset Pushup,Chest,Triceps,,Push,Bosu-Ball,Compound,Intermediate,Chest
+Bosu Ball Pike Pushup,Shoulders; Anterior Deltoid; Front Shoulders,Triceps,,Push,Bosu-Ball,Compound,Intermediate,Anterior Deltoid
+Bosu Ball Pike Shrug,Traps,,,Push,Bosu-Ball,Isolation,Beginner,
+Bosu Ball Plank Glute Kickback,Glutes,Abdominals,,Push,Bosu-Ball,Compound,Intermediate,
+Bosu Ball Pullover,Lats,,,Pull,Bosu-Ball,Isolation,Beginner,
+Bosu Ball Pushup,Chest,Triceps,Abdominals,Push,Bosu-Ball,Compound,Intermediate,Chest
+Bosu Ball Reverse Lunge,Glutes; Quads,,,Push,Bosu-Ball,Compound,Intermediate,
+Bosu Ball Row,Lats,Biceps,,Pull,Bosu-Ball,Compound,Beginner,
+Bosu Ball Single Leg Elevated Glute Bridge,Glutes,Lower back,,Push,Bosu-Ball,Compound,Intermediate,
+Bosu Ball Single Leg Hip Thrust,Glutes,Lower back,,Push,Bosu-Ball,Compound,Beginner,
+Bosu Ball Situp,Abdominals,Upper Abdominals,,Push,Bosu-Ball,Isolation,Beginner,Upper Abdominals
+Bosu Ball Split Squat,Glutes; Quads,,,Push,Bosu-Ball,Compound,Intermediate,
+Bosu Ball Squat,Glutes; Quads,,,Push,Bosu-Ball,Compound,Novice,
+Bosu Ball Superman,Lower back,,,Pull,Bosu-Ball,Isolation,Beginner,
+Bosu Ball Toe Tap,Abdominals; Lower Abdominals,,,Push,Bosu-Ball,Compound,Beginner,Lower Abdominals
+Bosu Ball Up And Over,Abdominals,Lower Abdominals,,Push,Bosu-Ball,Isolation,Beginner,Lower Abdominals
+Bosu Ball Walkover Pushup,Chest,Triceps,Abdominals,Push,Bosu-Ball,Compound,Intermediate,Chest
+Bosu Ball Wood Chopper,Obliques,,,Pull,Bosu-Ball,Isolation,Beginner,Obliques
+Narrow Pulldown,Lats,Biceps; Traps (mid-back),,Pull,Machine,Compound,Novice,Traps (mid-back)
+Neutral Chest Press,Chest,Triceps,,Push,Machine,Compound,Novice,Chest
+Neutral Pulldown,Lats,Biceps,Traps (mid-back),Pull,Machine,Compound,Novice,Traps (mid-back)
+Seated Leg Curl,Hamstrings; Medial Hamstrings,,,Pull,Machine,Isolation,Novice,Medial Hamstrings
+Underhand Pulldown,Lats,Biceps,Lower Traps,Pull,Machine,Compound,Novice,Lower Traps
+Vitruvian Arnold Press,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Triceps,,Push,Vitruvian,Compound,Beginner,Lateral Deltoid; Anterior Deltoid
+Vitruvian Belt Squat,Glutes; Quads,,,Push,Vitruvian,Compound,Intermediate,
+Vitruvian Bench Press,Triceps,,,Push,Vitruvian,Compound,Beginner,
+Vitruvian Crunch,Abdominals,,,Pull,Vitruvian,Isolation,Beginner,
+Vitruvian Deficit Lunge,Quads,Glutes,,Push,Vitruvian,Compound,Intermediate,
+Vitruvian Figure Four Hip Thrust,Glutes,,,Push,Vitruvian,Compound,Advanced,
+Vitruvian Front Squat,Quads,Glutes,,Push,Vitruvian,Compound,Intermediate,
+Vitruvian Hammer Curl,Biceps,,,Pull,Vitruvian,Isolation,Beginner,
+Vitruvian Hip Thrust,Glutes,,,Push,Vitruvian,Compound,Beginner,
+Vitruvian Kneeling Wood Chopper,Obliques,,,Pull,Vitruvian,Isolation,Beginner,Obliques
+Vitruvian Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Pull,Vitruvian,Isolation,Beginner,Lateral Deltoid
+Vitruvian Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid,,Push,Vitruvian,Compound,Beginner,Anterior Deltoid; Lateral Deltoid
+Vitruvian Pec Fly,Chest,,,Push,Vitruvian,Isolation,Beginner,Chest
+Vitruvian Push Up,Chest,Triceps,,Push,Vitruvian,Compound,Intermediate,Chest
+Vitruvian Rear Delt Fly,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Vitruvian,Isolation,Beginner,Posterior Deltoid
+Vitruvian Romanian Deadlift,Hamstrings,Glutes,Lower back,Pull,Vitruvian,Compound,Beginner,
+Vitruvian Row,Lats,Biceps,,Pull,Vitruvian,Compound,Beginner,
+Vitruvian Seated Calf Raise,Calves,,,Push,Vitruvian,Isolation,Beginner,
+Vitruvian Shrug,Traps,,,Pull,Vitruvian,Isolation,Beginner,
+Vitruvian Side Bend,Obliques,,,Pull,Vitruvian,Isolation,Beginner,Obliques
+Vitruvian Single Arm Row,Lats,Biceps,,Pull,Vitruvian,Compound,Beginner,
+Vitruvian Single Leg Deadlift,Hamstrings,Glutes,Lower back,Pull,Vitruvian,Compound,Intermediate,
+Vitruvian Staggered Deadlift,Hamstrings,Glutes,Lower back,Pull,Vitruvian,Compound,Intermediate,
+Vitruvian Standing Calf Raise,Calves,,,Push,Vitruvian,Isolation,Beginner,
+Vitruvian Windmill,Obliques,,,Push,Vitruvian,Isolation,Intermediate,Obliques
+Seated Tibialis Raise,Tibialis,,,Push,Bodyweight,Isolation,Novice,Tibialis
+Dumbbell Seated Tibialis Raise,Tibialis,,,Push,Dumbbells,Isolation,Novice,Tibialis
+Cobra Pose,Lower back; Abdominals,,,Hold,Yoga,Compound,Beginner,
+Machine Sissy Squat,Quads; Rectus Femoris,,,Push,Machine,Compound,Intermediate,Rectus Femoris
+Machine Goblet Sissy Squat,Quads; Rectus Femoris,Glutes,,Push,Machine,Compound,Intermediate,Rectus Femoris
+Bicycle Crunch,Abdominals; Lower Abdominals; Upper Abdominals,Abdominals,Lower Abdominals; Upper Abdominals,Push,Bodyweight,Isolation,Beginner,Lower Abdominals; Upper Abdominals
+Bird Dog,Abdominals,,,Push,Bodyweight,Compound,Beginner,
+Dead Bug,Abdominals,,,Push,Bodyweight,Compound,Novice,
+Hand Side Plank Reach Through,Obliques,,,Pull,Bodyweight,Isolation,Advanced,Obliques
+Long Lever Forearm Plank,Abdominals,,,Hold,Bodyweight,Compound,Advanced,
+Situp,Upper Abdominals,,,Pull,Bodyweight,Isolation,Novice,Upper Abdominals
+Plate Superman,Lower back,,,Pull,Plate,Isolation,Intermediate,
+Plate Superman Hold,Lower back,,,Hold,Plate,Isolation,Intermediate,
+Reverse Crunch,Lower Abdominals,,,Pull,Bodyweight,Isolation,Intermediate,Lower Abdominals
+Dumbbell Superman Hold,Lower back,,,Hold,Dumbbells,Isolation,Novice,
+Kettlebell Hollow Hold,Abdominals,,,Hold,Kettlebells,Isolation,Advanced,
+Kettlebell Superman,Lower back,,,Pull,Kettlebells,Isolation,Advanced,
+Kettlebell Superman Hold,Lower back,,,Hold,Kettlebells,Isolation,Advanced,
+Internally Rotated Seated Rear Delt Fly,Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,Dumbbells,Isolation,Beginner,Posterior Deltoid; Traps (mid-back)
+Seated Lateral Raise,Lateral Deltoid; Front Shoulders,,,Push,Dumbbells,Isolation,Novice,Lateral Deltoid
+Standing Tibialis Raise,Tibialis,,,,Barbell,Isolation,Beginner,Tibialis
+Dumbbell Standing Tibialis Raise,Tibialis,,,Pull,Dumbbells,Isolation,Beginner,Tibialis
+Kettlebell Alternating Row,Lats,Biceps,Forearms,Pull,Kettlebells,Compound,Beginner,
+Kettlebell Alternating Swing,Glutes; Hamstrings,Lower back,,Pull,Kettlebells,Compound,Intermediate,
+Kettlebell Bench Press,Chest,Triceps,,Push,Kettlebells,Compound,Novice,Chest
+Kettlebell Clean And Press,Glutes,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,,Push,Kettlebells,Compound,Advanced,Lateral Deltoid; Anterior Deltoid
+Kettlebell Conventional Deadlift (Double),Glutes,Hamstrings,Lower back,Pull,Kettlebells,Compound,Beginner,
+Kettlebell Curl,Biceps,,,Pull,Kettlebells,Isolation,Novice,
+Kettlebell Snatch (Double),Glutes,Shoulders; Anterior Deltoid; Front Shoulders,,Pull,Kettlebells,Compound,Advanced,Anterior Deltoid
+Kettlebell Swing (Double),Hamstrings,Glutes,Lower back,Pull,Kettlebells,Compound,Intermediate,
+Kettlebell Figure Four Hip Thrust,Glutes,,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Forward Lunge (Double),Glutes; Quads,,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Front Rack Curtsy Lunge (Double),Glutes; Gluteus Medius,Quads,Abdominals,Push,Kettlebells,Compound,Advanced,Gluteus Medius
+Kettlebell Front Rack Forward Lunge (Double),Glutes; Quads,Abdominals,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Front Rack Lateral Lunge (Double),Glutes; Gluteus Medius; Quads; Inner Quadriceps,Abdominals,,Push,Kettlebells,Compound,Advanced,Gluteus Medius; Inner Quadriceps
+Kettlebell Front Rack Reverse Lunge (Double),Glutes; Quads,Abdominals,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Front Rack Single Arm Lateral Lunge,Glutes; Quads,Abdominals,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Front Rack Squat,Glutes; Quads,Abdominals,,Push,Kettlebells,Compound,Beginner,
+Kettlebell Full Swing,Glutes; Hamstrings,Lower back,Shoulders; Anterior Deltoid; Front Shoulders,Push,Kettlebells,Compound,Intermediate,Anterior Deltoid
+Kettlebell Gorilla Row,Lats,Biceps,Obliques,Pull,Kettlebells,Compound,Intermediate,Obliques
+Kettlebell Guillotine Bench Press,Chest,Triceps,,Push,Kettlebells,Compound,Intermediate,Chest
+Kettlebell Lateral Lunge,Glutes; Quads; Inner Quadriceps,,,Push,Kettlebells,Compound,Intermediate,Inner Quadriceps
+Kettlebell Pec Fly,Chest,,,Push,Kettlebells,Isolation,Beginner,Chest
+Kettlebell Push Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Kettlebells,Compound,Beginner,Anterior Deltoid; Lateral Deltoid
+Kettlebell Rear Delt Row (Double),Posterior Deltoid; Rear Shoulders,Traps (mid-back),Biceps,Pull,Kettlebells,Compound,Beginner,Posterior Deltoid; Traps (mid-back)
+Kettlebell Reverse Curl,Biceps; Forearms,,,Pull,Kettlebells,Isolation,Beginner,
+Kettlebell Reverse Lunge,Glutes; Quads,,,Push,Kettlebells,Compound,Novice,
+Kettlebell Romanian Deadlift,Glutes; Hamstrings,Lower back,,Pull,Kettlebells,Compound,Beginner,
+Kettlebell Row,Lats,Biceps,Forearms,Pull,Kettlebells,Compound,Beginner,
+Kettlebell Shrug,Traps; Upper Traps,,,Pull,Kettlebells,Isolation,Novice,Upper Traps
+Kettlebell Silverback Shrug,Traps (mid-back); Upper Traps,,,Pull,Kettlebells,Isolation,Beginner,Traps (mid-back); Upper Traps
+Kettlebell Single Arm Clean And Press,Glutes,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,Push,Kettlebells,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Kettlebell Single Arm Curtsy Lunge,Glutes; Gluteus Medius; Gluteus Maximus,Quads; Inner Quadriceps,,Push,Kettlebells,Compound,Intermediate,Gluteus Medius; Gluteus Maximus; Inner Quadriceps
+Kettlebell Single Arm Front Rack Forward Lunge,Glutes; Quads,Abdominals,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Single Arm Front Rack Reverse Lunge,Glutes; Quads,Abdominals,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Single Arm Snatch,Glutes,Shoulders; Anterior Deltoid; Front Shoulders,,Push,Kettlebells,Compound,Intermediate,Anterior Deltoid
+Kettlebell Single Arm Swing,Glutes; Hamstrings,Lower back,,Push,Kettlebells,Compound,Beginner,
+Kettlebell Staggered Deadlift,Glutes; Hamstrings,Lower back,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Staggered Swing,Glutes; Hamstrings,Lower back,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Sumo Deadlift,Glutes,Lower back; Quads,,Push,Kettlebells,Compound,Beginner,
+Swing To Upright Row,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Glutes; Hamstrings,Lower back; Traps,Push,Kettlebells,Compound,Intermediate,Lateral Deltoid; Anterior Deltoid
+Smith Machine Drag Curl,Biceps; Long Head Bicep; Short Head Bicep,,,Pull,Smith-Machine,Isolation,Beginner,Long Head Bicep; Short Head Bicep
+Smith Machine Glute Kickback,Glutes,,,Push,Smith-Machine,Isolation,Intermediate,
+Smith Machine Hanging Knee Tuck,Abdominals,,,Pull,Smith-Machine,Isolation,Beginner,
+Smith Machine Underhand Row,Lats,Biceps,,Pull,Smith-Machine,Compound,Novice,
+Smith Machine Sissy Squat,Quads; Rectus Femoris,,,Push,Smith-Machine,Isolation,Advanced,Rectus Femoris
+Smith Machine Oblique Crunch,Obliques,,,Pull,Smith-Machine,Compound,Advanced,Obliques
+Smith Machine Reverse Crunch Hip Raise,Lower Abdominals,,,Push,Smith-Machine,Isolation,Intermediate,Lower Abdominals
+Smith Machine Leg Press,Quads,Glutes,,Push,Smith-Machine,Compound,Intermediate,
+Smith Machine Side Plank Up Down,Obliques,,,Push,Smith-Machine,Isolation,Beginner,Obliques
+Smith Machine Situp,Abdominals; Upper Abdominals,,,Push,Smith-Machine,Isolation,Beginner,Upper Abdominals
+Smith Machine Single Leg Hip Thrust,Glutes,,,Push,Smith-Machine,Compound,Intermediate,
+Smith Machine Hip Thrust,Glutes,,,Push,Smith-Machine,Compound,Novice,
+Smith Machine Seated Calf Raise,Calves,,,Push,Smith-Machine,Isolation,Novice,
+Smith Machine Skullcrusher,Triceps,,,Push,Smith-Machine,Isolation,Intermediate,
+Smith Machine Guillotine Bench Press,Chest,Triceps,,Push,Smith-Machine,Compound,Intermediate,Chest
+Smith Machine Close Grip Bench Press,Triceps,Chest,,Push,Smith-Machine,Compound,Beginner,Chest
+Smith Machine Bench Press,Chest,Triceps; Lateral Head Triceps; Medial Head Triceps,Shoulders,Push,Smith-Machine,Compound,Novice,Chest; Lateral Head Triceps; Medial Head Triceps
+Smith Machine Incline Bench Press,Chest,Shoulders; Triceps,,Push,Smith-Machine,Compound,Beginner,Chest
+Smith Machine Seated Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid,,Push,Smith-Machine,Compound,Beginner,Anterior Deltoid; Lateral Deltoid
+Smith Machine Bodyweight Skullcrusher,Triceps,,,Push,Smith-Machine,Isolation,Beginner,
+Smith Machine Inverted Row,Traps (mid-back); Lats,Biceps,Forearms,Pull,Smith-Machine,Compound,Beginner,Traps (mid-back)
+Smith Machine Overhand Row,Lats,Biceps,Lower back,Pull,Smith-Machine,Compound,Beginner,
+Smith Machine Upright Row,Shoulders; Lateral Deltoid; Front Shoulders,Traps,,Pull,Smith-Machine,Isolation,Intermediate,Lateral Deltoid
+Smith Machine Assisted Pullup,Lats,Traps (mid-back),Biceps,Pull,Smith-Machine,Compound,Novice,Traps (mid-back)
+Smith Machine Pushup,Chest; Mid and Lower Chest,,,Push,Smith-Machine,Compound,Beginner,Chest; Mid and Lower Chest
+Smith Machine Side Bend,Obliques,,,Pull,Smith-Machine,Isolation,Novice,Obliques
+Smith Machine Calf Raise,Calves,,,Push,Smith-Machine,Isolation,Novice,
+Smith Machine Sumo Romanian Deadlift,Glutes,Hamstrings,Lower back,Pull,Smith-Machine,Compound,Intermediate,
+Smith Machine Staggered Deadlift,Hamstrings,Glutes,,Push,Smith-Machine,Compound,Intermediate,
+Smith Machine Romanian Deadlift,Hamstrings,Glutes,Lower back,Pull,Smith-Machine,Compound,Beginner,
+Smith Machine Split Squat,Quads,Glutes,,Push,Smith-Machine,Compound,Intermediate,
+Smith Machine Reverse Lunge,Quads,Glutes,,Push,Smith-Machine,Compound,Intermediate,
+Smith Machine Narrow Stance Squat,Quads,Glutes,,Push,Smith-Machine,Compound,Beginner,
+Smith Machine Squat,Quads,Glutes,,Push,Smith-Machine,Compound,Beginner,
+Cable Zercher Squat,Glutes; Quads,Lower back,,Push,Cables,Compound,Intermediate,
+Cable Tricep Kickback,Triceps,,,Push,Cables,Isolation,Beginner,
+Cable Row Bar Standing Row,Lats,Biceps,Traps (mid-back),Pull,Cables,Compound,Novice,Traps (mid-back)
+Cable Single Arm Underhand Grip Row,Lats,Biceps,Traps (mid-back),Pull,Cables,Compound,Novice,Traps (mid-back)
+Cable Single Arm Neutral Grip Row,Lats,Biceps,Traps (mid-back),Pull,Cables,Compound,Novice,Traps (mid-back)
+Cable Single Arm Rear Delt Row,Shoulders; Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,Cables,Compound,Advanced,Posterior Deltoid; Traps (mid-back)
+Cable Supinating Row,Lats,Posterior Deltoid,Biceps,Pull,Cables,Compound,Beginner,Posterior Deltoid
+Cable Archer Row,Lats,Posterior Deltoid,Biceps,Pull,Cables,Compound,Intermediate,Posterior Deltoid
+Cable Half Kneeling Low To High Wood Chopper,Obliques,,,Pull,Cables,Isolation,Beginner,Obliques
+Cable Half Kneeling Wood Chopper,Obliques,,,Pull,Cables,Isolation,Beginner,Obliques
+Cable Half Kneeling High To Low Wood Chopper,Obliques,,,Pull,Cables,Isolation,Beginner,Obliques
+Cable Straight Arm Pull In,Lats,,,Pull,Cables,Compound,Beginner,
+Cable Rope Lat Prayer,Lats,,,Pull,Cables,Isolation,Intermediate,
+Cable Rope Pullover,Lats,,,Pull,Cables,Isolation,Beginner,
+Cable Seated Bayesian Reverse Curl,Biceps; Long Head Bicep,Forearms,,Pull,Cables,Isolation,Intermediate,Long Head Bicep
+Cable Seated Bayesian Hammer Curl,Biceps; Long Head Bicep,,,Pull,Cables,Isolation,Beginner,Long Head Bicep
+Cable Seated Bayesian Curl,Biceps,,,Pull,Cables,Isolation,Beginner,
+Cable Single Arm Incline Chest Fly,Chest; Upper Pectoralis,,,Push,Cables,Isolation,Beginner,Chest; Upper Pectoralis
+Cable Single Arm Incline Bench Press,Chest; Upper Pectoralis,Triceps,Anterior Deltoid,Push,Cables,Compound,Beginner,Chest; Upper Pectoralis; Anterior Deltoid
+Cable Single Arm Bench Chest Fly,Chest,,,Push,Cables,Isolation,Beginner,Chest
+Cable Single Arm Bench Press,Chest,Triceps,Anterior Deltoid,Push,Cables,Compound,Beginner,Chest; Anterior Deltoid
+Cable Single Arm Decline Bench Chest Fly,Chest,,,Push,Cables,Isolation,Beginner,Chest
+Cable Decline Single Arm Bench Press,Chest,Triceps,Anterior Deltoid,Push,Cables,Compound,Beginner,Chest; Anterior Deltoid
+Cable Incline Chest Fly,Chest; Upper Pectoralis,,,Push,Cables,Isolation,Beginner,Chest; Upper Pectoralis
+Cable Incline Bench Press,Chest; Upper Pectoralis,Triceps,Anterior Deltoid,Push,Cables,Compound,Beginner,Chest; Upper Pectoralis; Anterior Deltoid
+Cable Bench Chest Fly,Chest,,,Push,Cables,Isolation,Novice,Chest
+Cable Bench Press,Chest,Triceps,Anterior Deltoid,Push,Cables,Compound,Novice,Chest; Anterior Deltoid
+Cable Decline Bench Chest Fly,Chest,,,Push,Cables,Isolation,Beginner,Chest
+Cable Decline Bench Press,Chest,Triceps,Anterior Deltoid,Push,Cables,Compound,Beginner,Chest; Anterior Deltoid
+Cable Seated Leg Curl,Hamstrings; Medial Hamstrings,,,Pull,Cables,Isolation,Advanced,Medial Hamstrings
+Cable Seated Leg Extension,Quads,,,Push,Cables,Isolation,Beginner,
+Cable Single Leg Laying Leg Curl,Medial Hamstrings,,,Pull,Cables,Isolation,Advanced,Medial Hamstrings
+Cable Rope Kneeling Face Pull,Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,Cables,Isolation,Novice,Posterior Deltoid; Traps (mid-back)
+Cable Rope Kneeling Oblique Crunch,Abdominals,,,Pull,Cables,Isolation,Beginner,
+Cable Rope Kneeling Crunch,Abdominals,,,Pull,Cables,Isolation,Beginner,
+Cable Quadruped Hip Abduction,Glutes,,,Push,Cables,Isolation,Beginner,
+Cable Incline Bench Straight Leg Kickback,Glutes,Lower back,,Push,Cables,Compound,Beginner,
+Cable Bench Straight Leg Kickback,Glutes,Lower back,,Push,Cables,Compound,Beginner,
+Cable Standing Hip Adduction,Glutes; Inner Thigh; Groin,,,Pull,Cables,Isolation,Beginner,Inner Thigh
+Cable Standing Mid Kickback,Glutes,,,Push,Cables,Isolation,Beginner,
+Cable Standing Straight Leg Mid Kickback,Lower back; Glutes,,,Push,Cables,Isolation,Beginner,
+Cable Standing Glute Kickback,Glutes,,,Push,Cables,Isolation,Beginner,
+Cable Low Bilateral Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Push,Cables,Isolation,Novice,Lateral Deltoid
+Cable Bar Front Raise,Shoulders; Anterior Deltoid; Front Shoulders,,,Push,Cables,Isolation,Novice,Anterior Deltoid
+Cable Zercher Good Morning,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Cables,Compound,Advanced,Gluteus Maximus; Lateral Hamstrings
+Cable Bar Staggered Romanian Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Cables,Compound,Intermediate,Gluteus Maximus; Lateral Hamstrings
+Cable Bar Reverse Grip Curl,Forearms,Biceps,,Pull,Cables,Isolation,Novice,
+Cable Bar Curl,Biceps; Long Head Bicep; Short Head Bicep,,,Pull,Cables,Isolation,Novice,Long Head Bicep; Short Head Bicep
+Cable Bar Reverse Grip Pushdown,Triceps,,,Push,Cables,Isolation,Beginner,
+Cable Bar Pushdown,Triceps,,,Push,Cables,Isolation,Novice,
+Cable Rope Single Arm Low Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Push,Cables,Isolation,Beginner,Lateral Deltoid
+Cable Rope Mid Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Push,Cables,Isolation,Beginner,Lateral Deltoid
+Cable Single Arm Skullcrusher,Triceps; Long Head Tricep,,,Push,Cables,Isolation,Beginner,Long Head Tricep
+Cable Rope Front Raise,Anterior Deltoid; Front Shoulders,,,Push,Cables,Isolation,Novice,Anterior Deltoid
+Cable Single Arm Rope Pushdown,Triceps,,,Push,Cables,Isolation,Novice,
+Cable Rope Upright Row,Shoulders; Lateral Deltoid; Front Shoulders,Traps,,Pull,Cables,Compound,Beginner,Lateral Deltoid
+Cable Rope Hammer Curl,Biceps; Long Head Bicep; Short Head Bicep,,,Pull,Cables,Isolation,Novice,Long Head Bicep; Short Head Bicep
+Cable Elevated Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Cables,Compound,Intermediate,Gluteus Maximus; Lateral Hamstrings
+Cable High Reverse Fly,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Cables,Isolation,Novice,Posterior Deltoid
+Cable Single Arm Internally Rotated High Reverse Fly,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Cables,Isolation,Beginner,Posterior Deltoid
+Cable High Internally Rotated Reverse Fly,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Cables,Isolation,Beginner,Posterior Deltoid
+Cable Single Arm Cross Pushdown,Triceps,,,Push,Cables,Isolation,Beginner,
+Cable Pallof Press Rotation,Obliques,,,Push,Cables,Isolation,Beginner,Obliques
+Cable Oblique Pushdown,Obliques,,,Pull,Cables,Isolation,Beginner,Obliques
+Cable Side Bend,Obliques,,,Pull,Cables,Isolation,Novice,Obliques
+Cable Bar Calve Raise,Calves; Gastrocnemius,,,Push,Cables,Isolation,Novice,Gastrocnemius
+Cable Hammer Bayesian Curl,Biceps; Long Head Bicep,,,Pull,Cables,Isolation,Novice,Long Head Bicep
+Cable Reverse Bayesian Curl,Biceps; Long Head Bicep,Forearms,,Pull,Cables,Isolation,Beginner,Long Head Bicep
+Cable Bayesian Curl,Biceps,,,Pull,Cables,Isolation,Beginner,
+Cable Single Arm 30 Degree Shrug,Upper Traps,,,Pull,Cables,Isolation,Beginner,Upper Traps
+Barbell Behind The Neck Seated Overhead Press,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Triceps,,Push,Barbell,Compound,Advanced,Lateral Deltoid; Anterior Deltoid
+Barbell Drag Curl,Biceps; Long Head Bicep; Short Head Bicep,,,Pull,Barbell,Isolation,Intermediate,Long Head Bicep; Short Head Bicep
+Barbell Figure Four Hip Thrust,Glutes,,,Push,Barbell,Compound,Intermediate,
+Barbell Front Squat With Straps,Glutes; Quads,,Abdominals,Push,Barbell,Compound,Intermediate,
+Barbell High Incline Bench Press,Chest,Shoulders; Triceps,,Push,Barbell,Compound,Intermediate,Chest
+Barbell Single Leg Hip Thrust,Glutes,,,Push,Barbell,Compound,Beginner,
+Dumbbell Bench Wrist Curl,Forearms,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Bench Wrist Extension,Forearms,,,Push,Dumbbells,Isolation,Novice,
+Dumbbell Bent Arm Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Push,Dumbbells,Isolation,Beginner,Lateral Deltoid
+Dumbbell Cross Body Romanian Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Dumbbells,Compound,Intermediate,Gluteus Maximus; Lateral Hamstrings
+Dumbbell High Incline Bench Press,Chest,Shoulders; Triceps,,Push,Dumbbells,Compound,Beginner,Chest
+Dumbbell Incline Skullover,Triceps,,,Push,Dumbbells,Isolation,Advanced,
+Dumbbell Shoulder External Rotation,Shoulders; Posterior Deltoid; Rear Shoulders,,,Push,Dumbbells,Isolation,Beginner,Posterior Deltoid
+Dumbbell Standing Bayesian Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Push,Dumbbells,Isolation,Beginner,Lateral Deltoid
+Kettlebell High Incline Bench Press,Chest,Shoulders; Triceps,,Push,Kettlebells,Compound,Beginner,Chest
+Kettlebell Incline Bench Press,Chest,Shoulders; Triceps,,Push,Kettlebells,Compound,Beginner,Chest
+Kettlebell Seated Overhead Press,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Triceps,,Push,Kettlebells,Compound,Beginner,Lateral Deltoid; Anterior Deltoid
+Barbell Figure Four Heels Elevated Hip Thrust,Glutes,,,Push,Barbell,Compound,Advanced,
+Barbell Heels Elevated Hip Thrust,Glutes,,,Push,Barbell,Compound,Beginner,
+Barbell Single Leg Heels Elevated Hip Thrust,Glutes,,,Push,Barbell,Compound,Advanced,
+Backward Arm Circle,Shoulders; Lateral Deltoid; Anterior Deltoid; Posterior Deltoid; Front Shoulders; Rear Shoulders,,,Pull,Bodyweight,Isolation,Novice,Lateral Deltoid; Anterior Deltoid; Posterior Deltoid
+Bodyweight Alternating Jump Lunge,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Bodyweight Figure Four Heels Elevated Hip Thrust,Glutes,,,Push,Bodyweight,Compound,Intermediate,
+Bodyweight Heels Elevated Hip Thrust,Glutes,,,Push,Bodyweight,Compound,Novice,
+Bodyweight Lateral Lunge Jump,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Bodyweight Pulse Squat,Glutes; Quads,,,Push,Bodyweight,Compound,Novice,
+Bodyweight Single Leg Heels Elevated Hip Thrust,Glutes,,,Push,Bodyweight,Compound,Intermediate,
+Bodyweight Swing Lunge,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Bodyweight Swingthrough Lunge,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Forward Arm Circle,Shoulders; Lateral Deltoid; Anterior Deltoid; Posterior Deltoid; Front Shoulders; Rear Shoulders,,,Push,Bodyweight,Isolation,Novice,Lateral Deltoid; Anterior Deltoid; Posterior Deltoid
+In And Out Jump Squat,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Pole Overhead Squat,Glutes; Quads,Shoulders; Lateral Deltoid; Anterior Deltoid,,Push,Bodyweight,Compound,Beginner,Lateral Deltoid; Anterior Deltoid
+Bodyweight Pop Squat,Glutes; Quads,,,Push,Bodyweight,Compound,Novice,
+Cardio Assault Bike Arms Only,Shoulders,,,Push,Cardio,Compound,Beginner,
+Cardio Assault Bike,Glutes; Quads,Chest,Shoulders; Anterior Deltoid,Push,Cardio,Compound,Novice,Chest; Anterior Deltoid
+Cardio Band Hammer Curl Jacks,Biceps; Gluteus Medius,,,Push,Cardio,Compound,Beginner,Gluteus Medius
+Cardio Band Press Jacks,Gluteus Medius; Shoulders; Lateral Deltoid; Anterior Deltoid; Triceps; Front Shoulders,,,Push,Cardio,Compound,Beginner,Gluteus Medius; Lateral Deltoid; Anterior Deltoid
+Cardio Band Reverse Fly Jacks,Gluteus Medius; Posterior Deltoid; Rear Shoulders,,,Pull,Cardio,Compound,Beginner,Gluteus Medius; Posterior Deltoid
+Cardio Band Seal Jacks,Gluteus Medius; Chest,,,Push,Cardio,Compound,Beginner,Gluteus Medius; Chest
+Cardio Box Quick Feet,Calves,,,Push,Cardio,Compound,Intermediate,
+Cardio Criss Cross Jacks,Calves; Glutes; Gluteus Medius; Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,,,Push,Cardio,Compound,Beginner,Gluteus Medius; Lateral Deltoid; Anterior Deltoid
+Cardio Diamond Hop,Calves,,,Push,Cardio,Compound,Intermediate,
+Cardio Figure Eight Sprint,Calves; Glutes; Hamstrings,Quads,,Push,Cardio,Compound,Intermediate,
+Cardio Forward Scissor,Abdominals; Lower Abdominals; Glutes; Quads; Rectus Femoris,,,Push,Cardio,Compound,Beginner,Lower Abdominals; Rectus Femoris
+Cardio In And Out Forward,Abdominals; Lower Abdominals; Glutes; Quads; Rectus Femoris,,,Push,Cardio,Compound,Beginner,Lower Abdominals; Rectus Femoris
+Cardio In And Outs,Calves; Glutes; Gluteus Medius,,,Push,Cardio,Compound,Intermediate,Gluteus Medius
+Cardio In In Out Out Shuffle,Calves; Glutes; Gluteus Medius,,,Push,Cardio,Compound,Beginner,Gluteus Medius
+Cardio Jumping Jacks,Gluteus Medius; Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,,,Push,Cardio,Compound,Beginner,Gluteus Medius; Lateral Deltoid; Anterior Deltoid
+Cardio Karaoke,Glutes; Quads,,,Push,Cardio,Compound,Intermediate,
+Cardio Knee Taps,Calves; Hamstrings; Quads,,,Push,Cardio,Compound,Beginner,
+Cardio Lateral Quick Feet,Calves; Glutes; Quads,,,Push,Cardio,Compound,Beginner,
+Cardio Lateral Shuffle,Calves; Glutes; Quads,,,Push,Cardio,Compound,Beginner,
+Cardio Long Jump,Calves; Glutes; Quads,,,Push,Cardio,Compound,Intermediate,
+Cardio Long Jump Shuffle Back,Calves; Glutes; Quads,,,Push,Cardio,Compound,Intermediate,
+Cardio Quick Feet,Calves,,,Push,Cardio,Compound,Beginner,
+Cardio Row Erg Rower Arms Only,Biceps; Lats,,,Pull,Cardio,Compound,Beginner,
+Cardio Row Erg Rower Four Stroke Sprint Start,Biceps; Glutes; Lats; Quads,,,Push,Cardio,Compound,Beginner,
+Cardio Row Erg Rower,Biceps; Glutes; Lats; Quads,,,Push,Cardio,Compound,Beginner,
+Cardio Row Erg Rower Legs Only,Glutes; Quads,,,Push,Cardio,Compound,Beginner,
+Cardio Seal Jacks,Calves; Gluteus Medius,Front Shoulders; Rear Shoulders,,Push,Cardio,,Beginner,Gluteus Medius
+Cardio Shuttle Sprint,Calves; Glutes; Quads,,,Push,Cardio,Compound,Beginner,
+Cardio Single Leg Forward Hop,Calves,,,Push,Cardio,Isolation,Beginner,
+Cardio Single Leg Lateral Hop,Calves,,,Push,Cardio,Isolation,Beginner,
+Cardio Skater,Glutes,,,Push,Cardio,Compound,Beginner,
+Cardio Skater To Single Leg Burpee,Calves; Glutes; Chest,,,Push,Cardio,Compound,Advanced,Chest
+Cardio Ski Erg,Abdominals; Lats; Triceps,,,Pull,Cardio,Compound,Beginner,
+Cardio Sprint In Place,Calves; Glutes; Quads,,,Push,Cardio,Compound,Beginner,
+Cardio Step Out Jacks,Glutes; Front Shoulders,,,Push,Cardio,Compound,Beginner,
+Cardio Three Step Heismans,Calves; Glutes; Hamstrings; Quads,,,Push,Cardio,Compound,Beginner,
+Dumbbell Figure Four Heels Elevated Hip Thrust,Glutes,,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Heels Elevated Hip Thrust,Glutes,,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Single Leg Heels Elevated Hip Thrust,Glutes,,,Push,Dumbbells,Compound,Advanced,
+Rower Knee Tuck,Abdominals,,,Pull,Machine,Isolation,Beginner,
+Rower Pike,Abdominals,,,Pull,Machine,Isolation,Intermediate,
+Alternating Pole Rotation,Shoulders; Lateral Deltoid; Anterior Deltoid; Posterior Deltoid; Front Shoulders; Rear Shoulders,,,Pull,Stretches,Isolation,Beginner,Lateral Deltoid; Anterior Deltoid; Posterior Deltoid
+Pole Rotation,Shoulders; Lateral Deltoid; Anterior Deltoid; Posterior Deltoid; Front Shoulders; Rear Shoulders,,,Pull,Stretches,Isolation,Beginner,Lateral Deltoid; Anterior Deltoid; Posterior Deltoid
+Bodyweight Alternating Curtsy Lunge,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Bodyweight Alternating Lateral Lunge,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Bodyweight Alternating Reverse Lunges,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Bodyweight Clapping Push Up,Chest,Triceps,,Push,Bodyweight,Compound,Intermediate,Chest
+Bodyweight Diamond Knee Push Ups,Chest,Triceps,,Push,Bodyweight,Compound,Novice,Chest
+Bodyweight Elevated Push Up,Chest,Triceps,,Push,Bodyweight,Compound,Intermediate,Chest
+Bodyweight Explosive Push Up,Chest,Triceps,,Push,Bodyweight,Compound,Advanced,Chest
+Bodyweight Hip Abduction,Glutes,,,Push,Bodyweight,Isolation,Novice,
+Bodyweight Incline Knee Push Up,Chest,Triceps,,Push,Bodyweight,Compound,Novice,Chest
+Bodyweight Knee Plank Up Down,Abdominals,,,Push,Bodyweight,Compound,Novice,
+Bodyweight Knee Push Ups,Chest,Triceps,,Push,Bodyweight,Compound,Novice,Chest
+Bodyweight Knee Tricep Extension,Triceps,,,Push,Bodyweight,Compound,Beginner,
+Bodyweight Pike Press,Traps (mid-back); Shoulders; Anterior Deltoid; Front Shoulders,Anterior Deltoid; Traps,Triceps,Push,Bodyweight,Compound,Intermediate,Traps (mid-back); Anterior Deltoid
+Bodyweight Pike Shrug,Traps; Upper Traps,,,Push,Bodyweight,Isolation,Intermediate,Upper Traps
+Bodyweight Plank Up Down,Abdominals,,,Push,Bodyweight,Compound,Beginner,
+Bodyweight Tricep Extension,Triceps,,,Push,Bodyweight,Compound,Intermediate,
+Kettlebell Step Up Double,Glutes; Quads,,,Push,Kettlebells,Compound,Beginner,
+Kettlebell Single Arm Front Rack Step Up,Glutes; Quads,Abdominals,,Push,Kettlebells,Compound,Advanced,
+Kettlebell Front Rack Step Up,Glutes; Quads,Abdominals,,Push,Kettlebells,Compound,Advanced,
+Kettlebell Single Arm Step Up Balance,Glutes; Quads,,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Windmill Bottom Hand,Obliques,Abdominals,,Push,Kettlebells,Isolation,Intermediate,Obliques
+Kettlebell Farmers March,Forearms,,,Hold,Kettlebells,Isolation,Intermediate,
+Kettlebell Single Arm Farmers March,Forearms,,,Pull,Kettlebells,Compound,Beginner,
+Kettlebell Walking Farmers March,Forearms,,,Pull,Kettlebells,Compound,Beginner,
+Kettlebell Single Arm Calf Raise,Calves,,,Push,Kettlebells,Isolation,Novice,
+Kettlebell Goblet Calf Raise,Calves; Gastrocnemius,,,Push,Kettlebells,Isolation,Novice,Gastrocnemius
+Kettlebell Single Leg Single Arm Calf Raise,Calves,,,Push,Kettlebells,Isolation,Beginner,
+Kettlebell Single Arm Reverse Curl,Biceps; Forearms; Wrist Extensors,,,Pull,Kettlebells,Isolation,Beginner,Wrist Extensors
+Kettlebell Upright Row Single,Lateral Deltoid; Traps; Front Shoulders,,,Pull,Kettlebells,Compound,Beginner,Lateral Deltoid
+Kettlebell Single Arm Row On Bench,Lats,Biceps,Forearms,Pull,Kettlebells,Compound,Novice,
+Kettlebell Seated Calf Raise Double,Calves,,,Push,Kettlebells,Isolation,Novice,
+Kettlebell Bench Wrist Extension,Forearms,,,Pull,Kettlebells,Isolation,Novice,
+Kettlebell Bench Wrist Curl,Forearms,,,Pull,Kettlebells,Isolation,Novice,
+Kettlebell Floor Press,Triceps,Chest,,Push,Kettlebells,Compound,Novice,Chest
+Kettlebell Single Arm Floor Press,Triceps,Chest,,Push,Kettlebells,Compound,Novice,Chest
+Kettlebell Overhead Tricep Extension,Triceps,,,Push,Kettlebells,Isolation,Intermediate,
+Kettlebell Bottoms Up Single Arm Overhead Press,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Triceps,,Push,Kettlebells,Compound,Advanced,Lateral Deltoid; Anterior Deltoid
+Kettlebell Bottoms Up Overhead Press,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Triceps,,Push,Kettlebells,Compound,Advanced,Lateral Deltoid; Anterior Deltoid
+Dumbbell Floor Press,Triceps,Chest,,Push,Dumbbells,Compound,Beginner,Chest
+Bodyweight Box Assisted Dips,Triceps,Chest,,Push,Bodyweight,Compound,Novice,Chest
+Barbell Wrist Extension,Forearms,,,Pull,Barbell,Isolation,Novice,
+Dumbbell Seated Rear Delt Row,Shoulders; Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,Dumbbells,Compound,Beginner,Posterior Deltoid; Traps (mid-back)
+Dumbbell Internally Rotated Rear Delt Fly,Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,Dumbbells,Isolation,Beginner,Posterior Deltoid; Traps (mid-back)
+Dumbbell Goblet Side Step Up,Glutes; Quads,,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Side Step Up,Glutes; Quads,,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Goblet Step Up,Glutes; Quads,,,Push,Dumbbells,Compound,Novice,
+Dumbbell Single Arm Front Rack Step Up,Glutes; Quads,,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Front Rack Step Up,Glutes; Quads,,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Single Arm Step Up,Glutes; Quads,,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Step Up,Glutes; Quads,,,Push,Dumbbells,Compound,Beginner,
+Machine Seated Leg Curl,Hamstrings; Medial Hamstrings,,,Pull,Machine,Isolation,Novice,Medial Hamstrings
+Treadmill Jog,,,,Push,Cardio,Compound,Novice,
+Treadmill Sprint,,Calves; Glutes; Hamstrings; Quads,,Push,Cardio,Compound,Beginner,
+Treadmill Walk,,,,Push,Cardio,Compound,Novice,
+Hamstring Stretch Supine Glide,Hamstrings,,,Push,Recovery,Isolation,Beginner,
+Hamstring Stretch Supine Dynamic Band,Hamstrings,,,Push,Recovery,Isolation,Beginner,
+Gastrocnemius Stretch Push Up Position,Calves; Gastrocnemius,,,Hold,Recovery,Isolation,Beginner,Gastrocnemius
+Lat And Shoulder External Rotation Stretch 2 Kneeling Dowel,Lats; Shoulders; Anterior Deltoid; Posterior Deltoid; Front Shoulders; Rear Shoulders,,,Hold,Recovery,Isolation,Beginner,Anterior Deltoid; Posterior Deltoid
+Lat And Shoulder External Rotation Stretch 3 Kneeling Dowel,Lats; Shoulders; Anterior Deltoid; Posterior Deltoid; Front Shoulders; Rear Shoulders,,,Hold,Recovery,Isolation,Beginner,Anterior Deltoid; Posterior Deltoid
+Dumbbell Single Arm Bench Wrist Curl,Forearms; Wrist Flexors,,,Pull,Dumbbells,Isolation,Beginner,Wrist Flexors
+Core Stability Regression Crosslateral Limb Raise Push Up Position,Abdominals; Glutes; Shoulders; Anterior Deltoid; Quads; Front Shoulders,,,Push,Recovery,Compound,Advanced,Anterior Deltoid
+Kneeling Quad Stretch,Quads,,,Hold,Recovery,Isolation,Beginner,
+Glute Hip Rotator Stretch 3 Seated,Glutes,,,Hold,Recovery,Compound,Beginner,
+Towel Knee Extension,Quads,,,Push,Recovery,Isolation,Beginner,
+Crosslateral Core Stabilisation Unilateral Load Kettlebell,Forearms; Obliques,,,Hold,Recovery,Compound,Intermediate,Obliques
+Seated Doming,Feet,,,Pull,Recovery,Isolation,Novice,
+Kettlebell Kneel To Stand Shoulder Flexion Bent Elbow Hold,,,,Hold,Recovery,Isolation,Intermediate,
+Bench Lift Off Active,Lower Abdominals; Lower Traps,,,Push,Recovery,Compound,Intermediate,Lower Abdominals; Lower Traps
+Side Shoulder Girdle Stability Circles,,,,Push,Recovery,Isolation,Novice,
+Shoulder Girdle Stability Circles,,,,Push,Recovery,Isolation,Novice,
+Calf Stretch On Box Bilateral,Calves,,,Hold,Recovery,Isolation,Beginner,
+Calf Raise Isometric Unilateral,Calves,,,Hold,Recovery,Isolation,Beginner,
+Ys,Rear Shoulders,,,Pull,Recovery,Isolation,Beginner,
+Dumbbell Wrist Supinations Pronations,Forearms,,,Push,Dumbbells,Isolation,Beginner,
+Seated Wrist Flexor Stretch,Forearms; Wrist Flexors,,,Hold,Recovery,Isolation,Beginner,Wrist Flexors
+Seated Wrist Extensor Stretch,Forearms; Wrist Extensors,,,Pull,Recovery,Isolation,Beginner,Wrist Extensors
+Wrist Extensor Mobilisation,Forearms; Wrist Extensors,,,Hold,Recovery,Compound,Beginner,Wrist Extensors
+Wrist Extensor Kneeling Hold,Forearms; Wrist Extensors,,,Hold,Recovery,Isolation,Beginner,Wrist Extensors
+Bosu Ball Single Leg Squat,Glutes; Quads,,,Push,Recovery,Compound,Beginner,
+Seated Upper Trap And Suprispinatus Stretch,Traps,,,Hold,Recovery,Isolation,Novice,
+Seated Ulnar Nerve Tensioner,Biceps,,,Pull,Recovery,Isolation,Novice,
+Seated Ulnar Nerve Slider,Biceps,,,Pull,Recovery,Isolation,Novice,
+Ulnar Deviations,Forearms,,,Pull,Recovery,Isolation,Novice,
+Thoracic Flexion And Extensions,Traps,,,Pull,Recovery,Isolation,Novice,
+Shoulder Flexion Thoracic Extensions,Traps,,,Pull,Recovery,Isolation,Novice,
+Thoracic Extensions Foam Roller,Traps,,,Pull,Recovery,Isolation,Novice,
+Laying Ts,Traps (mid-back); Rear Shoulders,,,Pull,Recovery,Isolation,Novice,Traps (mid-back)
+Alternating Swipe Around,Lower back; Lats; Shoulders,,,Pull,Recovery,Compound,Beginner,
+Swipe Around,Lower back; Lats; Shoulders,,,Pull,Recovery,Compound,Beginner,
+Bodyweight Step Up Knee Drive,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Single Leg Eccentric Box Squat,Glutes; Quads,,,Push,Recovery,Compound,Beginner,
+Single Leg Concentric Squat,Glutes; Quads,,,Push,Recovery,Compound,Beginner,
+Soleus Stretch,Calves; Soleus,,,Hold,Recovery,Isolation,Beginner,Soleus
+Skydiver,Lower back,,,Hold,Recovery,Isolation,Beginner,
+Skater Squat,Glutes; Quads,,,Push,Recovery,Compound,Intermediate,
+Box Supported Single Leg Deadlift,Glutes; Hamstrings,Lower back,,Pull,Recovery,Compound,Advanced,
+Banded Side Walks,Glutes; Gluteus Medius,,,Push,Band,Isolation,Beginner,Gluteus Medius
+Side Step On And Off Box,Glutes; Quads,,,Push,Recovery,Compound,Beginner,
+Kettlebell Walking Shoulder Flexion Bent Elbow Hold,,,,Hold,Recovery,Isolation,Beginner,
+Kettlebell Shoulder Flexion Bent Elbow Hold,,,,Hold,Recovery,Isolation,Beginner,
+Shoulder Flexion Wall Stretch,,,,Hold,Recovery,Isolation,Novice,
+Standing Shoulder Flexion Mobility,,,,Pull,Recovery,Isolation,Novice,
+Dumbbell Pullover Eccentrics,Lats,,,Pull,Recovery,Isolation,Novice,
+Shoulder External Internal Rotation,,,,Push,Recovery,Isolation,Novice,
+Shoulder External Rotation Deceleration,,,,Hold,Recovery,Isolation,Beginner,
+Band Shoulder Y Raise,Front Shoulders,,,Pull,Recovery,Isolation,Novice,
+Pushup Position Shoulder Clock,,,,Pull,Recovery,Isolation,Beginner,
+Shoulder Abduction Stretch,,,,Hold,Recovery,Isolation,Novice,
+Standing Shoulder Abduction,,,,Push,Recovery,Isolation,Novice,
+Seated Shoulder Abduction,,,,Pull,Recovery,Isolation,Novice,
+Dumbbell Service Exercise,Biceps; Front Shoulders,,,Pull,Recovery,Compound,Beginner,
+Serratus Activation Cross Punch,Chest,,,Push,Recovery,Isolation,Novice,Chest
+Bosu Serratus Activation Active Plank,Abdominals; Chest,,,Hold,Recovery,Isolation,Novice,Chest
+Serratus Activation Active Plank,Abdominals; Chest,,,Hold,Recovery,Isolation,Novice,Chest
+Bosu Serratus Activation Plank,Chest,,,Hold,Recovery,Isolation,Novice,Chest
+Serratus Activation Plank,Chest,,,Hold,Recovery,Isolation,Novice,Chest
+Scapular Retraction,Traps (mid-back),,,Pull,Recovery,Isolation,Novice,Traps (mid-back)
+Scapular Protraction,,,,Pull,Recovery,Isolation,Novice,
+Scapular Elevation,Upper Traps,,,Pull,Recovery,Isolation,Novice,Upper Traps
+Scapular Depression,Lower Traps,,,Pull,Recovery,Isolation,Novice,Lower Traps
+Side Lying External Rotator Cuff Stretch,,,,Hold,Recovery,Isolation,Novice,
+Rotator Cuff External Rotations 3,,,,Pull,Recovery,Isolation,Novice,
+Rotator Cuff External Rotations 2,,,,Pull,Recovery,Isolation,Novice,
+Rotator Cuff External Rotations 1,,,,Pull,Recovery,Isolation,Novice,
+Seated Radial Nerve Tensioner,Neck,,,Pull,Recovery,Isolation,Novice,
+Seated Radial Nerve Slider,Neck,,,Pull,Recovery,Isolation,Novice,
+Resisted Radial Deviation,,,,Pull,Recovery,Isolation,Novice,
+Seated Quad Stretch,Quads,,,Hold,Recovery,Isolation,Beginner,
+Band Floor Quad Stretch,Quads,,,Hold,Recovery,Isolation,Beginner,
+Foam Roller Quad Mobilisation,Quads,,,Hold,Recovery,Isolation,Beginner,
+QL Mobilisation Floor Foam Roller,Lower back,,,Hold,Recovery,Isolation,Beginner,
+Prayer Stretch 2 Roller,Lower back; Glutes; Lats,,,Hold,Recovery,Compound,Beginner,
+Seated Hip Flexion Hold,Quads; Rectus Femoris,,,Pull,Recovery,Isolation,Beginner,Rectus Femoris
+Band Glute Kickback Hold,Glutes,,,Hold,Recovery,Isolation,Beginner,
+Hip Extension Into Side Flexion,Glutes,,,Push,Recovery,Isolation,Beginner,
+Prayer Stretch 1,Lower back; Glutes; Lats,,,Hold,Recovery,Compound,Beginner,
+Prayer Stretch Side Bend,Obliques,,,Hold,Recovery,Compound,Beginner,Obliques
+Prone Single Leg Hip Extension Hold,Glutes,,,Hold,Recovery,Isolation,Beginner,
+Hip Extension External Rotation Pulses 4Pt Position,Glutes,,,Hold,Recovery,Isolation,Beginner,
+Hip Extension External Rotation 4Pt Position,Glutes,,,Hold,Recovery,Isolation,Beginner,
+Rotator Cuff Mobilisation Lacrosse Ball,,,,Hold,Recovery,Isolation,Novice,
+Hip Extension 4Pt Position Hold,Glutes,,,Hold,Recovery,Isolation,Beginner,
+Hamstring Stretch Supine Static,Hamstrings,,,Push,Recovery,Isolation,Beginner,
+Hamstring Stretch Static Standing Single Leg,Hamstrings,,,Hold,Recovery,Isolation,Beginner,
+Seated Plantar Flexions,Calves,,,Push,Recovery,Isolation,Beginner,
+Hamstring Stretch Seated Single Leg Isometric,Hamstrings,,,Hold,Recovery,Isolation,Beginner,
+Plank Saw,Abdominals,,,Hold,Bodyweight,Isolation,Beginner,
+Hamstring Stretch Seated Single Leg,Hamstrings,,,Hold,Recovery,Isolation,Beginner,
+Hamstring Stretch Dynamic Supine Alternating,Hamstrings,,,Pull,Recovery,Isolation,Beginner,
+Hamstring Stretch Dynamic Standing Bilateral,Hamstrings,,,Hold,Recovery,Isolation,Beginner,
+Hamstring Mobilisation Seated Lacrosse Ball,Hamstrings,,,Hold,Recovery,Isolation,Beginner,
+Single Leg Slider Hamstring Curl 2,Hamstrings,,,Pull,Bodyweight,Isolation,Beginner,
+Standing Neck Side Flexions,Neck,,,Pull,Recovery,Isolation,Novice,
+Slider Hamstring Curl Single Leg,Hamstrings,,,Pull,Bodyweight,Isolation,Beginner,
+Standing Neck Rotations,Neck,,,Pull,Recovery,Isolation,Novice,
+Bodyweight Standing Hamstring Curl,Hamstrings,,,Pull,Bodyweight,Isolation,Novice,
+Slider Hamstring Curl,Hamstrings,,,Pull,Bodyweight,Isolation,Intermediate,
+Standing Neck Flexions,Neck,,,Pull,Recovery,Isolation,Novice,
+Bodyweight Standing Hamstring Curl Isometric,Hamstrings,,,Pull,Bodyweight,Isolation,Beginner,
+Standing Neck Extensions,Neck,,,Push,Recovery,Isolation,Novice,
+Slider Hamstring Curl Eccentric,Hamstrings,,,Pull,Bodyweight,Isolation,Intermediate,
+Hamstring Bridge With Elevated Legs Box Unilateral,Glutes; Hamstrings,,,Push,Bodyweight,Compound,Beginner,
+Hamstring Bridge With Elevated Legs Box Bilateral,Glutes; Hamstrings,,,Push,Bodyweight,Compound,Beginner,
+Hamstring Bridge Isometric Open Angle,Glutes; Hamstrings,,,Hold,Bodyweight,Isolation,Beginner,
+Glute Piriformis Mobilisation 1 Floor Seated Lacrosse Ball,Glutes,,,Hold,Recovery,Isolation,Beginner,
+Glute Hip Rotator Stretch 2 Seated,Glutes,,,Hold,Recovery,Compound,Beginner,
+Glute Hip Rotator Stretch 1 Seated,Glutes,,,Hold,Recovery,Compound,Beginner,
+Glute Hip Rotator Stretch Supine,Glutes,,,Hold,Recovery,Isolation,Beginner,
+Glute Stretch Knee Pull Dynamic Standing,Glutes,,,Pull,Recovery,Compound,Beginner,
+Standing Neck Mobility Circumductions,Neck,,,Push,Recovery,Isolation,Novice,
+Glute Stretch Static Unilateral,Glutes,,,Hold,Recovery,Isolation,Beginner,
+Seated Median Nerve Tensioner,,,,Pull,Recovery,Isolation,Novice,
+Glute Bridge Isometric Hold Single Alternate,Glutes,,,Hold,Bodyweight,Compound,Novice,
+Seated Median Nerve Slider,,,,Pull,Recovery,Isolation,Novice,
+Glute Bridge Eccentric Unilateral,Glutes,,,Push,Bodyweight,Compound,Novice,
+Gastrocnemius Stretch Unilateral On Box,Calves; Gastrocnemius,,,Hold,Recovery,Isolation,Beginner,Gastrocnemius
+Gastrocnemius Stretch Unilateral On Wall,Calves; Gastrocnemius,,,Hold,Recovery,Isolation,Beginner,Gastrocnemius
+Gastrocnemius Stretch Bilateral On Box,Calves; Gastrocnemius,,,Hold,Recovery,Isolation,Beginner,Gastrocnemius
+Femoral Nerve Mobilisation,Quads,,,Pull,Recovery,Isolation,Novice,
+Kettlebell Single Arm Farmers Walk,Forearms; Obliques,,,Pull,Kettlebells,Compound,Novice,Obliques
+Kettlebell Suitcase Deadlift,Glutes; Hamstrings; Obliques,Lower back,Forearms,Pull,Kettlebells,Compound,Intermediate,Obliques
+Eversions,Feet,,,Push,Recovery,Isolation,Novice,
+Elbow Extensor Mobilisation Kneeling Lacrosse Ball,Triceps,,,Hold,Recovery,Isolation,Beginner,
+Elbow Extensor Isometric Seated Overhead Dumbbell,Triceps,,,Hold,Recovery,Isolation,Beginner,
+Dorsal Flexion Hold,Tibialis,,,Pull,Recovery,Isolation,Novice,Tibialis
+Wall Supported Dorsal Flexion,Tibialis,,,Pull,Recovery,Isolation,Novice,Tibialis
+Bodyweight Alternating Forward Lunge,Glutes; Quads,,,Push,Bodyweight,Compound,Advanced,
+Standing Doming,Feet,,,Pull,Recovery,Isolation,Novice,
+Deadlift Bounces Stretch,Glutes; Hamstrings,Lower back,,Pull,Recovery,Compound,Beginner,
+Walking Lunge,Glutes; Quads,,,Push,Bodyweight,Compound,Intermediate,
+Bodyweight Deadlift,Lower back,Glutes,,Pull,Recovery,Compound,Novice,
+Dead Bugs Same Side,Abdominals; Obliques,,,Push,Recovery,Compound,Beginner,Obliques
+Dead Bugs Cross Lateral,Abdominals; Obliques,,,Push,Recovery,Compound,Beginner,Obliques
+Lumbar Rotation 5,Lower back,,,Push,Recovery,Isolation,Beginner,
+Core Stability 5 Crosslateral Limb Raise Into Knee Elbow Tuck Push Up Position,Abdominals; Glutes; Shoulders; Anterior Deltoid; Quads; Front Shoulders,,,Push,Recovery,Compound,Advanced,Anterior Deltoid
+Lumbar Rotation 3,Lower back,,,Hold,Recovery,Isolation,Beginner,
+Core Stability 4 Crosslateral Limb Raise Push Up Position,Abdominals; Glutes; Shoulders; Anterior Deltoid; Quads; Front Shoulders,,,Push,Recovery,Compound,Advanced,Anterior Deltoid
+Core Stability 2 Opposite Shoulder Tap 4Pt Position,Biceps; Abdominals; Shoulders; Anterior Deltoid; Triceps; Obliques; Front Shoulders,,,Hold,Recovery,Compound,Beginner,Anterior Deltoid; Obliques
+Lumbar Rotation 4,Lower back,,,Hold,Recovery,Isolation,Beginner,
+Lumbar Rotation 2,Lower back,,,Hold,Recovery,Isolation,Beginner,
+Core Stability 1 Crosslateral Limb Raise 4Pt Position,Abdominals; Glutes; Shoulders; Anterior Deltoid; Quads; Front Shoulders,,,Push,Recovery,Compound,Beginner,Anterior Deltoid
+Lumbar Rotation 1,Lower back,,,Hold,Recovery,Isolation,Beginner,
+Cobra Stretch 2,Lower back,,,Hold,Recovery,Isolation,Beginner,
+Cobra Stretch 1,Lower back,,,Hold,Recovery,Isolation,Beginner,
+Clock Taps,Glutes; Quads,,,Push,Recovery,Compound,Intermediate,
+Floor Knee Pull Bilateral,Lower back,,,Pull,Recovery,Isolation,Beginner,
+Lumbar Extensor Mobilisation Supine Bent Knees Peanut Tool,Lower back,,,Hold,Recovery,Isolation,Beginner,
+Lower Back Extensions 4,Lower back,,,Pull,Recovery,Isolation,Beginner,
+Lower Back Extensions 3,Lower back,,,Pull,Recovery,Isolation,Beginner,
+Lower Back Extensions 2,Lower back,,,Pull,Recovery,Isolation,Beginner,
+Partner Lower Back Extensions,Lower back,,,Pull,Recovery,Isolation,Beginner,
+Laying Levator Scapulae Mobilisation Massage Ball,,,,Hold,Recovery,Isolation,Novice,
+Clamshells 4 Side Lying Resisted,Glutes,,,Push,Recovery,Isolation,Intermediate,
+Clamshells 3 Internal External Rotations Side Lying,Glutes,,,Push,Recovery,Isolation,Intermediate,
+Clamshells 2 Side Lying,Glutes,,,Push,Recovery,Isolation,Intermediate,
+Floor Incline Leg Raise,Rectus Femoris,,,Pull,Recovery,Isolation,Novice,Rectus Femoris
+Clamshells 1 Side Lying,Glutes,,,Push,Recovery,Isolation,Intermediate,
+Laying Chin Tucks,,,,Pull,Recovery,Isolation,Novice,
+Band Seated Cervical Side Flexion,,,,Pull,Recovery,Isolation,Novice,
+Leg Lowers,Abdominals; Lower Abdominals,,,Pull,Recovery,Isolation,Novice,Lower Abdominals
+Band Seated Cervical Side Flexion Eccentric,,,,Pull,Recovery,Isolation,Novice,
+Seated Lateral Line Stretch,Obliques,,,Hold,Recovery,Compound,Beginner,Obliques
+Lat Mobilisation Floor Foam Roller,Lats,,,Hold,Recovery,Isolation,Beginner,
+Band Seated Cervical Side Flexion Hold,,,,Hold,Recovery,Isolation,Novice,
+Seated Cervical Side Flexion Hold,,,,Pull,Recovery,Isolation,Novice,
+Seated Cervical Rotation Hold,,,,Hold,Recovery,Isolation,Novice,
+Lat And Shoulder External Rotation Stretch 1 Kneeling Dowel,Lats; Shoulders; Anterior Deltoid; Posterior Deltoid; Front Shoulders; Rear Shoulders,,,Hold,Recovery,Isolation,Beginner,Anterior Deltoid; Posterior Deltoid
+Laying Cervical Flexion 2,,,,Pull,Recovery,Isolation,Novice,
+Laying Cervical Flexion Isometric,,,,Hold,Recovery,Isolation,Novice,
+Seated Cervical Flexion Isometric,,,,Hold,Recovery,Isolation,Novice,
+Lat And Lateral Line Stretch,Obliques,,,Hold,Recovery,Compound,Beginner,Obliques
+Laying Cervical Extensor Mobilisation Peanut Tool,,,,Hold,Recovery,Isolation,Novice,
+Seated Manual Cervical Extensor Mobilisation,,,,Hold,Recovery,Isolation,Novice,
+Cervical Extension Band,,,,Push,Recovery,Isolation,Novice,
+Cervical Extension Eccentric Band,,,,Push,Recovery,Isolation,Novice,
+Cervical Extension Banded Hold,,,,Hold,Recovery,Isolation,Novice,
+Cervical Extension Hold,,,,Hold,Recovery,Isolation,Novice,
+Standing Knee Raise Hold,Rectus Femoris,,,Hold,Recovery,Isolation,Novice,Rectus Femoris
+Calf Raise 3B Soleus Bias Unilateral,Calves; Soleus,,,Push,Recovery,Isolation,Beginner,Soleus
+Knee Pull And Lumbar Rotation,Lower back; Glutes,Chest,,Hold,Recovery,Compound,Beginner,Chest
+Calf Raise 3A Soleus Bias Bilateral,Calves; Soleus,,,Push,Recovery,Isolation,Beginner,Soleus
+Knee Extension Seated Partial,Quads,,,Push,Recovery,Isolation,Beginner,
+Calf Raise 2D Unilateral From Box,Calves,,,Push,Recovery,Isolation,Beginner,
+Towel Knee Extension Hold,Quads,,,Push,Recovery,Isolation,Beginner,
+Calf Raise 2C Eccentric Unilateral From Box,Calves,,,Push,Recovery,Isolation,Beginner,
+Band Knee Extension,Quads,,,Push,Recovery,Isolation,Beginner,
+Calf Raise 2B Unilateral Floor,Calves,,,Push,Recovery,Isolation,Beginner,
+Calf Raise 2A Eccentric Unilateral Floor,Calves,,,Push,Recovery,Isolation,Beginner,
+Calf Raise 1E Bilateral Isometric Floor,Calves,,,Hold,Recovery,Isolation,Beginner,
+Jump On And Off Box,Glutes; Quads,,,Push,Recovery,Compound,Beginner,
+Calf Raise 1D Bilateral From Box,Calves,,,Push,Recovery,Isolation,Beginner,
+Jump Off Box Single Leg Landing,Glutes; Quads,,,Push,Recovery,Compound,Beginner,
+Calf Raise 1C Bilateral Eccentric From Box,Calves,,,Push,Recovery,Isolation,Beginner,
+Calf Raise 1B Bilateral Floor,Calves,,,Push,Recovery,Isolation,Beginner,
+Calf Raise 1A Bilateral Eccentric Floor,Calves,,,Push,Recovery,Isolation,Beginner,
+Jump Into Single Leg Landing,Glutes; Quads,,,Push,Recovery,Compound,Beginner,
+Calf Mobilisation Seated Floor Roll,Calves,,,Hold,Recovery,Isolation,Beginner,
+Calf Isometric On Step,Calves,,,Hold,Recovery,Isolation,Novice,
+Band Seated Inversions,Feet,,,Pull,Recovery,Isolation,Novice,
+Big Toe Dorsiflexion,Feet,,,Hold,Recovery,Isolation,Beginner,
+Big Toe Abduction,Feet,,,Hold,Recovery,Isolation,Beginner,
+Bench Lift Off Static,Lower Abdominals; Lower Traps,,,Push,Recovery,Compound,Intermediate,Lower Abdominals; Lower Traps
+Single Leg Bosu Ball Balance 2,Feet,,,Hold,Recovery,Isolation,Advanced,
+Standing Inversions Hold,Feet,,,Pull,Recovery,Isolation,Novice,
+Bosu Ball Single Leg Balance,,,,Hold,Recovery,Isolation,Intermediate,
+Intrascapular Muscle Contraction,,,,Hold,Recovery,Isolation,Novice,
+Infinity Loop Standing Hip Mobility,Glutes; Rectus Femoris,,,Push,Recovery,Compound,Beginner,Rectus Femoris
+Single Leg Balance 2,Feet,,,Hold,Recovery,Isolation,Intermediate,
+I's Prone,Shoulders; Anterior Deltoid; Front Shoulders,,,Hold,Recovery,Isolation,Novice,Anterior Deltoid
+Foam Roller Angel,,,,Hold,Recovery,Isolation,Novice,
+I Into W,Lower back; Lats,,,Pull,Recovery,Compound,Beginner,
+Alphabet,Feet,,,Hold,Recovery,Isolation,Novice,
+Band Hip Thrust,Glutes,,,Push,Recovery,Isolation,Novice,
+Adductor Stretch Seated Bilateral Static,Inner Thigh,,,Hold,Recovery,Isolation,Beginner,Inner Thigh
+Hip Openers,Glutes; Shoulders; Anterior Deltoid; Posterior Deltoid; Chest; Front Shoulders; Rear Shoulders,,,Push,Recovery,Compound,Novice,Anterior Deltoid; Posterior Deltoid; Chest
+Adductor Stretch Seated Bilateral Dynamic,Inner Thigh,,,Pull,Recovery,Isolation,Beginner,Inner Thigh
+Adductor Stretch Dynamic Unilateral 4 Point Position,Inner Thigh,,,Pull,Recovery,Isolation,Beginner,Inner Thigh
+Hip Flexor Stretch Kneeling Lunge 3,Quads; Rectus Femoris,,,Hold,Recovery,Isolation,Beginner,Rectus Femoris
+Adductor Stretch Dynamic Standing Alternate,Inner Thigh,,,Pull,Recovery,Isolation,Beginner,Inner Thigh
+Hip Flexor Stretch Kneeling Lunge 2,Quads,,,Hold,Recovery,Isolation,Beginner,
+Adductor Raise Side Lying Short Lever,Inner Thigh,,,Hold,Recovery,Isolation,Intermediate,Inner Thigh
+Adductor Raise Side Lying Long Lever,Inner Thigh,,,Hold,Recovery,Isolation,Advanced,Inner Thigh
+Hip Flexor Stretch Kneeling Lunge 1,Quads; Rectus Femoris,,,Hold,Recovery,Isolation,Beginner,Rectus Femoris
+Band Straight Leg Hip Flexions,Rectus Femoris,,,Push,Recovery,Isolation,Beginner,Rectus Femoris
+Adductor Leg Raise Side Lying Isometric,Inner Thigh,,,Hold,Recovery,Isolation,Beginner,Inner Thigh
+Adductor Leg Raise Side Lying,Inner Thigh,,,Pull,Recovery,Isolation,Beginner,Inner Thigh
+Standing Mini-Band Hip Flexion,Quads; Rectus Femoris,,,Pull,Recovery,Isolation,Beginner,Rectus Femoris
+Abductor Leg Raise Side Lying Isometric,Glutes; Gluteus Medius,,,Hold,Recovery,Isolation,Beginner,Gluteus Medius
+Abductor Leg Raise Side Lying,Glutes; Gluteus Medius,,,Push,Recovery,Isolation,Beginner,Gluteus Medius
+Treadmill Backwards Walk,Quads,,,Push,Cardio,Isolation,Beginner,
+Treadmill Side Shuffle,Glutes; Gluteus Medius,,,Push,Cardio,Isolation,Beginner,Gluteus Medius
+Dumbbell Preacher Curl,Biceps; Short Head Bicep,,,Pull,Dumbbells,Isolation,Novice,Short Head Bicep
+EZ Bar Reverse Preacher Curl,Biceps; Short Head Bicep; Forearms; Wrist Extensors,Short Head Bicep,,Pull,Barbell,Isolation,Novice,Short Head Bicep; Wrist Extensors
+EZ Bar Preacher Curl,Biceps; Short Head Bicep,,,Pull,Barbell,Isolation,Novice,Short Head Bicep
+Machine Assisted Parallel Bar Dips,Chest,Triceps,Shoulders,Push,Machine,Compound,Novice,Chest
+Parallel Bar Dips,Chest,Triceps,Shoulders,Push,Bodyweight,Compound,Intermediate,Chest
+Machine Assisted Pull Up,Lats,Biceps,,Pull,Machine,Compound,Novice,
+Machine Assisted Narrow Pull Up,Lats,Biceps,,Pull,Machine,Compound,Novice,
+Machine Assisted Neutral Chin Up,Lats,Biceps,,Pull,Machine,Compound,Novice,
+Machine Assisted Chin Up,Lats,Biceps,,Pull,Machine,Compound,Novice,
+Machine Hip Thrust,Glutes,,,Push,Machine,Compound,Novice,
+Machine Hack Squat,Glutes; Quads,,,Push,Machine,Compound,Novice,
+Machine Horizontal Sissy Leg Press,Glutes; Quads,,,Push,Machine,Compound,Intermediate,
+Machine Horizontal Leg Press Calf Jump,Calves; Gastrocnemius,,,Push,Machine,Isolation,Beginner,Gastrocnemius
+Machine Horizontal Leg Press Calf Raise,Calves,,,Push,Machine,Isolation,Beginner,
+Machine Horizontal Leg Press,Glutes; Quads,,,Push,Machine,Compound,Novice,
+Machine Hip Adduction,Inner Thigh; Groin,,,Pull,Machine,Isolation,Novice,Inner Thigh
+Machine Hip Abduction,Glutes; Gluteus Medius,,,Push,Machine,Isolation,Novice,Gluteus Medius
+Machine Reverse Fly,Posterior Deltoid; Rear Shoulders,,,Pull,Machine,Isolation,Novice,Posterior Deltoid
+Machine Pec Fly,Chest,,,Push,Machine,Isolation,Novice,Chest
+Machine Overhand Overhead Press,Front Shoulders,,,Push,Machine,Compound,Novice,
+Machine Neutral Overhead Press,Front Shoulders,,,Push,Machine,Compound,Novice,
+Machine Hip And Glute Adduction,Inner Thigh; Groin,,,Pull,Machine,Isolation,Novice,Inner Thigh
+Machine Hip And Glute Abduction,Glutes; Gluteus Medius,,,Push,Machine,Isolation,Novice,Gluteus Medius
+Machine Hip And Glute Kickback,Glutes,,,Push,Machine,Isolation,Novice,
+Machine Chest Press,Chest,Triceps,,Push,Machine,Compound,Novice,Chest
+Machine Underhand Row,Biceps; Lats,,,Pull,Machine,Compound,Novice,
+Machine Neutral Row,Lats,,,Pull,Machine,Compound,Novice,
+Machine Overhand Row,Posterior Deltoid; Rear Shoulders,,,Pull,Machine,Compound,Novice,Posterior Deltoid
+Stretcher,Lats,,,Pull,Machine,Compound,Intermediate,
+Dumbbell Box Squat,Glutes; Quads,Lower back,,Push,Dumbbells,Compound,Beginner,
+Kettlebell Box Squat,Glutes; Quads,Lower back,,Push,Kettlebells,Compound,Beginner,
+Bodyweight Box Squat,Glutes; Quads,,,Push,Bodyweight,Compound,Novice,
+Alternating Heel Touch,Abdominals; Obliques,,,Hold,Bodyweight,Isolation,Novice,Obliques
+Bodyweight Donkey Calf Raise,Calves; Gastrocnemius,,,Push,Bodyweight,Isolation,Novice,Gastrocnemius
+Barbell Kickstand Squat,Glutes; Quads,,,Push,Barbell,Compound,Advanced,
+Dumbbell Kickstand Squat,Glutes; Quads,,,Push,Dumbbells,Compound,Intermediate,
+Kettlebell Kickstand Squat,Glutes; Quads,,,Push,Kettlebells,Compound,Intermediate,
+Bodyweight Kickstand Squat,Glutes; Quads,,,Push,Bodyweight,Compound,Beginner,
+Reverse Crunch Kick Up,Abdominals,,,Push,Bodyweight,Isolation,Intermediate,
+Eccentric Dragonflag,Abdominals,,,Push,Bodyweight,Isolation,Intermediate,
+Dumbbell Incline Curl,Biceps; Long Head Bicep,,,Pull,Dumbbells,Isolation,Novice,Long Head Bicep
+Laying Alternating Leg Raise,Abdominals; Lower Abdominals,,,Pull,Bodyweight,Isolation,Novice,Lower Abdominals
+Laying Bent Leg Raise,Abdominals; Lower Abdominals,,,Pull,Bodyweight,Isolation,Novice,Lower Abdominals
+Alternating Bent Leg Raise,Abdominals; Lower Abdominals,,,Pull,Bodyweight,Isolation,Novice,Lower Abdominals
+Scissor Kick,Abdominals,,,Pull,Bodyweight,Isolation,Novice,
+Sideways Scissor Kick,Abdominals,,,Pull,Bodyweight,Isolation,Beginner,
+Windshield Wiper,Obliques,,,Pull,Bodyweight,Isolation,Intermediate,Obliques
+Reach And Catch,Abdominals; Obliques,,,Pull,Bodyweight,Isolation,Novice,Obliques
+Oblique Crunch,Obliques,,,Pull,Bodyweight,Isolation,Beginner,Obliques
+Oblique Jackknife,Obliques,,,Pull,Bodyweight,Isolation,Intermediate,Obliques
+Frog Crunch,Abdominals; Lower Abdominals,,,Pull,Bodyweight,Isolation,Beginner,Lower Abdominals
+Frog Sit Up,Abdominals; Upper Abdominals,Upper Abdominals,,Pull,Bodyweight,Isolation,Beginner,Upper Abdominals
+Elbow Plank Mountain Climber,Abdominals; Lower Abdominals,,,Pull,Bodyweight,Isolation,Beginner,Lower Abdominals
+Slow Tempo Mountain Climber,Abdominals,,,Pull,Bodyweight,Compound,Novice,
+Switch Jump Mountain Climber,Abdominals,,,Pull,Bodyweight,Isolation,Intermediate,
+Slalom Mountain Climber,Abdominals,,,Pull,Bodyweight,Isolation,Intermediate,
+Jumping Mountain Climber,Abdominals; Lower Abdominals,,,Pull,Bodyweight,Isolation,Beginner,Lower Abdominals
+Ring Standing Pushup,Anterior Deltoid; Chest; Front Shoulders,Triceps,Shoulders,Push,Bodyweight,Compound,Beginner,Anterior Deltoid; Chest
+Ring Row,Biceps; Lats,,,Pull,Bodyweight,Compound,Novice,
+Ring Standing Archer Pushup,Chest,Triceps,,Push,Bodyweight,Compound,Intermediate,Chest
+Ring Standing Chest Fly,Chest,,,Push,Bodyweight,Isolation,Beginner,Chest
+Ring Rear Delt Fly,Rear Shoulders,Traps (mid-back),,Pull,Bodyweight,Isolation,Intermediate,Traps (mid-back)
+Ring Skullcrusher,Triceps; Long Head Tricep,,,Push,Bodyweight,Isolation,Beginner,Long Head Tricep
+Ring Standing Roll Out,Abdominals,,,Pull,Bodyweight,Compound,Intermediate,
+Ring Curl,Biceps,,,Pull,Bodyweight,Isolation,Beginner,
+Bodyweight Assisted Pull Up,,Biceps,,Pull,Bodyweight,Compound,Novice,
+Bodyweight Assisted Chin Up,Biceps; Lats,,,Pull,Bodyweight,Compound,Novice,
+Bodyweight Assisted Gironda Chin Up,Biceps; Lats,,,Pull,Bodyweight,Compound,Novice,
+Bodyweight Assisted Mixed Grip Pullup,Biceps; Lats,,,Pull,Bodyweight,Compound,Novice,
+Bodyweight Hanging L Sit,Abdominals; Lower Abdominals,,,Pull,Bodyweight,Isolation,Beginner,Lower Abdominals
+Bodyweight Hanging Knee Tuck,Abdominals; Lower Abdominals,,,Pull,Bodyweight,Isolation,Intermediate,Lower Abdominals
+Bodyweight Underhand Inverted Row,Lats,Biceps,Forearms,Pull,Bodyweight,Compound,Beginner,
+Bodyweight Overhand Inverted Row,Traps (mid-back); Lats,Biceps,Forearms,Pull,Bodyweight,Compound,Beginner,Traps (mid-back)
+Bodyweight Standing Inverted Row,Traps (mid-back); Lats,Biceps,Forearms,Pull,Bodyweight,Compound,Novice,Traps (mid-back)
+Bodyweight Concentration Curl,Biceps,,,Pull,Bodyweight,Isolation,Novice,
+Bodyweight Inverted Curl,Biceps,,,Pull,Bodyweight,Isolation,Novice,
+Bodyweight Close Grip Inverted Curl,Biceps,,,Pull,Bodyweight,Isolation,Novice,
+Stationary Bike,Glutes; Quads,,,Push,Cardio,Compound,Novice,
+Bodyweight Butterfly Stretch,Groin,,,Hold,Bodyweight,Isolation,Novice,
+Bodyweight Ninety Ninety Hip Stretch,Glutes,,,Hold,Bodyweight,Isolation,Novice,
+Bodyweight Thoracic Spine Rotation,Obliques,,,Hold,Bodyweight,Isolation,Novice,Obliques
+Bodyweight Single Leg Balance Stable,Hamstrings,,,Hold,Bodyweight,Isolation,Novice,
+Kettlebell Incline Guillotine Bench Press,Chest,Triceps,,Push,Kettlebells,Compound,Intermediate,Chest
+Kettlebell Swing Lunge,Glutes; Quads,,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Alternating Curtsy Lunge,Glutes,Quads,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Alternating Lateral Lunge,Glutes; Quads,,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Alternating Reverse Lunge,Glutes; Quads,,,Push,Kettlebells,Compound,Intermediate,
+Kettlebell Alternating Forward Lunge,Glutes; Quads,,,Push,Kettlebells,Compound,Intermediate,
+Dumbbell Swing Lunge,Glutes; Quads,,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Goblet Alternating Curtsy Lunge,Glutes,Quads,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Alternating Lateral Lunge,Glutes; Quads,,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Alternating Reverse Lunge,Glutes; Quads,,,Push,Dumbbells,Compound,Intermediate,
+Dumbbell Alternating Forward Lunge,Glutes; Quads,,,Push,Dumbbells,Compound,Intermediate,
+Weighted Plank Up Down,Abdominals,,,Push,Plate,Compound,Beginner,
+Bodyweight Hands Up Push Ups,Chest,Anterior Deltoid; Triceps,,Push,Bodyweight,Compound,Beginner,Chest; Anterior Deltoid
+Weighted Push Ups,Chest,Anterior Deltoid; Triceps,,Push,Plate,Compound,Intermediate,Chest; Anterior Deltoid
+Weighted Diamond Push Ups,Triceps,,,Push,Plate,Compound,Intermediate,
+Weighted Knee Push Ups,Chest,Triceps,,Push,Plate,Compound,Beginner,Chest
+Bodyweight Single Leg Squat,Glutes; Quads,,,Push,Bodyweight,Compound,Advanced,
+Bodyweight Plank Jack,Abdominals,,,Hold,Bodyweight,Compound,Beginner,
+Bodyweight Plank Arm Lift,Abdominals,Shoulders; Lateral Deltoid; Anterior Deltoid; Posterior Deltoid; Front Shoulders; Rear Shoulders,,Hold,Bodyweight,Compound,Beginner,Lateral Deltoid; Anterior Deltoid; Posterior Deltoid
+Inchworm,Lower back; Glutes; Hamstrings,,,Pull,Recovery,Compound,Beginner,
+Weighted Wall Sit,Quads,,,Hold,Plate,Isolation,Beginner,
+Wall Sit,Quads,,,Hold,Bodyweight,Isolation,Novice,
+Jump Rope,Calves,,,Push,Cardio,Isolation,Beginner,
+Wall Angels,Front Shoulders; Rear Shoulders,,,Push,Recovery,Compound,Novice,
+Butt Kick,Hamstrings,,,Pull,Cardio,Compound,Novice,
+Ankle Circle,Calves,,,Push,Recovery,Isolation,Novice,
+Kettlebell Assisted Bulgarian Split Squat,Glutes; Quads,,,Push,Kettlebells,Compound,Beginner,
+Dumbbell Assisted Bulgarian Split Squat,Glutes; Quads,,,Push,Dumbbells,Compound,Beginner,
+Plate Weighted Inverted Row,Traps (mid-back); Lats,Biceps,Forearms,Pull,Plate,Compound,Intermediate,Traps (mid-back)
+Dumbbell Weighted Pull Ups,Lats,Biceps; Traps (mid-back),Biceps,Pull,Dumbbells,Compound,Intermediate,Traps (mid-back)
+Dumbbell Weighted Chin Ups,Lats,Biceps,Forearms,Pull,Dumbbells,Compound,Advanced,
+Weighted Pull Ups,Lats,Biceps; Traps (mid-back),Biceps,Pull,Plate,Compound,Advanced,Traps (mid-back)
+Weighted Chin Ups,Lats,Biceps,Forearms,Pull,Plate,Compound,Advanced,
+Dumbbell Weighted Dip,Chest; Front Shoulders,Triceps,,Push,Dumbbells,Compound,Intermediate,Chest
+Plate Weighted Dip,Chest; Front Shoulders,Triceps,,Push,Plate,Compound,Intermediate,Chest
+Dumbbell Internal Rotation,Front Shoulders,,,Push,Dumbbells,Isolation,Beginner,
+Dumbbell External Rotation,Rear Shoulders,,,Pull,Dumbbells,Isolation,Beginner,
+Leg Raised Push Up,Chest,Anterior Deltoid; Triceps,,Push,Bodyweight,Compound,Beginner,Chest; Anterior Deltoid
+Kettlebell Kneeling Bottoms Up Overhead Press,Shoulders; Lateral Deltoid; Anterior Deltoid; Front Shoulders,Triceps,,Push,Kettlebells,Compound,Advanced,Lateral Deltoid; Anterior Deltoid
+Dumbbell Half Kneeling Single Arm Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Isolation,Intermediate,Anterior Deltoid; Lateral Deltoid
+Dumbbell Half Kneeling Overhead Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Isolation,Intermediate,Anterior Deltoid; Lateral Deltoid
+Barbell Reverse Grip Bench Press,Chest,Triceps; Lateral Head Triceps; Medial Head Triceps,Front Shoulders,Push,Barbell,Compound,Intermediate,Chest; Lateral Head Triceps; Medial Head Triceps
+Dumbbell Reverse Grip Bench Press,Chest,Triceps; Lateral Head Triceps; Medial Head Triceps,Front Shoulders,Push,Dumbbells,Compound,Intermediate,Chest; Lateral Head Triceps; Medial Head Triceps
+Dumbbell Head On Bench Rear Delt Fly,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Dumbbells,Isolation,Beginner,Posterior Deltoid
+Dumbbell Incline Front Raise,Shoulders; Anterior Deltoid; Front Shoulders,,,Push,Dumbbells,Isolation,Beginner,Anterior Deltoid
+Barbell Seated Full Front Raise,Shoulders; Anterior Deltoid; Front Shoulders,,,Push,Barbell,Isolation,Advanced,Anterior Deltoid
+Dumbbell Seated Single Arm Arnold Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Dumbbell Seated Y Press,Shoulders; Anterior Deltoid; Front Shoulders,Triceps,,Push,Dumbbells,Compound,Novice,Anterior Deltoid
+Dumbbell Alternating Rear Delt Fly,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Dumbbells,Isolation,Intermediate,Posterior Deltoid
+Band Upright Row,Shoulders; Lateral Deltoid; Front Shoulders,Anterior Deltoid; Traps,,Pull,Band,Isolation,Advanced,Lateral Deltoid; Anterior Deltoid
+Barbell Suitcase Carry,Glutes; Hamstrings; Obliques,Lower back,Forearms,Pull,Barbell,Compound,Advanced,Obliques
+Dumbbell Farmer Walk,Forearms; Wrist Extensors; Wrist Flexors,,,Hold,Dumbbells,Isolation,Beginner,Wrist Extensors; Wrist Flexors
+Barbell Sumo Pause Deadlift,Lower back; Glutes,,,Pull,Barbell,Compound,Intermediate,
+Dumbbell Y Press,Shoulders; Anterior Deltoid; Front Shoulders,Triceps,,Push,Dumbbells,Compound,Novice,Anterior Deltoid
+Dumbbell Cuban Press,Front Shoulders,,,Push,Dumbbells,Compound,Intermediate,
+Barbell Jefferson Deadlift,Lower back; Glutes,,,Pull,Barbell,Compound,Advanced,
+Barbell Conventional Pause Deadlift,Lower back; Glutes,,,Pull,Barbell,Compound,Intermediate,
+Barbell Block Conventional Deadlift,Lower back; Glutes,,,Pull,Barbell,Compound,Intermediate,
+Barbell Deficit Conventional Deadlift,Lower back; Glutes,,,Pull,Barbell,Compound,Intermediate,
+Barbell Bradford Press,Shoulders; Front Shoulders,Triceps,,Push,Barbell,Compound,Intermediate,
+Dumbbell Six Way Lateral Raise,Front Shoulders,,,Push,Dumbbells,Isolation,Beginner,
+Dumbbell Full Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Pull,Dumbbells,Isolation,Beginner,Lateral Deltoid
+Barbell Full Front Raise,Shoulders; Anterior Deltoid; Front Shoulders,,,Push,Barbell,Isolation,Intermediate,Anterior Deltoid
+Dumbbell Full Front Raise,Shoulders; Anterior Deltoid; Front Shoulders,,,Push,Dumbbells,Isolation,Intermediate,Anterior Deltoid
+Plate Weighted Dead Hang,Forearms,,,Hold,Plate,Isolation,Intermediate,
+L Sit Chin Up,Lats,Biceps,Forearms,Pull,Bodyweight,Compound,Intermediate,
+L Sit Pull Up,Lats,Biceps; Traps (mid-back),Biceps,Pull,Bodyweight,Compound,Intermediate,Traps (mid-back)
+Hanging L Sit,Abdominals; Lower Abdominals; Forearms,,,Hold,Bodyweight,Isolation,Intermediate,Lower Abdominals
+Dead Hang,Forearms,,,Hold,Bodyweight,Isolation,Beginner,
+Medicine Ball Dead Bug,Abdominals,,,Push,Medicine-Ball,Compound,Intermediate,
+Band Standing Chest Press,Chest,Triceps,,Push,Band,Compound,Beginner,Chest
+Band Tricep Kickback,Triceps,,,Push,Band,Isolation,Beginner,
+Band Squat Hold Single Arm Row,Glutes; Lats; Quads,Biceps,,Pull,Band,Compound,Novice,
+Band Squat Hold Row,Glutes; Lats; Quads,Biceps,,Pull,Band,Compound,Novice,
+Band Goblet Squat,Glutes; Quads,,,Push,Band,Compound,Novice,
+Band Single Arm Pulldown,Lats,Biceps,,Pull,Band,Compound,Novice,
+Band Single Arm Row,Lats,Biceps,,Pull,Band,Compound,Novice,
+Machine Plate Loaded Crunch,Abdominals; Upper Abdominals,,,Pull,Machine,Isolation,Novice,Upper Abdominals
+Machine Plate Loaded Incline Chest Press,Chest,Triceps,,Push,Machine,Compound,Novice,Chest
+Machine Plate Loaded Decline Chest Press,Chest,Triceps,,Push,Machine,Compound,Novice,Chest
+Machine Plate Loaded Low Incline Bench Press,Chest,Triceps,,Push,Machine,Compound,Novice,Chest
+Machine Bent Arm Pec Fly,Chest,,,Push,Machine,Isolation,Novice,Chest
+Machine Plate Loaded Front Military Press,Front Shoulders,,,Push,Machine,Compound,Novice,
+Machine Chest Supported T Bar Row,Lats,,,Pull,Machine,Compound,Novice,
+Machine Plate Loaded Pulldown,Lats,Biceps,Lower Traps,Pull,Machine,Compound,Novice,Lower Traps
+Machine Rear Deltoid Row,Posterior Deltoid; Rear Shoulders,,,Pull,Machine,Isolation,Novice,Posterior Deltoid
+Machine Pullover,Lats,,,Pull,Machine,Isolation,Novice,
+Machine Seated Shrug,Traps,,,Pull,Machine,Isolation,Beginner,
+Machine Standing Shrug,Traps,,,Pull,Machine,Isolation,Novice,
+Machine Back Extension,Lower back,,,Push,Machine,Isolation,Novice,
+Machine Standing Lateral Raise,Front Shoulders,,,Push,Machine,Isolation,Novice,
+Machine Standing Plate Loaded Preacher Curl,Biceps; Short Head Bicep,,,Pull,Machine,Isolation,Novice,Short Head Bicep
+Machine Seated Plate Loaded Preacher Curl,Biceps; Short Head Bicep,,,Pull,Machine,Isolation,Novice,Short Head Bicep
+Machine Overhead Tricep Extension,Triceps; Long Head Tricep,,,Push,Machine,Isolation,Novice,Long Head Tricep
+Machine Reverse Hyperextension,Lower back; Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,,,Push,Machine,Compound,Novice,Gluteus Maximus; Lateral Hamstrings
+Machine Pendulum Squat,Glutes; Quads,,,Push,Machine,Compound,Novice,
+Machine Single Leg Leg Press,Glutes; Quads,,,Push,Machine,Compound,Novice,
+Machine Squat Press,Glutes; Quads,,,Push,Machine,Compound,Novice,
+Machine Donkey Calf Raise,Calves; Gastrocnemius,,,Push,Machine,Isolation,Novice,Gastrocnemius
+Machine 45 Degree Calf Raise,Calves,,,Push,Machine,Isolation,Novice,
+Machine Plate Loaded Hip Thrust,Glutes,,,Push,Machine,Compound,Novice,
+Machine Plate Loaded Low Row,Posterior Deltoid; Rear Shoulders,Traps (mid-back),,Pull,Machine,Compound,Novice,Posterior Deltoid; Traps (mid-back)
+Machine Plate Loaded Seal Row,Lats,,,Pull,Machine,Compound,Novice,
+Machine Plate Loaded T Bar Row,Lats,,,Pull,Machine,Compound,Novice,
+Machine Plate Loaded Row,Lats,,,Pull,Machine,Compound,Novice,
+Machine Bicep Curl,Biceps,,,Pull,Machine,Isolation,Novice,
+Machine Tricep Pushdown,Triceps,,,Push,Machine,Isolation,Novice,
+Machine Dips,Chest,Triceps,Shoulders,Push,Machine,Compound,Novice,Chest
+Machine Standing Hamstring Curl,Hamstrings,,,Pull,Machine,Isolation,Novice,
+Machine Plate Loaded Kneeling Hamstring Curl,Hamstrings,,,Pull,Machine,Isolation,Novice,
+Horizontal Hack Squat,Glutes; Quads,,,Push,Machine,Compound,Novice,
+Machine Crunch,Abdominals; Upper Abdominals,,,Pull,Machine,Isolation,Novice,Upper Abdominals
+Machine Glute Kickback,Glutes,,,Push,Machine,Isolation,Beginner,
+Machine Plate Loaded Calf Raise,Calves,,,Push,Machine,Isolation,Intermediate,
+Gluteator,Glutes,,,Push,Machine,Isolation,Novice,
+Vertical Leg Press,Glutes,Quads,,Push,Machine,Compound,Novice,
+Machine Belt Squat,Glutes; Quads,,,Push,Machine,Compound,Novice,
+Machine Plate Loaded Leg Extension,Quads,,,Push,Machine,Isolation,Novice,
+Machine Seated Hamstring Curl,Hamstrings,,,Pull,Machine,Isolation,Novice,
+Dumbbell Laying Curl,Biceps,,,Pull,Dumbbells,Isolation,Beginner,
+Elliptical,,,,Push,Cardio,Compound,Novice,
+Cable High Bayesian Curl,Biceps,,,Pull,Cables,Isolation,Beginner,
+Cable Single Arm Overhead Tricep Extension,Triceps,,,Push,Cables,Isolation,Beginner,
+Cable Overhead Tricep Press,Triceps,,,Push,Cables,Isolation,Intermediate,
+Cable Internal Rotation,Front Shoulders,,,Push,Cables,Isolation,Beginner,
+Cable External Rotation,Rear Shoulders,,,Pull,Cables,Isolation,Beginner,
+Cable Kayak Row,Lats,,,Pull,Cables,Isolation,Beginner,
+Cable Belt Calf Raise,Calves; Gastrocnemius,,,Push,Cables,Isolation,Novice,Gastrocnemius
+Cable Belt Split Squat,Quads,Glutes,,Push,Cables,Compound,Beginner,
+Cable Belt Squat,Quads,Glutes,,Push,Cables,Compound,Beginner,
+Barbell Muscle Snatch,Lower back; Glutes; Front Shoulders,,,Pull,Barbell,Compound,Intermediate,
+Barbell High Pull,Traps (mid-back); Lower back; Glutes; Traps,,,Pull,Barbell,Compound,Intermediate,Traps (mid-back)
+Barbell Split Jerk,Front Shoulders,,,Push,Barbell,Compound,Intermediate,
+Barbell Power Snatch,Lower back; Glutes; Front Shoulders,,,Pull,Barbell,Compound,Intermediate,
+Barbell Clean And Jerk,Lower back; Glutes; Front Shoulders,,,Push,Barbell,Compound,Advanced,
+Barbell Snatch,Lower back; Glutes; Front Shoulders,,,Pull,Barbell,Compound,Advanced,
+Barbell Snatch Grip High Pull,Traps (mid-back); Lower back; Glutes; Traps,,,Pull,Barbell,Compound,Intermediate,Traps (mid-back)
+Kettlebell Front Rack Deficit Reverse Lunge,Glutes,Quads,,Push,Kettlebells,Compound,Advanced,
+Dumbbell Front Rack Deficit Reverse Lunge,Glutes,Quads,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Goblet Deficit Reverse Lunge,Glutes,Quads,,Push,Dumbbells,Compound,Advanced,
+Plate Goblet Deficit Reverse Lunge,Glutes,Quads,,Push,Plate,Compound,Intermediate,
+Kettlebell Staggered Waiters Bow,Glutes; Hamstrings,Lower back,,Pull,Kettlebells,Compound,Intermediate,
+Kettlebell Deficit Reverse Lunge,Glutes,Quads,,Push,Kettlebells,Compound,Intermediate,
+Dumbbell Deficit Reverse Lunge,Glutes,Quads,,Push,Dumbbells,Compound,Advanced,
+Bodyweight Deficit Reverse Lunge,Glutes,Quads,,Push,Bodyweight,Compound,Intermediate,
+Dumbbell Laying Incline Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Pull,Dumbbells,Isolation,Beginner,Lateral Deltoid
+Bodyweight Staggered Waiters Bow,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Bodyweight,Compound,Intermediate,Gluteus Maximus; Lateral Hamstrings
+Plate Staggered Waiters Bow,Glutes; Hamstrings,Lower back,,Pull,Plate,Compound,Intermediate,
+Dumbbell Staggered Waiters Bow,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Dumbbells,Compound,Advanced,Gluteus Maximus; Lateral Hamstrings
+Bodyweight Waiters Bow,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Bodyweight,Compound,Beginner,Gluteus Maximus; Lateral Hamstrings
+Dumbbell Waiters Bow,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Dumbbells,Compound,Intermediate,Gluteus Maximus; Lateral Hamstrings
+Kettlebell Waiters Bow,Glutes; Hamstrings,Lower back,,Pull,Kettlebells,Compound,Intermediate,
+Plate Waiters Bow,Glutes; Hamstrings,Lower back,,Pull,Plate,Compound,Intermediate,
+Dumbbell Tricep Guillotine Press,Triceps,,,Push,Dumbbells,Isolation,Beginner,
+Barbell Tricep Guillotine Press,Triceps,,,Push,Barbell,Isolation,Intermediate,
+Dumbbell Bench Braced Single Arm Overhead Tricep Extension,Triceps; Long Head Tricep,,,Push,Dumbbells,Isolation,Beginner,Long Head Tricep
+Dumbbell Bench Braced Rolling Curl,Biceps,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Single Arm Bench Braced Reverse Flat Curl,Biceps,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Bench Braced Reverse Flat Curl,Biceps,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Single Arm Bench Braced Hammer Flat Curl,Biceps,,,Pull,Dumbbells,Isolation,Beginner,
+Dumbbell Bench Braced Hammer Flat Curl,Biceps,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Single Arm Bench Braced Flat Curl,Biceps,,,Pull,Dumbbells,Isolation,Beginner,
+Dumbbell Bench Braced Flat Curl,Biceps,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Single Arm Bench Braced Reverse Incline Curl,Biceps; Forearms; Wrist Extensors,,,Pull,Dumbbells,Isolation,Intermediate,Wrist Extensors
+Dumbbell Bench Braced Reverse Incline Curl,Biceps; Forearms,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Single Arm Bench Braced Hammer Incline Curl,Biceps,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Bench Braced Hammer Incline Curl,Biceps,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Single Arm Bench Braced Incline Curl,Biceps,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Bench Braced Incline Curl,Biceps,,,Pull,Dumbbells,Isolation,Beginner,
+Kettlebell Quad Stomp,Quads,Glutes,,Push,Kettlebells,Compound,Advanced,
+Barbell Quad Stomp,Quads,Glutes,,Push,Barbell,Compound,Advanced,
+Dumbbell Quad Stomp,Quads,,Glutes,Push,Dumbbells,Compound,Intermediate,
+Bodyweight Quad Stomp,Quads,Glutes,,Push,Bodyweight,Compound,Beginner,
+Dumbbell Single Leg Calf Raise,Calves,,,Push,Dumbbells,Isolation,Novice,
+Bodyweight Single Leg Calf Raise,Calves,,,Push,Bodyweight,Isolation,Novice,
+Barbell Zercher Deficit Lunge,Glutes; Quads,Lower back,,Push,Barbell,Compound,Advanced,
+Barbell Front Rack Deficit Lunge,Glutes,Quads,,Push,Barbell,Compound,Advanced,
+Barbell Curtsy Deficit Lunge,Glutes,Quads,,Push,Barbell,Compound,Advanced,
+Dumbbell Curtsy Deficit Lunge,Glutes,Quads,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Front Rack Curtsy Deficit Lunge,Glutes,Quads,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Goblet Curtsy Deficit Lunge,Glutes,Quads,,Push,Dumbbells,Compound,Advanced,
+Stability Ball V Up Pass,Abdominals,,,Pull,Bodyweight,Isolation,Intermediate,
+Bodyweight Curtsy Deficit Lunge,Glutes,Quads,,Push,Bodyweight,Compound,Intermediate,
+Barbell Deficit Lunge,Glutes,Quads,,Push,Barbell,Compound,Advanced,
+Stability Ball Sissy Squat,Quads,,,Push,Bodyweight,Isolation,Advanced,
+Stability Ball Single Leg Hip Thrust,Glutes,,,Push,Bodyweight,Compound,Intermediate,
+Stability Ball Windshield Wiper,Abdominals,,,Pull,Bodyweight,Isolation,Intermediate,
+Stability Ball Straight Leg Glute Bridge,Glutes,,,Push,Bodyweight,Isolation,Beginner,
+Stability Ball Hamstring Curl,Hamstrings,,,Pull,Bodyweight,Isolation,Beginner,
+Stability Ball Glute Bridge,Glutes,,,Push,Bodyweight,Compound,Intermediate,
+Stability Ball Hip Thrust,Glutes,,,Push,Bodyweight,Compound,Beginner,
+Stability Ball Side Crunch,Obliques,,,Pull,Bodyweight,Isolation,Beginner,Obliques
+Stability Ball Atomic Push Up,Chest,,Abdominals,Push,Bodyweight,Compound,Intermediate,Chest
+Stability Ball Push Up,Chest,Anterior Deltoid; Triceps,,Push,Bodyweight,Compound,Intermediate,Chest; Anterior Deltoid
+Stability Ball Pike,Abdominals,,,Pull,Bodyweight,Isolation,Intermediate,
+Stability Ball Knee Tuck,Abdominals; Lower Abdominals,,,Pull,Bodyweight,Isolation,Intermediate,Lower Abdominals
+Stability Ball Reverse Hyperextension,Lower back; Glutes; Hamstrings,,,Push,Bodyweight,Compound,Novice,
+Stability Ball Stir The Pot,Abdominals,,,Hold,Bodyweight,Isolation,Intermediate,
+Bodyweight Stability Ball Crunch,Abdominals; Upper Abdominals,,,Push,Bodyweight,Isolation,Beginner,Upper Abdominals
+Bodyweight Stability Ball Hyperextension,Lower back,Glutes; Hamstrings,,Pull,Bodyweight,Isolation,Beginner,
+Stability Ball Goblet Wall Squat,Quads,Glutes,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Stability Ball Wall Squat,Quads,Glutes,,Push,Dumbbells,Compound,Beginner,
+Dumbbell Front Rack Stability Ball Wall Squat,Quads,Glutes,,Push,Dumbbells,Compound,Intermediate,
+Stability Ball Wall Squat,Quads,Glutes,,Push,Bodyweight,Compound,Beginner,
+Dumbbell Half Kneeling Romanian Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Dumbbells,Compound,Intermediate,Gluteus Maximus; Lateral Hamstrings
+Dumbbell Half Kneeling Goblet Romanian Deadlift,Glutes; Gluteus Maximus; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Dumbbells,Compound,Intermediate,Gluteus Maximus; Lateral Hamstrings
+Kettlebell Half Kneeling Romanian Deadlift,Glutes; Hamstrings,Lower back,,Pull,Kettlebells,Compound,Intermediate,
+Kettlebell Half Kneeling Goblet Romanian Deadlift,Glutes; Hamstrings,Lower back,,Pull,Kettlebells,Compound,Intermediate,
+Half Kneeling Hip Hinge,Glutes; Hamstrings,Lower back,,Pull,Bodyweight,Compound,Intermediate,
+Gironda Chin Up,Lats,Biceps,Forearms,Pull,Bodyweight,Compound,Advanced,
+Ring Chin Up,Lats,Biceps,Forearms,Pull,Bodyweight,Compound,Intermediate,
+Ring Twisting Chin Up,Lats,Biceps,Forearms,Pull,Bodyweight,Compound,Advanced,
+Ring Pull Up,Lats,Biceps; Traps (mid-back),Biceps,Pull,Bodyweight,Compound,Advanced,Traps (mid-back)
+Band High To Low Pallof Press Wood Chopper,Obliques,Abdominals,,Pull,Band,Isolation,Intermediate,Obliques
+Band Low To High Pallof Press Wood Chopper,Obliques,Abdominals,,Pull,Band,Isolation,Beginner,Obliques
+Band Pallof Press To Wood Chopper,Obliques,,,Pull,Band,Isolation,Intermediate,Obliques
+Band Side Bend,Obliques,,,Pull,Band,Isolation,Novice,Obliques
+Barbell Clean And Press,Lower back; Glutes; Front Shoulders,,,Push,Barbell,Compound,Advanced,
+Barbell Hang Clean And Press,Lower back; Glutes; Front Shoulders,,,Push,Barbell,Compound,Advanced,
+Cable Bar Kneeling Crunch,Abdominals,,,Pull,Cables,Isolation,Beginner,
+Cable Braced Single Arm Chest Fly,Chest,,,Push,Cables,Isolation,Novice,Chest
+Cable Braced Single Arm Chest Press,Chest,,,Push,Cables,Isolation,Beginner,Chest
+Cable Braced Single Arm Internally Rotated Chest Fly,Chest,,,Push,Cables,Isolation,Novice,Chest
+Cable Kneeling High To Low Wood Chopper,Obliques,Abdominals,,Pull,Cables,Isolation,Intermediate,Obliques
+Cable Kneeling Low To High Wood Chopper,Obliques,,,Pull,Cables,Isolation,Intermediate,Obliques
+Cable Kneeling Pallof Press,Obliques,,,Push,Cables,Isolation,Beginner,Obliques
+Cable Kneeling Pallof Press To Wood Chopper,Obliques,,,Push,Cables,Isolation,Beginner,Obliques
+Cable Kneeling Wood Chopper,Obliques,,,Pull,Cables,Isolation,Intermediate,Obliques
+Dumbbell Clean And Press,Lower back; Glutes; Front Shoulders,,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Hang Clean And Press,Lower back; Glutes; Front Shoulders,,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Single Arm Clean And Press,Lower back; Glutes; Front Shoulders,,,Push,Dumbbells,Compound,Advanced,
+Dumbbell Single Arm Hang Clean And Press,Lower back; Glutes; Front Shoulders,,,Push,Dumbbells,Compound,Advanced,
+Kettlebell Hang Clean And Press,Lower back; Glutes; Front Shoulders,,,Push,Kettlebells,Compound,Advanced,
+Barbell Behind The Back 30 Degree Shrug,Traps,,,Pull,Barbell,Isolation,Beginner,
+Barbell Behind The Back Shrug,Traps; Upper Traps,,,Pull,Barbell,Isolation,Beginner,Upper Traps
+Barbell Behind The Neck Press,Shoulders; Front Shoulders,Triceps,,Push,Barbell,Compound,Intermediate,
+Barbell Guillotine High Incline Bench Press,Chest,Triceps,,Push,Barbell,Compound,Advanced,Chest
+Barbell Guillotine Incline Bench Press,Chest,Triceps,,Push,Barbell,Compound,Advanced,Chest
+Barbell J M Press,Triceps,Chest,,Push,Barbell,Compound,Intermediate,Chest
+Barbell Pullover,Lats,,,Pull,Barbell,Isolation,Intermediate,
+Barbell Rack Pull,Traps (mid-back); Lower back,,,Pull,Barbell,Compound,Beginner,Traps (mid-back)
+Barbell Shoulder Extension,Lats,,,Pull,Barbell,Isolation,Intermediate,
+Barbell Spinal Jefferson Curl,Lower back,,,Pull,Barbell,Isolation,Intermediate,
+Bodyweight Spinal Jefferson Curl,Lower back,,,Pull,Bodyweight,Isolation,Beginner,
+Dumbbell Drag Curl,Biceps; Long Head Bicep; Short Head Bicep,,,Pull,Dumbbells,Isolation,Beginner,Long Head Bicep; Short Head Bicep
+Dumbbell High Incline Skullover,Triceps,,,Push,Dumbbells,Isolation,Advanced,
+Dumbbell Incline Twisting Curl,Biceps,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Neutral High Incline Bench Press,Shoulders; Anterior Deltoid; Chest; Front Shoulders,Triceps,,Push,Dumbbells,Compound,Novice,Anterior Deltoid; Chest
+Dumbbell Single Arm Bench Wrist Curl,Forearms; Wrist Flexors,,,Pull,Dumbbells,Isolation,Novice,Wrist Flexors
+Dumbbell Single Arm Bench Wrist Extension,Forearms; Wrist Extensors,,,Pull,Dumbbells,Isolation,Novice,Wrist Extensors
+Dumbbell Single Arm Shoulder Extension,Lats,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Single Arm Skullcrusher,Triceps,,,Push,Dumbbells,Isolation,Intermediate,
+Dumbbell Spinal Jefferson Curl,Lower back,,,Pull,Dumbbells,Isolation,Intermediate,
+Dumbbell Zottman Curl,Biceps,Forearms,,Pull,Dumbbells,Isolation,Beginner,
+Kettlebell Drag Curl,Biceps; Long Head Bicep; Short Head Bicep,,,Pull,Kettlebells,Isolation,Beginner,Long Head Bicep; Short Head Bicep
+Kettlebell Single Arm Shoulder Extension,Lats,,,Pull,Kettlebells,Isolation,Intermediate,
+Kettlebell Spinal Jefferson Curl,Lower back,,,Pull,Kettlebells,Isolation,Intermediate,
+Barbell Banded Back Squat,Quads,Glutes,Lower back; Groin,Push,Barbell,Compound,Intermediate,
+Barbell Banded Deadlift,Glutes,Traps (mid-back); Lower back,,Pull,Barbell,Compound,Intermediate,Traps (mid-back)
+Barbell Banded Front Squat,Glutes; Quads,Abdominals,,Push,Barbell,Compound,Advanced,
+Barbell Banded Romanian Deadlift,Glutes; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Barbell,Compound,Intermediate,Lateral Hamstrings
+Barbell Banded Split Squat,Glutes; Quads,,,Push,Barbell,Compound,Intermediate,
+Barbell Thruster,Glutes; Shoulders; Anterior Deltoid; Quads; Front Shoulders,,,Push,Barbell,Compound,Intermediate,Anterior Deltoid
+Cable Bar Standing Crunch,Abdominals; Upper Abdominals,,,Pull,Cables,Isolation,Intermediate,Upper Abdominals
+Cable High Single Arm Hammer Bayesian Curl,Biceps,,,Pull,Cables,Isolation,Novice,
+Cable High Single Arm Hammer Rolling Curl,Biceps; Long Head Bicep,,,Pull,Cables,Isolation,Novice,Long Head Bicep
+Cable High Single Arm Reverse Bayesian Curl,Biceps; Long Head Bicep,Forearms,,Pull,Cables,Isolation,Beginner,Long Head Bicep
+Cable High Single Arm Reverse Rolling Curl,Biceps; Forearms; Wrist Extensors,,,Pull,Cables,Isolation,Beginner,Wrist Extensors
+Cable High Single Arm Rolling Curl,Biceps; Long Head Bicep,,,Pull,Cables,Isolation,Novice,Long Head Bicep
+Cable Leaning Single Arm Skullover,Triceps,,,Push,Cables,Isolation,Intermediate,
+Cable Rope Standing Crunch,Abdominals,,,Pull,Cables,Isolation,Beginner,
+Cable Standing High To Low Wood Chopper,Obliques,Abdominals,,Pull,Cables,Isolation,Intermediate,Obliques
+Cable Standing Low To High Wood Chopper,Obliques,Abdominals,,Pull,Cables,Isolation,Intermediate,Obliques
+Cable Standing Single Arm Incline Chest Fly,Chest,,,Push,Cables,Compound,Novice,Chest
+Cable Standing Single Arm Incline Chest Press,Chest,Triceps; Front Shoulders,,Push,Cables,Compound,Intermediate,Chest
+Cable Standing Single Arm Internally Rotated Incline Chest Fly,Chest,,,Push,Cables,Isolation,Beginner,Chest
+Dumbbell Alternating Single Arm Thruster,Glutes; Shoulders; Anterior Deltoid; Quads; Front Shoulders,,,Push,Dumbbells,Compound,Intermediate,Anterior Deltoid
+Dumbbell Single Arm Push Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Dumbbells,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Dumbbell Single Arm Thruster,Glutes; Shoulders; Anterior Deltoid; Quads; Front Shoulders,,,Push,Dumbbells,Compound,Intermediate,Anterior Deltoid
+Kettlebell Alternating Single Arm Thruster,Glutes; Shoulders; Anterior Deltoid; Quads; Front Shoulders,,,Push,Kettlebells,Compound,Intermediate,Anterior Deltoid
+Kettlebell Clean And Jerk,Lower back; Glutes; Front Shoulders,,,Push,Kettlebells,Compound,Advanced,
+Kettlebell Hang Clean And Jerk,Lower back; Glutes; Front Shoulders,,,Push,Kettlebells,Compound,Advanced,
+Kettlebell Hang Squat Clean And Jerk,Lower back; Glutes; Front Shoulders,,,Push,Kettlebells,Compound,Advanced,
+Kettlebell Single Arm Clean And Jerk,Lower back; Glutes; Front Shoulders,,,Push,Kettlebells,Compound,Advanced,
+Kettlebell Single Arm Hang Clean And Jerk,Lower back; Glutes; Front Shoulders,,,Push,Kettlebells,Compound,Advanced,
+Kettlebell Single Arm Push Press,Shoulders; Anterior Deltoid; Front Shoulders,Lateral Deltoid; Triceps,,Push,Kettlebells,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Kettlebell Single Arm Thruster,Glutes; Shoulders; Anterior Deltoid; Quads; Front Shoulders,,,Push,Kettlebells,Compound,Intermediate,Anterior Deltoid
+Kettlebell Squat Clean And Jerk,Lower back; Glutes; Front Shoulders,,,Push,Kettlebells,Compound,Advanced,
+Kettlebell Thruster,Glutes; Anterior Deltoid; Quads; Front Shoulders,Shoulders; Lateral Deltoid,,Push,Kettlebells,Compound,Intermediate,Anterior Deltoid; Lateral Deltoid
+Cable Kneeling Oblique Crunch,Obliques,,,Pull,Cables,Isolation,Beginner,Obliques
+Cable Single Arm Pushdown,Triceps,,,Push,Cables,Isolation,Novice,
+Cable Standing Single Arm Cross Rear Delt Row,Shoulders; Posterior Deltoid; Rear Shoulders,Traps (mid-back),Biceps,Pull,Cables,Compound,Beginner,Posterior Deltoid; Traps (mid-back)
+Cable Standing Single Arm Chest Fly,Chest,,,Push,Cables,Compound,Beginner,Chest
+Cable Standing Single Arm Internally Rotated Chest Fly,Chest,,,Push,Cables,Isolation,Intermediate,Chest
+Cable Standing Single Arm Chest Press,Chest,Anterior Deltoid; Triceps,,Push,Cables,Compound,Novice,Chest; Anterior Deltoid
+Medicine Ball Clean And Press,Lower back; Glutes; Front Shoulders,,,Push,Medicineball,Compound,Intermediate,
+Medicine Ball Hang Clean And Press,Lower back; Glutes; Front Shoulders,,,Push,Medicineball,Compound,Intermediate,
+Medicine Ball Thruster,Glutes; Shoulders; Anterior Deltoid; Quads; Front Shoulders,,,Push,Medicineball,Compound,Intermediate,Anterior Deltoid
+Band Floor Press,Triceps,Chest,,Push,Band,Compound,Beginner,Chest
+Band Standing Good Morning,Glutes; Hamstrings; Lateral Hamstrings,Lower back,,Pull,Band,Compound,Beginner,Lateral Hamstrings
+Band Single Arm Bent Over Row,Lats,Biceps,Forearms,Pull,Band,Compound,Novice,
+Band Bent Over Row,Lats,Biceps,Forearms,Pull,Band,Compound,Beginner,
+Band Bench Fly,Chest,,,Push,Band,Compound,Novice,Chest
+Band Bench Press,Chest,Triceps; Lateral Head Triceps; Medial Head Triceps,Shoulders,Push,Band,Compound,Intermediate,Chest; Lateral Head Triceps; Medial Head Triceps
+Band Press Around,Chest; Mid and Lower Chest,,,Push,Band,Compound,Beginner,Chest; Mid and Lower Chest
+Band Pull Around,Lats,Biceps,Traps (mid-back),Pull,Band,Compound,Novice,Traps (mid-back)
+Band Half Kneeling Single Arm Pulldown,Lats,Biceps,Lower Traps,Pull,Band,Compound,Novice,Lower Traps
+Band Seated Single Arm Pulldown,Lats,Biceps,Lower Traps,Pull,Band,Compound,Novice,Lower Traps
+Band Seated Pulldown,Lats,Biceps,Lower Traps,Pull,Band,Compound,Novice,Lower Traps
+Band Kneeling Pulldown,Lats,Biceps,Lower Traps,Pull,Band,Compound,Novice,Lower Traps
+Dumbbell Incline Skullcrusher,Triceps,,,Push,Dumbbells,Isolation,Intermediate,
+Dumbbell Single Arm Incline Skullcrusher,Triceps,,,Push,Dumbbells,Isolation,Intermediate,
+Dumbbell Single Arm Seated Overhead Tricep Extension,Triceps,,,Push,Dumbbells,Isolation,Intermediate,
+Dumbbell Single Arm Incline Twisting Curl,Biceps,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Single Arm Incline Reverse Curl,Biceps,Forearms,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Single Arm Incline Hammer Curl,Biceps,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Single Arm Incline Curl,Biceps; Long Head Bicep,,,Pull,Dumbbells,Isolation,Novice,Long Head Bicep
+Band Single Arm Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Pull,Band,Compound,Beginner,Lateral Deltoid
+Band Single Arm Internally Rotated Chest Fly,Chest,,,Push,Band,Compound,Novice,Chest
+Dumbbell Standing Single Arm Twisting Curl,Biceps,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Standing Single Arm Reverse Curl,Biceps,Forearms,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Standing Single Arm Hammer Curl,Biceps,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Standing Single Arm Curl,Biceps,,,Pull,Dumbbells,Isolation,Novice,
+Dumbbell Seated Single Arm Full Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Pull,Dumbbells,Isolation,Beginner,Lateral Deltoid
+Dumbbell Seated Single Arm Lateral Raise,Lateral Deltoid; Front Shoulders,,,Push,Dumbbells,Isolation,Novice,Lateral Deltoid
+Dumbbell Seated Full Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Pull,Dumbbells,Isolation,Beginner,Lateral Deltoid
+Bodyweight Superman Pull,Lower back,,,Pull,Bodyweight,Isolation,Novice,
+Cable Behind The Back Lateral Raise,Shoulders; Lateral Deltoid; Front Shoulders,,,Push,Cables,Isolation,Beginner,Lateral Deltoid
+Cable Bent Over Single Arm Overhead Tricep Extension,Triceps; Long Head Tricep,,,Push,Cables,Isolation,Beginner,Long Head Tricep
+Cable Braced Wrist Extension,Forearms; Wrist Extensors,,,Push,Cables,Isolation,Novice,Wrist Extensors
+Bodyweight Assisted Sissy Squat,Quads; Rectus Femoris,,,Push,Bodyweight,Isolation,Intermediate,Rectus Femoris
+Cable Incline Fly Around,Chest; Upper Pectoralis,,,Push,Cables,Compound,Novice,Chest; Upper Pectoralis
+Cable Incline Press Around,Chest; Mid and Lower Chest,,,Push,Cables,Compound,Novice,Chest; Mid and Lower Chest
+Cable Pull Around,Lats,Biceps,Traps (mid-back),Pull,Cables,Compound,Novice,Traps (mid-back)
+Cable Decline Press Around,Chest; Mid and Lower Chest,,,Push,Cables,Compound,Novice,Chest; Mid and Lower Chest
+Cable Seated Rope Face Pull,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Cables,Isolation,Novice,Posterior Deltoid
+Cable Seated Bar Face Pull,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Cables,Isolation,Novice,Posterior Deltoid
+Cable Seated Single Arm Face Pull,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Cables,Isolation,Novice,Posterior Deltoid
+Cable Bar Face Pull,Shoulders; Posterior Deltoid; Rear Shoulders,,,Pull,Cables,Isolation,Novice,Posterior Deltoid
+Cable Braced Wrist Curl,Forearms; Wrist Flexors,,,Pull,Cables,Isolation,Novice,Wrist Flexors
+Cable Bar Skullcrusher,Triceps; Long Head Tricep,,,Push,Cables,Isolation,Beginner,Long Head Tricep
+Cable Single Arm Lat Prayer,Lats,,,Pull,Cables,Isolation,Advanced,

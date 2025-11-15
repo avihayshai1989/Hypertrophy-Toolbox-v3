@@ -87,3 +87,100 @@ def test_run_merge_normalizes_muscle_fields(tmp_path):
 
     assert muscles_existing["primary_muscle_group"] == "Upper Back"
     assert muscles_existing["advanced_isolated_muscles"] == "Latissimus Dorsi, TFL"
+
+
+def test_run_merge_resolves_alias_conflicts_and_unions_lists(tmp_path):
+    db_path = tmp_path / "database.db"
+    log_path = tmp_path / "merge.md"
+    csv_path = tmp_path / "import.csv"
+
+    conn = sqlite3.connect(db_path)
+    ensure_exercises_table(conn)
+    conn.execute(
+        """
+        INSERT INTO exercises (
+            exercise_name,
+            primary_muscle_group,
+            secondary_muscle_group,
+            tertiary_muscle_group,
+            advanced_isolated_muscles
+        ) VALUES (?, ?, ?, ?, ?)
+        """,
+        (
+            "Compound Row",
+            "Rear-Shoulder",
+            "Middle-Traps",
+            "Glutes",
+            "Rear-Shoulder",
+        ),
+    )
+    conn.commit()
+    conn.close()
+
+    with open(csv_path, "w", newline="", encoding="utf-8") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(
+            [
+                "exercise_name",
+                "primary_muscle_group",
+                "secondary_muscle_group",
+                "tertiary_muscle_group",
+                "advanced_isolated_muscles",
+            ]
+        )
+        writer.writerow(
+            [
+                "Compound Row",
+                "rear delts",
+                "mid traps",
+                "glutes",
+                "rear delts; TFL; Traps (mid-back)",
+            ]
+        )
+        writer.writerow(
+            [
+                "Upper Back Pullover",
+                "mid/upper back",
+                "rear delts",
+                "",
+                "",
+            ]
+        )
+
+    alias_map, acronyms = _load_default_aliases()
+
+    summary = run_merge(
+        str(csv_path),
+        str(db_path),
+        str(log_path),
+        dryrun=False,
+        fix_names=False,
+        scalar_policy="csv",
+        scalar_overrides={},
+        list_policy="union",
+        list_overrides={},
+        export_diff_path=None,
+        diff_format="csv",
+        diff_top_k=5,
+        alias_map=alias_map,
+        acronyms=acronyms,
+        alias_file=None,
+    )
+
+    assert summary.inserted == 1
+    assert summary.updated == 1
+
+    conn = sqlite3.connect(db_path)
+    muscles_row = _fetch_muscles(conn, "Compound Row")
+    muscles_new = _fetch_muscles(conn, "Upper Back Pullover")
+    conn.close()
+
+    assert muscles_row["primary_muscle_group"] == "Rear-Shoulder"
+    assert muscles_row["secondary_muscle_group"] == "Middle-Traps"
+    assert muscles_row["tertiary_muscle_group"] == "Gluteus Maximus"
+    assert muscles_row["advanced_isolated_muscles"] == "Middle-Traps, Rear-Shoulder, TFL"
+
+    assert muscles_new["primary_muscle_group"] == "Upper Back"
+    assert muscles_new["secondary_muscle_group"] == "Rear-Shoulder"
+    assert muscles_new["tertiary_muscle_group"] is None
+    assert muscles_new["advanced_isolated_muscles"] is None

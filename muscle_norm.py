@@ -5,31 +5,39 @@ import os
 import re
 from typing import Dict, List, Optional, Set
 
-DEFAULT_ALIAS_MAP: Dict[str, str] = {
-    "lats": "Latissimus Dorsi",
-    "lat": "Latissimus Dorsi",
-    "latissimus": "Latissimus Dorsi",
-    "traps": "Trapezius",
-    "trap": "Trapezius",
-    "abs": "Rectus Abdominis",
-    "abdominals": "Rectus Abdominis",
-    "glutes": "Gluteus Maximus",
-    "glute": "Gluteus Maximus",
-    "gluteals": "Gluteus Maximus",
-    "hams": "Hamstrings",
-    "hamstring": "Hamstrings",
-    "hamstrings": "Hamstrings",
-    "obliques": "External Obliques",
-    "oblique": "External Obliques",
-}
-DEFAULT_ACRONYMS: Set[str] = {"TFL", "IT Band", "SCM"}
-
-_WORD_PATTERN = re.compile(r"[A-Za-z0-9]+(?:'[A-Za-z0-9]+)?")
-_EXTRA_ACRONYMS: Set[str] = set()
+from utils.constants import MUSCLE_ALIAS
 
 
 def _collapse_spaces(text: str) -> str:
     return " ".join(text.split())
+
+
+def _normalize_alias_key(key: str) -> str:
+    return _collapse_spaces(key.strip().lower())
+
+
+def _build_default_alias_map() -> Dict[str, str]:
+    alias_map: Dict[str, str] = {}
+    for alias, canonical in MUSCLE_ALIAS.items():
+        key = _normalize_alias_key(alias)
+        if not key:
+            continue
+        alias_map[key] = _collapse_spaces(str(canonical))
+
+    # Ensure canonical keys are available even if not explicitly listed as aliases.
+    for canonical in set(MUSCLE_ALIAS.values()):
+        key = _normalize_alias_key(canonical)
+        if key and key not in alias_map:
+            alias_map[key] = _collapse_spaces(str(canonical))
+
+    return alias_map
+
+
+DEFAULT_ALIAS_MAP: Dict[str, str] = _build_default_alias_map()
+DEFAULT_ACRONYMS: Set[str] = {"TFL", "IT Band", "SCM"}
+
+_WORD_PATTERN = re.compile(r"[A-Za-z0-9]+(?:'[A-Za-z0-9]+)?")
+_EXTRA_ACRONYMS: Set[str] = set()
 
 
 def _load_json(path: str) -> object:
@@ -45,10 +53,6 @@ def _load_yaml(path: str) -> object:
 
     with open(path, "r", encoding="utf-8") as handle:
         return yaml.safe_load(handle)
-
-
-def _normalize_alias_key(key: str) -> str:
-    return _collapse_spaces(key.strip().lower())
 
 
 def load_alias_map(path: Optional[str]) -> Dict[str, str]:

@@ -46,11 +46,25 @@ Design your workout plan using science, all the toolbox you need in order to des
    ```bash
    python scripts/migrate_isolated_muscles.py
    ```
-5. **Start the Flask service** with `python app.py`.
-6. **Smoke test**:
+5. **Run the muscle normalization migration**:
+    - Dry run to review upcoming changes:
+       ```bash
+       python normalize_muscles.py --db data/database.db --log logs/muscle_normalization.md --dryrun
+       ```
+    - Inspect `logs/muscle_normalization.md` for unexpected aliases before proceeding.
+    - Execute the live run (automatic backup created at `data/database.db.backup_<timestamp>`):
+       ```bash
+       python normalize_muscles.py --db data/database.db --log logs/muscle_normalization.md
+       ```
+    - Validate canonical output by running:
+       ```bash
+       python -m pytest tests/test_merge_muscle_normalization.py tests/test_downstream_normalization.py
+       ```
+6. **Start the Flask service** with `python app.py`.
+7. **Smoke test**:
    - `/get_unique_values/exercises/advanced_isolated_muscles` returns canonical muscles from the junction table.
    - Weekly/session summary pages show weighted sets with clean volume buckets.
-7. **Rollback plan**: restore the most recent `database.backup-<timestamp>.sqlite` created during migrations and rerun steps 3-5.
+8. **Rollback plan**: restore the most recent `data/database.db.backup_<timestamp>` created during normalization, then rerun steps 3-6.
 
 ## 📚 Documentation
 

@@ -100,6 +100,13 @@ body.dark-mode {
   margin-top: 0;
 }
 
+.tbl-wrap--full {
+  max-width: none;
+  overflow-x: visible;
+  overflow-y: visible;
+  container-type: normal;
+}
+
 /* ============================================================
    BASE TABLE STYLES
    ============================================================ */

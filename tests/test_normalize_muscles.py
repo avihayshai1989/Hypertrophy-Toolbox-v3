@@ -3,6 +3,8 @@ import os
 import sqlite3
 
 from normalize_muscles import NormalizationResult, normalize_database
+from utils.constants import MUSCLE_GROUPS
+from utils.normalization import normalize_muscle
 
 
 def _fetch_row(db_path: str, name: str) -> sqlite3.Row:
@@ -138,3 +140,19 @@ def test_normalize_database_idempotent(tmp_path):
     )
     assert result_again.updated == 0
     assert result_again.no_op == 2
+
+
+def test_canonical_primary_mapping():
+    aliases = {
+        "latissimus-dorsi": "Latissimus Dorsi",
+        "lowerback": "Lower Back",
+        "front shoulders": "Front-Shoulder",
+        "rear delts": "Rear-Shoulder",
+        "mid traps": "Middle-Traps",
+        "gluteals": "Gluteus Maximus",
+        "hip adductors": "Hip-Adductors",
+    }
+
+    for alias, expected in aliases.items():
+        assert normalize_muscle(alias) == expected
+        assert expected in MUSCLE_GROUPS
