@@ -1,9 +1,13 @@
 """Database connection helpers and lightweight data-access abstraction."""
 from __future__ import annotations
 
+import shutil
 import sqlite3
+import threading
+import time
 from collections.abc import Iterable, Mapping, Sequence
 from datetime import date as _date, datetime as _datetime
+from pathlib import Path
 from typing import Any, Optional, Union
 
 from utils.config import DB_FILE
@@ -13,6 +17,15 @@ logger = get_logger()
 
 
 _SQLITE_CONVERTERS_REGISTERED = False
+_RECOVERY_ATTEMPTS: dict[str, bool] = {}
+
+# Thread-safe lock for database operations to prevent concurrent write corruption
+_DB_LOCK = threading.RLock()
+
+# Guard against double initialization during Flask auto-reload
+_INITIALIZATION_COMPLETE: dict[str, bool] = {}
+DATA_DIR = Path(DB_FILE).resolve().parent
+SEED_DB_PATH = DATA_DIR / "Database_backup" / "database.db"
 
 
 def _register_sqlite_converters() -> None:
@@ -65,32 +78,135 @@ _register_sqlite_converters()
 
 def _configure_connection(connection: sqlite3.Connection) -> sqlite3.Connection:
     """Apply the required PRAGMAs for every new connection."""
+    import os
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON;")
-    connection.execute("PRAGMA busy_timeout = 5000;")
-    connection.execute("PRAGMA journal_mode = WAL;")
-    connection.execute("PRAGMA synchronous = NORMAL;")
+    # Increase busy timeout to 30 seconds to handle concurrent access better
+    connection.execute("PRAGMA busy_timeout = 30000;")
+    
+    # Use WAL mode only in production, not in debug mode
+    # WAL mode + Flask auto-reloader = database corruption
+    is_debug = os.getenv('FLASK_DEBUG', '1') == '1' or os.getenv('FLASK_ENV') == 'development'
+    if not is_debug:
+        connection.execute("PRAGMA journal_mode = WAL;")
+    else:
+        # Use DELETE mode (default) in development - safer with auto-reloader
+        connection.execute("PRAGMA journal_mode = DELETE;")
+    
+    # Use FULL synchronous mode in development for maximum safety against corruption
+    # NORMAL is faster but less safe during crashes/interruptions
+    if is_debug:
+        connection.execute("PRAGMA synchronous = FULL;")
+    else:
+        connection.execute("PRAGMA synchronous = NORMAL;")
+    
     return connection
 
 
-def get_db_connection(database_path: Optional[str] = None) -> sqlite3.Connection:
-    """Create a new SQLite connection with the canonical configuration."""
-    db_path = database_path or DB_FILE
-    connection = sqlite3.connect(
-        db_path,
-        detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
-        check_same_thread=False,
+def _should_attempt_recovery(exc: sqlite3.DatabaseError, database_path: str) -> bool:
+    """Return True when the exception indicates corruption and we have not retried yet."""
+    message = str(exc).lower()
+    if not message:
+        return False
+    corruption_markers = (
+        "malformed",
+        "not a database",
+        "encrypted",
     )
-    return _configure_connection(connection)
+    if not any(marker in message for marker in corruption_markers):
+        return False
+    already_attempted = _RECOVERY_ATTEMPTS.get(database_path)
+    return not already_attempted
+
+
+def _attempt_database_recovery(database_path: str) -> bool:
+    """Quarantine the corrupted database file and restore a safe copy when available."""
+    db_path = Path(database_path)
+    _RECOVERY_ATTEMPTS[database_path] = True
+    logger.error(
+        "SQLite database at %s appears corrupted; attempting automatic recovery",
+        db_path,
+    )
+
+    wal_suffixes = ("-wal", "-shm")
+    for suffix in wal_suffixes:
+        sidecar = db_path.with_name(db_path.name + suffix)
+        if sidecar.exists():
+            try:
+                sidecar.unlink()
+            except OSError:
+                logger.warning("Unable to remove sidecar file %s during recovery", sidecar)
+
+    if db_path.exists():
+        timestamp = _datetime.now().strftime("%Y%m%d_%H%M%S")
+        corrupted_path = db_path.with_name(f"{db_path.name}.corrupted_{timestamp}")
+        try:
+            db_path.rename(corrupted_path)
+            logger.warning("Renamed corrupted database to %s", corrupted_path)
+        except OSError:
+            logger.exception("Failed to quarantine corrupted database file %s", db_path)
+            return False
+
+    if SEED_DB_PATH.exists():
+        try:
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(SEED_DB_PATH, db_path)
+            logger.warning("Restored database from seed backup at %s", SEED_DB_PATH)
+            return True
+        except OSError:
+            logger.exception("Failed to copy seed database from %s", SEED_DB_PATH)
+            return False
+
+    logger.warning(
+        "Seed database not found at %s; a new database will be created on next initialization",
+        SEED_DB_PATH,
+    )
+    return True
+
+
+def get_db_connection(database_path: Optional[str] = None) -> sqlite3.Connection:
+    """Create a new SQLite connection with the canonical configuration.
+    
+    Thread-safe: Acquires a global lock when connecting to prevent
+    concurrent connection setup issues during Flask auto-reload.
+    """
+    db_path = str(Path(database_path or DB_FILE))
+    attempted_recovery = False
+    
+    with _DB_LOCK:
+        while True:
+            try:
+                connection = sqlite3.connect(
+                    db_path,
+                    detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
+                    check_same_thread=False,
+                    timeout=30.0,  # Wait up to 30 seconds for database lock
+                )
+                try:
+                    return _configure_connection(connection)
+                except sqlite3.DatabaseError as exc:
+                    connection.close()
+                    raise exc
+            except sqlite3.DatabaseError as exc:
+                if not attempted_recovery and _should_attempt_recovery(exc, db_path):
+                    attempted_recovery = True
+                    if _attempt_database_recovery(db_path):
+                        continue
+                raise
 
 
 class DatabaseHandler:
-    """Context-friendly helper around SQLite connections."""
+    """Context-friendly helper around SQLite connections.
+    
+    Thread-safe: Uses a global lock for write operations to prevent
+    concurrent write corruption, especially during Flask auto-reload.
+    """
 
     def __init__(self, database_path: Optional[str] = None) -> None:
         self.database_path = database_path or DB_FILE
         self.connection: sqlite3.Connection = get_db_connection(self.database_path)
         self.cursor: sqlite3.Cursor = self.connection.cursor()
+        self._owns_lock = False
 
     # -- Core query helpers -------------------------------------------------
     def execute_query(
@@ -100,22 +216,74 @@ class DatabaseHandler:
         *,
         commit: bool = True,
     ) -> int:
-        """Execute a single statement and optionally commit."""
+        """Execute a single statement and optionally commit.
+        
+        Thread-safe: Acquires a global lock for write operations.
+        """
         prepared = self._prepare_params(params)
+        start_time = time.time()
+        
+        # Determine if this is a write operation that needs locking
+        operation = query.strip().split()[0].upper() if query else "UNKNOWN"
+        is_write = operation in ("INSERT", "UPDATE", "DELETE", "CREATE", "DROP", "ALTER", "REPLACE")
+        
         try:
+            # Acquire lock for write operations to prevent concurrent write corruption
+            if is_write:
+                _DB_LOCK.acquire()
+                self._owns_lock = True
+            
             if prepared is None:
                 self.cursor.execute(query)
             else:
                 self.cursor.execute(query, prepared)
             if commit:
                 self.connection.commit()
-            logger.debug("SQL exec: %s | params=%s", query[:120], prepared)
+            
+            # Calculate query duration
+            duration_ms = (time.time() - start_time) * 1000
+            
+            # Log slow queries as WARNING
+            if duration_ms > 100:
+                logger.warning(
+                    f"Slow query detected",
+                    extra={
+                        'duration_ms': round(duration_ms, 2),
+                        'operation': operation,
+                        'query': query[:200],  # Truncate to 200 chars
+                        'params': str(prepared)[:100] if prepared else None,
+                        'rowcount': self.cursor.rowcount
+                    }
+                )
+            else:
+                logger.debug(
+                    f"SQL exec: {query[:120]} | params={prepared}",
+                    extra={
+                        'duration_ms': round(duration_ms, 2),
+                        'operation': operation
+                    }
+                )
+            
             return self.cursor.rowcount
         except sqlite3.Error as exc:  # pragma: no cover - logged for observability
+            duration_ms = (time.time() - start_time) * 1000
             if commit:
                 self.connection.rollback()
-            logger.error("SQL error: %s | params=%s", query[:120], prepared, exc_info=True)
+            logger.error(
+                f"SQL error",
+                extra={
+                    'duration_ms': round(duration_ms, 2),
+                    'query': query[:200],
+                    'params': str(prepared)[:100] if prepared else None
+                },
+                exc_info=True
+            )
             raise
+        finally:
+            # Always release the lock if we acquired it
+            if is_write and self._owns_lock:
+                self._owns_lock = False
+                _DB_LOCK.release()
 
     def executemany(
         self,
@@ -124,19 +292,57 @@ class DatabaseHandler:
         *,
         commit: bool = True,
     ) -> int:
-        """Execute the same statement for multiple parameter sets."""
-        prepared_sets = (self._prepare_params(params, for_many=True) for params in param_sets)
+        """Execute the same statement for multiple parameter sets.
+        
+        Thread-safe: Acquires a global lock for write operations.
+        """
+        prepared_sets = list(self._prepare_params(params, for_many=True) for params in param_sets)
+        start_time = time.time()
+        
+        # executemany is typically a write operation
+        operation = query.strip().split()[0].upper() if query else "UNKNOWN"
+        is_write = operation in ("INSERT", "UPDATE", "DELETE", "REPLACE")
+        
         try:
+            if is_write:
+                _DB_LOCK.acquire()
+                self._owns_lock = True
+            
             self.cursor.executemany(query, prepared_sets)
             if commit:
                 self.connection.commit()
-            logger.debug("SQL executemany: %s", query[:120])
+            
+            # Calculate query duration
+            duration_ms = (time.time() - start_time) * 1000
+            
+            # Log batch operations
+            logger.debug(
+                f"SQL executemany: {query[:120]}",
+                extra={
+                    'duration_ms': round(duration_ms, 2),
+                    'rowcount': self.cursor.rowcount
+                }
+            )
+            
             return self.cursor.rowcount
         except sqlite3.Error as exc:  # pragma: no cover - logged for observability
+            duration_ms = (time.time() - start_time) * 1000
             if commit:
                 self.connection.rollback()
-            logger.error("SQL executemany error: %s", query[:120], exc_info=True)
+            logger.error(
+                f"SQL executemany error",
+                extra={
+                    'duration_ms': round(duration_ms, 2),
+                    'query': query[:200]
+                },
+                exc_info=True
+            )
             raise
+        finally:
+            # Always release the lock if we acquired it
+            if is_write and self._owns_lock:
+                self._owns_lock = False
+                _DB_LOCK.release()
 
     def fetch_one(
         self,
@@ -144,11 +350,30 @@ class DatabaseHandler:
         params: Optional[Union[Sequence[Any], Mapping[str, Any], Any]] = None,
     ) -> Optional[dict[str, Any]]:
         prepared = self._prepare_params(params)
+        start_time = time.time()
+        
         if prepared is None:
             self.cursor.execute(query)
         else:
             self.cursor.execute(query, prepared)
         row = self.cursor.fetchone()
+        
+        # Calculate query duration
+        duration_ms = (time.time() - start_time) * 1000
+        
+        # Log slow queries
+        if duration_ms > 100:
+            logger.warning(
+                f"Slow query detected (fetch_one)",
+                extra={
+                    'duration_ms': round(duration_ms, 2),
+                    'operation': 'SELECT',
+                    'query': query[:200],
+                    'params': str(prepared)[:100] if prepared else None,
+                    'result': 'found' if row else 'not found'
+                }
+            )
+        
         return dict(row) if row is not None else None
 
     def fetch_all(
@@ -157,16 +382,42 @@ class DatabaseHandler:
         params: Optional[Union[Sequence[Any], Mapping[str, Any], Any]] = None,
     ) -> list[dict[str, Any]]:
         prepared = self._prepare_params(params)
+        start_time = time.time()
+        
         if prepared is None:
             self.cursor.execute(query)
         else:
             self.cursor.execute(query, prepared)
         rows = self.cursor.fetchall()
+        
+        # Calculate query duration
+        duration_ms = (time.time() - start_time) * 1000
+        
+        # Log slow queries
+        if duration_ms > 100:
+            logger.warning(
+                f"Slow query detected (fetch_all)",
+                extra={
+                    'duration_ms': round(duration_ms, 2),
+                    'operation': 'SELECT',
+                    'query': query[:200],
+                    'params': str(prepared)[:100] if prepared else None,
+                    'row_count': len(rows)
+                }
+            )
+        
         return [dict(row) for row in rows]
 
     # -- Lifetime management -------------------------------------------------
     def close(self) -> None:
         if getattr(self, "connection", None):
+            try:
+                # Checkpoint WAL file before closing (if WAL mode is active)
+                # This helps prevent corruption on unclean shutdowns
+                self.connection.execute("PRAGMA wal_checkpoint(TRUNCATE);")
+            except sqlite3.Error:
+                # Ignore errors if not in WAL mode
+                pass
             self.connection.close()
             logger.debug("SQLite connection closed")
             self.connection = None  # type: ignore[assignment]

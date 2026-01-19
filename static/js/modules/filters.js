@@ -28,6 +28,30 @@ async function handleApiResponse(response) {
 // Debounce timer for filtering
 let filterDebounceTimer = null;
 
+/**
+ * Update the visual active state of a filter dropdown
+ * Adds 'filter-active' class when a value is selected, removes it otherwise
+ * @param {HTMLSelectElement} select - The filter dropdown element
+ */
+function updateFilterActiveState(select) {
+    if (select.value && select.value !== '') {
+        select.classList.add('filter-active');
+    } else {
+        select.classList.remove('filter-active');
+    }
+}
+
+/**
+ * Initialize active state for all filter dropdowns on page load
+ * This handles cases where filters are pre-selected (e.g., restored from previous state)
+ */
+function initializeFilterActiveStates() {
+    const filterDropdowns = document.querySelectorAll('#filters-form select.filter-dropdown');
+    filterDropdowns.forEach(select => {
+        updateFilterActiveState(select);
+    });
+}
+
 export async function filterExercises(preserveSelection = false) {
     try {
         const filters = {};
@@ -112,12 +136,8 @@ export function initializeFilters() {
                 select.id !== 'exercise' &&
                 select.id !== 'routine') {  // Also exclude routine from auto-filtering
                 
-                // Update visual feedback
-                if (select.value) {
-                    select.style.backgroundColor = '#fff';
-                } else {
-                    select.style.backgroundColor = '#e3f2fd';
-                }
+                // Update visual feedback - add/remove filter-active class
+                updateFilterActiveState(select);
                 
                 // Auto-filter with debounce
                 debouncedFilterExercises();
@@ -143,6 +163,9 @@ export function initializeFilters() {
             filterExercises();
         });
     }
+    
+    // Initialize active states for any pre-selected filters (e.g., restored from previous state)
+    initializeFilterActiveStates();
 }
 
 async function clearFilters() {
@@ -152,6 +175,8 @@ async function clearFilters() {
     // Reset each dropdown to empty/default value and trigger change event
     allSelects.forEach(select => {
         select.value = '';
+        // Remove filter-active class to reset visual state
+        select.classList.remove('filter-active');
         // Manually dispatch change event to ensure enhanced dropdowns update
         select.dispatchEvent(new Event('change', { bubbles: true }));
     });

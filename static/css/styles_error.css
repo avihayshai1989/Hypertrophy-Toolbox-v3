@@ -163,6 +163,57 @@
     margin-top: 0.5rem;
 }
 
+/* ==========================================================================
+   Required Field Validation Highlighting
+   Consistent invalid state for Routine and Exercise dropdowns
+   ========================================================================== */
+
+/* Required field invalid state - applies to form-select and enhanced dropdowns */
+.form-select.is-invalid-required,
+.wpdd.is-invalid-required .wpdd-button {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    animation: shake-invalid 0.4s ease-in-out;
+}
+
+/* Focus state for invalid fields */
+.form-select.is-invalid-required:focus,
+.wpdd.is-invalid-required .wpdd-button:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.35) !important;
+}
+
+/* Dark mode support for validation */
+[data-theme="dark"] .form-select.is-invalid-required,
+[data-theme="dark"] .wpdd.is-invalid-required .wpdd-button {
+    border-color: #f56565 !important;
+    box-shadow: 0 0 0 0.2rem rgba(245, 101, 101, 0.3) !important;
+}
+
+[data-theme="dark"] .form-select.is-invalid-required:focus,
+[data-theme="dark"] .wpdd.is-invalid-required .wpdd-button:focus {
+    border-color: #f56565 !important;
+    box-shadow: 0 0 0 0.25rem rgba(245, 101, 101, 0.4) !important;
+}
+
+/* Subtle shake animation for attention */
+@keyframes shake-invalid {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-4px); }
+    40% { transform: translateX(4px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+}
+
+/* Label highlight for invalid required fields */
+.selection-field.has-validation-error label {
+    color: #dc3545 !important;
+}
+
+[data-theme="dark"] .selection-field.has-validation-error label {
+    color: #f56565 !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .error-page-content h1 {

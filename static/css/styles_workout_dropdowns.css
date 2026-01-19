@@ -133,6 +133,17 @@
     border-color: #64b5f6;
   }
   
+  /* Active Filter Indicator - Light yellow when filter has a value selected */
+  #workout[data-page="workout-plan"] .wpdd-button.wpdd-filter.filter-active {
+    background-color: #fffde7;
+    border-color: #ffd54f;
+  }
+  
+  #workout[data-page="workout-plan"] .wpdd-button.wpdd-filter.filter-active:hover:not(:disabled) {
+    background-color: #fff8e1;
+    border-color: #ffca28;
+  }
+  
   /* Routine dropdown - light beige/cream */
   #workout[data-page="workout-plan"] .wpdd-button.wpdd-routine {
     background-color: #fdf5e6;
@@ -166,6 +177,19 @@
     border-color: rgba(100, 181, 246, 0.6);
   }
   
+  /* Dark mode Active Filter Indicator - warm highlight */
+  [data-theme='dark'] #workout[data-page="workout-plan"] .wpdd-button.wpdd-filter.filter-active {
+    background-color: #3d3527;
+    border-color: #b8860b;
+    color: #ffd54f;
+  }
+  
+  [data-theme='dark'] #workout[data-page="workout-plan"] .wpdd-button.wpdd-filter.filter-active:hover:not(:disabled) {
+    background-color: #4a4030;
+    border-color: #daa520;
+    color: #ffe082;
+  }
+
   [data-theme='dark'] #workout[data-page="workout-plan"] .wpdd-button.wpdd-routine {
     background-color: rgba(255, 193, 7, 0.1);
     border-color: rgba(255, 193, 7, 0.3);

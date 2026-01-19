@@ -3,7 +3,8 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;  /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    /* Prevent horizontal scroll */
     overflow-y: auto;
 }
 
@@ -26,11 +27,14 @@ body:not(:has(#navbar)) .navbar,
     margin-left: auto;
     margin-right: auto;
     padding: 1rem;
-    padding-top: 45px;  /* Space for navbar */
+    padding-top: 45px;
+    /* Space for navbar */
     position: relative;
     z-index: 1;
-    overflow-y: auto;
-    box-sizing: border-box;  /* Include padding in width calculation */
+    /* Important: avoid nested vertical scrolling (body should be the only scroll container) */
+    overflow-y: visible;
+    box-sizing: border-box;
+    /* Include padding in width calculation */
 }
 
 /* Page Header - Adjust spacing */
@@ -41,7 +45,8 @@ body:not(:has(#navbar)) .navbar,
     margin-top: 0;
     position: relative;
     z-index: 1;
-    width: 100%;  /* Match container width */
+    width: 100%;
+    /* Match container width */
 }
 
 /* Ensure content stays within boundaries */
@@ -86,7 +91,7 @@ body:not(:has(#navbar)) .navbar,
     padding: 1.5rem;
     background: #ffffff;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
 }
 
@@ -98,11 +103,11 @@ body:not(:has(#navbar)) .navbar,
 }
 
 /* Ensure consistent spacing between frames */
-.unified-frames-container + .unified-frames-container {
+.unified-frames-container+.unified-frames-container {
     margin-top: 2rem;
 }
 
 /* Add margin to content below navbar */
 .mt-4 {
     margin-top: 0.5rem !important;
-} 
+}

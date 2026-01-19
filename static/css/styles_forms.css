@@ -480,4 +480,135 @@ input[placeholder="Max Rep"] {
     font-size: 0.8rem;
     white-space: nowrap;
     z-index: 1000;
+}
+
+/* ================================================
+   WORKOUT CONTROLS - COLOR-CODED BACKGROUNDS
+   ================================================ */
+
+/* Light Pastel Fuchsia - Min Rep & Max Rep */
+.input-fields-group input#min_rep,
+.input-fields-group input#max_rep_range,
+input.form-control#min_rep,
+input.form-control#max_rep_range {
+    background-color: #fce4ec !important; /* Light pastel fuchsia/pink */
+    border-color: #f8bbd9 !important;
+}
+
+.input-fields-group input#min_rep:focus,
+.input-fields-group input#max_rep_range:focus,
+input.form-control#min_rep:focus,
+input.form-control#max_rep_range:focus {
+    background-color: #fce4ec !important;
+    border-color: #ec407a !important;
+    box-shadow: 0 0 0 0.2rem rgba(236, 64, 122, 0.25) !important;
+}
+
+/* Light Pastel Pistachio/Green - RIR & RPE */
+.input-fields-group input#rir,
+.input-fields-group input#rpe,
+input.form-control#rir,
+input.form-control#rpe {
+    background-color: #e8f5e9 !important; /* Light pastel pistachio */
+    border-color: #c8e6c9 !important;
+}
+
+.input-fields-group input#rir:focus,
+.input-fields-group input#rpe:focus,
+input.form-control#rir:focus,
+input.form-control#rpe:focus {
+    background-color: #e8f5e9 !important;
+    border-color: #66bb6a !important;
+    box-shadow: 0 0 0 0.2rem rgba(102, 187, 106, 0.25) !important;
+}
+
+/* Light Pastel Banana/Yellow - Weight & Sets */
+.input-fields-group input#weight,
+.input-fields-group input#sets,
+input.form-control#weight,
+input.form-control#sets {
+    background-color: #fff9c4 !important; /* Light pastel banana */
+    border-color: #fff176 !important;
+}
+
+.input-fields-group input#weight:focus,
+.input-fields-group input#sets:focus,
+input.form-control#weight:focus,
+input.form-control#sets:focus {
+    background-color: #fff9c4 !important;
+    border-color: #fdd835 !important;
+    box-shadow: 0 0 0 0.2rem rgba(253, 216, 53, 0.25) !important;
+}
+
+/* ================================================
+   VALUE CHANGED ANIMATION & HIGHLIGHT
+   ================================================ */
+
+/* Keyframe for pulse animation */
+@keyframes inputValuePulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.03);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Value changed highlight class */
+.value-changed {
+    animation: inputValuePulse 300ms ease-in-out;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.5), 0 0 8px rgba(13, 110, 253, 0.3) !important;
+    border-color: #0d6efd !important;
+}
+
+/* Category-specific highlight colors */
+.input-fields-group input#min_rep.value-changed,
+.input-fields-group input#max_rep_range.value-changed,
+input.form-control#min_rep.value-changed,
+input.form-control#max_rep_range.value-changed {
+    box-shadow: 0 0 0 3px rgba(236, 64, 122, 0.5), 0 0 8px rgba(236, 64, 122, 0.3) !important;
+    border-color: #ec407a !important;
+}
+
+.input-fields-group input#rir.value-changed,
+.input-fields-group input#rpe.value-changed,
+input.form-control#rir.value-changed,
+input.form-control#rpe.value-changed {
+    box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.5), 0 0 8px rgba(102, 187, 106, 0.3) !important;
+    border-color: #66bb6a !important;
+}
+
+.input-fields-group input#weight.value-changed,
+.input-fields-group input#sets.value-changed,
+input.form-control#weight.value-changed,
+input.form-control#sets.value-changed {
+    box-shadow: 0 0 0 3px rgba(253, 216, 53, 0.5), 0 0 8px rgba(253, 216, 53, 0.3) !important;
+    border-color: #fdd835 !important;
+}
+
+/* Reduced motion: disable animation, keep minimal border change */
+@media (prefers-reduced-motion: reduce) {
+    .value-changed {
+        animation: none;
+        box-shadow: none !important;
+        border-width: 2px !important;
+    }
+    
+    .input-fields-group input#min_rep.value-changed,
+    .input-fields-group input#max_rep_range.value-changed {
+        border-color: #ec407a !important;
+    }
+    
+    .input-fields-group input#rir.value-changed,
+    .input-fields-group input#rpe.value-changed {
+        border-color: #66bb6a !important;
+    }
+    
+    .input-fields-group input#weight.value-changed,
+    .input-fields-group input#sets.value-changed {
+        border-color: #fdd835 !important;
+    }
 } 

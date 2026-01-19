@@ -84,8 +84,31 @@ def setup_logging(app=None):
         @app.after_request
         def log_response_info(response):
             from flask import request, g
+            import time
+            
             request_id = getattr(g, 'request_id', 'N/A')
-            logger.info(f"Response: {response.status_code} for {request.method} {request.path}")
+            
+            # Calculate request duration if start_time exists
+            if hasattr(g, 'start_time'):
+                duration_ms = (time.time() - g.start_time) * 1000
+                duration_str = f" (duration: {round(duration_ms, 2)}ms)"
+                
+                # Log slow requests as WARNING
+                if duration_ms > 1000:
+                    logger.warning(
+                        f"Slow request detected: {request.method} {request.path}",
+                        extra={
+                            'duration_ms': round(duration_ms, 2),
+                            'status_code': response.status_code,
+                            'endpoint': request.endpoint,
+                            'method': request.method,
+                            'path': request.path
+                        }
+                    )
+            else:
+                duration_str = ""
+            
+            logger.info(f"Response: {response.status_code} for {request.method} {request.path}{duration_str}")
             return response
     
     return logger

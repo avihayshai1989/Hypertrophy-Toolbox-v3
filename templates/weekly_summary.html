@@ -56,53 +56,62 @@
         <!-- Tables in frame -->
         <div class="summary-tables">
             <!-- Weekly Summary Table -->
+            <!-- AGENT:START B-3 PRIORITY-CLASSES -->
             <div class="summary-section">
                 <div id="weekly-summary-container" class="table-container">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Muscle Group</th>
-                                <th>Total Sets</th>
-                                <th>Total Reps</th>
-                                <th>Total Volume</th>
-                                <th>Volume Classification</th>
-                            </tr>
-                        </thead>
-                        <tbody id="weekly-summary-table">
-                            <!-- Will be populated dynamically -->
-                        </tbody>
-                    </table>
+                    <div class="tbl-wrap tbl-wrap--full" role="region" aria-label="Weekly summary table">
+                        <table class="table table-striped tbl tbl--responsive" 
+                               role="table" 
+                               aria-label="Weekly muscle group summary"
+                               data-table-responsive="weekly_summary">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="col--high" data-label="Muscle Group">Muscle Group</th>
+                                    <th scope="col" class="col--high is-num" data-label="Total Sets">Total Sets</th>
+                                    <th scope="col" class="col--med is-num" data-label="Total Reps">Total Reps</th>
+                                    <th scope="col" class="col--med is-num" data-label="Total Volume">Total Volume</th>
+                                    <th scope="col" class="col--high" data-label="Volume Classification">Volume Classification</th>
+                                </tr>
+                            </thead>
+                            <tbody id="weekly-summary-table">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <!-- Exercise Categories Summary -->
             <div class="summary-section">
                 <h3 class="text-center mb-4">Exercise Categories Summary</h3>
-                <div class="table-responsive">
-                    <table class="table table-striped">
+                <div class="tbl-wrap tbl-wrap--full" role="region" aria-label="Exercise categories table">
+                    <table class="table table-striped tbl tbl--responsive" 
+                           role="table" 
+                           aria-label="Exercise categories"
+                           data-table-responsive="weekly_categories">
                         <thead>
                             <tr>
-                                <th>Category</th>
-                                <th>Subcategory</th>
-                                <th>Total Exercises</th>
+                                <th scope="col" class="col--high" data-label="Category">Category</th>
+                                <th scope="col" class="col--high" data-label="Subcategory">Subcategory</th>
+                                <th scope="col" class="col--high is-num" data-label="Total Exercises">Total Exercises</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for category in categories %}
                             <tr>
-                                <td>
+                                <td data-label="Category">
                                     <span data-bs-toggle="tooltip" 
                                           title="{{ get_category_tooltip(category.category) }}">
                                         {{ category.category }}
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Subcategory">
                                     <span data-bs-toggle="tooltip" 
                                           title="{{ get_subcategory_tooltip(category.category, category.subcategory) }}">
                                         {{ category.subcategory }}
                                     </span>
                                 </td>
-                                <td>{{ category.total_exercises }}</td>
+                                <td data-label="Total Exercises">{{ category.total_exercises }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -113,27 +122,30 @@
             <!-- Advanced Isolated Muscles Statistics -->
             <div class="summary-section">
                 <h3 class="text-center mb-4">Advanced Isolated Muscles Statistics</h3>
-                <div class="table-responsive">
-                    <table class="table table-striped">
+                <div class="tbl-wrap tbl-wrap--full" role="region" aria-label="Isolated muscles statistics table">
+                    <table class="table table-striped tbl tbl--responsive" 
+                           role="table" 
+                           aria-label="Isolated muscles statistics"
+                           data-table-responsive="weekly_isolated">
                         <thead>
                             <tr>
-                                <th>Isolated Muscle</th>
-                                <th>Exercise Count</th>
-                                <th>Total Sets</th>
-                                <th>Total Reps</th>
-                                <th>Total Volume</th>
-                                <th>Volume Classification</th>
+                                <th scope="col" class="col--high" data-label="Isolated Muscle">Isolated Muscle</th>
+                                <th scope="col" class="col--med is-num" data-label="Exercise Count">Exercise Count</th>
+                                <th scope="col" class="col--high is-num" data-label="Total Sets">Total Sets</th>
+                                <th scope="col" class="col--med is-num" data-label="Total Reps">Total Reps</th>
+                                <th scope="col" class="col--med is-num" data-label="Total Volume">Total Volume</th>
+                                <th scope="col" class="col--high" data-label="Volume Classification">Volume Classification</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for muscle in isolated_muscles %}
                             <tr>
-                                <td>{{ muscle.isolated_muscle }}</td>
-                                <td>{{ muscle.exercise_count }}</td>
-                                <td>{{ muscle.total_sets }}</td>
-                                <td>{{ muscle.total_reps }}</td>
-                                <td>{{ muscle.total_volume }}</td>
-                                <td>
+                                <td data-label="Isolated Muscle">{{ muscle.isolated_muscle }}</td>
+                                <td data-label="Exercise Count">{{ muscle.exercise_count }}</td>
+                                <td data-label="Total Sets">{{ muscle.total_sets }}</td>
+                                <td data-label="Total Reps">{{ muscle.total_reps }}</td>
+                                <td data-label="Total Volume">{{ muscle.total_volume }}</td>
+                                <td data-label="Volume Classification">
                                     <div class="volume-classification" 
                                          data-bs-toggle="tooltip"
                                          title="{{ get_volume_tooltip(get_volume_label(muscle.total_sets), muscle.total_sets) }}">
@@ -148,6 +160,7 @@
                     </table>
                 </div>
             </div>
+            <!-- AGENT:END B-3 PRIORITY-CLASSES -->
         </div>
 
         <!-- Volume Formula Explanation -->

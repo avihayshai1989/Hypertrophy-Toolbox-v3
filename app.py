@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, jsonify, request, make_response
+from flask import Flask, render_template, url_for, jsonify, request, make_response, g
 from utils import initialize_database
 from utils.database import DatabaseHandler, add_progression_goals_table, add_volume_tracking_tables
 from routes.workout_log import workout_log_bp
@@ -15,6 +15,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from utils.logger import setup_logging
 from utils.errors import error_response, register_error_handlers, is_xhr_request
 from utils.request_id import add_request_id_middleware
+import time
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False  # This makes Flask handle URLs with or without trailing slashes
@@ -80,6 +81,11 @@ def clear_trailing():
     if rp != '/' and rp.endswith('/'):
         return redirect(rp[:-1])
 
+@app.before_request
+def start_timer():
+    """Store request start time for performance logging."""
+    g.start_time = time.time()
+
 # Test routes removed - no longer needed
 
 @app.route('/erase-data', methods=['POST'])
@@ -98,9 +104,10 @@ def erase_data():
             for table in tables:
                 db.execute_query(f"DROP TABLE IF EXISTS {table}")
         
-        # Reinitialize database
+        # Reinitialize database - force=True to bypass the initialization guard
+        # since we just dropped the tables
         logger.info("Reinitializing database...")
-        initialize_database()
+        initialize_database(force=True)
         logger.info("Adding progression goals table...")
         add_progression_goals_table()
         logger.info("Adding volume tracking tables...")
@@ -171,4 +178,37 @@ def handle_exception(e):
     return response
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    import atexit
+    import signal
+    import os
+    
+    # Register cleanup on graceful shutdown
+    def cleanup_on_exit():
+        """Cleanup resources on application exit."""
+        try:
+            # Checkpoint any open WAL files
+            with DatabaseHandler() as db:
+                db.connection.execute("PRAGMA wal_checkpoint(TRUNCATE);")
+            logger.info("Database cleanup completed on exit")
+        except Exception as e:
+            logger.warning(f"Error during cleanup: {e}")
+    
+    atexit.register(cleanup_on_exit)
+    
+    # Handle SIGTERM (Ctrl+C) gracefully
+    def signal_handler(sig, frame):
+        logger.info("Received shutdown signal, cleaning up...")
+        cleanup_on_exit()
+        import sys
+        sys.exit(0)
+    
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    
+    # Use use_reloader=False to prevent the double-process issue that causes
+    # database corruption. The auto-reloader spawns a child process that
+    # re-runs all startup code, leading to concurrent database writes.
+    # For development with auto-reload, use: flask run --reload
+    use_reloader = os.getenv('FLASK_USE_RELOADER', '0') == '1'
+    
+    app.run(debug=True, use_reloader=use_reloader)

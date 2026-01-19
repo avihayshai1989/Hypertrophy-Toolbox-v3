@@ -5,8 +5,11 @@ import re
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 
 from utils.constants import (
+    ADVANCED_SET,
+    ADV_SYNONYMS,
     DIFFICULTY,
     EQUIPMENT_SYNONYMS,
+    GROUP_LABELS_FORBIDDEN_IN_ADV,
     FORCE,
     MECHANIC,
     MUSCLE_ALIAS,
@@ -45,6 +48,17 @@ def _build_lookup(mapping: Mapping[str, str]) -> Dict[str, str]:
     return {_canonical_key(clean_token(key)): value for key, value in mapping.items()}
 
 
+def _normalize_advanced_key(value: Optional[str]) -> str:
+    token = clean_token(value)
+    if not token:
+        return ""
+    lowered = token.lower().replace("_", "-")
+    lowered = _WHITESPACE_RE.sub("-", lowered)
+    lowered = re.sub(r"[^a-z0-9-]", "-", lowered)
+    lowered = re.sub(r"-+", "-", lowered)
+    return lowered.strip("-")
+
+
 _FORCE_LOOKUP = _build_lookup(FORCE)
 _MECHANIC_LOOKUP = _build_lookup(MECHANIC)
 _UTILITY_LOOKUP = _build_lookup(UTILITY)
@@ -55,6 +69,16 @@ _MUSCLE_ALIAS_LOOKUP: Dict[str, str] = {}
 for alias, canonical in MUSCLE_ALIAS.items():
     canonical_target = _CANONICAL_MUSCLES.get(_canonical_key(canonical), canonical)
     _MUSCLE_ALIAS_LOOKUP[_canonical_key(clean_token(alias))] = canonical_target
+
+_ADVANCED_CANONICAL_LOOKUP = {
+    _normalize_advanced_key(token): token for token in ADVANCED_SET
+}
+_ADVANCED_SYNONYM_LOOKUP = {
+    _normalize_advanced_key(alias): target for alias, target in ADV_SYNONYMS.items()
+}
+_ADVANCED_FORBIDDEN = {
+    _normalize_advanced_key(token) for token in GROUP_LABELS_FORBIDDEN_IN_ADV
+}
 
 
 def _normalise_equipment_key(value: str) -> str:
@@ -67,6 +91,39 @@ def _normalise_equipment_key(value: str) -> str:
 _EQUIPMENT_LOOKUP = {
     _normalise_equipment_key(key): value for key, value in EQUIPMENT_SYNONYMS.items()
 }
+
+
+def normalize_advanced_token(value: Optional[str]) -> Optional[str]:
+    key = _normalize_advanced_key(value)
+    if not key or key in _ADVANCED_FORBIDDEN:
+        return None
+    canonical = _ADVANCED_SYNONYM_LOOKUP.get(key)
+    if canonical is None:
+        canonical = _ADVANCED_CANONICAL_LOOKUP.get(key)
+    return canonical
+
+
+def normalize_advanced_muscles(value: Optional[Any]) -> List[str]:
+    if value is None:
+        return []
+
+    raw_tokens: List[str] = []
+    if isinstance(value, str):
+        raw_tokens = split_csv(value.replace(";", ","))
+    elif isinstance(value, Iterable) and not isinstance(value, (str, bytes, bytearray)):
+        raw_tokens = [clean_token(token) for token in value]
+    else:
+        raw_tokens = split_csv(str(value).replace(";", ","))
+
+    seen: set[str] = set()
+    normalized: List[str] = []
+    for token in raw_tokens:
+        canonical = normalize_advanced_token(token)
+        if not canonical or canonical in seen:
+            continue
+        seen.add(canonical)
+        normalized.append(canonical)
+    return normalized
 
 
 def _resolve_from_lookup(value: Optional[str], lookup: Mapping[str, str]) -> Optional[str]:
@@ -163,9 +220,7 @@ def normalize_exercise_row(row: Mapping[str, Any]) -> Dict[str, Any]:
     for field in ("primary_muscle_group", "secondary_muscle_group", "tertiary_muscle_group"):
         normalised[field] = normalize_muscle(row.get(field))
 
-    iso_values = _dedupe_preserving_order(
-        filter(None, (normalize_muscle(token) for token in split_csv(row.get("advanced_isolated_muscles"))))
-    )
+    iso_values = normalize_advanced_muscles(row.get("advanced_isolated_muscles"))
     normalised["advanced_isolated_muscles"] = ", ".join(iso_values) if iso_values else None
 
     normalised["force"] = normalize_force(row.get("force"))

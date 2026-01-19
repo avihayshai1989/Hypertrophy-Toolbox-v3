@@ -196,9 +196,14 @@ export function handleExerciseSelection() {
 
     exerciseSelect.addEventListener('change', (e) => {
         const selectedExercise = e.target.value;
+        
+        // Clear validation error when user selects a valid value
         if (selectedExercise) {
+            setFieldValidationState('exercise', false);
             updateExerciseDetails(selectedExercise);
-            updateExerciseForm(selectedExercise);
+            // Note: updateExerciseForm is NOT called here to preserve user-entered
+            // workout control values (weight, sets, RIR, etc.). The controls are
+            // only reset after clicking "Add Exercise" in sendExerciseData().
         }
     });
 }
@@ -211,6 +216,12 @@ export function handleRoutineSelection() {
     routineSelect.addEventListener('change', async (e) => {
         try {
             const selectedRoutine = e.target.value;
+            
+            // Clear validation error when user selects a valid routine
+            if (selectedRoutine) {
+                setFieldValidationState('routine', false);
+            }
+            
             if (!selectedRoutine) {
                 // If routine is cleared, reapply filters (if any) or show all exercises
                 const { filterExercises } = await import('./filters.js');
@@ -313,8 +324,126 @@ export function updateWorkoutPlanUI(data) {
     }
 }
 
+/**
+ * Highlights a required field with validation error styling
+ * @param {string} fieldId - The ID of the field to highlight
+ * @param {boolean} isInvalid - Whether to add or remove the invalid state
+ */
+function setFieldValidationState(fieldId, isInvalid) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    
+    // Find the parent container for label highlighting
+    const container = field.closest('.selection-field') || field.closest('.col-lg-6') || field.closest('.col-12');
+    
+    // Check if there's an enhanced dropdown wrapper
+    const wpddContainer = field.closest('.wpdd');
+    
+    if (isInvalid) {
+        // Add invalid class to the native select (for non-enhanced state)
+        field.classList.add('is-invalid-required');
+        
+        // Add invalid class to enhanced dropdown container if it exists
+        if (wpddContainer) {
+            wpddContainer.classList.add('is-invalid-required');
+        }
+        
+        // Highlight the parent container/label
+        if (container) {
+            container.classList.add('has-validation-error');
+        }
+    } else {
+        // Remove invalid classes
+        field.classList.remove('is-invalid-required');
+        
+        if (wpddContainer) {
+            wpddContainer.classList.remove('is-invalid-required');
+        }
+        
+        if (container) {
+            container.classList.remove('has-validation-error');
+        }
+    }
+}
+
+/**
+ * Clears validation error highlighting from Routine and Exercise fields
+ */
+function clearRequiredFieldValidation() {
+    setFieldValidationState('routine', false);
+    setFieldValidationState('exercise', false);
+}
+
+/**
+ * Validates required selection fields (Routine and Exercise) and highlights missing ones
+ * @returns {boolean} - True if validation passes, false if fields are missing
+ */
+function validateRequiredSelections() {
+    const routineSelect = document.getElementById('routine');
+    const exerciseSelect = document.getElementById('exercise');
+    
+    const routine = routineSelect?.value;
+    const exercise = exerciseSelect?.value;
+    
+    let isValid = true;
+    let firstInvalidField = null;
+    
+    // Validate Routine (required)
+    if (!routine) {
+        setFieldValidationState('routine', true);
+        isValid = false;
+        firstInvalidField = firstInvalidField || routineSelect;
+    } else {
+        setFieldValidationState('routine', false);
+    }
+    
+    // Validate Exercise (required)
+    if (!exercise) {
+        setFieldValidationState('exercise', true);
+        isValid = false;
+        // Only focus exercise if routine is already selected
+        if (routine) {
+            firstInvalidField = firstInvalidField || exerciseSelect;
+        }
+    } else {
+        setFieldValidationState('exercise', false);
+    }
+    
+    // Focus the first invalid field (prioritize routine)
+    if (firstInvalidField) {
+        // For enhanced dropdowns, click the button to open it
+        const wpddContainer = firstInvalidField.closest('.wpdd');
+        if (wpddContainer) {
+            const wpddButton = wpddContainer.querySelector('.wpdd-button');
+            if (wpddButton) {
+                wpddButton.focus();
+            }
+        } else {
+            firstInvalidField.focus();
+        }
+    }
+    
+    return isValid;
+}
+
 export function handleAddExercise(e) {
     if (e) e.preventDefault();
+    
+    // First, validate required selection fields (Routine and Exercise) with visual feedback
+    if (!validateRequiredSelections()) {
+        // Show toast for missing required selection fields
+        const routine = document.getElementById('routine')?.value;
+        const exercise = document.getElementById('exercise')?.value;
+        
+        const missingSelections = [];
+        if (!routine) missingSelections.push('Routine');
+        if (!exercise) missingSelections.push('Exercise');
+        
+        if (missingSelections.length > 0) {
+            showToast(`Please select: ${missingSelections.join(' and ')}`, true);
+            return;
+        }
+    }
     
     // Get all required form values
     const exercise = document.getElementById('exercise')?.value;
@@ -470,8 +599,14 @@ export function updateWorkoutPlanTable(exercises) {
 
     tbody.innerHTML = '';
 
-    // Sort exercises by order
-    exercises.sort((a, b) => (a.exercise_order || 0) - (b.exercise_order || 0));
+    // Sort exercises by order (null/0 values should come before numbered ones to maintain legacy order,
+    // then by exercise_order ascending for properly ordered items)
+    exercises.sort((a, b) => {
+        const orderA = a.exercise_order || 0;
+        const orderB = b.exercise_order || 0;
+        // Both have order values - sort ascending
+        return orderA - orderB;
+    });
 
     exercises.forEach(exercise => {
         const row = document.createElement('tr');

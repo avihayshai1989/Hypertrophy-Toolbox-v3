@@ -91,7 +91,13 @@ def export_to_excel():
     memory efficiency and performance on large datasets.
     """
     try:
-        logger.info("Starting Excel export")
+        logger.info(
+            "Starting Excel export",
+            extra={
+                'export_type': 'excel',
+                'format': 'workout_data'
+            }
+        )
         sheets_data = {}
         
         with DatabaseHandler() as db:
@@ -266,7 +272,19 @@ def export_to_excel():
                 logger.error("Response data is empty!")
                 raise ValueError("Generated Excel file is empty")
             
-            logger.info(f"Excel export completed successfully: {filename}")
+            # Calculate total rows across all sheets
+            total_rows = sum(len(data) for data in sheets_data.values())
+            
+            logger.info(
+                "Excel export completed successfully",
+                extra={
+                    'export_type': 'excel',
+                    'filename': filename,
+                    'sheet_count': len(sheets_data),
+                    'total_rows': total_rows,
+                    'sheets': list(sheets_data.keys())
+                }
+            )
             return response
         except Exception as create_error:
             logger.exception(f"Error in create_excel_workbook: {create_error}")

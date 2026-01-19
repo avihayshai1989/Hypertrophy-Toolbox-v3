@@ -347,4 +347,99 @@ body,
 [data-theme="dark"] .table.table-hover tr,
 [data-theme="dark"] .table.table-hover td {
     background-image: none !important;
+}
+
+/* ================================================
+   DARK MODE - WORKOUT CONTROLS COLOR-CODED BACKGROUNDS
+   ================================================ */
+
+/* Light Pastel Fuchsia (dark mode adjusted) - Min Rep & Max Rep */
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#min_rep,
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#max_rep_range {
+    background: linear-gradient(135deg, rgba(236, 64, 122, 0.2) 0%, rgba(236, 64, 122, 0.1) 100%) !important;
+    border-color: rgba(236, 64, 122, 0.5) !important;
+    color: #e9ecef !important;
+}
+
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#min_rep:hover:not(:disabled),
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#max_rep_range:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(236, 64, 122, 0.25) 0%, rgba(236, 64, 122, 0.15) 100%) !important;
+    border-color: #ec407a !important;
+}
+
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#min_rep:focus,
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#max_rep_range:focus {
+    background: rgba(236, 64, 122, 0.2) !important;
+    border-color: #f06292 !important;
+    box-shadow: 0 0 0 4px rgba(236, 64, 122, 0.3), 0 4px 12px rgba(236, 64, 122, 0.25) !important;
+}
+
+/* Light Pastel Pistachio (dark mode adjusted) - RIR & RPE */
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#rir,
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#rpe {
+    background: linear-gradient(135deg, rgba(102, 187, 106, 0.2) 0%, rgba(102, 187, 106, 0.1) 100%) !important;
+    border-color: rgba(102, 187, 106, 0.5) !important;
+    color: #e9ecef !important;
+}
+
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#rir:hover:not(:disabled),
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#rpe:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(102, 187, 106, 0.25) 0%, rgba(102, 187, 106, 0.15) 100%) !important;
+    border-color: #66bb6a !important;
+}
+
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#rir:focus,
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#rpe:focus {
+    background: rgba(102, 187, 106, 0.2) !important;
+    border-color: #81c784 !important;
+    box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.3), 0 4px 12px rgba(102, 187, 106, 0.25) !important;
+}
+
+/* Light Pastel Banana/Yellow (dark mode adjusted) - Weight & Sets */
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#weight,
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#sets {
+    background: linear-gradient(135deg, rgba(253, 216, 53, 0.2) 0%, rgba(253, 216, 53, 0.1) 100%) !important;
+    border-color: rgba(253, 216, 53, 0.5) !important;
+    color: #e9ecef !important;
+}
+
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#weight:hover:not(:disabled),
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#sets:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(253, 216, 53, 0.25) 0%, rgba(253, 216, 53, 0.15) 100%) !important;
+    border-color: #ffee58 !important;
+}
+
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#weight:focus,
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#sets:focus {
+    background: rgba(253, 216, 53, 0.2) !important;
+    border-color: #fff176 !important;
+    box-shadow: 0 0 0 4px rgba(253, 216, 53, 0.3), 0 4px 12px rgba(253, 216, 53, 0.25) !important;
+}
+
+/* Dark mode value-changed highlight */
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#min_rep.value-changed,
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#max_rep_range.value-changed {
+    box-shadow: 0 0 0 4px rgba(236, 64, 122, 0.5), 0 0 20px rgba(236, 64, 122, 0.4) !important;
+    border-color: #f06292 !important;
+}
+
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#rir.value-changed,
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#rpe.value-changed {
+    box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.5), 0 0 20px rgba(102, 187, 106, 0.4) !important;
+    border-color: #81c784 !important;
+}
+
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#weight.value-changed,
+[data-theme="dark"] #workout[data-page="workout-plan"] .input-fields-group .input-group input#sets.value-changed {
+    box-shadow: 0 0 0 4px rgba(253, 216, 53, 0.5), 0 0 20px rgba(253, 216, 53, 0.4) !important;
+    border-color: #fff176 !important;
+}
+
+/* Dark mode reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    [data-theme="dark"] .value-changed {
+        animation: none;
+        box-shadow: none !important;
+        border-width: 2px !important;
+    }
 } 

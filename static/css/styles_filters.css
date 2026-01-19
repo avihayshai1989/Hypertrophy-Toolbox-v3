@@ -10,6 +10,18 @@
     box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25) !important;
 }
 
+/* Active Filter Indicator - Light yellow when filter has a value selected */
+.filter-dropdown.filter-active {
+    background-color: #fffde7 !important;  /* Light yellow background */
+    border-color: #ffd54f !important;      /* Amber/gold border */
+}
+
+.filter-dropdown.filter-active:focus {
+    background-color: #fff8e1 !important;  /* Slightly lighter yellow when focused */
+    border-color: #ffca28 !important;      /* Darker amber when focused */
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25) !important;
+}
+
 /* Routine dropdown should have different styling */
 .routine-dropdown {
     background-color: #fdf5e6 !important;  /* Light cream background */
@@ -121,4 +133,18 @@
     background-color: #2c3034 !important;
     border-color: #6c757d !important;
     color: #fff !important;
+}
+
+/* Dark mode Active Filter Indicator - warm highlight */
+[data-theme='dark'] .filter-dropdown.filter-active {
+    background-color: #3d3527 !important;  /* Dark warm/amber background */
+    border-color: #b8860b !important;      /* Dark goldenrod border */
+    color: #ffd54f !important;             /* Amber text for visibility */
+}
+
+[data-theme='dark'] .filter-dropdown.filter-active:focus {
+    background-color: #4a4030 !important;  /* Slightly lighter when focused */
+    border-color: #daa520 !important;      /* Goldenrod border */
+    box-shadow: 0 0 0 0.2rem rgba(218, 165, 32, 0.35) !important;
+    color: #ffe082 !important;
 } 

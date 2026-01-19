@@ -77,7 +77,16 @@ def error_response(code: str, message: str, status_code: int = 400, **kwargs) ->
     Returns:
         Tuple of (response, status_code)
     """
+    from utils.logger import get_logger
+    logger = get_logger()
+    
     request_id = get_request_id()
+    
+    # Add request context to error
+    endpoint = request.endpoint if request else None
+    method = request.method if request else None
+    path = request.path if request else None
+    user_agent = request.headers.get('User-Agent', '')[:50] if request else None  # Truncate to 50 chars
     
     error_data = {
         "ok": False,
@@ -90,6 +99,20 @@ def error_response(code: str, message: str, status_code: int = 400, **kwargs) ->
             **kwargs
         }
     }
+    
+    # Log error with full context
+    logger.error(
+        f"API error: {code} - {message}",
+        extra={
+            'error_code': code,
+            'status_code': status_code,
+            'endpoint': endpoint,
+            'method': method,
+            'path': path,
+            'user_agent': user_agent,
+            'request_id': request_id
+        }
+    )
     
     return jsonify(error_data), status_code
 
@@ -165,8 +188,25 @@ def register_error_handlers(app):
     @app.errorhandler(500)
     def internal_error(e):
         """Handle 500 Internal Server errors."""
-        # Log the error
-        app.logger.exception(f"Internal server error: {e}")
+        # Get request context for logging
+        request_id = get_request_id()
+        endpoint = request.endpoint if request else None
+        method = request.method if request else None
+        path = request.path if request else None
+        user_agent = request.headers.get('User-Agent', '')[:50] if request else None
+        
+        # Log the error with full context
+        app.logger.exception(
+            f"Internal server error",
+            extra={
+                'status_code': 500,
+                'endpoint': endpoint,
+                'method': method,
+                'path': path,
+                'user_agent': user_agent,
+                'request_id': request_id
+            }
+        )
         
         if is_xhr_request():
             return error_response(
@@ -188,8 +228,25 @@ def register_error_handlers(app):
         if isinstance(e, HTTPException):
             return e
         
-        # Log the unexpected error
-        app.logger.exception(f"Unexpected error: {e}")
+        # Get request context for logging
+        request_id = get_request_id()
+        endpoint = request.endpoint if request else None
+        method = request.method if request else None
+        path = request.path if request else None
+        user_agent = request.headers.get('User-Agent', '')[:50] if request else None
+        
+        # Log the unexpected error with full context
+        app.logger.exception(
+            f"Unexpected error: {type(e).__name__}",
+            extra={
+                'error_type': type(e).__name__,
+                'endpoint': endpoint,
+                'method': method,
+                'path': path,
+                'user_agent': user_agent,
+                'request_id': request_id
+            }
+        )
         
         if is_xhr_request():
             return error_response(

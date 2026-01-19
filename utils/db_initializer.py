@@ -3,9 +3,10 @@ from __future__ import annotations
 
 import os
 import sqlite3
+import threading
 from pathlib import Path
 
-from utils.database import DatabaseHandler
+from utils.database import DatabaseHandler, _DB_LOCK
 from utils.logger import get_logger
 from utils.normalization import normalize_equipment, normalize_muscle
 
@@ -14,6 +15,10 @@ logger = get_logger()
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SEED_DB_PATH = REPO_ROOT / "data" / "Database_backup" / "database.db"
 MIN_EXERCISE_ROWS = 100
+
+# Guard against double initialization during Flask auto-reload
+_INITIALIZATION_LOCK = threading.Lock()
+_INITIALIZATION_COMPLETE = False
 
 
 def _initialize_exercises_table(db: DatabaseHandler) -> None:
@@ -357,13 +362,38 @@ def _normalize_muscle_group_values(db: DatabaseHandler) -> None:
             )
 
 
-def initialize_database() -> None:
-    """Initialise all required tables and supporting indexes."""
-    with DatabaseHandler() as db:
-        _initialize_exercises_table(db)
-        _initialize_isolated_muscles_table(db)
-        _initialize_user_selection_table(db)
-        _initialize_workout_log_table(db)
-        _seed_exercises_from_backup_if_needed(db)
-        _normalize_equipment_values(db)
-        _normalize_muscle_group_values(db)
+def initialize_database(force: bool = False) -> None:
+    """Initialise all required tables and supporting indexes.
+    
+    Thread-safe: Uses locking to prevent concurrent initialization
+    which can cause database corruption during Flask auto-reload.
+    
+    Args:
+        force: If True, skip the initialization guard (useful for tests)
+    """
+    global _INITIALIZATION_COMPLETE
+    
+    # Quick check without lock (optimization)
+    if _INITIALIZATION_COMPLETE and not force and os.getenv("TESTING") != "1":
+        logger.debug("Database already initialized, skipping")
+        return
+    
+    with _INITIALIZATION_LOCK:
+        # Double-check after acquiring lock
+        if _INITIALIZATION_COMPLETE and not force and os.getenv("TESTING") != "1":
+            logger.debug("Database already initialized (verified under lock), skipping")
+            return
+        
+        logger.info("Starting database initialization...")
+        
+        with DatabaseHandler() as db:
+            _initialize_exercises_table(db)
+            _initialize_isolated_muscles_table(db)
+            _initialize_user_selection_table(db)
+            _initialize_workout_log_table(db)
+            _seed_exercises_from_backup_if_needed(db)
+            _normalize_equipment_values(db)
+            _normalize_muscle_group_values(db)
+        
+        _INITIALIZATION_COMPLETE = True
+        logger.info("Database initialization complete")

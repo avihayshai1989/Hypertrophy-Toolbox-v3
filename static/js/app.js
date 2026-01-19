@@ -27,6 +27,7 @@ import { initializeNavbarEnhancements } from './modules/navbar-enhancements.js';
 import { initializeProgressionPlan } from './modules/progression-plan.js';
 import { initializeVolumeSplitter } from './modules/volume-splitter.js';
 import { initializeWorkoutDropdowns } from './modules/workout-dropdowns.js';
+import { initializeWorkoutControlsAnimation } from './modules/workout-controls-animation.js';
 
 const APP_DEBUG = false;
 const appDebugLog = (...args) => {
@@ -99,6 +100,7 @@ function initializeWorkoutPlan() {
     initializeSearchFilter();
     handleRoutineSelection();
     initializeWorkoutPlanHandlers();
+    initializeWorkoutControlsAnimation();
     // fetchWorkoutPlan is already called inside initializeWorkoutPlanHandlers
     return {
         cleanup: () => {

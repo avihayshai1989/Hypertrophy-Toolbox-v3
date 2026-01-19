@@ -104,12 +104,25 @@ def filter_exercises():
                     return error_response("VALIDATION_ERROR", f"Invalid filter column: {key}", 400)
 
         logger.debug(f"Sanitized filters: {sanitized_filters}")
+        
+        # Apply filters and get results
         exercise_names = FilterPredicates.get_exercises(filters=sanitized_filters)
-        logger.debug(f"Found {len(exercise_names)} matching exercises")
+        
+        logger.info(
+            "Exercises filtered",
+            extra={
+                'filter_count': len(sanitized_filters),
+                'filter_fields': list(sanitized_filters.keys()),
+                'result_count': len(exercise_names)
+            }
+        )
 
         return jsonify(success_response(data=exercise_names))
     except Exception as e:
-        logger.exception("Error in filter_exercises")
+        logger.exception(
+            "Error filtering exercises",
+            extra={'filter_count': len(filters) if filters else 0}
+        )
         return error_response("INTERNAL_ERROR", "Failed to filter exercises", 500)
 
 @filters_bp.route("/get_all_exercises")

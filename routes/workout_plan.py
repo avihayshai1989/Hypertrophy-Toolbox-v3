@@ -107,6 +107,19 @@ def add_exercise():
         if not data:
             return error_response("VALIDATION_ERROR", "No data provided", 400)
         
+        # Log request with context
+        logger.info(
+            "Adding exercise to workout plan",
+            extra={
+                'routine': data.get('routine'),
+                'exercise': data.get('exercise'),
+                'sets': data.get('sets'),
+                'min_rep': data.get('min_rep_range'),
+                'max_rep': data.get('max_rep_range'),
+                'weight': data.get('weight')
+            }
+        )
+        
         result = add_exercise_to_db(
             routine=data.get('routine'),
             exercise=data.get('exercise'),
@@ -119,11 +132,32 @@ def add_exercise():
         )
         
         if result and "Error" in result:
+            logger.warning(
+                "Failed to add exercise",
+                extra={
+                    'routine': data.get('routine'),
+                    'exercise': data.get('exercise'),
+                    'error': result
+                }
+            )
             return error_response("VALIDATION_ERROR", result, 400)
         
+        logger.info(
+            "Exercise added successfully",
+            extra={
+                'routine': data.get('routine'),
+                'exercise': data.get('exercise')
+            }
+        )
         return jsonify(success_response(message="Exercise added successfully"))
     except Exception as e:
-        logger.exception("Error adding exercise")
+        logger.exception(
+            "Error adding exercise",
+            extra={
+                'routine': data.get('routine', 'unknown'),
+                'exercise': data.get('exercise', 'unknown')
+            }
+        )
         return error_response("INTERNAL_ERROR", "Failed to add exercise", 500)
 
 @workout_plan_bp.route("/get_exercise_details/<int:exercise_id>")
@@ -154,6 +188,8 @@ def get_exercise_details(exercise_id):
 def get_workout_plan():
     """Fetch the current workout plan."""
     try:
+        logger.debug("Fetching workout plan")
+        
         # First check if exercise_order column exists
         with DatabaseHandler() as db:
             # Check if column exists using PRAGMA
@@ -189,6 +225,15 @@ def get_workout_plan():
             """
             
             results = db.fetch_all(query)
+            
+            logger.info(
+                "Workout plan fetched",
+                extra={
+                    'exercise_count': len(results),
+                    'has_exercise_order': bool(include_order)
+                }
+            )
+            
             return jsonify(success_response(data=results))
             
     except Exception as e:
@@ -209,6 +254,12 @@ def remove_exercise():
             return error_response("VALIDATION_ERROR", "Invalid exercise ID", 400)
 
         with DatabaseHandler() as db_handler:
+            # First get exercise details for logging
+            exercise_info = db_handler.fetch_one(
+                "SELECT routine, exercise FROM user_selection WHERE id = ?",
+                (int(exercise_id),)
+            )
+            
             # First delete related workout logs to avoid foreign key constraint error
             delete_logs_query = "DELETE FROM workout_log WHERE workout_plan_id = ?"
             db_handler.execute_query(delete_logs_query, (int(exercise_id),))
@@ -217,10 +268,20 @@ def remove_exercise():
             delete_exercise_query = "DELETE FROM user_selection WHERE id = ?"
             db_handler.execute_query(delete_exercise_query, (int(exercise_id),))
 
-        logger.info(f"Deleted exercise with ID = {exercise_id}")
+        logger.info(
+            "Exercise removed from workout plan",
+            extra={
+                'exercise_id': exercise_id,
+                'routine': exercise_info.get('routine') if exercise_info else 'unknown',
+                'exercise': exercise_info.get('exercise') if exercise_info else 'unknown'
+            }
+        )
         return jsonify(success_response(message="Exercise removed successfully"))
     except Exception as e:
-        logger.exception("Error in remove_exercise")
+        logger.exception(
+            "Error removing exercise",
+            extra={'exercise_id': data.get("id", 'unknown')}
+        )
         return error_response("INTERNAL_ERROR", "Unable to remove exercise", 500) 
 
 @workout_plan_bp.route("/get_routine_options")
@@ -384,6 +445,14 @@ def update_exercise():
         # Validate the input data
         if not exercise_id or not updates:
             return error_response("VALIDATION_ERROR", "Missing required data", 400)
+        
+        logger.debug(
+            "Updating exercise",
+            extra={
+                'exercise_id': exercise_id,
+                'fields_to_update': list(updates.keys())
+            }
+        )
             
         # Build the update query dynamically based on provided fields
         update_fields = []
@@ -407,11 +476,22 @@ def update_exercise():
         
         with DatabaseHandler() as db:
             db.execute_query(query, tuple(params))
+        
+        logger.info(
+            "Exercise updated successfully",
+            extra={
+                'exercise_id': exercise_id,
+                'fields_updated': list(updates.keys())
+            }
+        )
             
         return jsonify(success_response(message="Exercise updated successfully"))
         
     except Exception as e:
-        logger.exception(f"Error updating exercise {exercise_id}")
+        logger.exception(
+            "Error updating exercise",
+            extra={'exercise_id': exercise_id if 'exercise_id' in locals() else 'unknown'}
+        )
         return error_response("INTERNAL_ERROR", "Failed to update exercise", 500)
 
 def column_exists(db, table_name, column_name):
@@ -420,13 +500,49 @@ def column_exists(db, table_name, column_name):
     columns = db.fetch_all(query)
     return any(col['name'] == column_name for col in columns)
 
+def table_exists(db, table_name):
+    """Check if a table exists in the database."""
+    result = db.fetch_one(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+        (table_name,)
+    )
+    return result is not None
+
 def initialize_exercise_order():
     """Initialize or update the order column in user_selection table."""
     try:
         with DatabaseHandler() as db:
+            # First check if the table exists
+            if not table_exists(db, 'user_selection'):
+                logger.debug("user_selection table does not exist yet, skipping exercise order initialization")
+                return True
+            
             # Check if column exists using PRAGMA
             if column_exists(db, 'user_selection', 'exercise_order'):
                 logger.debug("Exercise order column already exists")
+                # Check for any NULL exercise_order values and initialize them
+                null_count = db.fetch_one(
+                    "SELECT COUNT(*) as count FROM user_selection WHERE exercise_order IS NULL"
+                )
+                if null_count and null_count.get('count', 0) > 0:
+                    logger.info(f"Found {null_count['count']} rows with NULL exercise_order, initializing...")
+                    # Get max existing order
+                    max_order = db.fetch_one(
+                        "SELECT COALESCE(MAX(exercise_order), 0) as max_order FROM user_selection"
+                    )
+                    current_order = (max_order.get('max_order', 0) or 0)
+                    
+                    # Get rows with NULL order, sorted by id (oldest first)
+                    null_rows = db.fetch_all(
+                        "SELECT id FROM user_selection WHERE exercise_order IS NULL ORDER BY id"
+                    )
+                    for row in null_rows:
+                        current_order += 1
+                        db.execute_query(
+                            "UPDATE user_selection SET exercise_order = ? WHERE id = ?",
+                            (current_order, row['id'])
+                        )
+                    logger.info(f"Initialized exercise_order for {len(null_rows)} rows")
             else:
                 logger.info("Adding exercise_order column")
                 # Add the column

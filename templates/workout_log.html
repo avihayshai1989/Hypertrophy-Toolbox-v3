@@ -15,42 +15,46 @@
     </div>
 
     <div class="workout-log-frame">
-        <div class="table-responsive">
-            <table class="table table-striped workout-log-table">
+        <!-- AGENT:START B-2 PRIORITY-CLASSES -->
+        <div class="tbl-wrap tbl-wrap--full" role="region" aria-label="Workout log table">
+            <table class="table table-striped workout-log-table tbl tbl--responsive" 
+                   role="table" 
+                   aria-label="Workout log entries"
+                   data-table-responsive="workout_log">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th class="planned-column">Routine</th>
-                        <th class="planned-column">Exercise</th>
-                        <th class="planned-column">Planned Sets</th>
-                        <th class="planned-column">Planned Min Reps</th>
-                        <th class="planned-column">Planned Max Reps</th>
-                        <th class="planned-column">Planned RIR</th>
-                        <th class="planned-column">Planned RPE</th>
-                        <th class="planned-column">Planned Weight</th>
-                        <th class="scored-column editable">Scored Min Reps</th>
-                        <th class="scored-column editable">Scored Max Reps</th>
-                        <th class="scored-column editable">Scored RIR</th>
-                        <th class="scored-column editable">Scored RPE</th>
-                        <th class="scored-column editable">Scored Weight</th>
-                        <th class="highlight-column">Last Progression</th>
-                        <th class="highlight-column">Progressive Overload</th>
-                        <th>Actions</th>
+                        <th scope="col" class="col--high" data-label="#">#</th>
+                        <th scope="col" class="col--high" data-label="Routine">Routine</th>
+                        <th scope="col" class="col--high" data-label="Exercise">Exercise</th>
+                        <th scope="col" class="col--high is-num" data-label="Planned Sets">Planned Sets</th>
+                        <th scope="col" class="col--med is-num" data-label="Planned Min Reps">Planned Min Reps</th>
+                        <th scope="col" class="col--med is-num" data-label="Planned Max Reps">Planned Max Reps</th>
+                        <th scope="col" class="col--med is-num" data-label="Planned RIR">Planned RIR</th>
+                        <th scope="col" class="col--med is-num" data-label="Planned RPE">Planned RPE</th>
+                        <th scope="col" class="col--high is-num" data-label="Planned Weight">Planned Weight</th>
+                        <th scope="col" class="col--high is-num editable" data-label="Scored Min Reps">Scored Min Reps</th>
+                        <th scope="col" class="col--high is-num editable" data-label="Scored Max Reps">Scored Max Reps</th>
+                        <th scope="col" class="col--med is-num editable" data-label="Scored RIR">Scored RIR</th>
+                        <th scope="col" class="col--med is-num editable" data-label="Scored RPE">Scored RPE</th>
+                        <th scope="col" class="col--high is-num editable" data-label="Scored Weight">Scored Weight</th>
+                        <th scope="col" class="col--med" data-label="Last Progression">Last Progression</th>
+                        <th scope="col" class="col--high" data-label="Progressive Overload">Progressive Overload</th>
+                        <th scope="col" class="col--high" data-label="Actions">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for log in workout_logs %}
                     <tr data-log-id="{{ log.id }}">
-                        <td>{{ loop.index }}</td>
-                        <td class="planned-column">{{ log.routine }}</td>
-                        <td class="planned-column">{{ log.exercise }}</td>
-                        <td class="planned-column">{{ log.planned_sets }}</td>
-                        <td class="planned-column" data-field="planned_min_reps">{{ log.planned_min_reps }}</td>
-                        <td class="planned-column" data-field="planned_max_reps">{{ log.planned_max_reps }}</td>
-                        <td class="planned-column" data-field="planned_rir">{{ log.planned_rir }}</td>
-                        <td class="planned-column" data-field="planned_rpe">{{ log.planned_rpe }}</td>
-                        <td class="planned-column" data-field="planned_weight">{{ log.planned_weight }}</td>
-                        <td class="scored-column editable" data-field="scored_min_reps">
+                        <td data-label="#">{{ loop.index }}</td>
+                        <td data-label="Routine">{{ log.routine }}</td>
+                        <td data-label="Exercise">{{ log.exercise }}</td>
+                        <td data-label="Planned Sets">{{ log.planned_sets }}</td>
+                        <td data-label="Planned Min Reps" data-field="planned_min_reps">{{ log.planned_min_reps }}</td>
+                        <td data-label="Planned Max Reps" data-field="planned_max_reps">{{ log.planned_max_reps }}</td>
+                        <td data-label="Planned RIR" data-field="planned_rir">{{ log.planned_rir }}</td>
+                        <td data-label="Planned RPE" data-field="planned_rpe">{{ log.planned_rpe }}</td>
+                        <td data-label="Planned Weight" data-field="planned_weight">{{ log.planned_weight }}</td>
+                        <td data-label="Scored Min Reps" class="editable" data-field="scored_min_reps">
                             <input type="number" 
                                    class="editable-input number-input" 
                                    value="{{ log.scored_min_reps if log.scored_min_reps and log.scored_min_reps != 'None' else '' }}"
@@ -58,7 +62,7 @@
                                    style="display: none;">
                             <span class="editable-text">{{ log.scored_min_reps or 'Click to set' }}</span>
                         </td>
-                        <td class="scored-column editable" data-field="scored_max_reps">
+                        <td data-label="Scored Max Reps" class="editable" data-field="scored_max_reps">
                             <input type="number" 
                                    class="editable-input number-input" 
                                    value="{{ log.scored_max_reps if log.scored_max_reps and log.scored_max_reps != 'None' else '' }}"
@@ -66,7 +70,7 @@
                                    style="display: none;">
                             <span class="editable-text">{{ log.scored_max_reps or 'Click to set' }}</span>
                         </td>
-                        <td class="scored-column editable" data-field="scored_rir">
+                        <td data-label="Scored RIR" class="editable" data-field="scored_rir">
                             <input type="number" 
                                    class="editable-input number-input" 
                                    value="{{ log.scored_rir if log.scored_rir and log.scored_rir != 'None' else '' }}"
@@ -74,7 +78,7 @@
                                    style="display: none;">
                             <span class="editable-text">{{ log.scored_rir or 'Click to set' }}</span>
                         </td>
-                        <td class="scored-column editable" data-field="scored_rpe">
+                        <td data-label="Scored RPE" class="editable" data-field="scored_rpe">
                             <input type="number" 
                                    class="editable-input number-input" 
                                    value="{{ log.scored_rpe if log.scored_rpe and log.scored_rpe != 'None' else '' }}"
@@ -82,7 +86,7 @@
                                    style="display: none;">
                             <span class="editable-text">{{ log.scored_rpe or 'Click to set' }}</span>
                         </td>
-                        <td class="scored-column editable" data-field="scored_weight">
+                        <td data-label="Scored Weight" class="editable" data-field="scored_weight">
                             <input type="number" 
                                    class="editable-input number-input" 
                                    value="{{ log.scored_weight if log.scored_weight and log.scored_weight != 'None' else '' }}"
@@ -92,7 +96,7 @@
                                    style="display: none;">
                             <span class="editable-text">{{ log.scored_weight or 'Click to set' }}</span>
                         </td>
-                        <td class="highlight-column editable" data-field="last_progression_date">
+                        <td data-label="Last Progression" class="editable" data-field="last_progression_date">
                             <input type="date" 
                                    class="editable-input date-input" 
                                    value="{{ log.last_progression_date if log.last_progression_date and log.last_progression_date != 'None' else '' }}"
@@ -106,7 +110,7 @@
                                 {% endif %}
                             </span>
                         </td>
-                        <td class="highlight-column">
+                        <td data-label="Progressive Overload">
                             {% set is_progressive = 
                                 (log.scored_rir is not none and log.planned_rir is not none and log.scored_rir < log.planned_rir) or
                                 (log.scored_rpe is not none and log.planned_rpe is not none and log.scored_rpe > log.planned_rpe) or
@@ -118,7 +122,7 @@
                                 {{ 'Achieved' if is_progressive else 'Pending' }}
                             </span>
                         </td>
-                        <td>
+                        <td data-label="Actions">
                             <button class="btn btn-danger btn-sm" onclick="deleteWorkoutLog('{{ log.id }}')">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
@@ -128,6 +132,7 @@
                 </tbody>
             </table>
         </div>
+        <!-- AGENT:END B-2 PRIORITY-CLASSES -->
     </div>
 </div>
 

@@ -472,11 +472,21 @@ function enhanceSelect(select, prefersReducedMotion) {
     if (selectedOption && selectedOption.value && !selectedOption.disabled) {
       buttonText.textContent = selectedOption.textContent.trim();
       buttonText.classList.remove('wpdd-placeholder');
+      
+      // Sync filter-active class to button for filter dropdowns
+      if (button.classList.contains('wpdd-filter')) {
+        button.classList.add('filter-active');
+      }
     } else {
       // Find first non-disabled option for placeholder, or use default
       const firstOption = Array.from(select.options).find(opt => !opt.disabled);
       buttonText.textContent = firstOption?.textContent || select.options[0]?.textContent || 'Select...';
       buttonText.classList.add('wpdd-placeholder');
+      
+      // Remove filter-active class when no value selected
+      if (button.classList.contains('wpdd-filter')) {
+        button.classList.remove('filter-active');
+      }
     }
   }
   

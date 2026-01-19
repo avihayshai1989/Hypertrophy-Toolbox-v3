@@ -73,14 +73,18 @@
         <!-- Results Section -->
         <div class="results-section mb-4 d-none">
             <h3>Step 3: Volume Distribution</h3>
-            <div class="table-responsive">
-                <table class="table table-hover">
+            <!-- AGENT:START B-5 PRIORITY-CLASSES -->
+            <div class="tbl-wrap tbl-wrap--full" role="region" aria-label="Volume distribution table">
+                <table class="table table-hover tbl tbl--responsive" 
+                       role="table" 
+                       aria-label="Volume distribution results"
+                       data-table-responsive="volume_distribution">
                     <thead>
                         <tr>
-                            <th>Muscle Group</th>
-                            <th>Weekly Sets</th>
-                            <th>Sets per Session</th>
-                            <th>Status</th>
+                            <th scope="col" class="col--high" data-label="Muscle Group">Muscle Group</th>
+                            <th scope="col" class="col--high is-num" data-label="Weekly Sets">Weekly Sets</th>
+                            <th scope="col" class="col--high is-num" data-label="Sets per Session">Sets per Session</th>
+                            <th scope="col" class="col--high" data-label="Status">Status</th>
                         </tr>
                     </thead>
                     <tbody id="results-body">
@@ -104,20 +108,26 @@
         <div class="volume-history-section mb-4">
             <h3>Volume History</h3>
             <div class="history-container">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Training Days</th>
-                            <th>Total Volume</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="history-body">
-                        <!-- Populated by JavaScript -->
-                    </tbody>
-                </table>
+                <div class="tbl-wrap tbl-wrap--full" role="region" aria-label="Volume history table">
+                    <table class="table table-hover tbl tbl--responsive" 
+                           role="table" 
+                           aria-label="Volume plan history"
+                           data-table-responsive="volume_history">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="col--high" data-label="Date">Date</th>
+                                <th scope="col" class="col--high is-num" data-label="Training Days">Training Days</th>
+                                <th scope="col" class="col--high is-num" data-label="Total Volume">Total Volume</th>
+                                <th scope="col" class="col--high" data-label="Actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
+            <!-- AGENT:END B-5 PRIORITY-CLASSES -->
         </div>
     </div>
 </div>
