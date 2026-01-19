@@ -119,13 +119,13 @@ def calculate_exercise_categories() -> List[Dict[str, Any]]:
         if not exercise:
             continue
         if row.get('mechanic'):
-            categories['Mechanic'][row['mechanic']].add(exercise)
+            categories['Mechanic'][row['mechanic'].title()].add(exercise)
         if row.get('utility'):
-            categories['Utility'][row['utility']].add(exercise)
+            categories['Utility'][row['utility'].title()].add(exercise)
         if row.get('force'):
-            categories['Force'][row['force']].add(exercise)
+            categories['Force'][row['force'].title()].add(exercise)
         if row.get('difficulty'):
-            categories['Difficulty'][row['difficulty']].add(exercise)
+            categories['Difficulty'][row['difficulty'].title()].add(exercise)
 
     results: List[Dict[str, Any]] = []
     for category, sub_map in categories.items():

@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, jsonify
 from utils.weekly_summary import (
-    calculate_weekly_summary,
     calculate_exercise_categories,
     calculate_isolated_muscles_stats
 )
+from utils.business_logic import BusinessLogic
 from utils.volume_classifier import (
     get_volume_class,
     get_volume_label,
@@ -17,20 +17,18 @@ weekly_summary_bp = Blueprint('weekly_summary', __name__)
 @weekly_summary_bp.route("/weekly_summary")
 def weekly_summary():
     try:
-        summary_map = calculate_weekly_summary()
+        method = request.args.get("method", "Total")
+        business_logic = BusinessLogic()
+        rows = business_logic.calculate_weekly_summary(method)
         results = [
             {
-                'muscle_group': muscle,
-                'weekly_sets': data['weekly_sets'],
-                'sets_per_session': data['sets_per_session'],
-                'status': data['status'],
-                'volume_class': data['volume_class'],
-                'total_sets': data['weekly_sets'],
-                'total_reps': data['total_reps'],
-                'total_volume': data['total_volume'],
-                'total_weight': data['total_volume'],
+                'muscle_group': row['muscle_group'],
+                'total_sets': row['total_sets'],
+                'total_reps': row['total_reps'],
+                'total_volume': row['total_weight'],
+                'total_weight': row['total_weight'],
             }
-            for muscle, data in summary_map.items()
+            for row in rows
         ]
         category_results = calculate_exercise_categories()
         isolated_muscles_stats = calculate_isolated_muscles_stats()

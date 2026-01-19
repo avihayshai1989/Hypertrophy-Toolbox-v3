@@ -95,7 +95,7 @@
                                 <th scope="col" class="col--high is-num" data-label="Total Exercises">Total Exercises</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="categories-table-body">
                             {% for category in categories %}
                             <tr>
                                 <td data-label="Category">
@@ -240,7 +240,7 @@ function getVolumeDetails(totalSets) {
 async function updateSessionSummary() {
     const method = document.getElementById("method").value;
     const tableBody = document.getElementById("session-summary-table");
-    const categoryTableBody = document.querySelector(".table-responsive tbody");
+    const categoryTableBody = document.getElementById("categories-table-body");
 
     // Display loading spinner
     tableBody.innerHTML = `
