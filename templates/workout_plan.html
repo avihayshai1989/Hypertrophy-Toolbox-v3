@@ -283,6 +283,25 @@
                 <h2 id="workout-plan-table-heading" class="text-center">Workout Plan Table</h2>
                 <div class="table-header-underline" aria-hidden="true"></div>
             </div>
+            
+            <!-- Routine Tabs Navigation -->
+            <nav class="routine-tabs-container" aria-label="Filter workout plan by routine">
+                <ul class="routine-tabs" id="routine-tabs" role="tablist">
+                    <li class="routine-tab active" role="presentation">
+                        <button class="routine-tab-btn active" 
+                                data-routine="all" 
+                                role="tab" 
+                                aria-selected="true"
+                                aria-controls="workout_plan_table_body"
+                                id="tab-all">
+                            <span class="tab-label">All</span>
+                            <span class="tab-count" id="tab-count-all"></span>
+                        </button>
+                    </li>
+                    <!-- Dynamic routine tabs will be inserted here by JavaScript -->
+                </ul>
+            </nav>
+            
             <div class="tbl-wrap tbl-wrap--full" role="region" aria-label="Workout plan exercises table">
                 <table class="table table-striped workout-plan-table tbl tbl--responsive" 
                        role="table" 

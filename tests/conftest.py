@@ -98,13 +98,14 @@ def client(app, test_db_path):
 
 
 @pytest.fixture(scope='function')
-def db_handler(test_db_path):
+def db_handler(app, test_db_path):
     """Database handler with test DB and foreign keys enabled."""
     import utils.config
     original_db_file = utils.config.DB_FILE
     utils.config.DB_FILE = test_db_path
     
-    handler = DatabaseHandler()
+    # Pass explicit path to ensure we use test database
+    handler = DatabaseHandler(test_db_path)
     
     # Verify foreign keys are enabled
     with handler.connection:

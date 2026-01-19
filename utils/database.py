@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, Optional, Union
 
 from utils.config import DB_FILE
+import utils.config  # For dynamic DB_FILE access in tests
 from utils.logger import get_logger
 
 logger = get_logger()
@@ -170,7 +171,8 @@ def get_db_connection(database_path: Optional[str] = None) -> sqlite3.Connection
     Thread-safe: Acquires a global lock when connecting to prevent
     concurrent connection setup issues during Flask auto-reload.
     """
-    db_path = str(Path(database_path or DB_FILE))
+    # Use dynamic config lookup to support test overrides
+    db_path = str(Path(database_path or utils.config.DB_FILE))
     attempted_recovery = False
     
     with _DB_LOCK:
@@ -203,7 +205,8 @@ class DatabaseHandler:
     """
 
     def __init__(self, database_path: Optional[str] = None) -> None:
-        self.database_path = database_path or DB_FILE
+        # Use dynamic config lookup to support test overrides
+        self.database_path = database_path or utils.config.DB_FILE
         self.connection: sqlite3.Connection = get_db_connection(self.database_path)
         self.cursor: sqlite3.Cursor = self.connection.cursor()
         self._owns_lock = False

@@ -289,18 +289,19 @@ class TestExportMemorySafety:
     
     def test_export_respects_max_rows_limit(self, client, database_with_many_rows):
         """Test that exports respect MAX_EXPORT_ROWS limit."""
-        from utils.export_utils import MAX_EXPORT_ROWS
+        # database_with_many_rows fixture returns the test limit used
+        test_max_rows = database_with_many_rows
         
         response = client.get('/export_to_excel')
         
         assert response.status_code == 200
         wb = load_workbook(BytesIO(response.data))
         
-        # Check that no sheet exceeds MAX_EXPORT_ROWS
+        # Check that no sheet exceeds the test MAX_EXPORT_ROWS
         for sheet_name in wb.sheetnames:
             sheet = wb[sheet_name]
             row_count = sheet.max_row
-            assert row_count <= MAX_EXPORT_ROWS + 1  # +1 for header
+            assert row_count <= test_max_rows + 1  # +1 for header
 
 
 class TestExportErrorHandling:
@@ -443,24 +444,27 @@ def database_with_rows(client):
 
 
 @pytest.fixture
-def database_with_many_rows(client):
+def database_with_many_rows(client, monkeypatch):
     """Create database with rows exceeding MAX_EXPORT_ROWS."""
     from utils.database import DatabaseHandler
-    from utils.export_utils import MAX_EXPORT_ROWS
+    import utils.export_utils
     
-    # Create more rows than the limit
-    rows_to_create = min(MAX_EXPORT_ROWS + 1000, 100000)  # Don't create too many in tests
+    # Use a small limit for testing (100 rows)
+    TEST_MAX_ROWS = 100
+    monkeypatch.setattr(utils.export_utils, 'MAX_EXPORT_ROWS', TEST_MAX_ROWS)
+    
+    # Create more rows than the test limit using batch insert
+    rows_to_create = TEST_MAX_ROWS + 50  # 150 rows total
     
     with DatabaseHandler() as db:
-        for i in range(rows_to_create):
-            if i % 1000 == 0:  # Log progress
-                print(f"Created {i} rows...")
-            db.execute_query("""
-                INSERT INTO workout_log (routine, exercise, planned_sets, scored_weight, scored_max_reps)
-                VALUES ('A', 'Exercise', 3, 100, 10)
-            """)
+        # Use batch insert for speed
+        values = ",".join(["('A', 'Exercise', 3, 100, 10)"] * rows_to_create)
+        db.execute_query(f"""
+            INSERT INTO workout_log (routine, exercise, planned_sets, scored_weight, scored_max_reps)
+            VALUES {values}
+        """)
     
-    yield
+    yield TEST_MAX_ROWS
     
     # Cleanup
     with DatabaseHandler() as db:

@@ -16,7 +16,7 @@ def test_weighted_weekly_summary(db_handler):
             'primary_muscle_group': 'Chest',
             'secondary_muscle_group': 'Triceps',
             'tertiary_muscle_group': 'Front Shoulder',
-            'advanced_isolated_muscles': 'Deltoid; Anterior, Delts',
+            'advanced_isolated_muscles': 'anterior-deltoid, upper-pectoralis',
             'utility': 'basic',
             'grips': 'overhand',
             'stabilizers': None,
@@ -61,5 +61,5 @@ def test_weighted_weekly_summary(db_handler):
 
     isolated = calculate_isolated_muscles_stats()
     iso_map = {row['isolated_muscle']: row for row in isolated}
-    assert iso_map['Front-Shoulder']['exercise_count'] == 1
-    assert iso_map['Front-Shoulder']['total_sets'] == pytest.approx(4.0)
+    assert iso_map['anterior-deltoid']['exercise_count'] == 1
+    assert iso_map['anterior-deltoid']['total_sets'] == pytest.approx(4.0)

@@ -279,7 +279,7 @@ def export_to_excel():
                 "Excel export completed successfully",
                 extra={
                     'export_type': 'excel',
-                    'filename': filename,
+                    'export_filename': filename,
                     'sheet_count': len(sheets_data),
                     'total_rows': total_rows,
                     'sheets': list(sheets_data.keys())

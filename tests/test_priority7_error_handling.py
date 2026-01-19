@@ -3,45 +3,72 @@ Test suite for Priority 7: Error Handling, UX Feedback & Observability
 """
 import pytest
 import json
+import os
+import tempfile
 from flask import g
-from app import app
-if '__trigger_internal_error' not in app.view_functions:
 
-    @app.route('/__trigger_internal_error')
-    def __trigger_internal_error():
-        raise RuntimeError('forced test error')
+# Set TESTING before importing app to redirect database
+os.environ['TESTING'] = '1'
 
 from utils.errors import error_response, success_response, is_xhr_request
 from utils.request_id import generate_request_id, get_request_id
 
 
-@pytest.fixture
-def client():
-    """Create a test client for the app."""
+@pytest.fixture(scope='module')
+def error_app():
+    """Create test app with test database."""
+    import utils.config
+    
+    # Use temp test database
+    test_db = os.path.join(tempfile.gettempdir(), 'test_error_handling.db')
+    original_db = utils.config.DB_FILE
+    utils.config.DB_FILE = test_db
+    
+    # Now import app (will use test DB)
+    from app import app
+    
+    # Add error trigger route
+    if '__trigger_internal_error' not in app.view_functions:
+        @app.route('/__trigger_internal_error')
+        def __trigger_internal_error():
+            raise RuntimeError('forced test error')
+    
     app.config['TESTING'] = True
-    with app.test_client() as client:
+    
+    yield app
+    
+    # Cleanup
+    utils.config.DB_FILE = original_db
+    if os.path.exists(test_db):
+        os.remove(test_db)
+
+
+@pytest.fixture
+def error_client(error_app):
+    """Create a test client for the error test app."""
+    with error_app.test_client() as client:
         yield client
 
 
 class TestRequestIdMiddleware:
     """Test request ID generation and tracking."""
     
-    def test_request_id_generated(self, client):
+    def test_request_id_generated(self, error_client):
         """Test that request ID is automatically generated."""
-        response = client.get('/')
+        response = error_client.get('/')
         assert 'X-Request-ID' in response.headers
         request_id = response.headers.get('X-Request-ID')
         assert request_id.startswith('req_')
     
-    def test_request_id_from_header(self, client):
+    def test_request_id_from_header(self, error_client):
         """Test that request ID from header is preserved."""
         custom_id = 'my-custom-request-id'
-        response = client.get('/', headers={'X-Request-ID': custom_id})
+        response = error_client.get('/', headers={'X-Request-ID': custom_id})
         assert response.headers.get('X-Request-ID') == custom_id
     
-    def test_request_id_in_error_response(self, client):
+    def test_request_id_in_error_response(self, error_client):
         """Test that request ID is included in error responses."""
-        response = client.get('/nonexistent-route', 
+        response = error_client.get('/nonexistent-route', 
                             headers={'Accept': 'application/json'})
         assert response.status_code == 404
         data = json.loads(response.data)
@@ -51,9 +78,9 @@ class TestRequestIdMiddleware:
 class TestErrorHandlers:
     """Test error handlers for different HTTP status codes."""
     
-    def test_404_json_response(self, client):
+    def test_404_json_response(self, error_client):
         """Test 404 handler returns JSON for AJAX requests."""
-        response = client.get('/nonexistent', 
+        response = error_client.get('/nonexistent', 
                             headers={'Accept': 'application/json'})
         assert response.status_code == 404
         data = json.loads(response.data)
@@ -61,36 +88,36 @@ class TestErrorHandlers:
         assert data['error']['code'] == 'NOT_FOUND'
         assert 'requestId' in data['error']
     
-    def test_404_html_response(self, client):
+    def test_404_html_response(self, error_client):
         """Test 404 handler returns HTML for browser requests."""
-        response = client.get('/nonexistent')
+        response = error_client.get('/nonexistent')
         assert response.status_code == 404
         assert response.mimetype == 'text/html'
         assert b'<!DOCTYPE html>' in response.data or b'<html' in response.data
 
-    def test_500_json_response(self, client):
+    def test_500_json_response(self, error_client):
         """Test 500 handler returns JSON for AJAX requests."""
-        response = client.get('/__trigger_internal_error', headers={'Accept': 'application/json'})
+        response = error_client.get('/__trigger_internal_error', headers={'Accept': 'application/json'})
         assert response.status_code == 500
         data = json.loads(response.data)
         assert data['ok'] is False
         assert data['error']['code'] == 'INTERNAL_ERROR'
 
-    def test_500_html_response(self, client):
+    def test_500_html_response(self, error_client):
         """Test 500 handler returns HTML for browser requests."""
-        response = client.get('/__trigger_internal_error', headers={'Accept': 'text/html'})
+        response = error_client.get('/__trigger_internal_error', headers={'Accept': 'text/html'})
         assert response.status_code == 500
         assert response.mimetype == 'text/html'
         assert b'Internal Server Error' in response.data
     
-    def test_error_response_helper(self):
+    def test_error_response_helper(self, error_app):
         """Test error_response helper function."""
-        with app.test_request_context():
+        with error_app.test_request_context():
             # Set request ID
             g.request_id = 'test-request-id'
             
             # Test JSON response (XHR)
-            with app.test_request_context(headers={'Accept': 'application/json'}):
+            with error_app.test_request_context(headers={'Accept': 'application/json'}):
                 g.request_id = 'test-request-id'
                 response, status_code = error_response(
                     "TEST_ERROR", 
@@ -107,9 +134,9 @@ class TestErrorHandlers:
 class TestSuccessResponse:
     """Test success response helper."""
     
-    def test_success_response_with_data(self):
+    def test_success_response_with_data(self, error_app):
         """Test success response with data."""
-        with app.test_request_context():
+        with error_app.test_request_context():
             g.request_id = 'test-request-id'
             response = success_response(data={'key': 'value'}, message='Success')
             
@@ -118,9 +145,9 @@ class TestSuccessResponse:
             assert response['message'] == 'Success'
             assert response['requestId'] == 'test-request-id'
     
-    def test_success_response_minimal(self):
+    def test_success_response_minimal(self, error_app):
         """Test success response with minimal data."""
-        with app.test_request_context():
+        with error_app.test_request_context():
             g.request_id = 'test-request-id'
             response = success_response()
             
@@ -131,39 +158,39 @@ class TestSuccessResponse:
 class TestXHRDetection:
     """Test XHR/AJAX request detection."""
     
-    def test_xhr_header_detection(self):
+    def test_xhr_header_detection(self, error_app):
         """Test detection via X-Requested-With header."""
-        with app.test_request_context(headers={'X-Requested-With': 'XMLHttpRequest'}):
+        with error_app.test_request_context(headers={'X-Requested-With': 'XMLHttpRequest'}):
             assert is_xhr_request() is True
     
-    def test_json_accept_detection(self):
+    def test_json_accept_detection(self, error_app):
         """Test detection via Accept header."""
-        with app.test_request_context(headers={'Accept': 'application/json'}):
+        with error_app.test_request_context(headers={'Accept': 'application/json'}):
             assert is_xhr_request() is True
     
-    def test_api_path_detection(self):
+    def test_api_path_detection(self, error_app):
         """Test detection via /api/ path."""
-        with app.test_request_context(path='/api/test'):
+        with error_app.test_request_context(path='/api/test'):
             assert is_xhr_request() is True
     
-    def test_regular_request(self):
+    def test_regular_request(self, error_app):
         """Test regular (non-XHR) request."""
-        with app.test_request_context():
+        with error_app.test_request_context():
             assert is_xhr_request() is False
 
 
 class TestWorkoutLogEndpoints:
     """Test updated workout log endpoints with new error handling."""
     
-    def test_update_workout_log_success(self, client):
+    def test_update_workout_log_success(self, error_client):
         """Test successful workout log update."""
         # This would require actual database setup
         # Placeholder for integration test
         pass
     
-    def test_update_workout_log_validation_error(self, client):
+    def test_update_workout_log_validation_error(self, error_client):
         """Test workout log update with missing ID."""
-        response = client.post('/update_workout_log',
+        response = error_client.post('/update_workout_log',
                              json={'updates': {'weight': 100}},
                              headers={'Accept': 'application/json'})
         
@@ -172,9 +199,9 @@ class TestWorkoutLogEndpoints:
         assert data['ok'] is False
         assert data['error']['code'] == 'VALIDATION_ERROR'
     
-    def test_delete_workout_log_validation_error(self, client):
+    def test_delete_workout_log_validation_error(self, error_client):
         """Test workout log deletion with missing ID."""
-        response = client.post('/delete_workout_log',
+        response = error_client.post('/delete_workout_log',
                              json={},
                              headers={'Accept': 'application/json'})
         
@@ -187,9 +214,9 @@ class TestWorkoutLogEndpoints:
 class TestLogging:
     """Test logging with request IDs."""
     
-    def test_request_id_in_logs(self, client, caplog):
+    def test_request_id_in_logs(self, error_client, caplog):
         """Test that request ID appears in log messages."""
-        response = client.get('/')
+        response = error_client.get('/')
         request_id = response.headers.get('X-Request-ID')
         
         # Check if request ID appears in logs

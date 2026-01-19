@@ -1,5 +1,5 @@
 import sqlite3
-from utils.config import DB_FILE
+import utils.config  # Dynamic import for test support
 
 
 def get_user_selection():
@@ -30,7 +30,7 @@ def get_user_selection():
     JOIN exercises e ON us.exercise = e.exercise_name;
     """
     try:
-        connection = sqlite3.connect(DB_FILE)
+        connection = sqlite3.connect(utils.config.DB_FILE)
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
         cursor.execute(query)

@@ -1470,3 +1470,136 @@
     border-width: 2px;
   }
 }
+
+/* ========================================================================
+   Routine Tabs - Filter workout plan by routine
+   ======================================================================== */
+#workout[data-page="workout-plan"] .routine-tabs-container {
+  margin: var(--wp-gap-lg) 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--wp-border) transparent;
+}
+
+#workout[data-page="workout-plan"] .routine-tabs-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+#workout[data-page="workout-plan"] .routine-tabs-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#workout[data-page="workout-plan"] .routine-tabs-container::-webkit-scrollbar-thumb {
+  background: var(--wp-border);
+  border-radius: 3px;
+}
+
+#workout[data-page="workout-plan"] .routine-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--wp-gap-sm);
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  background: var(--wp-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--wp-radius);
+  min-width: max-content;
+}
+
+#workout[data-page="workout-plan"] .routine-tab {
+  flex: 0 0 auto;
+}
+
+#workout[data-page="workout-plan"] .routine-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  border-radius: var(--wp-radius-sm);
+  color: var(--wp-text-muted);
+  font-family: var(--wp-font);
+  font-size: var(--wp-fs-small);
+  font-weight: var(--wp-fw-medium);
+  cursor: pointer;
+  transition: all var(--wp-transition-fast);
+  white-space: nowrap;
+}
+
+#workout[data-page="workout-plan"] .routine-tab-btn:hover {
+  background: var(--wp-surface-elevated);
+  color: var(--wp-text);
+}
+
+#workout[data-page="workout-plan"] .routine-tab-btn.active {
+  background: var(--wp-accent);
+  color: #ffffff;
+  box-shadow: var(--wp-shadow-sm);
+}
+
+#workout[data-page="workout-plan"] .routine-tab-btn.active:hover {
+  background: var(--wp-accent-hover);
+}
+
+#workout[data-page="workout-plan"] .routine-tab-btn .tab-label {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#workout[data-page="workout-plan"] .routine-tab-btn .tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 0.75rem;
+  font-weight: var(--wp-fw-semibold);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+#workout[data-page="workout-plan"] .routine-tab-btn.active .tab-count {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+#workout[data-page="workout-plan"] .routine-tab-btn:not(.active) .tab-count {
+  background: var(--wp-border);
+  color: var(--wp-text-muted);
+}
+
+/* Hide count if empty */
+#workout[data-page="workout-plan"] .routine-tab-btn .tab-count:empty {
+  display: none;
+}
+
+/* Responsive: wrap tabs on smaller screens if needed */
+@media (max-width: 768px) {
+  #workout[data-page="workout-plan"] .routine-tabs {
+    flex-wrap: wrap;
+  }
+  
+  #workout[data-page="workout-plan"] .routine-tab-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+  
+  #workout[data-page="workout-plan"] .routine-tab-btn .tab-label {
+    max-width: 150px;
+  }
+}
+
+/* Animation for tab switching */
+#workout[data-page="workout-plan"] .workout-plan-table tbody tr {
+  transition: opacity var(--wp-transition-fast);
+}
+
+#workout[data-page="workout-plan"] .workout-plan-table tbody tr.filtered-out {
+  display: none;
+}

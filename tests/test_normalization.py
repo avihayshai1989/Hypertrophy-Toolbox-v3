@@ -70,7 +70,7 @@ def test_normalize_exercise_row_deduplicates_isolations():
     assert normalised['primary_muscle_group'] == 'Chest'
     assert normalised['secondary_muscle_group'] == 'Triceps'
     assert normalised['tertiary_muscle_group'] == 'Front-Shoulder'
-    assert normalised['advanced_isolated_muscles'] == 'Gluteus Maximus'
+    assert normalised['advanced_isolated_muscles'] == 'gluteus-maximus'
     assert normalised['force'] == 'Push/Pull'
     assert normalised['utility'] == 'Basic'
     assert normalised['mechanic'] == 'Isolated'

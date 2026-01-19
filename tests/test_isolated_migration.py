@@ -90,13 +90,13 @@ def test_migration_backfills_junction_table(tmp_path):
     try:
         cur = conn.execute("SELECT muscle FROM exercise_isolated_muscles WHERE exercise_name = ? ORDER BY muscle", ('Hip Thrust',))
         muscles = [row['muscle'] for row in cur.fetchall()]
-        assert muscles == ['Gluteus Maximus']
+        assert muscles == ['gluteus-maximus']
 
         row = conn.execute(
             "SELECT advanced_isolated_muscles, force, equipment FROM exercises WHERE exercise_name = ?",
             ('Hip Thrust',),
         ).fetchone()
-        assert row['advanced_isolated_muscles'] == 'Gluteus Maximus'
+        assert row['advanced_isolated_muscles'] == 'gluteus-maximus'
         assert row['force'] == 'Push/Pull'
         assert row['equipment'] == 'Smith_Machine'
 

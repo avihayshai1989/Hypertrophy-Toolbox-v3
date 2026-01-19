@@ -18,6 +18,10 @@ async function handleApiResponse(response) {
     return data.ok === true ? (data.data !== undefined ? data.data : data) : data;
 }
 
+// Module-level state for routine tabs
+let currentRoutineTabFilter = 'all';
+let allExercisesCache = [];
+
 // Workout plan functionality
 export async function fetchWorkoutPlan() {
     try {
@@ -28,14 +32,170 @@ export async function fetchWorkoutPlan() {
         }
 
         const exercises = await handleApiResponse(response);
-        updateWorkoutPlanTable(exercises);
-        updateWorkoutPlanUI(exercises);
+        
+        // Cache all exercises for tab filtering
+        allExercisesCache = exercises;
+        
+        // Update routine tabs based on available routines
+        updateRoutineTabs(exercises);
+        
+        // Apply current tab filter and render
+        const filteredExercises = applyRoutineTabFilter(exercises, currentRoutineTabFilter);
+        updateWorkoutPlanTable(filteredExercises);
+        updateWorkoutPlanUI(exercises); // Always show totals for all exercises
         
         // Table responsiveness is already initialized by table-responsiveness.js autoInit
         // No need to reinitialize here
     } catch (error) {
         console.error('Error loading workout plan:', error);
         showToast(error.message || 'Failed to load workout plan', true);
+    }
+}
+
+/**
+ * Updates the routine tabs based on available routines in the data
+ * @param {Array} exercises - Array of exercise objects
+ */
+function updateRoutineTabs(exercises) {
+    const tabsContainer = document.getElementById('routine-tabs');
+    if (!tabsContainer) return;
+    
+    // Get unique routines and count exercises per routine
+    const routineCounts = {};
+    exercises.forEach(ex => {
+        const routine = ex.routine || 'Unknown';
+        routineCounts[routine] = (routineCounts[routine] || 0) + 1;
+    });
+    
+    // Sort routines alphabetically for consistent ordering
+    const sortedRoutines = Object.keys(routineCounts).sort();
+    
+    // Update "All" tab count
+    const allCountEl = document.getElementById('tab-count-all');
+    if (allCountEl) {
+        allCountEl.textContent = exercises.length;
+    }
+    
+    // Remove existing dynamic tabs (keep the "All" tab)
+    const existingDynamicTabs = tabsContainer.querySelectorAll('.routine-tab[data-dynamic="true"]');
+    existingDynamicTabs.forEach(tab => tab.remove());
+    
+    // Create tabs for each routine
+    sortedRoutines.forEach(routine => {
+        const tabId = `tab-${routine.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`;
+        
+        const tabLi = document.createElement('li');
+        tabLi.className = 'routine-tab';
+        tabLi.setAttribute('data-dynamic', 'true');
+        tabLi.setAttribute('role', 'presentation');
+        
+        const tabBtn = document.createElement('button');
+        tabBtn.className = 'routine-tab-btn';
+        tabBtn.setAttribute('data-routine', routine);
+        tabBtn.setAttribute('role', 'tab');
+        tabBtn.setAttribute('aria-selected', 'false');
+        tabBtn.setAttribute('aria-controls', 'workout_plan_table_body');
+        tabBtn.setAttribute('id', tabId);
+        
+        // Mark as active if this is the currently selected tab
+        if (routine === currentRoutineTabFilter) {
+            tabBtn.classList.add('active');
+            tabBtn.setAttribute('aria-selected', 'true');
+            // Also remove active from "All" tab
+            const allTab = tabsContainer.querySelector('[data-routine="all"]');
+            if (allTab) {
+                allTab.classList.remove('active');
+                allTab.setAttribute('aria-selected', 'false');
+            }
+        }
+        
+        tabBtn.innerHTML = `
+            <span class="tab-label">${routine}</span>
+            <span class="tab-count">${routineCounts[routine]}</span>
+        `;
+        
+        tabBtn.addEventListener('click', () => handleRoutineTabClick(routine));
+        
+        tabLi.appendChild(tabBtn);
+        tabsContainer.appendChild(tabLi);
+    });
+    
+    // If current filter is "all", ensure the "All" tab is active
+    if (currentRoutineTabFilter === 'all') {
+        const allTabBtn = tabsContainer.querySelector('[data-routine="all"]');
+        if (allTabBtn) {
+            allTabBtn.classList.add('active');
+            allTabBtn.setAttribute('aria-selected', 'true');
+        }
+    }
+    
+    // If the current filter's routine no longer exists, reset to "all"
+    if (currentRoutineTabFilter !== 'all' && !sortedRoutines.includes(currentRoutineTabFilter)) {
+        currentRoutineTabFilter = 'all';
+        const allTabBtn = tabsContainer.querySelector('[data-routine="all"]');
+        if (allTabBtn) {
+            allTabBtn.classList.add('active');
+            allTabBtn.setAttribute('aria-selected', 'true');
+        }
+    }
+}
+
+/**
+ * Handles routine tab click events
+ * @param {string} routine - The routine name or 'all'
+ */
+function handleRoutineTabClick(routine) {
+    const tabsContainer = document.getElementById('routine-tabs');
+    if (!tabsContainer) return;
+    
+    // Update active state on all tabs
+    tabsContainer.querySelectorAll('.routine-tab-btn').forEach(btn => {
+        const isTarget = btn.getAttribute('data-routine') === routine;
+        btn.classList.toggle('active', isTarget);
+        btn.setAttribute('aria-selected', isTarget ? 'true' : 'false');
+    });
+    
+    // Update current filter
+    currentRoutineTabFilter = routine;
+    
+    // Apply filter and re-render table
+    const filteredExercises = applyRoutineTabFilter(allExercisesCache, routine);
+    updateWorkoutPlanTable(filteredExercises);
+}
+
+/**
+ * Filters exercises by routine
+ * @param {Array} exercises - Array of exercise objects
+ * @param {string} routineFilter - The routine to filter by, or 'all'
+ * @returns {Array} Filtered exercises
+ */
+function applyRoutineTabFilter(exercises, routineFilter) {
+    if (routineFilter === 'all') {
+        return exercises;
+    }
+    return exercises.filter(ex => ex.routine === routineFilter);
+}
+
+/**
+ * Gets the current routine tab filter value (for external modules if needed)
+ * @returns {string} Current routine filter
+ */
+export function getCurrentRoutineTabFilter() {
+    return currentRoutineTabFilter;
+}
+
+/**
+ * Resets the routine tab filter to 'all' (for external modules if needed)
+ */
+export function resetRoutineTabFilter() {
+    currentRoutineTabFilter = 'all';
+    const tabsContainer = document.getElementById('routine-tabs');
+    if (tabsContainer) {
+        tabsContainer.querySelectorAll('.routine-tab-btn').forEach(btn => {
+            const isAll = btn.getAttribute('data-routine') === 'all';
+            btn.classList.toggle('active', isAll);
+            btn.setAttribute('aria-selected', isAll ? 'true' : 'false');
+        });
     }
 }
 
@@ -585,9 +745,22 @@ export function initializeWorkoutPlanHandlers() {
     
     // Handle routine selection changes
     handleRoutineSelection();
+    
+    // Initialize routine tabs - "All" tab click handler
+    initializeRoutineTabs();
 
     // Initial fetch of workout plan
     fetchWorkoutPlan();
+}
+
+/**
+ * Initializes the routine tabs click handlers
+ */
+function initializeRoutineTabs() {
+    const allTabBtn = document.querySelector('#routine-tabs [data-routine="all"]');
+    if (allTabBtn) {
+        allTabBtn.addEventListener('click', () => handleRoutineTabClick('all'));
+    }
 }
 
 export function updateWorkoutPlanTable(exercises) {
