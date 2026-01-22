@@ -181,12 +181,44 @@ async function clearFilters() {
         select.dispatchEvent(new Event('change', { bubbles: true }));
     });
     
-    // Reset routine dropdown if it exists
+    // Reset routine cascade selector if it exists
     const routineDropdown = document.getElementById('routine');
     if (routineDropdown) {
         routineDropdown.value = '';
         routineDropdown.dispatchEvent(new Event('change', { bubbles: true }));
     }
+    
+    // Reset cascade dropdowns (for new cascade selector)
+    const cascadeEnv = document.getElementById('routine-env');
+    const cascadeProgram = document.getElementById('routine-program');
+    const cascadeDay = document.getElementById('routine-day');
+    
+    if (cascadeEnv) {
+        cascadeEnv.value = '';
+        cascadeEnv.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    if (cascadeProgram) {
+        cascadeProgram.value = '';
+        cascadeProgram.innerHTML = '<option value="">Select Program</option>';
+        cascadeProgram.disabled = true;
+    }
+    if (cascadeDay) {
+        cascadeDay.value = '';
+        cascadeDay.innerHTML = '<option value="">Select Workout</option>';
+        cascadeDay.disabled = true;
+    }
+    
+    // Reset breadcrumb
+    const breadcrumb = document.getElementById('routine-breadcrumb');
+    if (breadcrumb) {
+        breadcrumb.innerHTML = '<span class="breadcrumb-placeholder">Select environment to begin</span>';
+        breadcrumb.classList.remove('has-selection');
+    }
+    
+    // Reset connectors
+    document.querySelectorAll('.cascade-connector').forEach(conn => {
+        conn.classList.remove('active');
+    });
     
     // Reset exercise dropdown if it exists
     const exerciseDropdown = document.getElementById('exercise');

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_workout_dropdowns.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_workout_plan.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_frames.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_routine_cascade.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -115,120 +116,68 @@
             </div>
             <div class="frame-content" id="exercise-selection-content">
                 <div class="exercise-selection-grid row gx-4 gy-3 align-items-end" role="group" aria-label="Exercise selection controls">
-                    <!-- Routine Dropdown -->
-                    <div class="col-12 col-lg-6 routine-selector selection-field">
-                        <label for="routine" class="form-label">Routine</label>
-                        <select id="routine" name="routine" class="form-select uniform-dropdown routine-dropdown" aria-label="Select routine">
-                            <option value="">Select Routine</option>
+                    <!-- Cascading Routine Selector -->
+                    <div class="col-12 routine-selector selection-field">
+                        <label class="form-label">Routine</label>
+                        
+                        <!-- Hidden field to store composite routine value for form submission -->
+                        <input type="hidden" id="routine" name="routine" value="">
+                        
+                        <div id="routine-cascade-container" class="routine-cascade-container">
+                            <!-- Row of 3 cascading dropdowns -->
+                            <div class="cascade-row">
+                                <!-- Step 1: Environment -->
+                                <div class="cascade-dropdown-wrapper">
+                                    <label for="routine-env" data-step="1">Environment</label>
+                                    <select id="routine-env" name="routine-env" 
+                                            class="form-select cascade-dropdown cascade-env" 
+                                            aria-label="Select environment">
+                                        <option value="">Select Environment</option>
+                                        <option value="GYM">🏋️ GYM</option>
+                                        <option value="Home Workout">🏠 Home Workout</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Connector Arrow 1 -->
+                                <div class="cascade-connector cascade-connector-1" aria-hidden="true">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                
+                                <!-- Step 2: Program -->
+                                <div class="cascade-dropdown-wrapper">
+                                    <label for="routine-program" data-step="2">Program</label>
+                                    <select id="routine-program" name="routine-program" 
+                                            class="form-select cascade-dropdown cascade-program" 
+                                            aria-label="Select program" disabled>
+                                        <option value="">Select Program</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Connector Arrow 2 -->
+                                <div class="cascade-connector cascade-connector-2" aria-hidden="true">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                
+                                <!-- Step 3: Workout Day -->
+                                <div class="cascade-dropdown-wrapper">
+                                    <label for="routine-day" data-step="3">Workout</label>
+                                    <select id="routine-day" name="routine-day" 
+                                            class="form-select cascade-dropdown cascade-routine" 
+                                            aria-label="Select workout day" disabled>
+                                        <option value="">Select Workout</option>
+                                    </select>
+                                </div>
+                            </div>
                             
-                            <!-- GYM Environment -->
-                            <optgroup label="GYM" class="environment-group" data-environment="gym">
-                                <!-- Full Body Program -->
-                                <option class="program-header program-full-body" disabled>Full Body</option>
-                                <option class="routine-option" value="GYM - Full Body - Workout A">└─ Workout A</option>
-                                <option class="routine-option" value="GYM - Full Body - Workout B">└─ Workout B</option>
-                                <option class="routine-option" value="GYM - Full Body - Workout C">└─ Workout C</option>
-                                
-                                <!-- Push Pull Legs Program -->
-                                <option class="program-header program-push-pull-legs" disabled>Push Pull Legs</option>
-                                <option class="routine-option" value="GYM - Push Pull Legs - Push 1">└─ Push 1</option>
-                                <option class="routine-option" value="GYM - Push Pull Legs - Pull 1">└─ Pull 1</option>
-                                <option class="routine-option" value="GYM - Push Pull Legs - Legs 1">└─ Legs 1</option>
-                                <option class="routine-option" value="GYM - Push Pull Legs - Push 2">└─ Push 2</option>
-                                <option class="routine-option" value="GYM - Push Pull Legs - Pull 2">└─ Pull 2</option>
-                                <option class="routine-option" value="GYM - Push Pull Legs - Legs 2">└─ Legs 2</option>
-                                
-                                <!-- Upper Lower Program -->
-                                <option class="program-header program-upper-lower" disabled>Upper Lower</option>
-                                <option class="routine-option" value="GYM - Upper Lower - Upper 1">└─ Upper 1</option>
-                                <option class="routine-option" value="GYM - Upper Lower - Lower 1">└─ Lower 1</option>
-                                <option class="routine-option" value="GYM - Upper Lower - Upper 2">└─ Upper 2</option>
-                                <option class="routine-option" value="GYM - Upper Lower - Lower 2">└─ Lower 2</option>
-
-                                <!-- Basic Split Category -->
-                                <option class="category-header category-basic-split" disabled>Basic Split</option>
-                                
-                                <!-- 2 Days Split Program -->
-                                <option class="program-header program-basic-split" disabled>├─ 2 Days Split</option>
-                                <option class="routine-option nested" value="GYM - 2 Days Split - Workout A">│  └─ Workout A</option>
-                                <option class="routine-option nested" value="GYM - 2 Days Split - Workout B">│  └─ Workout B</option>
-                                
-                                <!-- 3 Days Split Program -->
-                                <option class="program-header program-basic-split" disabled>├─ 3 Days Split</option>
-                                <option class="routine-option nested" value="GYM - 3 Days Split - Workout A">│  └─ Workout A</option>
-                                <option class="routine-option nested" value="GYM - 3 Days Split - Workout B">│  └─ Workout B</option>
-                                <option class="routine-option nested" value="GYM - 3 Days Split - Workout C">│  └─ Workout C</option>
-
-                                <!-- 4 Days Split Program -->
-                                <option class="program-header program-basic-split" disabled>├─ 4 Days Split</option>
-                                <option class="routine-option nested" value="GYM - 4 Days Split - A1">│  └─ A1</option>
-                                <option class="routine-option nested" value="GYM - 4 Days Split - B1">│  └─ B1</option>
-                                <option class="routine-option nested" value="GYM - 4 Days Split - A2">│  └─ A2</option>
-                                <option class="routine-option nested" value="GYM - 4 Days Split - B2">│  └─ B2</option>
-
-                                <!-- 6 Days Split Program -->
-                                <option class="program-header program-basic-split" disabled>├─ 6 Days Split</option>
-                                <option class="routine-option nested" value="GYM - 6 Days Split - Workout A">│  └─ Workout A</option>
-                                <option class="routine-option nested" value="GYM - 6 Days Split - Workout B">│  └─ Workout B</option>
-                                <option class="routine-option nested" value="GYM - 6 Days Split - Workout C">│  └─ Workout C</option>
-                                <option class="routine-option nested" value="GYM - 6 Days Split - Workout D">│  └─ Workout D</option>
-                                <option class="routine-option nested" value="GYM - 6 Days Split - Workout E">│  └─ Workout E</option>
-                                <option class="routine-option nested" value="GYM - 6 Days Split - Workout F">│  └─ Workout F</option>
-                            </optgroup>
-                            
-                            <!-- Home Workout Environment -->
-                            <optgroup label="Home Workout" class="environment-group" data-environment="home-workout">
-                                <!-- Push Pull Legs Program -->
-                                <option class="program-header program-push-pull-legs" disabled>Push Pull Legs</option>
-                                <option class="routine-option" value="Home - Push Pull Legs - Push 1">└─ Push 1</option>
-                                <option class="routine-option" value="Home - Push Pull Legs - Pull 1">└─ Pull 1</option>
-                                <option class="routine-option" value="Home - Push Pull Legs - Legs 1">└─ Legs 1</option>
-                                <option class="routine-option" value="Home - Push Pull Legs - Push 2">└─ Push 2</option>
-                                <option class="routine-option" value="Home - Push Pull Legs - Pull 2">└─ Pull 2</option>
-                                <option class="routine-option" value="Home - Push Pull Legs - Legs 2">└─ Legs 2</option>
-                                
-                                <!-- Upper Lower Program -->
-                                <option class="program-header program-upper-lower" disabled>Upper Lower</option>
-                                <option class="routine-option" value="Home - Upper Lower - Upper 1">└─ Upper 1</option>
-                                <option class="routine-option" value="Home - Upper Lower - Lower 1">└─ Lower 1</option>
-                                <option class="routine-option" value="Home - Upper Lower - Upper 2">└─ Upper 2</option>
-                                <option class="routine-option" value="Home - Upper Lower - Lower 2">└─ Lower 2</option>
-
-                                <!-- Basic Split Category -->
-                                <option class="category-header category-basic-split" disabled>Basic Split</option>
-                                
-                                <!-- 2 Days Split Program -->
-                                <option class="program-header program-basic-split" disabled>├─ 2 Days Split</option>
-                                <option class="routine-option nested" value="Home - 2 Days Split - Workout A">│  └─ Workout A</option>
-                                <option class="routine-option nested" value="Home - 2 Days Split - Workout B">│  └─ Workout B</option>
-                                
-                                <!-- 3 Days Split Program -->
-                                <option class="program-header program-basic-split" disabled>├─ 3 Days Split</option>
-                                <option class="routine-option nested" value="Home - 3 Days Split - Workout A">│  └─ Workout A</option>
-                                <option class="routine-option nested" value="Home - 3 Days Split - Workout B">│  └─ Workout B</option>
-                                <option class="routine-option nested" value="Home - 3 Days Split - Workout C">│  └─ Workout C</option>
-
-                                <!-- 4 Days Split Program -->
-                                <option class="program-header program-basic-split" disabled>├─ 4 Days Split</option>
-                                <option class="routine-option nested" value="Home - 4 Days Split - A1">│  └─ A1</option>
-                                <option class="routine-option nested" value="Home - 4 Days Split - B1">│  └─ B1</option>
-                                <option class="routine-option nested" value="Home - 4 Days Split - A2">│  └─ A2</option>
-                                <option class="routine-option nested" value="Home - 4 Days Split - B2">│  └─ B2</option>
-
-                                <!-- 6 Days Split Program -->
-                                <option class="program-header program-basic-split" disabled>├─ 6 Days Split</option>
-                                <option class="routine-option nested" value="Home - 6 Days Split - Workout A">│  └─ Workout A</option>
-                                <option class="routine-option nested" value="Home - 6 Days Split - Workout B">│  └─ Workout B</option>
-                                <option class="routine-option nested" value="Home - 6 Days Split - Workout C">│  └─ Workout C</option>
-                                <option class="routine-option nested" value="Home - 6 Days Split - Workout D">│  └─ Workout D</option>
-                                <option class="routine-option nested" value="Home - 6 Days Split - Workout E">│  └─ Workout E</option>
-                                <option class="routine-option nested" value="Home - 6 Days Split - Workout F">│  └─ Workout F</option>
-                                </optgroup>
-                        </select>
+                            <!-- Selection Breadcrumb -->
+                            <div id="routine-breadcrumb" class="routine-breadcrumb" aria-live="polite">
+                                <span class="breadcrumb-placeholder">Select environment to begin</span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Exercise Dropdown -->
-                    <div class="col-12 col-lg-6 exercise-selector selection-field">
+                    <div class="col-12 exercise-selector selection-field">
                         <label for="exercise" class="form-label">Exercise</label>
                         <select id="exercise" name="exercise" class="form-select uniform-dropdown exercise-dropdown" aria-label="Select exercise">
                             {% for exercise in exercises %}

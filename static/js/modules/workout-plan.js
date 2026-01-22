@@ -499,31 +499,82 @@ function setFieldValidationState(fieldId, isInvalid) {
     // Check if there's an enhanced dropdown wrapper
     const wpddContainer = field.closest('.wpdd');
     
+    // Check if this is the hidden routine field (for cascade selector)
+    const isCascadeRoutine = fieldId === 'routine' && field.type === 'hidden';
+    
     if (isInvalid) {
-        // Add invalid class to the native select (for non-enhanced state)
-        field.classList.add('is-invalid-required');
-        
-        // Add invalid class to enhanced dropdown container if it exists
-        if (wpddContainer) {
-            wpddContainer.classList.add('is-invalid-required');
-        }
-        
-        // Highlight the parent container/label
-        if (container) {
-            container.classList.add('has-validation-error');
+        if (isCascadeRoutine) {
+            // For cascade selector, highlight all incomplete dropdowns
+            highlightIncompleteCascadeDropdowns();
+        } else {
+            // Add invalid class to the native select (for non-enhanced state)
+            field.classList.add('is-invalid-required');
+            
+            // Add invalid class to enhanced dropdown container if it exists
+            if (wpddContainer) {
+                wpddContainer.classList.add('is-invalid-required');
+            }
+            
+            // Highlight the parent container/label
+            if (container) {
+                container.classList.add('has-validation-error');
+            }
         }
     } else {
-        // Remove invalid classes
-        field.classList.remove('is-invalid-required');
-        
-        if (wpddContainer) {
-            wpddContainer.classList.remove('is-invalid-required');
-        }
-        
-        if (container) {
-            container.classList.remove('has-validation-error');
+        if (isCascadeRoutine) {
+            // Clear cascade dropdown validation
+            clearCascadeDropdownValidation();
+        } else {
+            // Remove invalid classes
+            field.classList.remove('is-invalid-required');
+            
+            if (wpddContainer) {
+                wpddContainer.classList.remove('is-invalid-required');
+            }
+            
+            if (container) {
+                container.classList.remove('has-validation-error');
+            }
         }
     }
+}
+
+/**
+ * Highlights incomplete cascade dropdowns
+ */
+function highlightIncompleteCascadeDropdowns() {
+    const envSelect = document.getElementById('routine-env');
+    const programSelect = document.getElementById('routine-program');
+    const routineSelect = document.getElementById('routine-day');
+    
+    // Check which dropdowns are incomplete and highlight them
+    if (envSelect && !envSelect.value) {
+        envSelect.classList.add('is-invalid-required');
+        envSelect.closest('.cascade-dropdown-wrapper')?.classList.add('has-validation-error');
+        envSelect.focus();
+    } else if (programSelect && !programSelect.value) {
+        programSelect.classList.add('is-invalid-required');
+        programSelect.closest('.cascade-dropdown-wrapper')?.classList.add('has-validation-error');
+        programSelect.focus();
+    } else if (routineSelect && !routineSelect.value) {
+        routineSelect.classList.add('is-invalid-required');
+        routineSelect.closest('.cascade-dropdown-wrapper')?.classList.add('has-validation-error');
+        routineSelect.focus();
+    }
+}
+
+/**
+ * Clears validation from cascade dropdowns
+ */
+function clearCascadeDropdownValidation() {
+    const cascadeDropdowns = ['routine-env', 'routine-program', 'routine-day'];
+    cascadeDropdowns.forEach(id => {
+        const dropdown = document.getElementById(id);
+        if (dropdown) {
+            dropdown.classList.remove('is-invalid-required');
+            dropdown.closest('.cascade-dropdown-wrapper')?.classList.remove('has-validation-error');
+        }
+    });
 }
 
 /**

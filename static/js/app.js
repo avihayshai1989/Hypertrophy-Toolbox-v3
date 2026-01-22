@@ -28,6 +28,7 @@ import { initializeProgressionPlan } from './modules/progression-plan.js';
 import { initializeVolumeSplitter } from './modules/volume-splitter.js';
 import { initializeWorkoutDropdowns } from './modules/workout-dropdowns.js';
 import { initializeWorkoutControlsAnimation } from './modules/workout-controls-animation.js';
+import { initializeRoutineCascade } from './modules/routine-cascade.js';
 
 const APP_DEBUG = false;
 const appDebugLog = (...args) => {
@@ -98,6 +99,7 @@ function initializeWorkoutPlan() {
     initializeFilterKeyboardEvents();
     initializeAdvancedFilters();
     initializeSearchFilter();
+    initializeRoutineCascade(); // Initialize cascading routine selector
     handleRoutineSelection();
     initializeWorkoutPlanHandlers();
     initializeWorkoutControlsAnimation();

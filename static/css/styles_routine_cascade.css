@@ -1,0 +1,341 @@
+/* ============================================
+   Routine Cascade Selector Styles
+   3-step cascading dropdown for routine selection
+   ============================================ */
+
+/* Main container */
+.routine-cascade-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+/* Row containing the 3 dropdowns and connectors */
+.cascade-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Individual dropdown wrapper */
+.cascade-dropdown-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 140px;
+}
+
+.cascade-dropdown-wrapper label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #6c757d;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Cascade dropdown styling */
+.cascade-dropdown {
+    height: 42px;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    background-color: #fff;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.cascade-dropdown:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: #80bdff;
+}
+
+.cascade-dropdown:disabled {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Environment dropdown - Blue theme */
+.cascade-dropdown.cascade-env {
+    background-color: #e3f2fd;
+    border-color: #90caf9;
+}
+
+.cascade-dropdown.cascade-env:not(:disabled):hover {
+    background-color: #bbdefb;
+    border-color: #64b5f6;
+}
+
+/* Program dropdown - Amber theme */
+.cascade-dropdown.cascade-program {
+    background-color: #fff8e1;
+    border-color: #ffca28;
+}
+
+.cascade-dropdown.cascade-program:not(:disabled):hover {
+    background-color: #ffecb3;
+    border-color: #ffc107;
+}
+
+/* Routine dropdown - Green theme */
+.cascade-dropdown.cascade-routine {
+    background-color: #e8f5e9;
+    border-color: #81c784;
+}
+
+.cascade-dropdown.cascade-routine:not(:disabled):hover {
+    background-color: #c8e6c9;
+    border-color: #66bb6a;
+}
+
+/* Visual connector arrows between dropdowns */
+.cascade-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 42px;
+    color: #dee2e6;
+    font-size: 1.2rem;
+    transition: color 0.2s ease;
+    flex-shrink: 0;
+    align-self: flex-end;
+}
+
+.cascade-connector.active {
+    color: #28a745;
+}
+
+.cascade-connector i {
+    transition: transform 0.2s ease;
+}
+
+.cascade-connector.active i {
+    transform: scale(1.1);
+}
+
+/* Selection breadcrumb */
+.routine-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    min-height: 36px;
+    border: 1px solid #e9ecef;
+}
+
+.routine-breadcrumb.has-selection {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.breadcrumb-placeholder {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.breadcrumb-separator {
+    color: #6c757d;
+}
+
+.breadcrumb-env {
+    color: #1976d2;
+    font-weight: 500;
+}
+
+.breadcrumb-program {
+    color: #f57c00;
+    font-weight: 500;
+}
+
+.breadcrumb-routine {
+    color: #388e3c;
+    font-weight: 600;
+}
+
+/* Validation error states */
+.cascade-dropdown.is-invalid-required {
+    border-color: #dc3545 !important;
+    background-color: #fff5f5 !important;
+    animation: shake 0.3s ease-in-out;
+}
+
+.cascade-dropdown-wrapper.has-validation-error label {
+    color: #dc3545;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-4px); }
+}
+
+/* Responsive layout */
+@media (max-width: 992px) {
+    .cascade-row {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .cascade-dropdown-wrapper {
+        min-width: 100%;
+    }
+    
+    .cascade-connector {
+        display: none;
+    }
+    
+    /* Show step numbers on mobile instead of arrows */
+    .cascade-dropdown-wrapper label::before {
+        content: attr(data-step) ". ";
+        font-weight: 600;
+    }
+}
+
+@media (min-width: 993px) and (max-width: 1200px) {
+    .cascade-dropdown-wrapper {
+        min-width: 120px;
+    }
+}
+
+/* ============================================
+   Dark Mode Support
+   ============================================ */
+
+[data-theme='dark'] .cascade-dropdown {
+    background-color: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+[data-theme='dark'] .cascade-dropdown:disabled {
+    background-color: #1a202c;
+    color: #718096;
+}
+
+[data-theme='dark'] .cascade-dropdown:focus {
+    box-shadow: 0 0 0 0.2rem rgba(66, 153, 225, 0.4);
+    border-color: #4299e1;
+}
+
+/* Dark mode - Environment dropdown */
+[data-theme='dark'] .cascade-dropdown.cascade-env {
+    background-color: rgba(33, 150, 243, 0.15);
+    border-color: rgba(100, 181, 246, 0.4);
+}
+
+[data-theme='dark'] .cascade-dropdown.cascade-env:not(:disabled):hover {
+    background-color: rgba(33, 150, 243, 0.25);
+    border-color: rgba(100, 181, 246, 0.6);
+}
+
+/* Dark mode - Program dropdown */
+[data-theme='dark'] .cascade-dropdown.cascade-program {
+    background-color: rgba(255, 193, 7, 0.15);
+    border-color: rgba(255, 193, 7, 0.4);
+}
+
+[data-theme='dark'] .cascade-dropdown.cascade-program:not(:disabled):hover {
+    background-color: rgba(255, 193, 7, 0.25);
+    border-color: rgba(255, 193, 7, 0.6);
+}
+
+/* Dark mode - Routine dropdown */
+[data-theme='dark'] .cascade-dropdown.cascade-routine {
+    background-color: rgba(76, 175, 80, 0.15);
+    border-color: rgba(129, 199, 132, 0.4);
+}
+
+[data-theme='dark'] .cascade-dropdown.cascade-routine:not(:disabled):hover {
+    background-color: rgba(76, 175, 80, 0.25);
+    border-color: rgba(129, 199, 132, 0.6);
+}
+
+/* Dark mode - Connectors */
+[data-theme='dark'] .cascade-connector {
+    color: #4a5568;
+}
+
+[data-theme='dark'] .cascade-connector.active {
+    color: #68d391;
+}
+
+/* Dark mode - Breadcrumb */
+[data-theme='dark'] .routine-breadcrumb {
+    background-color: #2d3748;
+    border-color: #4a5568;
+}
+
+[data-theme='dark'] .routine-breadcrumb.has-selection {
+    background-color: rgba(72, 187, 120, 0.2);
+    border-color: rgba(72, 187, 120, 0.4);
+}
+
+[data-theme='dark'] .breadcrumb-placeholder {
+    color: #718096;
+}
+
+[data-theme='dark'] .breadcrumb-separator {
+    color: #718096;
+}
+
+[data-theme='dark'] .breadcrumb-env {
+    color: #63b3ed;
+}
+
+[data-theme='dark'] .breadcrumb-program {
+    color: #fbd38d;
+}
+
+[data-theme='dark'] .breadcrumb-routine {
+    color: #68d391;
+}
+
+/* Dark mode - Validation errors */
+[data-theme='dark'] .cascade-dropdown.is-invalid-required {
+    border-color: #fc8181 !important;
+    background-color: rgba(252, 129, 129, 0.1) !important;
+}
+
+[data-theme='dark'] .cascade-dropdown-wrapper.has-validation-error label {
+    color: #fc8181;
+}
+
+/* ============================================
+   Transition animations
+   ============================================ */
+
+.cascade-dropdown-wrapper {
+    transition: opacity 0.2s ease;
+}
+
+.cascade-dropdown option {
+    padding: 8px 12px;
+}
+
+/* Highlight effect when dropdown becomes enabled */
+.cascade-dropdown:not(:disabled) {
+    animation: enablePulse 0.3s ease-out;
+}
+
+@keyframes enablePulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(40, 167, 69, 0);
+    }
+    100% {
+        box-shadow: none;
+    }
+}

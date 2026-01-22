@@ -211,6 +211,9 @@ function enhanceSelect(select, prefersReducedMotion) {
   
   // Keyboard on popover
   popover.addEventListener('keydown', (e) => {
+    // Allow typing in search input (don't intercept space, etc.)
+    const isSearchInput = e.target.classList.contains('wpdd-search');
+    
     switch (e.key) {
       case 'Escape':
         e.preventDefault();
@@ -233,6 +236,8 @@ function enhanceSelect(select, prefersReducedMotion) {
         scrollToOption(activeIndex);
         break;
       case 'Home':
+        // Allow Home key in search input to move cursor
+        if (isSearchInput) return;
         e.preventDefault();
         activeIndex = 0;
         while (activeIndex < options.length - 1 && options[activeIndex]?.disabled) {
@@ -242,6 +247,8 @@ function enhanceSelect(select, prefersReducedMotion) {
         scrollToOption(activeIndex);
         break;
       case 'End':
+        // Allow End key in search input to move cursor
+        if (isSearchInput) return;
         e.preventDefault();
         activeIndex = options.length - 1;
         while (activeIndex > 0 && options[activeIndex]?.disabled) {
@@ -251,7 +258,14 @@ function enhanceSelect(select, prefersReducedMotion) {
         scrollToOption(activeIndex);
         break;
       case 'Enter':
+        e.preventDefault();
+        if (activeIndex >= 0 && options[activeIndex] && !options[activeIndex].disabled) {
+          selectOption(options[activeIndex]);
+        }
+        break;
       case ' ':
+        // Allow space in search input for multi-word searches
+        if (isSearchInput) return;
         e.preventDefault();
         if (activeIndex >= 0 && options[activeIndex] && !options[activeIndex].disabled) {
           selectOption(options[activeIndex]);
