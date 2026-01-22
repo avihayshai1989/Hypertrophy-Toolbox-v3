@@ -14,6 +14,3 @@ This document captures the non-negotiable rules for the Excel to SQLite merge ut
 - Equipment semantics: The equipment field intentionally includes both gear (Barbell, Dumbbells, …) and categories (Yoga, Recovery, Stretches, Cardio). These are first-class filter values.
 - Enumerations: Incoming `force`, `mechanic`, and `difficulty` values are canonicalized to `Push`/`Pull`/`Hold`, `Compound`/`Isolation`, and `Beginner`/`Intermediate`/`Advanced` respectively before merging.
 
-## Backfill policy
-
-- `scripts/backfill_exercise_fields.py` fills only NULL exercise metadata fields using deterministic token rules, logs each apply run in `docs/IMPORT_RUNS.md`, and is safe to rerun (idempotent).

@@ -42,11 +42,7 @@ Design your workout plan using science, all the toolbox you need in order to des
    ```bash
    python -c "from utils.db_initializer import initialize_database; initialize_database()"
    ```
-4. **Populate the isolated muscle junction table** (idempotent and safe to rerun):
-   ```bash
-   python scripts/migrate_isolated_muscles.py
-   ```
-5. **Start the Flask service** with `python app.py`.
+4. **Start the Flask service** with `python app.py`.
 6. **Smoke test**:
    - `/get_unique_values/exercises/advanced_isolated_muscles` returns canonical muscles from the junction table.
    - Weekly/session summary pages show weighted sets with clean volume buckets.
