@@ -7,7 +7,8 @@ export function initializeProgressionPlan() {
     const goalModalElement = document.getElementById('goalSettingModal');
     const goalModal = new bootstrap.Modal(goalModalElement, {
         keyboard: true,
-        backdrop: 'static',
+        backdrop: false,
+        focus: true,
     });
     
     // Store the element that had focus before the modal was opened
@@ -129,15 +130,19 @@ export function initializeProgressionPlan() {
                     console.log('Parsed current value:', currentValue);
                     currentValueInput.value = data.current_value;
                     
-                    // Update target value based on current value
+                    // Update target value based on current value using suggested increments
                     switch(goalType) {
                         case 'reps':
+                            // Suggest adding 2 reps
                             targetValueInput.value = currentValue + 2;
                             break;
                         case 'weight':
-                            targetValueInput.value = Math.round((currentValue * 1.05) * 100) / 100;
+                            // Use same increment logic as suggestion cards: 2.5kg if < 20, else 5kg
+                            const weightIncrement = currentValue < 20 ? 2.5 : 5;
+                            targetValueInput.value = currentValue + weightIncrement;
                             break;
                         case 'sets':
+                            // Suggest adding 1 set
                             targetValueInput.value = currentValue + 1;
                             break;
                     }
@@ -164,19 +169,19 @@ export function initializeProgressionPlan() {
                     modalTitle.textContent = 'Set Repetition Goal';
                     currentValueInput.disabled = false;
                     targetValueInput.disabled = false;
-                    targetValueInput.value = parseInt(currentValueInput.value || 0) + 2;
+                    // Keep the already calculated target value (current + 2 reps)
                     break;
                 case 'weight':
                     modalTitle.textContent = 'Set Weight Goal';
                     currentValueInput.disabled = false;
                     targetValueInput.disabled = false;
-                    targetValueInput.value = Math.round((parseFloat(currentValueInput.value || 0) * 1.05) * 100) / 100;
+                    // Keep the already calculated target value (current + increment)
                     break;
                 case 'sets':
                     modalTitle.textContent = 'Set Volume Goal';
                     currentValueInput.disabled = false;
                     targetValueInput.disabled = false;
-                    targetValueInput.value = parseInt(currentValueInput.value || 0) + 1;
+                    // Keep the already calculated target value (current + 1 set)
                     break;
             }
             

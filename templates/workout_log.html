@@ -14,6 +14,51 @@
         <div class="header-underline"></div>
     </div>
 
+    <!-- Import Controls Section -->
+    <div class="workout-log-controls-frame mb-4">
+        <div class="collapsible-frame action-frame" data-section="import-controls">
+            <div class="frame-header frame-header-2025">
+                <div class="frame-header-left">
+                    <span class="frame-title"><i class="fas fa-download me-2"></i>Import from Workout Plan</span>
+                </div>
+                <div class="frame-header-right">
+                    <button class="collapse-toggle" type="button" title="Collapse import controls" aria-expanded="true" aria-controls="import-content">
+                        <i class="fas fa-chevron-up toggle-icon" aria-hidden="true"></i>
+                        <span class="toggle-text">Hide</span>
+                    </button>
+                </div>
+            </div>
+            <div class="frame-content" id="import-content">
+                <div class="import-controls-container">
+                    <div class="import-description">
+                        <p class="text-muted mb-3">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Import your current workout plan to start logging your session. This will copy all exercises from your workout plan with their planned values.
+                        </p>
+                    </div>
+                    <div class="import-actions">
+                        <button id="import-from-plan-btn" class="btn btn-primary btn-lg" type="button" onclick="importFromWorkoutPlan()">
+                            <i class="fas fa-file-import me-2"></i> Import Current Workout Plan
+                        </button>
+                        <button id="clear-log-btn" class="btn btn-outline-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#clearLogModal">
+                            <i class="fas fa-eraser me-2"></i> Clear Log
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legend for Progressive Overload -->
+    <div class="progression-legend mb-3">
+        <div class="legend-title"><i class="fas fa-chart-line me-2"></i>Progressive Overload Legend:</div>
+        <div class="legend-items">
+            <span class="legend-item"><i class="fas fa-arrow-up text-success"></i> Improved (scored better than planned)</span>
+            <span class="legend-item"><i class="fas fa-equals text-warning"></i> Maintained (same as planned)</span>
+            <span class="legend-item"><i class="fas fa-arrow-down text-danger"></i> Below Target</span>
+        </div>
+    </div>
+
     <div class="workout-log-frame">
         <!-- AGENT:START B-2 PRIORITY-CLASSES -->
         <div class="tbl-wrap tbl-wrap--full" role="region" aria-label="Workout log table">
@@ -54,47 +99,104 @@
                         <td data-label="Planned RIR" data-field="planned_rir">{{ log.planned_rir }}</td>
                         <td data-label="Planned RPE" data-field="planned_rpe">{{ log.planned_rpe }}</td>
                         <td data-label="Planned Weight" data-field="planned_weight">{{ log.planned_weight }}</td>
-                        <td data-label="Scored Min Reps" class="editable" data-field="scored_min_reps">
-                            <input type="number" 
-                                   class="editable-input number-input" 
-                                   value="{{ log.scored_min_reps if log.scored_min_reps and log.scored_min_reps != 'None' else '' }}"
-                                   onchange="updateScoredValue('{{ log.id }}', 'scored_min_reps', this.value)"
-                                   style="display: none;">
-                            <span class="editable-text">{{ log.scored_min_reps or 'Click to set' }}</span>
+                        <td data-label="Scored Min Reps" class="editable scored-cell" data-field="scored_min_reps">
+                            <div class="scored-value-container">
+                                <input type="number" 
+                                       class="editable-input number-input" 
+                                       value="{{ log.scored_min_reps if log.scored_min_reps and log.scored_min_reps != 'None' else '' }}"
+                                       onchange="updateScoredValue('{{ log.id }}', 'scored_min_reps', this.value)"
+                                       style="display: none;">
+                                <span class="editable-text">{{ log.scored_min_reps if log.scored_min_reps and log.scored_min_reps != 'None' else 'Click to set' }}</span>
+                                {% if log.scored_min_reps and log.scored_min_reps != 'None' and log.planned_min_reps %}
+                                    {% if log.scored_min_reps|int > log.planned_min_reps|int %}
+                                        <i class="fas fa-arrow-up progression-indicator text-success" title="Above target! (+{{ log.scored_min_reps|int - log.planned_min_reps|int }})"></i>
+                                    {% elif log.scored_min_reps|int == log.planned_min_reps|int %}
+                                        <i class="fas fa-equals progression-indicator text-warning" title="Met target"></i>
+                                    {% else %}
+                                        <i class="fas fa-arrow-down progression-indicator text-danger" title="Below target ({{ log.scored_min_reps|int - log.planned_min_reps|int }})"></i>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
                         </td>
-                        <td data-label="Scored Max Reps" class="editable" data-field="scored_max_reps">
-                            <input type="number" 
-                                   class="editable-input number-input" 
-                                   value="{{ log.scored_max_reps if log.scored_max_reps and log.scored_max_reps != 'None' else '' }}"
-                                   onchange="updateScoredValue('{{ log.id }}', 'scored_max_reps', this.value)"
-                                   style="display: none;">
-                            <span class="editable-text">{{ log.scored_max_reps or 'Click to set' }}</span>
+                        <td data-label="Scored Max Reps" class="editable scored-cell" data-field="scored_max_reps">
+                            <div class="scored-value-container">
+                                <input type="number" 
+                                       class="editable-input number-input" 
+                                       value="{{ log.scored_max_reps if log.scored_max_reps and log.scored_max_reps != 'None' else '' }}"
+                                       onchange="updateScoredValue('{{ log.id }}', 'scored_max_reps', this.value)"
+                                       style="display: none;">
+                                <span class="editable-text">{{ log.scored_max_reps if log.scored_max_reps and log.scored_max_reps != 'None' else 'Click to set' }}</span>
+                                {% if log.scored_max_reps and log.scored_max_reps != 'None' and log.planned_max_reps %}
+                                    {% if log.scored_max_reps|int > log.planned_max_reps|int %}
+                                        <i class="fas fa-arrow-up progression-indicator text-success" title="Above target! (+{{ log.scored_max_reps|int - log.planned_max_reps|int }})"></i>
+                                    {% elif log.scored_max_reps|int == log.planned_max_reps|int %}
+                                        <i class="fas fa-equals progression-indicator text-warning" title="Met target"></i>
+                                    {% else %}
+                                        <i class="fas fa-arrow-down progression-indicator text-danger" title="Below target ({{ log.scored_max_reps|int - log.planned_max_reps|int }})"></i>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
                         </td>
-                        <td data-label="Scored RIR" class="editable" data-field="scored_rir">
-                            <input type="number" 
-                                   class="editable-input number-input" 
-                                   value="{{ log.scored_rir if log.scored_rir and log.scored_rir != 'None' else '' }}"
-                                   onchange="updateScoredValue('{{ log.id }}', 'scored_rir', this.value)"
-                                   style="display: none;">
-                            <span class="editable-text">{{ log.scored_rir or 'Click to set' }}</span>
+                        <td data-label="Scored RIR" class="editable scored-cell" data-field="scored_rir">
+                            <div class="scored-value-container">
+                                <input type="number" 
+                                       class="editable-input number-input" 
+                                       value="{{ log.scored_rir if log.scored_rir and log.scored_rir != 'None' else '' }}"
+                                       onchange="updateScoredValue('{{ log.id }}', 'scored_rir', this.value)"
+                                       style="display: none;">
+                                <span class="editable-text">{{ log.scored_rir if log.scored_rir and log.scored_rir != 'None' else 'Click to set' }}</span>
+                                {# For RIR, LOWER is BETTER (means you pushed harder) #}
+                                {% if log.scored_rir is not none and log.scored_rir != 'None' and log.planned_rir is not none %}
+                                    {% if log.scored_rir|int < log.planned_rir|int %}
+                                        <i class="fas fa-arrow-up progression-indicator text-success" title="Pushed harder! (RIR -{{ log.planned_rir|int - log.scored_rir|int }})"></i>
+                                    {% elif log.scored_rir|int == log.planned_rir|int %}
+                                        <i class="fas fa-equals progression-indicator text-warning" title="Met target RIR"></i>
+                                    {% else %}
+                                        <i class="fas fa-arrow-down progression-indicator text-danger" title="Easier than planned (RIR +{{ log.scored_rir|int - log.planned_rir|int }})"></i>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
                         </td>
-                        <td data-label="Scored RPE" class="editable" data-field="scored_rpe">
-                            <input type="number" 
-                                   class="editable-input number-input" 
-                                   value="{{ log.scored_rpe if log.scored_rpe and log.scored_rpe != 'None' else '' }}"
-                                   onchange="updateScoredValue('{{ log.id }}', 'scored_rpe', this.value)"
-                                   style="display: none;">
-                            <span class="editable-text">{{ log.scored_rpe or 'Click to set' }}</span>
+                        <td data-label="Scored RPE" class="editable scored-cell" data-field="scored_rpe">
+                            <div class="scored-value-container">
+                                <input type="number" 
+                                       class="editable-input number-input" 
+                                       value="{{ log.scored_rpe if log.scored_rpe and log.scored_rpe != 'None' else '' }}"
+                                       onchange="updateScoredValue('{{ log.id }}', 'scored_rpe', this.value)"
+                                       style="display: none;">
+                                <span class="editable-text">{{ log.scored_rpe if log.scored_rpe and log.scored_rpe != 'None' else 'Click to set' }}</span>
+                                {# For RPE, HIGHER means you pushed harder - it's a measure of effort #}
+                                {% if log.scored_rpe is not none and log.scored_rpe != 'None' and log.planned_rpe is not none %}
+                                    {% if log.scored_rpe|float > log.planned_rpe|float %}
+                                        <i class="fas fa-arrow-up progression-indicator text-success" title="Higher effort! (+{{ (log.scored_rpe|float - log.planned_rpe|float)|round(1) }})"></i>
+                                    {% elif log.scored_rpe|float == log.planned_rpe|float %}
+                                        <i class="fas fa-equals progression-indicator text-warning" title="Met target RPE"></i>
+                                    {% else %}
+                                        <i class="fas fa-arrow-down progression-indicator text-danger" title="Lower effort ({{ (log.scored_rpe|float - log.planned_rpe|float)|round(1) }})"></i>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
                         </td>
-                        <td data-label="Scored Weight" class="editable" data-field="scored_weight">
-                            <input type="number" 
-                                   class="editable-input number-input" 
-                                   value="{{ log.scored_weight if log.scored_weight and log.scored_weight != 'None' else '' }}"
-                                   step="0.5"
-                                   min="0"
-                                   onchange="updateScoredValue('{{ log.id }}', 'scored_weight', this.value)"
-                                   style="display: none;">
-                            <span class="editable-text">{{ log.scored_weight or 'Click to set' }}</span>
+                        <td data-label="Scored Weight" class="editable scored-cell" data-field="scored_weight">
+                            <div class="scored-value-container">
+                                <input type="number" 
+                                       class="editable-input number-input" 
+                                       value="{{ log.scored_weight if log.scored_weight and log.scored_weight != 'None' else '' }}"
+                                       step="0.5"
+                                       min="0"
+                                       onchange="updateScoredValue('{{ log.id }}', 'scored_weight', this.value)"
+                                       style="display: none;">
+                                <span class="editable-text">{{ log.scored_weight if log.scored_weight and log.scored_weight != 'None' else 'Click to set' }}</span>
+                                {% if log.scored_weight and log.scored_weight != 'None' and log.planned_weight %}
+                                    {% if log.scored_weight|float > log.planned_weight|float %}
+                                        <i class="fas fa-arrow-up progression-indicator text-success" title="Weight increased! (+{{ (log.scored_weight|float - log.planned_weight|float)|round(1) }}kg)"></i>
+                                    {% elif log.scored_weight|float == log.planned_weight|float %}
+                                        <i class="fas fa-equals progression-indicator text-warning" title="Same weight"></i>
+                                    {% else %}
+                                        <i class="fas fa-arrow-down progression-indicator text-danger" title="Weight decreased ({{ (log.scored_weight|float - log.planned_weight|float)|round(1) }}kg)"></i>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
                         </td>
                         <td data-label="Last Progression" class="editable" data-field="last_progression_date">
                             <input type="date" 
@@ -150,5 +252,34 @@
 
 <div class="btn-group" aria-label="Export controls">
     <!-- Other buttons in the group -->
+</div>
+
+<!-- Clear Log Confirmation Modal -->
+<div class="modal fade" id="clearLogModal" tabindex="-1" aria-labelledby="clearLogModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="clearLogModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Clear Log
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong>Are you sure you want to clear all workout log entries?</strong></p>
+                <p class="text-muted mb-0">
+                    <i class="fas fa-info-circle me-1"></i>
+                    This action cannot be undone. All your logged workout data will be permanently deleted.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirm-clear-log-btn" onclick="window.confirmClearWorkoutLog()">
+                    <i class="fas fa-trash me-1"></i>Yes, Clear All
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %} 

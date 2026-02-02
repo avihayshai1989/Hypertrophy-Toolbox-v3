@@ -175,3 +175,299 @@
     background-color: #e65100 !important; /* Darker orange */
     color: #fff !important;
 }
+
+/* ======================================
+   Import Controls Frame Styles
+   ====================================== */
+.workout-log-controls-frame .collapsible-frame {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='dark'] .workout-log-controls-frame .collapsible-frame {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    border-color: #444;
+}
+
+.workout-log-controls-frame .frame-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+[data-theme='dark'] .workout-log-controls-frame .frame-header {
+    border-bottom-color: #444;
+}
+
+.workout-log-controls-frame .frame-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+[data-theme='dark'] .workout-log-controls-frame .frame-title {
+    color: #fff;
+}
+
+.workout-log-controls-frame .frame-content {
+    padding: 1.5rem;
+}
+
+.import-controls-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.import-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.import-actions .btn-primary,
+#import-from-plan-btn {
+    background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%) !important;
+    border: none !important;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.import-actions .btn-primary:hover,
+#import-from-plan-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    background: linear-gradient(135deg, #5cb85c 0%, #3d8b40 100%) !important;
+    color: #ffffff !important;
+}
+
+.import-actions .btn-primary:focus,
+#import-from-plan-btn:focus {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
+    color: #ffffff !important;
+}
+
+/* Dark mode - ensure button remains visible */
+[data-theme='dark'] .import-actions .btn-primary,
+[data-theme='dark'] #import-from-plan-btn {
+    background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #81c784 !important;
+}
+
+[data-theme='dark'] .import-actions .btn-primary:hover,
+[data-theme='dark'] #import-from-plan-btn:hover {
+    background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%) !important;
+    box-shadow: 0 4px 12px rgba(102, 187, 106, 0.5);
+}
+
+/* ======================================
+   Progression Legend Styles
+   ====================================== */
+.progression-legend {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+[data-theme='dark'] .progression-legend {
+    background: #2d2d2d;
+    border-color: #444;
+}
+
+.progression-legend .legend-title {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+[data-theme='dark'] .progression-legend .legend-title {
+    color: #fff;
+}
+
+.progression-legend .legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+}
+
+.progression-legend .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+[data-theme='dark'] .progression-legend .legend-item {
+    color: #aaa;
+}
+
+.progression-legend .legend-item i {
+    font-size: 0.9rem;
+}
+
+/* ======================================
+   Scored Cell Styles with Indicators
+   ====================================== */
+.scored-cell {
+    position: relative;
+}
+
+.scored-value-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+.progression-indicator {
+    font-size: 0.8rem;
+    margin-left: 0.25rem;
+    opacity: 0.9;
+    cursor: help;
+}
+
+.progression-indicator.text-success {
+    animation: pulse-success 2s infinite;
+}
+
+@keyframes pulse-success {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 0.6; }
+}
+
+/* Row highlighting based on progression status */
+tr[data-log-id] .badge.bg-success {
+    background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%) !important;
+    font-weight: 600;
+}
+
+tr[data-log-id] .badge.bg-warning {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%) !important;
+    color: #fff !important;
+    font-weight: 600;
+}
+
+/* Highlight achieved rows subtly */
+tr[data-log-id]:has(.badge.bg-success) {
+    background-color: rgba(76, 175, 80, 0.05) !important;
+}
+
+[data-theme='dark'] tr[data-log-id]:has(.badge.bg-success) {
+    background-color: rgba(76, 175, 80, 0.1) !important;
+}
+
+/* Collapse toggle styling */
+.collapse-toggle {
+    background: transparent;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 0.375rem 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #666;
+}
+
+[data-theme='dark'] .collapse-toggle {
+    border-color: #444;
+    color: #aaa;
+}
+
+.collapse-toggle:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+[data-theme='dark'] .collapse-toggle:hover {
+    background: #3d3d3d;
+    border-color: #555;
+}
+
+.collapse-toggle .toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.collapsible-frame.collapsed .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.collapsible-frame.collapsed .frame-content {
+    display: none;
+}
+
+/* ======================================
+   Clear Log Modal Styles
+   ====================================== */
+#clearLogModal {
+    z-index: 1055 !important;
+}
+
+#clearLogModal.modal.show {
+    display: block !important;
+}
+
+#clearLogModal .modal-dialog {
+    pointer-events: auto !important;
+    z-index: 1056 !important;
+}
+
+#clearLogModal .modal-content {
+    z-index: 1056 !important;
+    pointer-events: auto !important;
+}
+
+#clearLogModal .modal-header.bg-danger {
+    border-top-left-radius: calc(1rem - 1px);
+    border-top-right-radius: calc(1rem - 1px);
+}
+
+#clearLogModal .modal-footer .btn {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Ensure modal backdrop works */
+.modal-backdrop + #clearLogModal,
+body.modal-open #clearLogModal {
+    z-index: 1055 !important;
+}
+
+[data-theme='dark'] #clearLogModal .modal-content {
+    background-color: #2d2d2d;
+    color: #fff;
+    border-color: #444;
+}
+
+[data-theme='dark'] #clearLogModal .modal-body {
+    background-color: #2d2d2d;
+}
+
+[data-theme='dark'] #clearLogModal .modal-body p {
+    color: #fff;
+}
+
+[data-theme='dark'] #clearLogModal .modal-body .text-muted {
+    color: #aaa !important;
+}
+
+[data-theme='dark'] #clearLogModal .modal-footer {
+    background-color: #252525;
+    border-top-color: #444;
+}

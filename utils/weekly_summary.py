@@ -6,6 +6,14 @@ from typing import Any, Dict, List, Optional
 
 from utils.database import DatabaseHandler
 from utils.volume_classifier import get_volume_class
+from utils.effective_sets import (
+    CountingMode,
+    ContributionMode,
+    calculate_effective_sets,
+    get_weekly_volume_class,
+    MUSCLE_CONTRIBUTION_WEIGHTS,
+    DEFAULT_MULTIPLIER,
+)
 
 
 STATUS_MAP = {
@@ -15,14 +23,40 @@ STATUS_MAP = {
     'ultra-volume': 'excessive',
 }
 
+# Map new volume classes to CSS-compatible status
+EFFECTIVE_STATUS_MAP = {
+    'low': 'low',
+    'medium': 'medium',
+    'high': 'high',
+    'excessive': 'excessive',
+}
 
-def calculate_weekly_summary(method: Optional[str] = None) -> Dict[str, Dict[str, Any]]:
-    """Aggregate weighted weekly set counts per muscle group.
+
+def calculate_weekly_summary(
+    method: Optional[str] = None,
+    counting_mode: CountingMode = CountingMode.EFFECTIVE,
+    contribution_mode: ContributionMode = ContributionMode.TOTAL,
+) -> Dict[str, Dict[str, Any]]:
+    """Aggregate weighted weekly set counts per muscle group with effective sets.
 
     Args:
         method: Optional summary mode retained for backwards compatibility. Current
             implementation ignores the value but accepts inputs like "Total" so
             existing callers do not raise ``TypeError``.
+        counting_mode: RAW or EFFECTIVE set counting mode.
+        contribution_mode: DIRECT_ONLY or TOTAL muscle contribution mode.
+        
+    Returns:
+        Dictionary mapping muscle groups to their volume statistics including:
+        - weekly_sets: Total (effective or raw) sets for the week
+        - raw_weekly_sets: Always the raw set count (for reference)
+        - effective_weekly_sets: Always the effective set count
+        - sets_per_session: Average sets per training session
+        - frequency: Number of sessions where muscle got >= 1.0 effective sets
+        - status: Volume classification (low/medium/high/excessive)
+        - volume_class: CSS class for UI styling
+        - total_reps: Weighted rep total
+        - total_volume: Weighted volume (sets * reps * weight)
     """
     _ = method  # Method handled implicitly; provided for API compatibility.
     query = """
@@ -32,6 +66,8 @@ def calculate_weekly_summary(method: Optional[str] = None) -> Dict[str, Dict[str
             us.min_rep_range,
             us.max_rep_range,
             us.weight,
+            us.rir,
+            us.rpe,
             e.primary_muscle_group,
             e.secondary_muscle_group,
             e.tertiary_muscle_group
@@ -42,50 +78,134 @@ def calculate_weekly_summary(method: Optional[str] = None) -> Dict[str, Dict[str
     with DatabaseHandler() as db:
         rows = db.fetch_all(query)
 
-    totals = defaultdict(lambda: {'sets': 0.0, 'reps': 0.0, 'volume': 0.0})
-    sessions_by_muscle: Dict[str, set[str]] = defaultdict(set)
+    # Track both effective and raw totals
+    effective_totals = defaultdict(lambda: {'sets': 0.0, 'reps': 0.0, 'volume': 0.0})
+    raw_totals = defaultdict(lambda: {'sets': 0.0, 'reps': 0.0, 'volume': 0.0})
+    sessions_by_muscle: Dict[str, Dict[str, float]] = defaultdict(lambda: defaultdict(float))
 
     for row in rows:
         sets = row.get('sets') or 0
         routine = row.get('routine')
-        avg_reps = 0.0
         min_rep = row.get('min_rep_range')
         max_rep = row.get('max_rep_range')
+        rir = row.get('rir')
+        rpe = row.get('rpe')
+        load = row.get('weight') or 0
+        
+        avg_reps = 0.0
         if min_rep is not None and max_rep is not None:
             avg_reps = (min_rep + max_rep) / 2.0
-        load = row.get('weight') or 0
-        contributions = (
-            (row.get('primary_muscle_group'), 1.0),
-            (row.get('secondary_muscle_group'), 0.5),
-            (row.get('tertiary_muscle_group'), 0.25),
+        
+        # Calculate effective sets using the new module
+        eff_result = calculate_effective_sets(
+            sets=sets,
+            rir=rir,
+            rpe=rpe,
+            min_rep_range=min_rep,
+            max_rep_range=max_rep,
+            primary_muscle=row.get('primary_muscle_group'),
+            secondary_muscle=row.get('secondary_muscle_group'),
+            tertiary_muscle=row.get('tertiary_muscle_group'),
+            counting_mode=counting_mode,
+            contribution_mode=contribution_mode,
         )
+        
+        # Aggregate per-muscle contributions
+        contributions = [
+            (row.get('primary_muscle_group'), MUSCLE_CONTRIBUTION_WEIGHTS['primary']),
+            (row.get('secondary_muscle_group'), MUSCLE_CONTRIBUTION_WEIGHTS['secondary']),
+            (row.get('tertiary_muscle_group'), MUSCLE_CONTRIBUTION_WEIGHTS['tertiary']),
+        ]
+        
         for muscle, weight_factor in contributions:
-            if muscle and weight_factor:
-                weighted_sets = sets * weight_factor
-                weighted_reps = weighted_sets * avg_reps
-                weighted_volume = weighted_reps * load
-                bucket = totals[muscle]
-                bucket['sets'] += weighted_sets
-                bucket['reps'] += weighted_reps
-                bucket['volume'] += weighted_volume
-                if routine:
-                    sessions_by_muscle[muscle].add(routine)
+            if not muscle:
+                continue
+                
+            # Skip secondary/tertiary in direct-only mode
+            if contribution_mode == ContributionMode.DIRECT_ONLY:
+                if weight_factor != MUSCLE_CONTRIBUTION_WEIGHTS['primary']:
+                    continue
+                weight_factor = 1.0  # Full credit for primary in direct mode
+            
+            # Get effective contribution for this muscle
+            eff_contribution = eff_result.muscle_contributions.get(muscle, 0.0)
+            
+            # Raw calculations (always use standard weighting)
+            raw_weighted_sets = sets * weight_factor
+            raw_weighted_reps = raw_weighted_sets * avg_reps
+            raw_weighted_volume = raw_weighted_reps * load
+            
+            # Effective calculations
+            eff_weighted_reps = eff_contribution * avg_reps
+            eff_weighted_volume = eff_weighted_reps * load
+            
+            # Update effective totals
+            eff_bucket = effective_totals[muscle]
+            eff_bucket['sets'] += eff_contribution
+            eff_bucket['reps'] += eff_weighted_reps
+            eff_bucket['volume'] += eff_weighted_volume
+            
+            # Update raw totals (preserve for display/debugging)
+            raw_bucket = raw_totals[muscle]
+            raw_bucket['sets'] += raw_weighted_sets
+            raw_bucket['reps'] += raw_weighted_reps
+            raw_bucket['volume'] += raw_weighted_volume
+            
+            # Track session contributions for frequency calculation
+            if routine:
+                sessions_by_muscle[muscle][routine] += eff_contribution
 
     global_sessions = {row.get('routine') for row in rows if row.get('routine')}
     summary: Dict[str, Dict[str, Any]] = {}
-    for muscle, aggregates in totals.items():
-        weekly_sets = aggregates['sets']
-        muscle_sessions = sessions_by_muscle.get(muscle)
-        session_count = len(muscle_sessions) if muscle_sessions else len(global_sessions) or 1
+    
+    for muscle in set(effective_totals.keys()) | set(raw_totals.keys()):
+        eff_aggregates = effective_totals[muscle]
+        raw_aggregates = raw_totals[muscle]
+        
+        weekly_eff_sets = eff_aggregates['sets']
+        weekly_raw_sets = raw_aggregates['sets']
+        
+        # Use effective sets as the primary metric (or raw if in RAW mode)
+        if counting_mode == CountingMode.RAW:
+            weekly_sets = weekly_raw_sets
+        else:
+            weekly_sets = weekly_eff_sets
+        
+        # Calculate frequency: sessions where muscle got >= 1.0 effective sets
+        muscle_sessions = sessions_by_muscle.get(muscle, {})
+        frequency = sum(1 for eff_sets in muscle_sessions.values() if eff_sets >= 1.0)
+        
+        # Fallback session count for backward compatibility
+        session_count = frequency if frequency > 0 else (len(global_sessions) or 1)
         sets_per_session = weekly_sets / session_count if session_count else weekly_sets
-        volume_class = get_volume_class(weekly_sets)
+        
+        # Use effective-sets-based classification
+        volume_class_str = get_weekly_volume_class(weekly_eff_sets)
+        legacy_volume_class = get_volume_class(weekly_sets)
+        
         summary[muscle] = {
+            # Primary metrics (mode-dependent)
             'weekly_sets': round(weekly_sets, 2),
             'sets_per_session': round(sets_per_session, 2),
-            'status': STATUS_MAP.get(volume_class, 'low'),
-            'volume_class': volume_class,
-            'total_reps': round(aggregates['reps'], 2),
-            'total_volume': round(aggregates['volume'], 2),
+            'status': EFFECTIVE_STATUS_MAP.get(volume_class_str, 'low'),
+            'volume_class': legacy_volume_class,  # Keep legacy CSS class
+            
+            # Always-available metrics
+            'raw_weekly_sets': round(weekly_raw_sets, 2),
+            'effective_weekly_sets': round(weekly_eff_sets, 2),
+            'frequency': frequency,
+            'avg_sets_per_session': round(weekly_eff_sets / frequency, 2) if frequency > 0 else 0.0,
+            'max_sets_per_session': round(max(muscle_sessions.values()), 2) if muscle_sessions else 0.0,
+            
+            # Volume totals
+            'total_reps': round(eff_aggregates['reps'], 2),
+            'total_volume': round(eff_aggregates['volume'], 2),
+            'raw_total_reps': round(raw_aggregates['reps'], 2),
+            'raw_total_volume': round(raw_aggregates['volume'], 2),
+            
+            # Mode indicators
+            'counting_mode': counting_mode.value,
+            'contribution_mode': contribution_mode.value,
         }
 
     return dict(sorted(summary.items()))

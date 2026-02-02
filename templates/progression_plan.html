@@ -78,23 +78,16 @@
 </div>
 
 <!-- Goal Setting Modal -->
-<div class="modal"
+<div class="modal fade" 
      id="goalSettingModal" 
      tabindex="-1" 
-     role="dialog"
-     aria-modal="true"
-     aria-labelledby="goalSettingModalLabel">
-    <div class="modal-dialog">
+     aria-labelledby="goalSettingModalLabel" 
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="goalSettingModalLabel">Set Progression Goal</h5>
-                <button type="button" 
-                        class="btn-close" 
-                        data-bs-dismiss="modal" 
-                        aria-label="Close"
-                        id="modalCloseBtn">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="goalForm" role="form">

@@ -11,29 +11,66 @@ from utils.volume_classifier import (
     get_category_tooltip,
     get_subcategory_tooltip
 )
+from utils.effective_sets import CountingMode, ContributionMode
 
 session_summary_bp = Blueprint('session_summary', __name__)
+
+
+def _parse_counting_mode(value: str) -> CountingMode:
+    """Parse counting mode from request parameter."""
+    if value and value.lower() == 'raw':
+        return CountingMode.RAW
+    return CountingMode.EFFECTIVE  # Default to effective
+
+
+def _parse_contribution_mode(value: str) -> ContributionMode:
+    """Parse contribution mode from request parameter."""
+    if value and value.lower() == 'direct':
+        return ContributionMode.DIRECT_ONLY
+    return ContributionMode.TOTAL  # Default to total
+
 
 @session_summary_bp.route("/session_summary", methods=["GET"])
 def session_summary():
     routine = request.args.get("routine")
     start_date = request.args.get("start_date")
     end_date = request.args.get("end_date")
+    counting_mode_str = request.args.get("counting_mode", "effective")
+    contribution_mode_str = request.args.get("contribution_mode", "total")
+    
     time_window = (start_date, end_date) if (start_date or end_date) else None
+    counting_mode = _parse_counting_mode(counting_mode_str)
+    contribution_mode = _parse_contribution_mode(contribution_mode_str)
+    
     try:
-        summary_map = calculate_session_summary(routine=routine, time_window=time_window)
+        summary_map = calculate_session_summary(
+            routine=routine,
+            time_window=time_window,
+            counting_mode=counting_mode,
+            contribution_mode=contribution_mode,
+        )
         results = [
             {
                 'routine': routine_name,
                 'muscle_group': muscle,
                 'weekly_sets': data['weekly_sets'],
+                'effective_sets': data.get('effective_sets', data['weekly_sets']),
+                'raw_sets': data.get('raw_sets', data['weekly_sets']),
                 'sets_per_session': data['sets_per_session'],
+                'effective_per_session': data.get('effective_per_session', data['sets_per_session']),
                 'status': data['status'],
                 'volume_class': data['volume_class'],
-                'total_sets': data['weekly_sets'],
+                'total_sets': data['weekly_sets'],  # Legacy alias
                 'total_reps': data['total_reps'],
                 'total_volume': data['total_volume'],
-                'weight': 0,
+                'weight': 0,  # Legacy field
+                # Volume warnings
+                'warning_level': data.get('warning_level', 'ok'),
+                'is_borderline': data.get('is_borderline', False),
+                'is_excessive': data.get('is_excessive', False),
+                # Mode indicators
+                'counting_mode': counting_mode.value,
+                'contribution_mode': contribution_mode.value,
             }
             for routine_name, muscles in summary_map.items()
             for muscle, data in muscles.items()
@@ -45,7 +82,11 @@ def session_summary():
             return jsonify({
                 "session_summary": results,
                 "categories": category_results,
-                "isolated_muscles": isolated_muscles_stats
+                "isolated_muscles": isolated_muscles_stats,
+                "modes": {
+                    "counting_mode": counting_mode.value,
+                    "contribution_mode": contribution_mode.value,
+                }
             })
         
         return render_template(
@@ -53,6 +94,8 @@ def session_summary():
             session_summary=results,
             categories=category_results,
             isolated_muscles=isolated_muscles_stats,
+            counting_mode=counting_mode.value,
+            contribution_mode=contribution_mode.value,
             get_volume_class=get_volume_class,
             get_volume_label=get_volume_label,
             get_volume_tooltip=get_volume_tooltip,

@@ -1,6 +1,6 @@
 import { showToast } from './modules/toast.js';
 import { fetchWorkoutPlan, handleRoutineSelection, updateExerciseDetails, updateExerciseForm, handleAddExercise } from './modules/workout-plan.js';
-import { initializeWorkoutLog, deleteWorkoutLog, updateScoredValue, handleDateChange } from './modules/workout-log.js';
+import { initializeWorkoutLog, deleteWorkoutLog, updateScoredValue, handleDateChange, importFromWorkoutPlan, confirmClearWorkoutLog } from './modules/workout-log.js';
 import { initializeFilters, initializeAdvancedFilters, initializeSearchFilter, initializeFilterKeyboardEvents } from './modules/filters.js';
 import { addExercise, removeExercise } from './modules/exercises.js';
 import { initializeUIHandlers, initializeFormHandlers, initializeTooltips, initializeDropdowns, handleTableSort } from './modules/ui-handlers.js';
@@ -53,6 +53,8 @@ window.checkProgressionStatus = checkProgressionStatus;
 window.handleAddExercise = handleAddExercise;
 window.updateScoredValue = updateScoredValue;
 window.handleDateChange = handleDateChange;
+window.importFromWorkoutPlan = importFromWorkoutPlan;
+window.confirmClearWorkoutLog = confirmClearWorkoutLog;
 
 // Initialize navbar
 initializeNavbar();

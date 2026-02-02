@@ -107,67 +107,109 @@
     font-weight: 700;
 }
 
-/* Modal Styles */
-.modal-backdrop {
-    display: none !important;
+/* Modal Styles - Progression Page Specific */
+/* Custom backdrop for goal setting modal */
+#goalSettingModal.show::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
 }
 
-.modal {
-    z-index: 1050;
+#goalSettingModal {
+    z-index: 1060 !important;
 }
 
-.modal-dialog {
+#goalSettingModal.show {
+    display: block !important;
+}
+
+#goalSettingModal .modal-dialog {
+    z-index: 1061 !important;
+    pointer-events: auto !important;
     max-width: 500px;
     margin: 1.75rem auto;
-    position: relative;
-    width: 100%;
     margin-top: 10vh;
+    position: relative;
 }
 
-.modal-content {
+#goalSettingModal .modal-content {
+    z-index: 1062 !important;
+    pointer-events: auto !important;
     background-color: #fff;
     border-radius: 0.5rem;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(0, 0, 0, 0.2);
     position: relative;
-    z-index: 1060;
 }
 
-/* Modal Header */
-.modal-header {
-    border-bottom: 1px solid #dee2e6;
-    padding: 1rem;
-}
-
-/* Modal Body */
-.modal-body {
+#goalSettingModal .modal-body {
     padding: 1.5rem;
+    pointer-events: auto !important;
 }
 
-/* Modal Footer */
-.modal-footer {
-    border-top: 1px solid #dee2e6;
-    padding: 1rem;
-}
-
-/* Form Controls in Modal */
-.modal-body .form-control {
+#goalSettingModal .modal-body .form-control {
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 1063 !important;
     width: 100%;
     padding: 0.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
+    cursor: text;
 }
 
-/* Dark mode for modal */
-[data-theme='dark'] .modal-content {
+#goalSettingModal .modal-body .form-label {
+    pointer-events: auto !important;
+}
+
+#goalSettingModal .modal-header {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem;
+    pointer-events: auto !important;
+}
+
+#goalSettingModal .modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 1rem;
+    pointer-events: auto !important;
+}
+
+#goalSettingModal .modal-footer .btn {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Dark mode for Goal Setting Modal */
+[data-theme='dark'] #goalSettingModal .modal-content {
     background-color: #343a40;
     color: #fff;
     border-color: #495057;
 }
 
-[data-theme='dark'] .modal-backdrop {
-    background-color: rgba(0, 0, 0, 0.7);
+[data-theme='dark'] #goalSettingModal .modal-header {
+    background-color: #2b3035;
+    border-color: #495057;
+}
+
+[data-theme='dark'] #goalSettingModal .modal-body .form-control {
+    background-color: #212529;
+    color: #fff;
+    border-color: #495057;
+}
+
+[data-theme='dark'] #goalSettingModal .modal-body .form-label {
+    color: #fff;
+}
+
+[data-theme='dark'] #goalSettingModal .modal-footer {
+    background-color: #2b3035;
+    border-color: #495057;
 }
 
 /* Delete button styles */

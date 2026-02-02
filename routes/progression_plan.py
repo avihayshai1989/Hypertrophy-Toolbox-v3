@@ -168,25 +168,27 @@ def get_current_value():
         
         with DatabaseHandler() as db:
             if goal_type == 'weight':
+                # Get maximum weight ever achieved for this exercise
+                # Use scored_weight if available, otherwise fall back to planned_weight
                 query = """
-                    SELECT MAX(scored_weight) as current_value 
+                    SELECT MAX(COALESCE(scored_weight, planned_weight)) as current_value 
                     FROM workout_log 
-                    WHERE exercise = ? 
-                    AND created_at >= datetime('now', '-30 days')
+                    WHERE exercise = ?
                 """
             elif goal_type == 'reps':
+                # Get maximum reps ever achieved for this exercise
+                # Use scored_max_reps if available, otherwise fall back to planned_max_reps
                 query = """
-                    SELECT MAX(scored_max_reps) as current_value 
+                    SELECT MAX(COALESCE(scored_max_reps, planned_max_reps)) as current_value 
                     FROM workout_log 
-                    WHERE exercise = ? 
-                    AND created_at >= datetime('now', '-30 days')
+                    WHERE exercise = ?
                 """
             elif goal_type == 'sets':
+                # Get most recent sets count for this exercise
                 query = """
                     SELECT planned_sets as current_value 
                     FROM workout_log 
-                    WHERE exercise = ? 
-                    AND created_at >= datetime('now', '-30 days')
+                    WHERE exercise = ?
                     ORDER BY created_at DESC
                     LIMIT 1
                 """

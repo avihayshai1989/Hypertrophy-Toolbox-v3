@@ -288,4 +288,31 @@ def export_to_workout_log():
             
     except Exception as e:
         logger.exception("Error exporting to workout log")
-        return error_response("INTERNAL_ERROR", "Failed to export to workout log", 500) 
+        return error_response("INTERNAL_ERROR", "Failed to export to workout log", 500)
+
+
+@workout_log_bp.route('/clear_workout_log', methods=['POST'])
+def clear_workout_log():
+    """Clear all entries from the workout log."""
+    try:
+        with DatabaseHandler() as db:
+            # Count entries before clearing for the response message
+            count_query = "SELECT COUNT(*) as count FROM workout_log"
+            result = db.fetch_one(count_query)
+            entry_count = result['count'] if result else 0
+            
+            if entry_count == 0:
+                return jsonify(success_response(message="Workout log is already empty"))
+            
+            # Delete all entries
+            delete_query = "DELETE FROM workout_log"
+            db.execute_query(delete_query)
+            
+            logger.info(f"Cleared {entry_count} entries from workout log")
+            return jsonify(success_response(
+                message=f"Successfully cleared {entry_count} entries from workout log"
+            ))
+            
+    except Exception as e:
+        logger.exception("Error clearing workout log")
+        return error_response("INTERNAL_ERROR", "Failed to clear workout log", 500) 

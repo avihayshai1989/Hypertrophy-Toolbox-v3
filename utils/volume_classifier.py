@@ -1,5 +1,18 @@
+"""Volume classification utilities for both raw and effective sets."""
+
+from utils.effective_sets import (
+    get_weekly_volume_class as get_effective_volume_class,
+    get_session_volume_warning,
+    VolumeWarningLevel,
+)
+
+
 def get_volume_class(total_sets):
-    """Return the CSS class for volume classification."""
+    """Return the CSS class for volume classification (raw sets based).
+    
+    This is the legacy classification based on raw set counts.
+    For effective sets classification, use get_effective_volume_class.
+    """
     if total_sets < 10:
         return "low-volume"
     elif total_sets < 20:
@@ -8,6 +21,7 @@ def get_volume_class(total_sets):
         return "high-volume"
     else:
         return "ultra-volume"
+
 
 def get_volume_label(total_sets):
     """Return the text label for volume classification."""
@@ -20,14 +34,48 @@ def get_volume_label(total_sets):
     else:
         return "Ultra Volume"
 
+
+def get_effective_volume_label(effective_sets):
+    """Return the text label for effective sets volume classification."""
+    vol_class = get_effective_volume_class(effective_sets)
+    labels = {
+        'low': 'Low Volume',
+        'medium': 'Medium Volume',
+        'high': 'High Volume',
+        'excessive': 'Excessive Volume',
+    }
+    return labels.get(vol_class, 'Low Volume')
+
+
 def get_volume_tooltip(volume_label, total_sets):
+    """Return tooltip text for volume classification."""
     ranges = {
         'Low Volume': 'Below 10 sets',
         'Medium Volume': '10-19 sets',
         'High Volume': '20-29 sets',
-        'Ultra Volume': '30+ sets'
+        'Ultra Volume': '30+ sets',
+        'Excessive Volume': '30+ sets',
     }
-    return f"{volume_label}: {ranges[volume_label]} (Current: {total_sets} sets)"
+    return f"{volume_label}: {ranges.get(volume_label, 'Unknown')} (Current: {total_sets:.1f} sets)"
+
+
+def get_session_warning_tooltip(effective_per_session):
+    """Return tooltip text for session volume warnings.
+    
+    Args:
+        effective_per_session: Effective sets per session for a muscle.
+        
+    Returns:
+        Tooltip describing the session volume status.
+    """
+    warning = get_session_volume_warning(effective_per_session)
+    
+    if warning == VolumeWarningLevel.OK:
+        return f"Session volume OK ({effective_per_session:.1f} effective sets) - Within productive limits"
+    elif warning == VolumeWarningLevel.BORDERLINE:
+        return f"Session volume BORDERLINE ({effective_per_session:.1f} effective sets) - Approaching productive limits"
+    else:
+        return f"Session volume EXCESSIVE ({effective_per_session:.1f} effective sets) - May exceed productive stimulus"
 
 def get_category_tooltip(category):
     tooltips = {

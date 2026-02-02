@@ -19,36 +19,55 @@
     <div class="summary-frame">
         <!-- Method Selection and Legend with full width -->
         <div class="summary-header">
-            <!-- Calculation Method -->
+            <!-- Calculation Method Toggles -->
             <div class="method-selector">
-                <label for="method" class="form-label">Calculation Method</label>
-                <select id="method" class="form-select" onchange="updateWeeklySummary()">
-                    <option value="Total" selected>Total (All Contributions)</option>
-                    <option value="Fractional">Fractional (Weighted Contributions)</option>
-                    <option value="Direct">Direct (Primary Muscle Group Only)</option>
-                </select>
+                <div class="mb-3">
+                    <label for="counting-mode" class="form-label">Set Counting Mode</label>
+                    <select id="counting-mode" class="form-select" onchange="updateWeeklySummary()">
+                        <option value="effective" selected>Effective Sets (Effort & Rep Range Weighted)</option>
+                        <option value="raw">Raw Sets (Unweighted)</option>
+                    </select>
+                    <small class="form-text text-muted">
+                        <strong>Effective Sets:</strong> Weights sets by effort (RIR/RPE) and rep range to estimate hypertrophy stimulus. Lower RIR = more credit.<br>
+                        <strong>Raw Sets:</strong> Simple set count without any adjustments.
+                    </small>
+                </div>
+                <div class="mb-3">
+                    <label for="contribution-mode" class="form-label">Muscle Contribution Mode</label>
+                    <select id="contribution-mode" class="form-select" onchange="updateWeeklySummary()">
+                        <option value="total" selected>Total (Primary + Secondary + Tertiary)</option>
+                        <option value="direct">Direct Only (Primary Muscle Only)</option>
+                    </select>
+                    <small class="form-text text-muted">
+                        <strong>Total:</strong> Counts volume from all muscles worked (Primary 100%, Secondary 50%, Tertiary 25%).<br>
+                        <strong>Direct Only:</strong> Only counts sets where the muscle is the primary target.
+                    </small>
+                </div>
             </div>
 
             <!-- Volume Classification Legend -->
             <div class="volume-legend">
-                <h5>Volume Classification Legend</h5>
+                <h5>Volume Classification Legend <small class="text-muted">(Based on Effective Sets)</small></h5>
                 <div class="legend-indicators">
                     <div class="legend-item">
                         <div class="volume-indicator low-volume"></div>
-                        <span>Low Volume: Below 10 sets</span>
+                        <span>Low Volume: Below 10 effective sets</span>
                     </div>
                     <div class="legend-item">
                         <div class="volume-indicator medium-volume"></div>
-                        <span>Medium Volume: 10-19 sets</span>
+                        <span>Medium Volume: 10-19 effective sets</span>
                     </div>
                     <div class="legend-item">
                         <div class="volume-indicator high-volume"></div>
-                        <span>High Volume: 20-29 sets</span>
+                        <span>High Volume: 20-29 effective sets</span>
                     </div>
                     <div class="legend-item">
                         <div class="volume-indicator ultra-volume"></div>
-                        <span>Ultra Volume: 30+ sets</span>
+                        <span>Excessive Volume: 30+ effective sets</span>
                     </div>
+                </div>
+                <div class="mt-2 small text-muted">
+                    <strong>Effective Sets</strong> = Raw Sets × Effort Factor (RIR/RPE) × Rep Range Factor
                 </div>
             </div>
         </div>
@@ -67,8 +86,9 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="col--high" data-label="Muscle Group">Muscle Group</th>
-                                    <th scope="col" class="col--high is-num" data-label="Total Sets">Total Sets</th>
-                                    <th scope="col" class="col--med is-num" data-label="Total Reps">Total Reps</th>
+                                    <th scope="col" class="col--high is-num" data-label="Effective Sets">Effective Sets</th>
+                                    <th scope="col" class="col--med is-num" data-label="Raw Sets">Raw Sets</th>
+                                    <th scope="col" class="col--med is-num" data-label="Frequency">Frequency</th>
                                     <th scope="col" class="col--med is-num" data-label="Total Volume">Total Volume</th>
                                     <th scope="col" class="col--high" data-label="Volume Classification">Volume Classification</th>
                                 </tr>
@@ -178,48 +198,49 @@
 </div>
 
 <script>
-// Function to get volume classification details
-function getVolumeDetails(totalSets) {
+// Function to get volume classification details based on effective sets
+function getVolumeDetails(effectiveSets) {
     let volumeClass, volumeLabel;
     
-    if (totalSets < 10) {
+    if (effectiveSets < 10) {
         volumeClass = 'low-volume';
         volumeLabel = 'Low Volume';
-    } else if (totalSets < 20) {
+    } else if (effectiveSets < 20) {
         volumeClass = 'medium-volume';
         volumeLabel = 'Medium Volume';
-    } else if (totalSets < 30) {
+    } else if (effectiveSets < 30) {
         volumeClass = 'high-volume';
         volumeLabel = 'High Volume';
     } else {
         volumeClass = 'ultra-volume';
-        volumeLabel = 'Ultra Volume';
+        volumeLabel = 'Excessive Volume';
     }
 
     const ranges = {
-        'Low Volume': 'Below 10 sets',
-        'Medium Volume': '10-19 sets',
-        'High Volume': '20-29 sets',
-        'Ultra Volume': '30+ sets'
+        'Low Volume': 'Below 10 effective sets',
+        'Medium Volume': '10-19 effective sets',
+        'High Volume': '20-29 effective sets',
+        'Excessive Volume': '30+ effective sets'
     };
 
     return {
         class: volumeClass,
         label: volumeLabel,
-        tooltip: `${volumeLabel}: ${ranges[volumeLabel]} (Current: ${totalSets} sets)`
+        tooltip: `${volumeLabel}: ${ranges[volumeLabel]} (Current: ${effectiveSets.toFixed(1)} effective sets)`
     };
 }
 
-// Function to update the weekly summary table based on the selected method
+// Function to update the weekly summary table based on the selected modes
 async function updateWeeklySummary() {
-    const method = document.getElementById("method").value;
+    const countingMode = document.getElementById("counting-mode").value;
+    const contributionMode = document.getElementById("contribution-mode").value;
     const tableBody = document.getElementById("weekly-summary-table");
     const categoryTableBody = document.getElementById("categories-table-body");
 
     // Display loading spinner
     tableBody.innerHTML = `
         <tr>
-            <td colspan="5" class="text-center">
+            <td colspan="6" class="text-center">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
@@ -227,7 +248,7 @@ async function updateWeeklySummary() {
         </tr>`;
 
     try {
-        const response = await fetch(`/weekly_summary?method=${method}`, {
+        const response = await fetch(`/weekly_summary?counting_mode=${countingMode}&contribution_mode=${contributionMode}`, {
             headers: { "Accept": "application/json" }
         });
 
@@ -239,19 +260,23 @@ async function updateWeeklySummary() {
         if (data.weekly_summary.length === 0) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="5" class="text-center text-muted">No data available.</td>
+                    <td colspan="6" class="text-center text-muted">No data available.</td>
                 </tr>`;
         } else {
             // Populate the table with fetched data
             tableBody.innerHTML = data.weekly_summary.map(row => {
-                const volume = getVolumeDetails(row.total_sets);
+                const effectiveSets = row.effective_sets || row.total_sets;
+                const rawSets = row.raw_sets || row.total_sets;
+                const frequency = row.frequency || 0;
+                const volume = getVolumeDetails(effectiveSets);
                 return `
                     <tr>
-                        <td>${row.muscle_group || "N/A"}</td>
-                        <td>${row.total_sets}</td>
-                        <td>${row.total_reps}</td>
-                        <td>${row.total_weight}</td>
-                        <td>
+                        <td data-label="Muscle Group">${row.muscle_group || "N/A"}</td>
+                        <td data-label="Effective Sets" class="is-num">${effectiveSets.toFixed(1)}</td>
+                        <td data-label="Raw Sets" class="is-num">${rawSets.toFixed(1)}</td>
+                        <td data-label="Frequency" class="is-num">${frequency}</td>
+                        <td data-label="Total Volume" class="is-num">${(row.total_volume || row.total_weight || 0).toFixed(0)}</td>
+                        <td data-label="Volume Classification">
                             <div class="volume-classification" 
                                  data-bs-toggle="tooltip"
                                  title="${volume.tooltip}">
@@ -301,7 +326,7 @@ async function updateWeeklySummary() {
         console.error("Error fetching data:", error);
         tableBody.innerHTML = `
             <tr>
-                <td colspan="5" class="text-center text-danger">Failed to load data.</td>
+                <td colspan="6" class="text-center text-danger">Failed to load data.</td>
             </tr>`;
     }
 }

@@ -25,11 +25,183 @@ export function initializeWorkoutLog() {
     initializeWorkoutLogFilters();
 
     // Initialize simple table sorting
-    const workoutLogTable = document.querySelector('#workout-log-table');
+    const workoutLogTable = document.querySelector('.workout-log-table');
     if (workoutLogTable) {
         initializeSimpleTableSorting(workoutLogTable);
     }
+
+    // Initialize collapse toggles for the import section
+    initializeCollapseToggles();
+
+    // Move modal to body for proper z-index stacking, THEN bind events
+    moveModalToBody();
+    
+    // Bind the confirm clear log button click handler AFTER modal is moved
+    // Use setTimeout to ensure DOM is ready
+    setTimeout(() => {
+        bindClearLogButton();
+    }, 100);
 }
+
+/**
+ * Bind the confirm clear log button click handler
+ */
+function bindClearLogButton() {
+    const confirmBtn = document.getElementById('confirm-clear-log-btn');
+    console.log('bindClearLogButton: confirmBtn found:', !!confirmBtn);
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', function(e) {
+            console.log('Confirm button clicked!');
+            e.preventDefault();
+            confirmClearWorkoutLog();
+        });
+        console.log('Event listener attached to confirm button');
+    }
+}
+
+/**
+ * Move the clear log modal to body to ensure proper z-index stacking
+ */
+function moveModalToBody() {
+    const modal = document.getElementById('clearLogModal');
+    if (modal && modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+}
+
+/**
+ * Initialize collapse toggle functionality for the import controls frame
+ */
+function initializeCollapseToggles() {
+    const toggleButtons = document.querySelectorAll('.workout-log-controls-frame .collapse-toggle');
+    
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const frame = this.closest('.collapsible-frame');
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            const toggleText = this.querySelector('.toggle-text');
+            
+            // Toggle collapsed state
+            frame.classList.toggle('collapsed');
+            
+            // Update aria-expanded
+            this.setAttribute('aria-expanded', !isExpanded);
+            
+            // Update button text
+            if (toggleText) {
+                toggleText.textContent = isExpanded ? 'Show' : 'Hide';
+            }
+        });
+    });
+}
+
+/**
+ * Import exercises from the current workout plan into the workout log
+ */
+export async function importFromWorkoutPlan() {
+    try {
+        const importBtn = document.getElementById('import-from-plan-btn');
+        if (importBtn) {
+            importBtn.disabled = true;
+            importBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Importing...';
+        }
+
+        const response = await fetch('/export_to_workout_log', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error?.message || data.error || 'Failed to import workout plan');
+        }
+
+        showToast('success', data.message || 'Successfully imported workout plan');
+        
+        // Reload page to show new entries
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+
+    } catch (error) {
+        console.error('Error importing workout plan:', error);
+        showToast('error', error.message || 'Failed to import workout plan');
+        
+        // Re-enable button on error
+        const importBtn = document.getElementById('import-from-plan-btn');
+        if (importBtn) {
+            importBtn.disabled = false;
+            importBtn.innerHTML = '<i class="fas fa-file-import me-2"></i> Import Current Workout Plan';
+        }
+    }
+}
+
+/**
+ * Actually clear all entries from the workout log (called after modal confirmation)
+ */
+export async function confirmClearWorkoutLog() {
+    console.log('confirmClearWorkoutLog called - starting clear process');
+    
+    try {
+        // Get the clear button to update its state
+        const clearBtn = document.getElementById('clear-log-btn');
+        if (clearBtn) {
+            clearBtn.disabled = true;
+            clearBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Clearing...';
+        }
+
+        console.log('Making fetch request to /clear_workout_log');
+        const response = await fetch('/clear_workout_log', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log('Response status:', response.status);
+        const data = await response.json();
+        console.log('Response data:', data);
+        
+        if (!response.ok) {
+            throw new Error(data.error?.message || data.error || 'Failed to clear workout log');
+        }
+
+        // Hide the modal
+        const modalElement = document.getElementById('clearLogModal');
+        if (modalElement && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+        }
+
+        showToast('success', data.message || 'Workout log cleared successfully');
+        
+        // Reload page to reflect changes
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+
+    } catch (error) {
+        console.error('Error clearing workout log:', error);
+        showToast('error', error.message || 'Failed to clear workout log');
+        
+        // Re-enable button on error
+        const clearBtn = document.getElementById('clear-log-btn');
+        if (clearBtn) {
+            clearBtn.disabled = false;
+            clearBtn.innerHTML = '<i class="fas fa-eraser me-2"></i> Clear Log';
+        }
+    }
+}
+
+// Make functions globally available
+window.importFromWorkoutPlan = importFromWorkoutPlan;
+window.confirmClearWorkoutLog = confirmClearWorkoutLog;
 
 function initializeSimpleTableSorting(table) {
     const headers = table.querySelectorAll('th');
@@ -161,6 +333,9 @@ export async function updateScoredValue(logId, field, value) {
             if (display) {
                 display.textContent = value || 'Click to set';
             }
+            
+            // Update progression indicator for this cell
+            updateProgressionIndicator(row, field, value);
         }
 
         // Update badge status
@@ -195,6 +370,109 @@ export async function updateScoredValue(logId, field, value) {
     } catch (error) {
         console.error('Error updating value:', error);
         showToast('error', 'Failed to update value');
+    }
+}
+
+/**
+ * Update the progression indicator icon for a specific field after value change
+ */
+function updateProgressionIndicator(row, field, scoredValue) {
+    // Get the planned field name by removing 'scored_' prefix
+    const plannedField = field.replace('scored_', 'planned_');
+    const plannedCell = row.querySelector(`[data-field="${plannedField}"]`);
+    const scoredCell = row.querySelector(`[data-field="${field}"]`);
+    
+    if (!plannedCell || !scoredCell) return;
+    
+    const plannedValue = parseFloat(plannedCell.textContent);
+    const scored = parseFloat(scoredValue);
+    
+    // Remove existing indicator
+    const existingIndicator = scoredCell.querySelector('.progression-indicator');
+    if (existingIndicator) {
+        existingIndicator.remove();
+    }
+    
+    // Don't add indicator if no scored value
+    if (!scoredValue || isNaN(scored) || isNaN(plannedValue)) return;
+    
+    // Create new indicator
+    const indicator = document.createElement('i');
+    indicator.classList.add('fas', 'progression-indicator');
+    
+    // Determine the comparison logic based on field type
+    let isImproved, isSame, diff;
+    
+    if (field === 'scored_rir') {
+        // For RIR, LOWER is BETTER
+        isImproved = scored < plannedValue;
+        isSame = scored === plannedValue;
+        diff = plannedValue - scored;
+        
+        if (isImproved) {
+            indicator.classList.add('fa-arrow-up', 'text-success');
+            indicator.title = `Pushed harder! (RIR -${diff})`;
+        } else if (isSame) {
+            indicator.classList.add('fa-equals', 'text-warning');
+            indicator.title = 'Met target RIR';
+        } else {
+            indicator.classList.add('fa-arrow-down', 'text-danger');
+            indicator.title = `Easier than planned (RIR +${scored - plannedValue})`;
+        }
+    } else if (field === 'scored_rpe') {
+        // For RPE, HIGHER means more effort (better)
+        isImproved = scored > plannedValue;
+        isSame = scored === plannedValue;
+        diff = (scored - plannedValue).toFixed(1);
+        
+        if (isImproved) {
+            indicator.classList.add('fa-arrow-up', 'text-success');
+            indicator.title = `Higher effort! (+${diff})`;
+        } else if (isSame) {
+            indicator.classList.add('fa-equals', 'text-warning');
+            indicator.title = 'Met target RPE';
+        } else {
+            indicator.classList.add('fa-arrow-down', 'text-danger');
+            indicator.title = `Lower effort (${diff})`;
+        }
+    } else if (field === 'scored_weight') {
+        // For weight, HIGHER is BETTER
+        isImproved = scored > plannedValue;
+        isSame = scored === plannedValue;
+        diff = (scored - plannedValue).toFixed(1);
+        
+        if (isImproved) {
+            indicator.classList.add('fa-arrow-up', 'text-success');
+            indicator.title = `Weight increased! (+${diff}kg)`;
+        } else if (isSame) {
+            indicator.classList.add('fa-equals', 'text-warning');
+            indicator.title = 'Same weight';
+        } else {
+            indicator.classList.add('fa-arrow-down', 'text-danger');
+            indicator.title = `Weight decreased (${diff}kg)`;
+        }
+    } else {
+        // For reps (min/max), HIGHER is BETTER
+        isImproved = scored > plannedValue;
+        isSame = scored === plannedValue;
+        diff = scored - plannedValue;
+        
+        if (isImproved) {
+            indicator.classList.add('fa-arrow-up', 'text-success');
+            indicator.title = `Above target! (+${diff})`;
+        } else if (isSame) {
+            indicator.classList.add('fa-equals', 'text-warning');
+            indicator.title = 'Met target';
+        } else {
+            indicator.classList.add('fa-arrow-down', 'text-danger');
+            indicator.title = `Below target (${diff})`;
+        }
+    }
+    
+    // Add indicator to the container
+    const container = scoredCell.querySelector('.scored-value-container');
+    if (container) {
+        container.appendChild(indicator);
     }
 }
 
