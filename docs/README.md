@@ -6,18 +6,16 @@ This folder contains all project documentation files.
 
 ### Project Overview
 - **[scope.md](scope.md)** - Complete project scope document including architecture, tech stack, and implementation status
+- **[DECISIONS.md](DECISIONS.md)** - Data import rules and normalization decisions
 
 ### Change History
-- **[CHANGELOG.md](CHANGELOG.md)** - Comprehensive changelog covering all modernization work:
-  - Navbar Modernization (v1.1.0)
-  - Workout Plan Modernization (v1.2.0)
-  - Workout Plan Dropdowns (v1.3.0)
-  - Welcome Screen Refresh (v1.0.0)
+- **[CHANGELOG.md](CHANGELOG.md)** - Comprehensive changelog covering all modernization work
 
 ### Technical Documentation
 - **[CSS_OWNERSHIP_MAP.md](CSS_OWNERSHIP_MAP.md)** - CSS file ownership map showing which CSS file owns which UI area
-- **[PRIORITY5_CONSOLIDATION_SUMMARY.md](PRIORITY5_CONSOLIDATION_SUMMARY.md)** - Codebase consolidation & cleanup implementation summary
-- **[PRIORITY5_TEST_RESULTS.md](PRIORITY5_TEST_RESULTS.md)** - Test results for Priority 5 consolidation work
+- **[muscle_selector.md](muscle_selector.md)** - Muscle selector component documentation
+- **[muscle_selector_vendor.md](muscle_selector_vendor.md)** - Vendor SVG integration and attribution
+- **[program_backups.md](program_backups.md)** - Program backup/restore feature documentation
 
 ## 📖 Quick Links
 
@@ -25,10 +23,6 @@ This folder contains all project documentation files.
 - Start with [scope.md](scope.md) to understand the project architecture
 - Check [CSS_OWNERSHIP_MAP.md](CSS_OWNERSHIP_MAP.md) before modifying styles
 - Review [CHANGELOG.md](CHANGELOG.md) to see recent changes
-
-### For Maintainers
-- [PRIORITY5_CONSOLIDATION_SUMMARY.md](PRIORITY5_CONSOLIDATION_SUMMARY.md) documents the consolidation strategy
-- [PRIORITY5_TEST_RESULTS.md](PRIORITY5_TEST_RESULTS.md) shows test coverage and known issues
 
 ## 🔄 Document Maintenance
 
@@ -38,5 +32,5 @@ This folder contains all project documentation files.
 
 ---
 
-**Last Updated:** November 1, 2025
+**Last Updated:** February 3, 2026
 

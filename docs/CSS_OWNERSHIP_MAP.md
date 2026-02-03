@@ -19,6 +19,14 @@ styles.css
 
 ## 🔵 Base & Utilities (Foundational)
 
+### `bootstrap.custom.min.css` (compiled)
+**Owner:** Bootstrap framework
+**Scope:**
+- Custom Bootstrap 5.1.3 build
+- Grid, buttons, forms, modals, cards, alerts, badges, tables
+- Generated via `npm run build:css` from `scss/custom-bootstrap.scss`
+**Note:** Optional - CDN version can be used instead
+
 ### `styles_tokens.css` (0 lines - EMPTY)
 **Status:** ⚠️ DEPRECATED/EMPTY
 **Owner:** Design tokens (currently unused)
@@ -62,6 +70,16 @@ styles.css
 - Tablet breakpoints
 - Desktop optimizations
 - Responsive utilities
+
+### `responsive.css` (714 lines)
+**Owner:** Responsive tables
+**Scope:**
+- Sticky headers and first column
+- Priority-based column visibility (`.col--high`, `.col--med`, `.col--low`)
+- Column chooser and density toggle
+- Card mode for narrow screens
+- Zoom-friendly typography
+**Pages:** Workout Plan, Workout Log
 
 ---
 
@@ -202,6 +220,24 @@ styles.css
 - Chat bubbles
 - Message containers
 **Note:** ⚠️ Review if chat feature exists
+
+### `styles_muscle_selector.css` (581 lines)
+**Owner:** Muscle selector component
+**Scope:**
+- SVG body diagram styling
+- Muscle region hover/selection states
+- Simple/Advanced view modes
+- Front/Back tab navigation
+- Tooltip and debug UI
+**Pages:** `/workout_plan` (Generate Plan modal)
+
+### `styles_routine_cascade.css` (342 lines)
+**Owner:** Routine cascade selector
+**Scope:**
+- 3-step cascading dropdown for routine selection
+- Split type, days, routine name dropdowns
+- Connector arrows between steps
+**Pages:** `/workout_plan`
 
 ---
 
@@ -401,5 +437,5 @@ Currently, all CSS is loaded globally via `styles.css`. To implement per-page lo
 - ⏳ **Pending:** Implement per-page CSS loading
 - ⏳ **Pending:** Populate design tokens
 
-**Last Updated:** 2025-11-01
+**Last Updated:** 2026-02-03
 

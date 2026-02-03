@@ -54,10 +54,9 @@ For comprehensive documentation, see the [`docs/`](docs/) folder:
 - **[Project Scope](docs/scope.md)** - Architecture, tech stack, and implementation status
 - **[Changelog](docs/CHANGELOG.md)** - Version history and modernization work
 - **[CSS Ownership Map](docs/CSS_OWNERSHIP_MAP.md)** - CSS file organization guide
-- **[Consolidation Summary](docs/PRIORITY5_CONSOLIDATION_SUMMARY.md)** - Codebase consolidation details
-- **[Test Results](docs/PRIORITY5_TEST_RESULTS.md)** - Test coverage and results
-- **[Dependency Optimization](docs/PRIORITY9_DEPENDENCY_OPTIMIZATION.md)** - Dependency hygiene & slimming analysis
-- **[Backend Refactor Roadmap](docs/BACKEND_REFACTOR_TODO.md)** - Current security/export stabilization and normalization plan
+- **[Decisions](docs/DECISIONS.md)** - Data import rules and normalization decisions
+- **[Muscle Selector](docs/muscle_selector.md)** - Muscle selector component documentation
+- **[Program Backups](docs/program_backups.md)** - Backup/restore feature documentation
 - **Export Behavior** - Summary endpoints always return a valid Excel workbook, even when no data is available, with a "No Data" tab that explains the situation.
 
 ## ✨ Features
@@ -127,7 +126,6 @@ At 100% zoom, you'll see key columns without horizontal scrolling. As you zoom i
 
 - `static/css/responsive.css` - Responsive table styles
 - `static/js/table-responsiveness.js` - Column chooser, density toggle, ResizeObserver
-- `docs/agent/` - Implementation checkpoints for resumable work
 
 ### Implementation Status
 
@@ -136,15 +134,13 @@ At 100% zoom, you'll see key columns without horizontal scrolling. As you zoom i
 - ⏳ Weekly Summary - Pending
 - ⏳ Session Summary - Pending
 
-For architecture decisions, see `docs/agent/DECISIONS.md`.
-
 ## 🛠️ Tech Stack
 
-- **Backend**: Flask 3.1.0, Python 3.12, SQLite
+- **Backend**: Flask 3.1.1+, Python 3.12, SQLite
 - **Frontend**: Vanilla JavaScript (ES6+), HTML5, CSS3
 - **Styling**: Custom CSS + Custom Bootstrap 5.1.3 build
 - **Build Tools**: SASS (optional, for Bootstrap customization)
-- **CI/CD**: GitHub Actions (security audits, linting, testing)
+- **Testing**: pytest
 - **Dependencies**: See `requirements.txt` and `package.json`
 
 ## 📝 Contributing

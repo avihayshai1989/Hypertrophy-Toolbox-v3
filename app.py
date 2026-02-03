@@ -248,4 +248,7 @@ if __name__ == "__main__":
     # For development with auto-reload, use: flask run --reload
     use_reloader = os.getenv('FLASK_USE_RELOADER', '0') == '1'
     
-    app.run(debug=True, use_reloader=use_reloader)
+    # Security: Debug mode controlled by environment variable, defaults to False
+    debug_mode = os.getenv('FLASK_DEBUG', '0') == '1'
+    
+    app.run(debug=debug_mode, use_reloader=use_reloader)
