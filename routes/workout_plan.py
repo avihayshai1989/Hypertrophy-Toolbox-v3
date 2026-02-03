@@ -8,6 +8,7 @@ from utils.errors import success_response, error_response
 from utils.logger import get_logger
 from routes.filters import ALLOWED_COLUMNS, validate_column_name
 from utils.constants import DIFFICULTY, FORCE, MECHANIC, UTILITY
+from utils.plan_generator import generate_starter_plan
 
 workout_plan_bp = Blueprint('workout_plan', __name__)
 logger = get_logger()
@@ -586,3 +587,432 @@ def update_exercise_order():
     except Exception as e:
         logger.exception("Error updating exercise order")
         return error_response("INTERNAL_ERROR", "Failed to update exercise order", 500)
+
+
+@workout_plan_bp.route("/generate_starter_plan", methods=["POST"])
+def generate_starter_plan_route():
+    """
+    Generate a starter workout plan based on movement patterns.
+    
+    Request body (JSON):
+        training_days: int (1-5, default 3)
+        environment: "gym" | "home" (default "gym")
+        experience_level: "novice" | "intermediate" | "advanced" (default "novice")
+        goal: "hypertrophy" | "strength" | "general" (default "hypertrophy")
+        volume_scale: float (default 1.0, use 0.8 for heavy lifters)
+        equipment_whitelist: list[str] (optional, filter available equipment)
+        exclude_exercises: list[str] (optional, exercises to exclude)
+        preferred_exercises: dict (optional, pattern -> list of exercise names)
+        movement_restrictions: dict (optional, e.g. {"no_overhead_press": true})
+        target_muscle_groups: list[str] (optional, filter to specific muscles)
+        beginner_consistency_mode: bool (default true for novices)
+        persist: bool (default true, save to database)
+        overwrite: bool (default true, replace existing routines)
+    
+    Returns:
+        JSON with generated plan structure and metadata
+    """
+    try:
+        data = request.get_json() or {}
+        
+        logger.info(
+            "Generating starter plan",
+            extra={
+                'training_days': data.get('training_days', 3),
+                'environment': data.get('environment', 'gym'),
+                'experience_level': data.get('experience_level', 'novice'),
+                'goal': data.get('goal', 'hypertrophy'),
+            }
+        )
+        
+        # Extract and validate parameters
+        training_days = data.get('training_days', 3)
+        if not isinstance(training_days, int) or training_days < 1 or training_days > 5:
+            return error_response(
+                "VALIDATION_ERROR",
+                "training_days must be an integer between 1 and 5",
+                400
+            )
+        
+        environment = data.get('environment', 'gym')
+        if environment not in ('gym', 'home'):
+            return error_response(
+                "VALIDATION_ERROR",
+                "environment must be 'gym' or 'home'",
+                400
+            )
+        
+        experience_level = data.get('experience_level', 'novice')
+        if experience_level not in ('novice', 'intermediate', 'advanced'):
+            return error_response(
+                "VALIDATION_ERROR",
+                "experience_level must be 'novice', 'intermediate', or 'advanced'",
+                400
+            )
+        
+        goal = data.get('goal', 'hypertrophy')
+        if goal not in ('hypertrophy', 'strength', 'general'):
+            return error_response(
+                "VALIDATION_ERROR",
+                "goal must be 'hypertrophy', 'strength', or 'general'",
+                400
+            )
+        
+        volume_scale = data.get('volume_scale', 1.0)
+        if not isinstance(volume_scale, (int, float)) or volume_scale <= 0 or volume_scale > 2:
+            return error_response(
+                "VALIDATION_ERROR",
+                "volume_scale must be a number between 0 and 2",
+                400
+            )
+        
+        # Generate the plan
+        result = generate_starter_plan(
+            training_days=training_days,
+            environment=environment,
+            experience_level=experience_level,
+            goal=goal,
+            volume_scale=float(volume_scale),
+            equipment_whitelist=data.get('equipment_whitelist'),
+            exclude_exercises=data.get('exclude_exercises'),
+            preferred_exercises=data.get('preferred_exercises'),
+            movement_restrictions=data.get('movement_restrictions'),
+            target_muscle_groups=data.get('target_muscle_groups'),
+            beginner_consistency_mode=data.get('beginner_consistency_mode', True),
+            persist=data.get('persist', True),
+            overwrite=data.get('overwrite', True),
+        )
+        
+        logger.info(
+            "Starter plan generated successfully",
+            extra={
+                'total_exercises': result.get('total_exercises'),
+                'routines': list(result.get('routines', {}).keys()),
+                'persisted': result.get('persisted'),
+            }
+        )
+        
+        return jsonify(success_response(data=result))
+        
+    except ValueError as e:
+        logger.warning(f"Validation error in generate_starter_plan: {e}")
+        return error_response("VALIDATION_ERROR", str(e), 400)
+    except Exception as e:
+        logger.exception("Error generating starter plan")
+        return error_response("INTERNAL_ERROR", "Failed to generate starter plan", 500)
+
+
+@workout_plan_bp.route("/get_generator_options")
+def get_generator_options():
+    """
+    Get available options for the plan generator.
+    
+    Returns configuration options including environments, goals,
+    experience levels, and available equipment.
+    """
+    try:
+        # Get available equipment from database
+        with DatabaseHandler() as db:
+            equipment_rows = db.fetch_all(
+                "SELECT DISTINCT equipment FROM exercises WHERE equipment IS NOT NULL ORDER BY equipment"
+            )
+            available_equipment = [row['equipment'] for row in equipment_rows if row.get('equipment')]
+        
+        options = {
+            "training_days": {
+                "min": 1,
+                "max": 3,
+                "default": 2,
+                "descriptions": {
+                    1: "Single full-body session per week",
+                    2: "A/B split (2 sessions per week)",
+                    3: "A/B/C rotation (3 sessions per week)",
+                }
+            },
+            "environments": ["gym", "home"],
+            "experience_levels": ["novice", "intermediate", "advanced"],
+            "goals": ["hypertrophy", "strength", "general"],
+            "available_equipment": available_equipment,
+            "home_equipment": ["Bodyweight", "Dumbbells", "Band", "Kettlebells", "Trx"],
+            "gym_equipment": available_equipment,
+            "volume_scale": {
+                "min": 0.5,
+                "max": 1.5,
+                "default": 1.0,
+                "description": "Use lower values (e.g., 0.8) for advanced/heavy lifters"
+            },
+            "movement_restrictions": [
+                "no_overhead_press",
+                "no_deadlift",
+            ],
+        }
+        
+        return jsonify(success_response(data=options))
+        
+    except Exception as e:
+        logger.exception("Error fetching generator options")
+        return error_response("INTERNAL_ERROR", "Failed to fetch generator options", 500)
+
+
+def suggest_replacement_exercise(current_exercise, muscle, equipment, candidates, strategy="fallback"):
+    """
+    Suggest a replacement exercise from the candidate pool.
+    
+    Args:
+        current_exercise: The exercise being replaced
+        muscle: Primary muscle group to match
+        equipment: Equipment type to match
+        candidates: List of valid candidate exercise names
+        strategy: "ai" for AI-based suggestion, "fallback" for deterministic
+    
+    Returns:
+        str: Selected exercise name from candidates, or None if no valid candidate
+    """
+    import random
+    
+    if not candidates:
+        return None
+    
+    # AI strategy placeholder - for now, use heuristic ranking
+    # In the future, this could call an LLM or ML model to rank candidates
+    if strategy == "ai":
+        # Simple heuristic: prefer exercises with similar name patterns
+        # (e.g., "Barbell Bench Press" -> prefer other "Bench" or "Press" exercises)
+        current_words = set(current_exercise.lower().split())
+        
+        def score_candidate(candidate):
+            candidate_words = set(candidate.lower().split())
+            # Count overlapping words (excluding common words like "the", "with")
+            common_words = {'the', 'with', 'a', 'an', 'and', 'or', 'for', 'to'}
+            meaningful_current = current_words - common_words
+            meaningful_candidate = candidate_words - common_words
+            overlap = len(meaningful_current & meaningful_candidate)
+            # Add some randomness to avoid always picking same exercise
+            return (overlap, random.random())
+        
+        # Sort by score (higher is better) but with randomness for ties
+        scored = [(score_candidate(c), c) for c in candidates]
+        scored.sort(reverse=True)
+        return scored[0][1]
+    
+    # Fallback: random selection
+    return random.choice(candidates)
+
+
+@workout_plan_bp.route("/replace_exercise", methods=["POST"])
+def replace_exercise():
+    """
+    Replace an exercise in the workout plan with another matching the same
+    primary muscle group and equipment.
+    
+    Request body (JSON):
+        id: int - user_selection.id of the exercise to replace
+        strategy: "ai"|"fallback" (optional, default "fallback")
+    
+    Returns:
+        On success: { "ok": true, "data": { "updated_row": {...} } }
+        On failure: { "ok": false, "error": { "code": "...", "reason": "..." } }
+    """
+    try:
+        data = request.get_json()
+        if not data:
+            return error_response("VALIDATION_ERROR", "No data provided", 400)
+        
+        exercise_id = data.get("id")
+        strategy = data.get("strategy", "fallback")
+        
+        if not exercise_id or not str(exercise_id).isdigit():
+            return error_response("VALIDATION_ERROR", "Invalid exercise ID", 400)
+        
+        exercise_id = int(exercise_id)
+        
+        with DatabaseHandler() as db:
+            # a) Fetch the current user_selection row with exercise metadata
+            current_row = db.fetch_one("""
+                SELECT 
+                    us.id, us.routine, us.exercise, us.sets,
+                    us.min_rep_range, us.max_rep_range, us.rir, us.rpe, us.weight,
+                    e.primary_muscle_group, e.equipment
+                FROM user_selection us
+                LEFT JOIN exercises e ON us.exercise = e.exercise_name
+                WHERE us.id = ?
+            """, (exercise_id,))
+            
+            if not current_row:
+                return error_response(
+                    "NOT_FOUND", 
+                    "Exercise not found in workout plan",
+                    404,
+                    reason="not_found"
+                )
+            
+            current_exercise = current_row['exercise']
+            routine = current_row['routine']
+            muscle = current_row['primary_muscle_group']
+            equipment = current_row['equipment']
+            
+            # b) Validate we have the necessary metadata
+            if not muscle or not equipment:
+                logger.warning(
+                    "Cannot replace exercise - missing metadata",
+                    extra={
+                        'exercise_id': exercise_id,
+                        'exercise': current_exercise,
+                        'muscle': muscle,
+                        'equipment': equipment
+                    }
+                )
+                return error_response(
+                    "VALIDATION_ERROR",
+                    "Exercise is missing muscle group or equipment metadata",
+                    400,
+                    reason="missing_metadata"
+                )
+            
+            # c) Build candidate pool from exercises table
+            # Match same primary muscle group and equipment (case-insensitive)
+            candidates_query = """
+                SELECT exercise_name
+                FROM exercises
+                WHERE LOWER(primary_muscle_group) = LOWER(?)
+                  AND LOWER(equipment) = LOWER(?)
+                  AND exercise_name != ?
+            """
+            candidate_rows = db.fetch_all(candidates_query, (muscle, equipment, current_exercise))
+            candidate_names = [row['exercise_name'] for row in candidate_rows]
+            
+            # d) Exclude exercises already used in the same routine
+            routine_exercises_query = """
+                SELECT exercise FROM user_selection WHERE routine = ?
+            """
+            routine_exercises = db.fetch_all(routine_exercises_query, (routine,))
+            routine_exercise_names = {row['exercise'] for row in routine_exercises}
+            
+            # Filter out exercises already in the routine
+            valid_candidates = [c for c in candidate_names if c not in routine_exercise_names]
+            
+            logger.debug(
+                "Replacement candidates",
+                extra={
+                    'exercise_id': exercise_id,
+                    'current_exercise': current_exercise,
+                    'routine': routine,
+                    'muscle': muscle,
+                    'equipment': equipment,
+                    'total_candidates': len(candidate_names),
+                    'valid_candidates': len(valid_candidates)
+                }
+            )
+            
+            # e) If no valid candidates, return failure
+            if not valid_candidates:
+                return jsonify({
+                    "ok": False,
+                    "status": "error",
+                    "message": f"No alternative exercises found for {muscle} with {equipment}",
+                    "error": {
+                        "code": "NO_CANDIDATES",
+                        "reason": "no_candidates",
+                        "message": f"No alternative exercises found for {muscle} with {equipment}"
+                    }
+                }), 200  # Return 200 so frontend can handle gracefully
+            
+            # f) Choose replacement using AI or fallback
+            new_exercise = suggest_replacement_exercise(
+                current_exercise, muscle, equipment, valid_candidates, strategy
+            )
+            
+            if not new_exercise:
+                return jsonify({
+                    "ok": False,
+                    "status": "error",
+                    "message": "Failed to select replacement exercise",
+                    "error": {
+                        "code": "SELECTION_FAILED",
+                        "reason": "selection_failed",
+                        "message": "Failed to select replacement exercise"
+                    }
+                }), 200
+            
+            # g) Double-check duplicate constraint before updating
+            duplicate_check = db.fetch_one(
+                "SELECT id FROM user_selection WHERE routine = ? AND exercise = ?",
+                (routine, new_exercise)
+            )
+            
+            if duplicate_check:
+                # Try to find another candidate
+                remaining_candidates = [c for c in valid_candidates if c != new_exercise]
+                if remaining_candidates:
+                    new_exercise = suggest_replacement_exercise(
+                        current_exercise, muscle, equipment, remaining_candidates, "fallback"
+                    )
+                else:
+                    return jsonify({
+                        "ok": False,
+                        "status": "error",
+                        "message": "All candidate exercises are already in this routine",
+                        "error": {
+                            "code": "DUPLICATE",
+                            "reason": "duplicate",
+                            "message": "All candidate exercises are already in this routine"
+                        }
+                    }), 200
+            
+            # Update the exercise in user_selection
+            db.execute_query(
+                "UPDATE user_selection SET exercise = ? WHERE id = ?",
+                (new_exercise, exercise_id)
+            )
+            
+            # h) Fetch the updated row with full metadata for response
+            updated_row = db.fetch_one("""
+                SELECT 
+                    us.id, us.routine, us.exercise, us.sets,
+                    us.min_rep_range, us.max_rep_range, us.rir, us.rpe, us.weight,
+                    e.primary_muscle_group, e.secondary_muscle_group,
+                    e.tertiary_muscle_group, e.advanced_isolated_muscles,
+                    e.utility, e.grips, e.stabilizers, e.synergists, e.equipment
+                FROM user_selection us
+                LEFT JOIN exercises e ON us.exercise = e.exercise_name
+                WHERE us.id = ?
+            """, (exercise_id,))
+            
+            # Check if exercise_order column exists and include it
+            if column_exists(db, 'user_selection', 'exercise_order'):
+                order_row = db.fetch_one(
+                    "SELECT exercise_order FROM user_selection WHERE id = ?",
+                    (exercise_id,)
+                )
+                if order_row and order_row.get('exercise_order'):
+                    updated_row = dict(updated_row)
+                    updated_row['exercise_order'] = order_row['exercise_order']
+            
+            logger.info(
+                "Exercise replaced successfully",
+                extra={
+                    'exercise_id': exercise_id,
+                    'routine': routine,
+                    'old_exercise': current_exercise,
+                    'new_exercise': new_exercise,
+                    'muscle': muscle,
+                    'equipment': equipment,
+                    'candidates_available': len(valid_candidates)
+                }
+            )
+            
+            return jsonify(success_response(
+                data={
+                    "updated_row": dict(updated_row),
+                    "old_exercise": current_exercise,
+                    "new_exercise": new_exercise
+                },
+                message=f"Replaced {current_exercise} with {new_exercise}"
+            ))
+            
+    except Exception as e:
+        logger.exception(
+            "Error replacing exercise",
+            extra={'exercise_id': data.get('id') if data else 'unknown'}
+        )
+        return error_response("INTERNAL_ERROR", "Failed to replace exercise", 500)

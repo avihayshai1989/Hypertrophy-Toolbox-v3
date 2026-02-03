@@ -29,6 +29,7 @@ import { initializeVolumeSplitter } from './modules/volume-splitter.js';
 import { initializeWorkoutDropdowns } from './modules/workout-dropdowns.js';
 import { initializeWorkoutControlsAnimation } from './modules/workout-controls-animation.js';
 import { initializeRoutineCascade } from './modules/routine-cascade.js';
+import { initializeProgramBackup, showAutoBackupBanner } from './modules/program-backup.js';
 
 const APP_DEBUG = false;
 const appDebugLog = (...args) => {
@@ -55,6 +56,107 @@ window.updateScoredValue = updateScoredValue;
 window.handleDateChange = handleDateChange;
 window.importFromWorkoutPlan = importFromWorkoutPlan;
 window.confirmClearWorkoutLog = confirmClearWorkoutLog;
+window.showAutoBackupBanner = showAutoBackupBanner;
+
+// Generate Starter Plan function
+window.generateStarterPlan = async function() {
+    const submitBtn = document.getElementById('generatePlanSubmit');
+    const originalText = submitBtn.innerHTML;
+    
+    try {
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Generating...';
+        
+        // Gather form values
+        const trainingDays = parseInt(document.getElementById('gen-training-days').value);
+        const environment = document.getElementById('gen-environment').value;
+        const experienceLevel = document.getElementById('gen-experience').value;
+        const goal = document.getElementById('gen-goal').value;
+        const volumeScale = parseFloat(document.getElementById('gen-volume-scale').value);
+        const overwrite = document.getElementById('gen-overwrite').checked;
+        
+        // Movement restrictions
+        const movementRestrictions = {};
+        if (document.getElementById('gen-no-overhead').checked) {
+            movementRestrictions.no_overhead_press = true;
+        }
+        if (document.getElementById('gen-no-deadlift').checked) {
+            movementRestrictions.no_deadlift = true;
+        }
+        
+        // Equipment whitelist - collect all checked equipment
+        const equipmentWhitelist = [];
+        document.querySelectorAll('.equipment-check:checked').forEach(checkbox => {
+            equipmentWhitelist.push(checkbox.value);
+        });
+        
+        // Validate at least one equipment is selected
+        if (equipmentWhitelist.length === 0) {
+            showToast('Please select at least one equipment type.', 'warning');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+            return;
+        }
+        
+        // Target muscle groups - collect selected muscles from muscle selector
+        let targetMuscleGroups = [];
+        if (window.muscleSelector) {
+            targetMuscleGroups = window.muscleSelector.getSelectedMusclesForBackend();
+        }
+        
+        // Make API request
+        const response = await fetch('/generate_starter_plan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                training_days: trainingDays,
+                environment: environment,
+                experience_level: experienceLevel,
+                goal: goal,
+                volume_scale: volumeScale,
+                overwrite: overwrite,
+                movement_restrictions: Object.keys(movementRestrictions).length > 0 ? movementRestrictions : null,
+                equipment_whitelist: equipmentWhitelist,
+                target_muscle_groups: targetMuscleGroups.length > 0 ? targetMuscleGroups : null,
+                persist: true
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.data) {
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('generatePlanModal'));
+            modal.hide();
+            
+            // Show success message
+            const routines = Object.keys(result.data.routines).join(', ');
+            const totalExercises = result.data.total_exercises;
+            showToast(`Plan generated successfully! Created routines: ${routines} with ${totalExercises} exercises.`, 'success');
+            
+            // Refresh the workout plan table
+            if (typeof fetchWorkoutPlan === 'function') {
+                fetchWorkoutPlan();
+            } else {
+                // Fallback: reload the page
+                window.location.reload();
+            }
+        } else {
+            const errorMsg = result.message || 'Failed to generate plan';
+            showToast(errorMsg, 'error');
+        }
+    } catch (error) {
+        console.error('Error generating plan:', error);
+        showToast('Error generating plan. Please try again.', 'error');
+    } finally {
+        // Restore button state
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    }
+};
 
 // Initialize navbar
 initializeNavbar();
@@ -105,6 +207,7 @@ function initializeWorkoutPlan() {
     handleRoutineSelection();
     initializeWorkoutPlanHandlers();
     initializeWorkoutControlsAnimation();
+    initializeProgramBackup(); // Initialize program backup/library functionality
     // fetchWorkoutPlan is already called inside initializeWorkoutPlanHandlers
     return {
         cleanup: () => {

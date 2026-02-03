@@ -842,7 +842,15 @@ export function updateWorkoutPlanTable(exercises) {
                 <i class="fas fa-grip-vertical"></i>
             </td>
             <td class="col--high" data-label="Routine">${exercise.routine || 'N/A'}</td>
-            <td class="col--high" data-label="Exercise">${exercise.exercise || 'N/A'}</td>
+            <td class="col--high exercise-cell" data-label="Exercise">
+                <span class="exercise-name">${exercise.exercise || 'N/A'}</span>
+                <button class="btn-swap" 
+                        data-exercise-id="${exercise.id}"
+                        title="Replace with similar exercise (same muscle + equipment)"
+                        aria-label="Swap exercise">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </td>
             <td class="col--med" data-label="Primary Muscle">${exercise.primary_muscle_group || 'N/A'}</td>
             <td class="col--low" data-label="Secondary Muscle">${exercise.secondary_muscle_group || 'N/A'}</td>
             <td class="col--low" data-label="Tertiary Muscle">${exercise.tertiary_muscle_group || 'N/A'}</td>
@@ -871,12 +879,152 @@ export function updateWorkoutPlanTable(exercises) {
             });
         });
         
+        // Add click handler for swap button
+        const swapBtn = row.querySelector('.btn-swap');
+        if (swapBtn) {
+            swapBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                handleSwapExercise(exercise.id, exercise.exercise);
+            });
+        }
+        
         tbody.appendChild(row);
     });
 
     // Initialize drag and drop after populating the table
     initializeDragAndDrop();
 }
+
+/**
+ * Handles the swap/replace exercise action
+ * @param {number} exerciseId - The user_selection.id of the exercise to swap
+ * @param {string} currentExerciseName - The current exercise name (for display)
+ */
+async function handleSwapExercise(exerciseId, currentExerciseName) {
+    const row = document.querySelector(`tr[data-exercise-id="${exerciseId}"]`);
+    const swapBtn = row?.querySelector('.btn-swap');
+    
+    if (!row || !swapBtn) {
+        console.error('Could not find row or swap button for exercise:', exerciseId);
+        return;
+    }
+    
+    // Disable button and show loading state
+    swapBtn.disabled = true;
+    const originalIcon = swapBtn.innerHTML;
+    swapBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    swapBtn.classList.add('loading');
+    
+    try {
+        const response = await fetch('/replace_exercise', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: exerciseId,
+                strategy: 'ai'  // Try AI-based suggestion first
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.ok === true && data.data?.updated_row) {
+            // Success - update the row in place
+            const updatedRow = data.data.updated_row;
+            const oldExercise = data.data.old_exercise;
+            const newExercise = data.data.new_exercise;
+            
+            // Update the exercise name in the cell
+            const exerciseNameSpan = row.querySelector('.exercise-name');
+            if (exerciseNameSpan) {
+                exerciseNameSpan.textContent = newExercise;
+            }
+            
+            // Update other metadata cells
+            updateRowMetadata(row, updatedRow);
+            
+            // Update the cached data
+            updateCachedExercise(exerciseId, updatedRow);
+            
+            // Show success toast
+            showToast('success', `Replaced "${oldExercise}" → "${newExercise}"`);
+            
+            // Brief highlight effect on the row
+            row.classList.add('row-swapped');
+            setTimeout(() => row.classList.remove('row-swapped'), 2000);
+            
+        } else {
+            // Handle specific error reasons
+            const reason = data.error?.reason || 'unknown';
+            const message = data.error?.message || data.message || 'Failed to replace exercise';
+            
+            if (reason === 'no_candidates') {
+                showToast('warning', 'No alternative found for this muscle/equipment.');
+            } else if (reason === 'duplicate') {
+                showToast('warning', 'All alternatives are already in this routine.');
+            } else if (reason === 'not_found') {
+                showToast('error', 'Exercise not found in workout plan.');
+            } else {
+                showToast('error', message);
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error swapping exercise:', error);
+        showToast('error', 'Failed to replace exercise. Please try again.');
+    } finally {
+        // Restore button state
+        swapBtn.disabled = false;
+        swapBtn.innerHTML = originalIcon;
+        swapBtn.classList.remove('loading');
+    }
+}
+
+/**
+ * Updates the metadata cells in a row after a swap
+ * @param {HTMLElement} row - The table row element
+ * @param {Object} updatedData - The updated exercise data
+ */
+function updateRowMetadata(row, updatedData) {
+    // Map of data-label to data key
+    const labelToKey = {
+        'Primary Muscle': 'primary_muscle_group',
+        'Secondary Muscle': 'secondary_muscle_group',
+        'Tertiary Muscle': 'tertiary_muscle_group',
+        'Isolated Muscles': 'advanced_isolated_muscles',
+        'Utility': 'utility',
+        'Grips': 'grips',
+        'Stabilizers': 'stabilizers',
+        'Synergists': 'synergists'
+    };
+    
+    // Update each cell that has a data-label matching our map
+    Object.entries(labelToKey).forEach(([label, key]) => {
+        const cell = row.querySelector(`td[data-label="${label}"]`);
+        if (cell) {
+            cell.textContent = updatedData[key] || 'N/A';
+        }
+    });
+}
+
+/**
+ * Updates the cached exercise data after a swap
+ * @param {number} exerciseId - The exercise ID that was updated
+ * @param {Object} updatedData - The new exercise data
+ */
+function updateCachedExercise(exerciseId, updatedData) {
+    // Update allExercisesCache if it exists
+    const cacheIndex = allExercisesCache.findIndex(ex => ex.id === exerciseId);
+    if (cacheIndex !== -1) {
+        // Merge the updated data while preserving exercise_order
+        allExercisesCache[cacheIndex] = {
+            ...allExercisesCache[cacheIndex],
+            ...updatedData
+        };
+    }
+}
+
 
 function makeTableCellEditable(cell, exerciseId, fieldName) {
     const originalValue = cell.textContent;

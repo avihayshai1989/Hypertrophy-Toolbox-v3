@@ -1,0 +1,519 @@
+"""
+Program Backup / Program Library functionality.
+
+Provides snapshot and restore capabilities for the active workout program.
+Backups are stored persistently in the database and survive standard erase/reset operations.
+"""
+from __future__ import annotations
+
+import json
+import sqlite3
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
+
+from utils.database import DatabaseHandler, _DB_LOCK
+from utils.logger import get_logger
+
+logger = get_logger()
+
+# Schema version for future migration support
+BACKUP_SCHEMA_VERSION = 1
+
+
+def initialize_backup_tables(db: Optional[DatabaseHandler] = None) -> None:
+    """Create the backup tables if they don't exist.
+    
+    Creates two tables:
+    - program_backups: Header/metadata for each backup
+    - program_backup_items: Individual items (user_selection rows) for each backup
+    """
+    should_close = False
+    if db is None:
+        db = DatabaseHandler()
+        should_close = True
+    
+    try:
+        # Create backup header table
+        db.execute_query("""
+            CREATE TABLE IF NOT EXISTS program_backups (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                note TEXT,
+                backup_type TEXT NOT NULL DEFAULT 'manual',
+                schema_version INTEGER NOT NULL DEFAULT 1,
+                item_count INTEGER NOT NULL DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(name, created_at)
+            )
+        """)
+        
+        # Create backup items table with FK to header
+        db.execute_query("""
+            CREATE TABLE IF NOT EXISTS program_backup_items (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                backup_id INTEGER NOT NULL,
+                routine TEXT NOT NULL,
+                exercise TEXT NOT NULL,
+                sets INTEGER NOT NULL,
+                min_rep_range INTEGER NOT NULL,
+                max_rep_range INTEGER NOT NULL,
+                rir INTEGER,
+                rpe REAL,
+                weight REAL NOT NULL,
+                exercise_order INTEGER,
+                FOREIGN KEY (backup_id) REFERENCES program_backups(id) ON DELETE CASCADE
+            )
+        """)
+        
+        # Create indexes for efficient lookups
+        db.execute_query("""
+            CREATE INDEX IF NOT EXISTS idx_backup_items_backup_id 
+            ON program_backup_items(backup_id)
+        """)
+        
+        db.execute_query("""
+            CREATE INDEX IF NOT EXISTS idx_backups_type 
+            ON program_backups(backup_type)
+        """)
+        
+        db.execute_query("""
+            CREATE INDEX IF NOT EXISTS idx_backups_created_at 
+            ON program_backups(created_at DESC)
+        """)
+        
+        logger.debug("Backup tables initialized successfully")
+    except sqlite3.Error:
+        logger.exception("Failed to initialize backup tables")
+        raise
+    finally:
+        if should_close:
+            db.close()
+
+
+def _check_column_exists(db: DatabaseHandler, table: str, column: str) -> bool:
+    """Check if a column exists in a table."""
+    try:
+        columns = db.fetch_all(f"PRAGMA table_info({table})")
+        return any(col['name'] == column for col in columns)
+    except sqlite3.Error:
+        return False
+
+
+def create_backup(
+    name: str,
+    note: Optional[str] = None,
+    backup_type: str = "manual"
+) -> Dict[str, Any]:
+    """
+    Create a backup (snapshot) of the current active program.
+    
+    Args:
+        name: Required name for the backup
+        note: Optional note/description
+        backup_type: 'manual' (user-initiated) or 'auto' (system-initiated)
+    
+    Returns:
+        Dict with backup metadata including id, name, item_count, etc.
+    
+    Raises:
+        ValueError: If name is empty
+        sqlite3.Error: On database errors
+    """
+    if not name or not name.strip():
+        raise ValueError("Backup name is required")
+    
+    name = name.strip()
+    
+    with DatabaseHandler() as db:
+        # Ensure backup tables exist
+        initialize_backup_tables(db)
+        
+        # Check if user_selection table exists
+        table_check = db.fetch_one(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='user_selection'"
+        )
+        if not table_check:
+            logger.warning("user_selection table does not exist, creating empty backup")
+            items = []
+        else:
+            # Check if exercise_order column exists
+            has_order = _check_column_exists(db, 'user_selection', 'exercise_order')
+            
+            # Fetch all items from active program
+            if has_order:
+                items = db.fetch_all("""
+                    SELECT routine, exercise, sets, min_rep_range, max_rep_range, 
+                           rir, rpe, weight, exercise_order
+                    FROM user_selection
+                    ORDER BY exercise_order, routine, exercise
+                """)
+            else:
+                items = db.fetch_all("""
+                    SELECT routine, exercise, sets, min_rep_range, max_rep_range, 
+                           rir, rpe, weight
+                    FROM user_selection
+                    ORDER BY routine, exercise
+                """)
+        
+        item_count = len(items)
+        
+        # Create backup header
+        db.execute_query("""
+            INSERT INTO program_backups (name, note, backup_type, schema_version, item_count, created_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (name, note, backup_type, BACKUP_SCHEMA_VERSION, item_count, datetime.now()))
+        
+        # Get the newly created backup ID
+        result = db.fetch_one("SELECT last_insert_rowid() as id")
+        if not result:
+            raise RuntimeError("Failed to retrieve backup ID after insert")
+        backup_id = result['id']
+        
+        # Insert all items
+        if items:
+            for item in items:
+                db.execute_query("""
+                    INSERT INTO program_backup_items 
+                    (backup_id, routine, exercise, sets, min_rep_range, max_rep_range, 
+                     rir, rpe, weight, exercise_order)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    backup_id,
+                    item.get('routine'),
+                    item.get('exercise'),
+                    item.get('sets'),
+                    item.get('min_rep_range'),
+                    item.get('max_rep_range'),
+                    item.get('rir'),
+                    item.get('rpe'),
+                    item.get('weight'),
+                    item.get('exercise_order')  # Will be None if column doesn't exist
+                ))
+        
+        logger.info(
+            "Backup created successfully",
+            extra={
+                'backup_id': backup_id,
+                'backup_name': name,
+                'backup_type': backup_type,
+                'item_count': item_count
+            }
+        )
+        
+        return {
+            'id': backup_id,
+            'name': name,
+            'note': note,
+            'backup_type': backup_type,
+            'schema_version': BACKUP_SCHEMA_VERSION,
+            'item_count': item_count,
+            'created_at': datetime.now().isoformat()
+        }
+
+
+def list_backups() -> List[Dict[str, Any]]:
+    """
+    List all saved program backups.
+    
+    Returns:
+        List of backup metadata dicts, ordered by created_at DESC
+    """
+    with DatabaseHandler() as db:
+        # Ensure backup tables exist
+        initialize_backup_tables(db)
+        
+        backups = db.fetch_all("""
+            SELECT id, name, note, backup_type, schema_version, item_count, created_at
+            FROM program_backups
+            ORDER BY created_at DESC
+        """)
+        
+        return [dict(b) for b in backups]
+
+
+def get_backup_details(backup_id: int) -> Optional[Dict[str, Any]]:
+    """
+    Get detailed information about a specific backup, including its items.
+    
+    Args:
+        backup_id: The ID of the backup to retrieve
+    
+    Returns:
+        Dict with backup metadata and items, or None if not found
+    """
+    with DatabaseHandler() as db:
+        # Get backup header
+        backup = db.fetch_one("""
+            SELECT id, name, note, backup_type, schema_version, item_count, created_at
+            FROM program_backups
+            WHERE id = ?
+        """, (backup_id,))
+        
+        if not backup:
+            return None
+        
+        # Get backup items
+        items = db.fetch_all("""
+            SELECT routine, exercise, sets, min_rep_range, max_rep_range, 
+                   rir, rpe, weight, exercise_order
+            FROM program_backup_items
+            WHERE backup_id = ?
+            ORDER BY exercise_order, routine, exercise
+        """, (backup_id,))
+        
+        result = dict(backup)
+        result['items'] = [dict(item) for item in items]
+        
+        return result
+
+
+def restore_backup(backup_id: int) -> Dict[str, Any]:
+    """
+    Restore a backup to the active program (replace mode).
+    
+    This will:
+    1. Clear all current user_selection entries
+    2. Insert all backup items (skipping any with missing exercises)
+    
+    Args:
+        backup_id: The ID of the backup to restore
+    
+    Returns:
+        Dict with restore results including:
+        - restored_count: Number of items successfully restored
+        - skipped: List of exercises that were skipped (missing from catalog)
+        - backup_name: Name of the restored backup
+    
+    Raises:
+        ValueError: If backup_id is invalid
+    """
+    with DatabaseHandler() as db:
+        # Verify backup exists
+        backup = db.fetch_one("""
+            SELECT id, name, item_count
+            FROM program_backups
+            WHERE id = ?
+        """, (backup_id,))
+        
+        if not backup:
+            raise ValueError(f"Backup with id {backup_id} not found")
+        
+        backup_name = backup['name']
+        
+        # Get backup items
+        items = db.fetch_all("""
+            SELECT routine, exercise, sets, min_rep_range, max_rep_range, 
+                   rir, rpe, weight, exercise_order
+            FROM program_backup_items
+            WHERE backup_id = ?
+        """, (backup_id,))
+        
+        # Get list of valid exercises from catalog
+        valid_exercises = db.fetch_all("""
+            SELECT exercise_name FROM exercises
+        """)
+        valid_exercise_names = {row['exercise_name'] for row in valid_exercises}
+        
+        # Check if exercise_order column exists in user_selection
+        has_order = _check_column_exists(db, 'user_selection', 'exercise_order')
+        
+        # Clear current active program (user_selection)
+        # First delete workout_log entries that reference user_selection
+        db.execute_query("DELETE FROM workout_log")
+        db.execute_query("DELETE FROM user_selection")
+        
+        restored_count = 0
+        skipped = []
+        
+        for item in items:
+            exercise_name = item.get('exercise')
+            
+            # Check if exercise exists in catalog (FK constraint)
+            if exercise_name not in valid_exercise_names:
+                skipped.append(exercise_name)
+                logger.warning(
+                    f"Skipping exercise during restore: '{exercise_name}' not in catalog"
+                )
+                continue
+            
+            # Insert item
+            try:
+                if has_order and item.get('exercise_order') is not None:
+                    db.execute_query("""
+                        INSERT INTO user_selection 
+                        (routine, exercise, sets, min_rep_range, max_rep_range, 
+                         rir, rpe, weight, exercise_order)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        item.get('routine'),
+                        exercise_name,
+                        item.get('sets'),
+                        item.get('min_rep_range'),
+                        item.get('max_rep_range'),
+                        item.get('rir'),
+                        item.get('rpe'),
+                        item.get('weight'),
+                        item.get('exercise_order')
+                    ))
+                else:
+                    db.execute_query("""
+                        INSERT INTO user_selection 
+                        (routine, exercise, sets, min_rep_range, max_rep_range, 
+                         rir, rpe, weight)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        item.get('routine'),
+                        exercise_name,
+                        item.get('sets'),
+                        item.get('min_rep_range'),
+                        item.get('max_rep_range'),
+                        item.get('rir'),
+                        item.get('rpe'),
+                        item.get('weight')
+                    ))
+                restored_count += 1
+            except sqlite3.IntegrityError as e:
+                # Handle duplicate entries gracefully
+                logger.warning(
+                    f"Skipping duplicate entry during restore: {exercise_name} - {e}"
+                )
+                skipped.append(f"{exercise_name} (duplicate)")
+        
+        # Remove duplicates from skipped list while preserving order
+        skipped_unique = list(dict.fromkeys(skipped))
+        
+        logger.info(
+            "Backup restored successfully",
+            extra={
+                'backup_id': backup_id,
+                'backup_name': backup_name,
+                'restored_count': restored_count,
+                'skipped_count': len(skipped_unique)
+            }
+        )
+        
+        return {
+            'backup_id': backup_id,
+            'backup_name': backup_name,
+            'restored_count': restored_count,
+            'skipped': skipped_unique
+        }
+
+
+def delete_backup(backup_id: int) -> bool:
+    """
+    Delete a backup and all its items.
+    
+    Args:
+        backup_id: The ID of the backup to delete
+    
+    Returns:
+        True if deletion was successful, False if backup not found
+    """
+    with DatabaseHandler() as db:
+        # Check if backup exists
+        backup = db.fetch_one("""
+            SELECT id, name FROM program_backups WHERE id = ?
+        """, (backup_id,))
+        
+        if not backup:
+            logger.warning(f"Attempted to delete non-existent backup: {backup_id}")
+            return False
+        
+        backup_name = backup['name']
+        
+        # Delete backup items first (cascading delete should handle this, but be explicit)
+        db.execute_query("""
+            DELETE FROM program_backup_items WHERE backup_id = ?
+        """, (backup_id,))
+        
+        # Delete backup header
+        db.execute_query("""
+            DELETE FROM program_backups WHERE id = ?
+        """, (backup_id,))
+        
+        logger.info(
+            "Backup deleted successfully",
+            extra={
+                'backup_id': backup_id,
+                'backup_name': backup_name
+            }
+        )
+        
+        return True
+
+
+def create_auto_backup_before_erase() -> Optional[Dict[str, Any]]:
+    """
+    Create an automatic backup before erase/reset operations.
+    
+    Only creates a backup if the active program has data.
+    
+    Returns:
+        Backup metadata dict if backup was created, None if active program was empty
+    """
+    with DatabaseHandler() as db:
+        # Check if user_selection table exists and has data
+        table_check = db.fetch_one(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='user_selection'"
+        )
+        
+        if not table_check:
+            logger.debug("No user_selection table found, skipping auto-backup")
+            return None
+        
+        count_result = db.fetch_one("SELECT COUNT(*) as count FROM user_selection")
+        if not count_result or count_result['count'] == 0:
+            logger.debug("Active program is empty, skipping auto-backup")
+            return None
+    
+    # Create timestamped auto-backup
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    backup_name = f"Pre-Erase Auto-Backup ({timestamp})"
+    
+    return create_backup(
+        name=backup_name,
+        note="Automatically created before erase/reset operation",
+        backup_type="auto"
+    )
+
+
+def get_latest_auto_backup() -> Optional[Dict[str, Any]]:
+    """
+    Get the most recent auto-backup.
+    
+    Returns:
+        Backup metadata dict or None if no auto-backups exist
+    """
+    with DatabaseHandler() as db:
+        # Ensure backup tables exist
+        initialize_backup_tables(db)
+        
+        backup = db.fetch_one("""
+            SELECT id, name, note, backup_type, schema_version, item_count, created_at
+            FROM program_backups
+            WHERE backup_type = 'auto'
+            ORDER BY created_at DESC
+            LIMIT 1
+        """)
+        
+        return dict(backup) if backup else None
+
+
+def get_active_program_count() -> int:
+    """
+    Get the number of items in the current active program.
+    
+    Returns:
+        Number of items in user_selection, or 0 if table doesn't exist
+    """
+    with DatabaseHandler() as db:
+        table_check = db.fetch_one(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='user_selection'"
+        )
+        
+        if not table_check:
+            return 0
+        
+        result = db.fetch_one("SELECT COUNT(*) as count FROM user_selection")
+        return result['count'] if result else 0

@@ -1,9 +1,10 @@
 /* Enhanced Tooltips */
-[title] {
+/* Exclude modal elements from tooltip positioning to prevent conflicts with Bootstrap */
+[title]:not(.modal):not(.modal-dialog):not(.modal-content):not(.modal-header):not(.modal-body):not(.modal-footer):not(.modal *) {
     position: relative;
 }
 
-[title]:hover::before {
+[title]:not(.modal):not(.modal-dialog):not(.modal-content):not(.modal-header):not(.modal-body):not(.modal-footer):not(.modal *):hover::before {
     content: attr(title);
     position: absolute;
     bottom: 100%;

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_workout_plan.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_frames.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_routine_cascade.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_muscle_selector.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -218,6 +219,26 @@
                                     <i class="fas fa-clipboard-list" aria-hidden="true"></i> Export to Workout Log
                                 </button>
                             </div>
+
+                            <!-- Generate Starter Plan Button -->
+                            <div class="inline-control-item" data-order="7">
+                                <button id="generate-plan-btn" class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#generatePlanModal" aria-label="Generate a starter workout plan">
+                                    <i class="fas fa-magic" aria-hidden="true"></i> Generate Starter Plan
+                                </button>
+                            </div>
+                            
+                            <!-- Program Library Buttons -->
+                            <div class="inline-control-item" data-order="8">
+                                <button id="save-program-btn" class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#saveBackupModal" aria-label="Save current program">
+                                    <i class="fas fa-save" aria-hidden="true"></i> Save Program
+                                </button>
+                            </div>
+                            
+                            <div class="inline-control-item" data-order="9">
+                                <button id="load-program-btn" class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#programLibraryModal" aria-label="Load saved program">
+                                    <i class="fas fa-folder-open" aria-hidden="true"></i> Program Library
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -286,9 +307,357 @@
         </section>
         <!-- AGENT:END B-1 PRIORITY-CLASSES -->
     </div>
+
+    <!-- Generate Starter Plan Modal -->
+    <div class="modal fade" id="generatePlanModal" tabindex="-1" aria-labelledby="generatePlanModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="generatePlanModalLabel">
+                        <i class="fas fa-magic me-2"></i>Generate Starter Plan
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="generatePlanForm">
+                        <div class="row g-3">
+                            <!-- Training Days -->
+                            <div class="col-md-6">
+                                <label for="gen-training-days" class="form-label">Training Days per Week</label>
+                                <select id="gen-training-days" class="form-select" required>
+                                    <option value="1">1 day (Single Full-Body)</option>
+                                    <option value="2">2 days (A/B Split)</option>
+                                    <option value="3" selected>3 days (A/B/C Rotation)</option>
+                                    <option value="4">4 days (Upper/Lower)</option>
+                                    <option value="5">5 days (PPL + Upper/Lower)</option>
+                                </select>
+                                <div class="form-text">How many days per week will you train?</div>
+                            </div>
+
+                            <!-- Environment -->
+                            <div class="col-md-6">
+                                <label for="gen-environment" class="form-label">Training Environment</label>
+                                <select id="gen-environment" class="form-select" required>
+                                    <option value="gym" selected>🏋️ Gym (Full Equipment)</option>
+                                    <option value="home">🏠 Home (Minimal Equipment)</option>
+                                </select>
+                                <div class="form-text">Where will you be training?</div>
+                            </div>
+
+                            <!-- Experience Level -->
+                            <div class="col-md-6">
+                                <label for="gen-experience" class="form-label">Experience Level</label>
+                                <select id="gen-experience" class="form-select" required>
+                                    <option value="novice" selected>Novice (< 1 year)</option>
+                                    <option value="intermediate">Intermediate (1-3 years)</option>
+                                    <option value="advanced">Advanced (3+ years)</option>
+                                </select>
+                                <div class="form-text">Your training experience</div>
+                            </div>
+
+                            <!-- Goal -->
+                            <div class="col-md-6">
+                                <label for="gen-goal" class="form-label">Training Goal</label>
+                                <select id="gen-goal" class="form-select" required>
+                                    <option value="hypertrophy" selected>💪 Hypertrophy (Muscle Growth)</option>
+                                    <option value="strength">🏆 Strength (Max Strength)</option>
+                                    <option value="general">⚖️ General Fitness</option>
+                                </select>
+                                <div class="form-text">Your primary training objective</div>
+                            </div>
+
+                            <!-- Volume Scale -->
+                            <div class="col-md-6">
+                                <label for="gen-volume-scale" class="form-label">Volume Scale</label>
+                                <input type="range" class="form-range" id="gen-volume-scale" min="0.6" max="1.2" step="0.1" value="1.0">
+                                <div class="d-flex justify-content-between">
+                                    <small class="text-muted">Lower Volume</small>
+                                    <small id="volume-scale-value" class="fw-bold">1.0x</small>
+                                    <small class="text-muted">Higher Volume</small>
+                                </div>
+                                <div class="form-text">Adjust if you're a heavy lifter or need less volume</div>
+                            </div>
+
+                            <!-- Overwrite Option -->
+                            <div class="col-md-6">
+                                <label class="form-label">Existing Plan</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="gen-overwrite" checked>
+                                    <label class="form-check-label" for="gen-overwrite">
+                                        Overwrite existing routines (A, B, C)
+                                    </label>
+                                </div>
+                                <div class="form-text">Uncheck to create new routine names (A_gen1, etc.)</div>
+                            </div>
+
+                            <!-- Movement Restrictions -->
+                            <div class="col-12">
+                                <label class="form-label">Movement Restrictions (Optional)</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="gen-no-overhead">
+                                            <label class="form-check-label" for="gen-no-overhead">
+                                                No Overhead Press (shoulder issues)
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="gen-no-deadlift">
+                                            <label class="form-check-label" for="gen-no-deadlift">
+                                                No Deadlifts (back issues)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Available Equipment -->
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <i class="fas fa-dumbbell me-1"></i>Available Equipment
+                                </label>
+                                <p class="text-muted small mb-2">Select the equipment you have access to. Exercises will be filtered based on your selection.</p>
+                                <div class="row g-2">
+                                    <!-- Common Equipment -->
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-barbell" value="Barbell" checked>
+                                            <label class="form-check-label" for="gen-eq-barbell">
+                                                <i class="fas fa-weight-hanging text-secondary me-1"></i>Barbell
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-dumbbells" value="Dumbbells" checked>
+                                            <label class="form-check-label" for="gen-eq-dumbbells">
+                                                <i class="fas fa-dumbbell text-secondary me-1"></i>Dumbbells
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-cables" value="Cables" checked>
+                                            <label class="form-check-label" for="gen-eq-cables">
+                                                <i class="fas fa-link text-secondary me-1"></i>Cables
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-machine" value="Machine" checked>
+                                            <label class="form-check-label" for="gen-eq-machine">
+                                                <i class="fas fa-cogs text-secondary me-1"></i>Machine
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-bodyweight" value="Bodyweight" checked>
+                                            <label class="form-check-label" for="gen-eq-bodyweight">
+                                                <i class="fas fa-running text-secondary me-1"></i>Bodyweight
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-kettlebells" value="Kettlebells">
+                                            <label class="form-check-label" for="gen-eq-kettlebells">
+                                                <i class="fas fa-bowling-ball text-secondary me-1"></i>Kettlebells
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Specialty Equipment -->
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-smith" value="Smith_Machine">
+                                            <label class="form-check-label" for="gen-eq-smith">
+                                                <i class="fas fa-grip-lines-vertical text-secondary me-1"></i>Smith Machine
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-trapbar" value="Trapbar">
+                                            <label class="form-check-label" for="gen-eq-trapbar">
+                                                <i class="fas fa-hexagon text-secondary me-1"></i>Trap Bar
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-band" value="Band">
+                                            <label class="form-check-label" for="gen-eq-band">
+                                                <i class="fas fa-ribbon text-secondary me-1"></i>Resistance Band
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-trx" value="Trx">
+                                            <label class="form-check-label" for="gen-eq-trx">
+                                                <i class="fas fa-compress-arrows-alt text-secondary me-1"></i>TRX / Suspension
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-plate" value="Plate">
+                                            <label class="form-check-label" for="gen-eq-plate">
+                                                <i class="fas fa-circle text-secondary me-1"></i>Weight Plate
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-medicine" value="Medicine_Ball">
+                                            <label class="form-check-label" for="gen-eq-medicine">
+                                                <i class="fas fa-basketball-ball text-secondary me-1"></i>Medicine Ball
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary me-1" onclick="document.querySelectorAll('.equipment-check').forEach(c => c.checked = true)">
+                                        <i class="fas fa-check-double me-1"></i>Select All
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.querySelectorAll('.equipment-check').forEach(c => c.checked = false)">
+                                        <i class="fas fa-times me-1"></i>Clear All
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Target Muscle Groups -->
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <i class="fas fa-user me-1"></i>Target Muscle Groups (Optional)
+                                </label>
+                                <p class="text-muted small mb-2">Click on muscles to select specific areas to target. Leave empty to target all muscle groups.</p>
+                                <div id="muscle-selector-container" class="muscle-selector-container">
+                                    <!-- Muscle selector will be rendered here by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preview Section -->
+                        <div class="mt-4 p-3 bg-light rounded" id="plan-preview">
+                            <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>Plan Preview</h6>
+                            <div id="plan-preview-content">
+                                <p class="mb-1"><strong>Routines:</strong> A, B (2-day split)</p>
+                                <p class="mb-1"><strong>Exercises per session:</strong> ~7</p>
+                                <p class="mb-1"><strong>Sets per session:</strong> ~18</p>
+                                <p class="mb-0"><strong>Rep range:</strong> 6-10 (main), 10-15 (accessories)</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="generatePlanSubmit" onclick="generateStarterPlan()">
+                        <i class="fas fa-magic me-1"></i>Generate Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<script src="{{ url_for('static', filename='js/modules/muscle-selector.js') }}"></script>
+
+<script>
+// Muscle Selector Instance (global for access)
+let muscleSelector = null;
+
+// Plan Generator Preview Update
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Muscle Selector
+    muscleSelector = new MuscleSelector('muscle-selector-container');
+    
+    // Volume scale display update
+    const volumeScale = document.getElementById('gen-volume-scale');
+    const volumeScaleValue = document.getElementById('volume-scale-value');
+    
+    if (volumeScale && volumeScaleValue) {
+        volumeScale.addEventListener('input', function() {
+            volumeScaleValue.textContent = this.value + 'x';
+            updatePlanPreview();
+        });
+    }
+    
+    // Environment change - auto-select equipment
+    const envSelect = document.getElementById('gen-environment');
+    if (envSelect) {
+        envSelect.addEventListener('change', function() {
+            updateEquipmentForEnvironment(this.value);
+            updatePlanPreview();
+        });
+    }
+    
+    // Update preview when form changes
+    const formInputs = document.querySelectorAll('#generatePlanForm select, #generatePlanForm input');
+    formInputs.forEach(input => {
+        input.addEventListener('change', updatePlanPreview);
+    });
+    
+    function updateEquipmentForEnvironment(environment) {
+        // Equipment available in each environment
+        const gymEquipment = ['Barbell', 'Dumbbells', 'Cables', 'Machine', 'Bodyweight', 'Kettlebells', 
+                             'Smith_Machine', 'Trapbar', 'Band', 'Trx', 'Plate', 'Medicine_Ball'];
+        const homeEquipment = ['Dumbbells', 'Bodyweight', 'Band', 'Kettlebells', 'Trx', 'Medicine_Ball'];
+        
+        const selectedEquipment = environment === 'gym' ? gymEquipment : homeEquipment;
+        
+        // Update all equipment checkboxes
+        document.querySelectorAll('.equipment-check').forEach(checkbox => {
+            checkbox.checked = selectedEquipment.includes(checkbox.value);
+        });
+    }
+    
+    function updatePlanPreview() {
+        const trainingDays = document.getElementById('gen-training-days')?.value || '3';
+        const goal = document.getElementById('gen-goal')?.value || 'hypertrophy';
+        const volumeScaleVal = document.getElementById('gen-volume-scale')?.value || '1.0';
+        
+        let routines = 'A';
+        let splitName = 'Single Full-Body';
+        if (trainingDays === '2') {
+            routines = 'A, B';
+            splitName = '2-day A/B split';
+        } else if (trainingDays === '3') {
+            routines = 'A, B, C';
+            splitName = '3-day A/B/C rotation';
+        } else if (trainingDays === '4') {
+            routines = 'A, B, C, D';
+            splitName = '4-day Upper/Lower split';
+        } else if (trainingDays === '5') {
+            routines = 'A, B, C, D, E';
+            splitName = '5-day PPL + Upper/Lower';
+        }
+        
+        let repRange = '6-10 (main), 10-15 (accessories)';
+        if (goal === 'strength') {
+            repRange = '3-6 (main), 6-10 (accessories)';
+        } else if (goal === 'general') {
+            repRange = '5-8 (main), 8-12 (accessories)';
+        }
+        
+        const baseSets = Math.round(18 * parseFloat(volumeScaleVal));
+        
+        const previewContent = document.getElementById('plan-preview-content');
+        if (previewContent) {
+            previewContent.innerHTML = `
+                <p class="mb-1"><strong>Routines:</strong> ${routines} (${splitName})</p>
+                <p class="mb-1"><strong>Exercises per session:</strong> ~7</p>
+                <p class="mb-1"><strong>Sets per session:</strong> ~${baseSets}</p>
+                <p class="mb-0"><strong>Rep range:</strong> ${repRange}</p>
+            `;
+        }
+    }
+});
+</script>
 
 <script type="module">
 document.addEventListener('DOMContentLoaded', function() {
@@ -349,4 +718,120 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<!-- Save Program Modal -->
+<div class="modal fade" id="saveBackupModal" tabindex="-1" aria-labelledby="saveBackupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="saveBackupModalLabel">
+                    <i class="fas fa-save me-2"></i>Save Program
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="saveBackupForm">
+                    <div class="mb-3">
+                        <label for="backup-name" class="form-label">Program Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="backup-name" placeholder="e.g., My PPL Program" required maxlength="100">
+                        <div class="form-text">Give your program a descriptive name.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="backup-note" class="form-label">Notes (optional)</label>
+                        <textarea class="form-control" id="backup-note" rows="2" placeholder="Optional notes about this program..." maxlength="500"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveBackupSubmit">
+                    <i class="fas fa-save me-1"></i>Save Program
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Program Library Modal -->
+<div class="modal fade" id="programLibraryModal" tabindex="-1" aria-labelledby="programLibraryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="programLibraryModalLabel">
+                    <i class="fas fa-folder-open me-2"></i>Program Library
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="p-3 bg-light border-bottom">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Restore a saved program to replace your current workout plan. Auto-backups are created automatically before data is erased.
+                    </small>
+                </div>
+                <div id="backup-list" class="backup-list" style="max-height: 400px; overflow-y: auto;">
+                    <!-- Backup items will be loaded dynamically -->
+                    <div class="text-center py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p class="mt-2">Loading saved programs...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="openSaveFromLibrary">
+                    <i class="fas fa-plus me-1"></i>Save Current Program
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Restore Modal -->
+<div class="modal fade" id="confirmRestoreModal" tabindex="-1" aria-labelledby="confirmRestoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="confirmRestoreModalLabel">
+                    <i class="fas fa-undo me-2"></i>Restore Program
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Restore "<strong id="restoreBackupName"></strong>"?</p>
+                <p class="text-muted mb-0">This will replace your current workout plan with this backup.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmRestoreBtn">
+                    <i class="fas fa-undo me-1"></i>Restore
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">
+                    <i class="fas fa-trash me-2"></i>Delete Program
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Delete "<strong id="deleteBackupName"></strong>"?</p>
+                <p class="text-danger mb-0"><i class="fas fa-exclamation-triangle me-1"></i>This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash me-1"></i>Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

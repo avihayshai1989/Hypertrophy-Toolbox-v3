@@ -18,6 +18,8 @@ from routes.exports import exports_bp
 from routes.main import main_bp
 from routes.progression_plan import progression_plan_bp
 from routes.volume_splitter import volume_splitter_bp
+from routes.program_backup import program_backup_bp
+from utils.program_backup import initialize_backup_tables
 import sys
 
 
@@ -64,6 +66,58 @@ def app(test_db_path):
     app.register_blueprint(workout_plan_bp)
     app.register_blueprint(progression_plan_bp)
     app.register_blueprint(volume_splitter_bp)
+    app.register_blueprint(program_backup_bp)
+    
+    # Add erase-data endpoint (defined in app.py, not a blueprint)
+    from flask import jsonify
+    from utils.errors import success_response, error_response
+    from utils.program_backup import create_auto_backup_before_erase
+    
+    @app.route('/erase-data', methods=['POST'])
+    def erase_data():
+        try:
+            # Create auto-backup before erasing (if active program has data)
+            auto_backup = None
+            try:
+                auto_backup = create_auto_backup_before_erase()
+            except Exception as backup_error:
+                pass  # Don't fail the erase if backup creation fails
+            
+            # Drop program data tables (but NOT backup tables)
+            with DatabaseHandler() as db:
+                tables = [
+                    'user_selection',
+                    'progression_goals',
+                    'muscle_volumes',
+                    'volume_plans',
+                    'workout_log'
+                ]
+                for table in tables:
+                    db.execute_query(f"DROP TABLE IF EXISTS {table}")
+            
+            # Reinitialize database
+            initialize_database(force=True)
+            add_progression_goals_table()
+            add_volume_tracking_tables()
+            initialize_exercise_order()
+            
+            # Include auto-backup info in response if one was created
+            response_data = {
+                'message': 'All data has been erased and tables reinitialized successfully.'
+            }
+            if auto_backup:
+                response_data['auto_backup'] = {
+                    'id': auto_backup['id'],
+                    'name': auto_backup['name'],
+                    'item_count': auto_backup['item_count']
+                }
+            
+            return jsonify(success_response(
+                data=response_data.get('auto_backup'),
+                message=response_data['message']
+            ))
+        except Exception as e:
+            return error_response("INTERNAL_ERROR", "Failed to erase data", 500)
     
     # Initialize test database
     with app.app_context():
@@ -71,6 +125,7 @@ def app(test_db_path):
         add_progression_goals_table()
         add_volume_tracking_tables()
         initialize_exercise_order()
+        initialize_backup_tables()
     
     # Restore original DB_FILE
     utils.config.DB_FILE = original_db_file
@@ -124,6 +179,8 @@ def clean_db(db_handler):
     # Delete all data but keep tables
     with db_handler.connection:
         tables = [
+            'program_backup_items',
+            'program_backups',
             'exercise_isolated_muscles',
             'workout_log',
             'user_selection',

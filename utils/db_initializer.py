@@ -46,10 +46,20 @@ def _initialize_exercises_table(db: DatabaseHandler) -> None:
             force TEXT,
             equipment TEXT,
             mechanic TEXT,
-            difficulty TEXT
+            difficulty TEXT,
+            movement_pattern TEXT,
+            movement_subpattern TEXT
         )
         """
     )
+    
+    # Add movement pattern columns if they don't exist (for existing databases)
+    cols = db.fetch_all("PRAGMA table_info(exercises)")
+    col_names = {row['name'] for row in cols}
+    if 'movement_pattern' not in col_names:
+        db.execute_query("ALTER TABLE exercises ADD COLUMN movement_pattern TEXT")
+    if 'movement_subpattern' not in col_names:
+        db.execute_query("ALTER TABLE exercises ADD COLUMN movement_subpattern TEXT")
     db.execute_query(
         """
         CREATE UNIQUE INDEX IF NOT EXISTS idx_exercise_name_nocase
@@ -394,6 +404,68 @@ def initialize_database(force: bool = False) -> None:
             _seed_exercises_from_backup_if_needed(db)
             _normalize_equipment_values(db)
             _normalize_muscle_group_values(db)
+            _populate_movement_patterns(db)
         
         _INITIALIZATION_COMPLETE = True
         logger.info("Database initialization complete")
+
+
+def _populate_movement_patterns(db: DatabaseHandler) -> None:
+    """Populate movement_pattern and movement_subpattern for exercises that don't have them."""
+    try:
+        from utils.movement_patterns import classify_exercise
+    except ImportError:
+        logger.warning("movement_patterns module not available, skipping pattern population")
+        return
+    
+    try:
+        rows = db.fetch_all(
+            """
+            SELECT exercise_name, primary_muscle_group, mechanic 
+            FROM exercises 
+            WHERE movement_pattern IS NULL OR movement_pattern = ''
+            """
+        )
+    except sqlite3.Error:
+        logger.exception("Failed to query exercises for pattern population")
+        return
+    
+    if not rows:
+        logger.debug("All exercises already have movement patterns assigned")
+        return
+    
+    updates = 0
+    for row in rows:
+        exercise_name = row.get("exercise_name")
+        if not exercise_name:
+            continue
+        
+        pattern, subpattern = classify_exercise(
+            exercise_name,
+            row.get("primary_muscle_group"),
+            row.get("mechanic"),
+        )
+        
+        if pattern:
+            try:
+                db.execute_query(
+                    """
+                    UPDATE exercises 
+                    SET movement_pattern = ?, movement_subpattern = ?
+                    WHERE exercise_name = ?
+                    """,
+                    (pattern.value, subpattern.value if subpattern else None, exercise_name),
+                )
+                updates += 1
+            except sqlite3.Error:
+                logger.exception(
+                    "Failed to update movement pattern for exercise '%s'",
+                    exercise_name,
+                )
+    
+    if updates:
+        logger.info(
+            "Populated movement patterns for %s exercise%s",
+            updates,
+            "s" if updates != 1 else "",
+        )

@@ -1,0 +1,971 @@
+/**
+ * Muscle Group Selector Module v3.0
+ * SVG-based anatomically accurate body diagram for muscle group selection
+ * 
+ * Uses vendor SVGs from react-body-highlighter (MIT License)
+ * See static/vendor/react-body-highlighter/ATTRIBUTION.md
+ * 
+ * Features:
+ * - Anatomically accurate SVG polygons from react-body-highlighter
+ * - Simple/Advanced view modes with proper parent-child mapping
+ * - Front/Back tab navigation  
+ * - Bilateral synchronization (both sides highlight/select together)
+ * - Robust mapping layer: upstream slugs → canonical keys → backend names
+ * - Debug mode for development
+ */
+
+// ============================================================================
+// VENDOR SVG MAPPING LAYER
+// ============================================================================
+
+/**
+ * Maps upstream react-body-highlighter slugs to our canonical muscle keys.
+ * 
+ * Upstream slugs (from vendor SVGs):
+ *   Front: head, neck, front-deltoids, chest, biceps, triceps, abs, obliques, 
+ *          forearm, abductors, quadriceps, knees, calves
+ *   Back:  head, trapezius, back-deltoids, upper-back, triceps, lower-back,
+ *          forearm, gluteal, abductor, hamstring, knees, calves, left-soleus, right-soleus
+ * 
+ * View mode determines which canonical keys are active:
+ *   Simple: Higher-level muscle groups for quick selection
+ *   Advanced: Detailed muscle subdivisions for precise targeting
+ */
+
+// Upstream slug → Canonical key mapping (for SVG data-muscle attributes)
+const VENDOR_SLUG_TO_CANONICAL = {
+    // ===== FRONT (Anterior) =====
+    'head': null,  // Not selectable for workout targeting
+    'neck': 'neck',
+    'front-deltoids': 'front-shoulders',  // Simple: front-shoulders
+    'chest': 'chest',
+    'biceps': 'biceps',
+    'triceps': 'triceps',
+    'abs': 'abdominals',
+    'obliques': 'obliques',
+    'forearm': 'forearms',
+    'abductors': 'adductors',  // Note: upstream calls these "abductors" but they're inner thigh
+    'quadriceps': 'quads',
+    'knees': null,  // Not selectable
+    'calves': 'calves',
+    
+    // ===== BACK (Posterior) =====
+    'trapezius': 'traps',
+    'back-deltoids': 'rear-shoulders',  // Simple: rear-shoulders
+    'upper-back': 'upper-back',
+    'lower-back': 'lowerback',
+    'gluteal': 'glutes',
+    'abductor': 'hip-abductors',  // Hip abductors (different from front thigh adductors)
+    'hamstring': 'hamstrings',
+    'left-soleus': 'calves',  // Map soleus to calves
+    'right-soleus': 'calves'
+};
+
+/**
+ * Simple → Advanced mapping.
+ * When simple group is selected, ALL children become selected.
+ * When switching Advanced → Simple, parent shows selected if ANY child is selected.
+ */
+const SIMPLE_TO_ADVANCED_MAP = {
+    // Front body - Simple groups
+    'front-shoulders': ['anterior-deltoid', 'lateral-deltoid'],
+    'chest': ['upper-chest', 'mid-chest', 'lower-chest'],
+    'biceps': ['long-head-bicep', 'short-head-bicep'],
+    'forearms': ['wrist-flexors', 'wrist-extensors', 'brachioradialis'],
+    'abdominals': ['upper-abs', 'lower-abs'],
+    'obliques': ['obliques'],  // No subdivision
+    'quads': ['rectus-femoris', 'vastus-lateralis', 'vastus-medialis', 'vastus-intermedius'],
+    'adductors': ['adductors'],  // Inner thigh
+    'neck': ['neck'],
+    
+    // Back body - Simple groups
+    'rear-shoulders': ['posterior-deltoid', 'lateral-deltoid'],
+    'traps': ['upper-traps', 'mid-traps', 'lower-traps'],
+    'upper-back': ['rhomboids', 'teres-major', 'teres-minor'],
+    'lats': ['lats'],
+    'lowerback': ['erector-spinae'],
+    'triceps': ['lateral-head-triceps', 'long-head-triceps', 'medial-head-triceps'],
+    'glutes': ['gluteus-maximus', 'gluteus-medius', 'gluteus-minimus'],
+    'hip-abductors': ['tensor-fasciae-latae'],
+    'hamstrings': ['biceps-femoris', 'semitendinosus', 'semimembranosus'],
+    
+    // Shared
+    'calves': ['gastrocnemius', 'soleus', 'tibialis-anterior']
+};
+
+/**
+ * Advanced → Simple reverse mapping (auto-generated)
+ */
+const ADVANCED_TO_SIMPLE_MAP = {};
+Object.entries(SIMPLE_TO_ADVANCED_MAP).forEach(([parent, children]) => {
+    children.forEach(child => {
+        if (!ADVANCED_TO_SIMPLE_MAP[child]) {
+            ADVANCED_TO_SIMPLE_MAP[child] = [];
+        }
+        ADVANCED_TO_SIMPLE_MAP[child].push(parent);
+    });
+});
+
+/**
+ * Human-readable labels for all muscle keys
+ */
+const MUSCLE_LABELS = {
+    // ===== SIMPLE VIEW LABELS =====
+    'front-shoulders': 'Front Delts',
+    'chest': 'Chest',
+    'biceps': 'Biceps',
+    'forearms': 'Forearms',
+    'abdominals': 'Abs',
+    'obliques': 'Obliques',
+    'quads': 'Quadriceps',
+    'adductors': 'Adductors',
+    'neck': 'Neck',
+    'calves': 'Calves',
+    'rear-shoulders': 'Rear Delts',
+    'traps': 'Traps',
+    'upper-back': 'Upper Back',
+    'lats': 'Lats',
+    'lowerback': 'Lower Back',
+    'triceps': 'Triceps',
+    'glutes': 'Glutes',
+    'hip-abductors': 'Hip Abductors',
+    'hamstrings': 'Hamstrings',
+    
+    // ===== ADVANCED VIEW LABELS =====
+    // Shoulders
+    'anterior-deltoid': 'Anterior Deltoid',
+    'lateral-deltoid': 'Lateral Deltoid',
+    'posterior-deltoid': 'Posterior Deltoid',
+    // Chest
+    'upper-chest': 'Upper Chest',
+    'mid-chest': 'Mid Chest',
+    'lower-chest': 'Lower Chest',
+    // Arms
+    'long-head-bicep': 'Long Head Bicep',
+    'short-head-bicep': 'Short Head Bicep',
+    'lateral-head-triceps': 'Lateral Triceps',
+    'long-head-triceps': 'Long Head Triceps',
+    'medial-head-triceps': 'Medial Triceps',
+    'wrist-flexors': 'Wrist Flexors',
+    'wrist-extensors': 'Wrist Extensors',
+    'brachioradialis': 'Brachioradialis',
+    // Core
+    'upper-abs': 'Upper Abs',
+    'lower-abs': 'Lower Abs',
+    // Back
+    'upper-traps': 'Upper Traps',
+    'mid-traps': 'Mid Traps',
+    'lower-traps': 'Lower Traps',
+    'rhomboids': 'Rhomboids',
+    'teres-major': 'Teres Major',
+    'teres-minor': 'Teres Minor',
+    'erector-spinae': 'Erector Spinae',
+    // Glutes
+    'gluteus-maximus': 'Gluteus Maximus',
+    'gluteus-medius': 'Gluteus Medius',
+    'gluteus-minimus': 'Gluteus Minimus',
+    'tensor-fasciae-latae': 'TFL',
+    // Legs
+    'rectus-femoris': 'Rectus Femoris',
+    'vastus-lateralis': 'Vastus Lateralis',
+    'vastus-medialis': 'Vastus Medialis',
+    'vastus-intermedius': 'Vastus Intermedius',
+    'biceps-femoris': 'Biceps Femoris',
+    'semitendinosus': 'Semitendinosus',
+    'semimembranosus': 'Semimembranosus',
+    'gastrocnemius': 'Gastrocnemius',
+    'soleus': 'Soleus',
+    'tibialis-anterior': 'Tibialis Anterior'
+};
+
+/**
+ * Backend muscle group name mapping (for API payload)
+ * Maps canonical keys to the exact strings expected by the backend
+ */
+const MUSCLE_TO_BACKEND = {
+    // Simple keys → Backend
+    'front-shoulders': 'Shoulders',
+    'rear-shoulders': 'Shoulders', 
+    'chest': 'Chest',
+    'biceps': 'Biceps',
+    'forearms': 'Forearms',
+    'abdominals': 'Abs',
+    'obliques': 'Obliques',
+    'quads': 'Quads',
+    'adductors': 'Adductors',
+    'neck': 'Neck',
+    'calves': 'Calves',
+    'traps': 'Traps',
+    'upper-back': 'Upper Back',
+    'lats': 'Lats',
+    'lowerback': 'Lower Back',
+    'triceps': 'Triceps',
+    'glutes': 'Glutes',
+    'hip-abductors': 'Glutes',  // Group with glutes
+    'hamstrings': 'Hamstrings',
+    
+    // Advanced keys → Backend (more specific)
+    'anterior-deltoid': 'Front Delts',
+    'lateral-deltoid': 'Lateral Delts',
+    'posterior-deltoid': 'Rear Delts',
+    'upper-chest': 'Upper Chest',
+    'mid-chest': 'Mid Chest',
+    'lower-chest': 'Lower Chest',
+    'long-head-bicep': 'Biceps',
+    'short-head-bicep': 'Biceps',
+    'lateral-head-triceps': 'Triceps',
+    'long-head-triceps': 'Triceps',
+    'medial-head-triceps': 'Triceps',
+    'wrist-flexors': 'Forearms',
+    'wrist-extensors': 'Forearms',
+    'brachioradialis': 'Forearms',
+    'upper-abs': 'Abs',
+    'lower-abs': 'Abs',
+    'upper-traps': 'Traps',
+    'mid-traps': 'Traps',
+    'lower-traps': 'Traps',
+    'rhomboids': 'Upper Back',
+    'teres-major': 'Upper Back',
+    'teres-minor': 'Upper Back',
+    'erector-spinae': 'Lower Back',
+    'gluteus-maximus': 'Glutes',
+    'gluteus-medius': 'Glutes',
+    'gluteus-minimus': 'Glutes',
+    'tensor-fasciae-latae': 'Glutes',
+    'rectus-femoris': 'Quads',
+    'vastus-lateralis': 'Quads',
+    'vastus-medialis': 'Quads',
+    'vastus-intermedius': 'Quads',
+    'biceps-femoris': 'Hamstrings',
+    'semitendinosus': 'Hamstrings',
+    'semimembranosus': 'Hamstrings',
+    'gastrocnemius': 'Calves',
+    'soleus': 'Calves',
+    'tibialis-anterior': 'Tibialis'
+};
+
+/**
+ * SVG file paths - using vendor SVGs
+ */
+const SVG_PATHS = {
+    front: '/static/vendor/react-body-highlighter/body_anterior.svg',
+    back: '/static/vendor/react-body-highlighter/body_posterior.svg'
+};
+
+/**
+ * Which canonical keys appear on each body side
+ */
+const MUSCLES_BY_SIDE = {
+    front: [
+        'neck', 'front-shoulders', 'chest', 'biceps', 'triceps', 
+        'forearms', 'abdominals', 'obliques', 'adductors', 'quads', 'calves'
+    ],
+    back: [
+        'traps', 'rear-shoulders', 'upper-back', 'lats', 'triceps',
+        'lowerback', 'forearms', 'glutes', 'hip-abductors', 'hamstrings', 'calves'
+    ]
+};
+
+// ============================================================================
+// MUSCLE SELECTOR CLASS
+// ============================================================================
+
+class MuscleSelector {
+    constructor(containerId, options = {}) {
+        this.container = document.getElementById(containerId);
+        this.viewMode = options.viewMode || 'simple';
+        this.bodySide = options.bodySide || 'front';
+        this.debugMode = options.debug || false;
+        
+        // Store selections at ADVANCED level (sub-muscles)
+        // This allows precise tracking regardless of view mode
+        this.selectedMuscles = new Set();
+        
+        // SVG cache
+        this.svgCache = {};
+        
+        if (this.container) {
+            this.init();
+        }
+    }
+
+    async init() {
+        this.renderShell();
+        await this.loadAndRenderSVG();
+        this.attachGlobalEventListeners();
+    }
+
+    /**
+     * Render the container shell (controls, tabs, containers)
+     */
+    renderShell() {
+        this.container.innerHTML = `
+            <div class="muscle-selector-wrapper">
+                <!-- Controls Row -->
+                <div class="muscle-selector-controls">
+                    <div class="view-toggle-group">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn ${this.viewMode === 'simple' ? 'btn-primary' : 'btn-outline-secondary'}" data-view="simple">
+                                Simple
+                            </button>
+                            <button type="button" class="btn ${this.viewMode === 'advanced' ? 'btn-primary' : 'btn-outline-secondary'}" data-view="advanced">
+                                Advanced
+                            </button>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        ${this.debugMode ? '<button type="button" class="btn btn-sm btn-outline-info me-1" id="muscle-toggle-debug">Debug</button>' : ''}
+                        <button type="button" class="btn btn-sm btn-outline-success" id="muscle-select-all">Select All</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="muscle-clear-all">Clear</button>
+                    </div>
+                </div>
+
+                <!-- Body Side Tabs -->
+                <ul class="nav nav-tabs muscle-body-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link ${this.bodySide === 'front' ? 'active' : ''}" 
+                                data-side="front" type="button" role="tab">
+                            <i class="fas fa-user me-1"></i>Front
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link ${this.bodySide === 'back' ? 'active' : ''}" 
+                                data-side="back" type="button" role="tab">
+                            <i class="fas fa-user me-1"></i>Back
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Main Content Area -->
+                <div class="muscle-selector-content">
+                    <div class="body-diagram-wrapper">
+                        <div id="svg-container" class="svg-container">
+                            <div class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin"></i> Loading...
+                            </div>
+                        </div>
+                        <div class="muscle-tooltip" id="muscle-tooltip">
+                            <div class="tooltip-label"></div>
+                            <div class="tooltip-key"></div>
+                        </div>
+                    </div>
+                    <div class="muscle-legend" id="muscle-legend">
+                        <!-- Legend items rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- Selection Summary -->
+                <div class="selection-summary">
+                    <span class="summary-label">Selected:</span>
+                    <span class="summary-value" id="selection-summary-text">
+                        None (all muscles will be targeted)
+                    </span>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Load SVG from vendor directory and render it inline
+     */
+    async loadAndRenderSVG() {
+        const svgPath = SVG_PATHS[this.bodySide];
+        const svgContainer = this.container.querySelector('#svg-container');
+        
+        try {
+            // Check cache first
+            if (this.svgCache[svgPath]) {
+                svgContainer.innerHTML = this.svgCache[svgPath];
+            } else {
+                const response = await fetch(svgPath);
+                if (!response.ok) throw new Error(`Failed to load SVG: ${svgPath}`);
+                const svgText = await response.text();
+                this.svgCache[svgPath] = svgText;
+                svgContainer.innerHTML = svgText;
+            }
+            
+            // Map vendor slugs to canonical keys
+            this.mapVendorSlugsToCanonical();
+            
+            // Attach event listeners to muscle regions
+            this.attachMuscleEventListeners();
+            
+            // Update visual state based on current selections
+            this.updateAllRegionStates();
+            
+            // Render legend
+            this.renderLegend();
+            
+            // Update summary
+            this.updateSummary();
+            
+        } catch (error) {
+            console.error('Error loading SVG:', error);
+            svgContainer.innerHTML = `
+                <div class="alert alert-danger m-3">
+                    Failed to load muscle diagram. Please refresh the page.
+                </div>
+            `;
+        }
+    }
+
+    /**
+     * Map vendor SVG slugs to canonical muscle keys
+     * Updates data-muscle attributes on SVG elements
+     */
+    mapVendorSlugsToCanonical() {
+        const regions = this.container.querySelectorAll('.muscle-region[data-muscle]');
+        
+        regions.forEach(region => {
+            const vendorSlug = region.dataset.muscle;
+            const canonicalKey = VENDOR_SLUG_TO_CANONICAL[vendorSlug];
+            
+            if (canonicalKey === null) {
+                // Non-selectable region (e.g., head, knees)
+                region.classList.add('non-selectable');
+                region.style.cursor = 'default';
+            } else if (canonicalKey) {
+                // Update to canonical key
+                region.dataset.canonicalMuscle = canonicalKey;
+            } else {
+                // Unknown slug - keep original but log warning
+                console.warn(`Unknown vendor slug: ${vendorSlug}`);
+                region.dataset.canonicalMuscle = vendorSlug;
+            }
+        });
+    }
+
+    /**
+     * Get the canonical key for a region element
+     */
+    getCanonicalKey(region) {
+        return region.dataset.canonicalMuscle || VENDOR_SLUG_TO_CANONICAL[region.dataset.muscle] || region.dataset.muscle;
+    }
+
+    /**
+     * Attach event listeners to muscle region paths
+     */
+    attachMuscleEventListeners() {
+        const regions = this.container.querySelectorAll('.muscle-region:not(.non-selectable)');
+        
+        regions.forEach(region => {
+            const canonicalKey = this.getCanonicalKey(region);
+            if (!canonicalKey) return;
+            
+            // Click handler
+            region.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleMuscle(canonicalKey);
+            });
+            
+            // Hover handlers
+            region.addEventListener('mouseenter', (e) => {
+                this.handleMuscleHover(canonicalKey, true);
+                this.showTooltip(e, canonicalKey);
+            });
+            
+            region.addEventListener('mousemove', (e) => {
+                this.moveTooltip(e);
+            });
+            
+            region.addEventListener('mouseleave', () => {
+                this.handleMuscleHover(canonicalKey, false);
+                this.hideTooltip();
+            });
+        });
+    }
+
+    /**
+     * Attach global event listeners (tabs, buttons)
+     */
+    attachGlobalEventListeners() {
+        // View mode toggle
+        this.container.querySelectorAll('[data-view]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const newMode = e.currentTarget.dataset.view;
+                if (newMode !== this.viewMode) {
+                    this.switchViewMode(newMode);
+                }
+            });
+        });
+
+        // Body side tabs
+        this.container.querySelectorAll('[data-side]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const newSide = e.currentTarget.dataset.side;
+                if (newSide !== this.bodySide) {
+                    this.switchBodySide(newSide);
+                }
+            });
+        });
+
+        // Select All
+        const selectAllBtn = this.container.querySelector('#muscle-select-all');
+        if (selectAllBtn) {
+            selectAllBtn.addEventListener('click', () => this.selectAll());
+        }
+
+        // Clear All
+        const clearAllBtn = this.container.querySelector('#muscle-clear-all');
+        if (clearAllBtn) {
+            clearAllBtn.addEventListener('click', () => this.clearAll());
+        }
+
+        // Debug toggle
+        const debugBtn = this.container.querySelector('#muscle-toggle-debug');
+        if (debugBtn) {
+            debugBtn.addEventListener('click', () => {
+                this.debugMode = !this.debugMode;
+                debugBtn.classList.toggle('btn-info', this.debugMode);
+                debugBtn.classList.toggle('btn-outline-info', !this.debugMode);
+                this.updateAllRegionStates();
+                this.renderLegend();
+            });
+        }
+    }
+
+    /**
+     * Handle hover state - highlight all paths for the same canonical key
+     */
+    handleMuscleHover(canonicalKey, isHovering) {
+        // Find all regions with this canonical key (handles bilateral sides)
+        const regions = this.container.querySelectorAll('.muscle-region');
+        regions.forEach(region => {
+            const regionKey = this.getCanonicalKey(region);
+            if (regionKey === canonicalKey) {
+                region.classList.toggle('hover', isHovering);
+            }
+        });
+        
+        // Also highlight corresponding legend item
+        const legendItem = this.container.querySelector(`.legend-item[data-muscle="${canonicalKey}"]`);
+        if (legendItem) {
+            legendItem.classList.toggle('hover', isHovering);
+        }
+    }
+
+    /**
+     * Toggle a muscle selection
+     * In Simple mode: toggles all children of a parent group
+     * In Advanced mode: toggles individual sub-muscles
+     */
+    toggleMuscle(muscleKey) {
+        if (this.viewMode === 'simple') {
+            // In simple mode, toggle ALL children of the parent group
+            const children = SIMPLE_TO_ADVANCED_MAP[muscleKey] || [muscleKey];
+            const allSelected = children.every(child => this.selectedMuscles.has(child));
+            
+            if (allSelected) {
+                // Deselect all children
+                children.forEach(child => this.selectedMuscles.delete(child));
+            } else {
+                // Select all children
+                children.forEach(child => this.selectedMuscles.add(child));
+            }
+        } else {
+            // In advanced mode, toggle individual sub-muscle
+            if (this.selectedMuscles.has(muscleKey)) {
+                this.selectedMuscles.delete(muscleKey);
+            } else {
+                this.selectedMuscles.add(muscleKey);
+            }
+        }
+        
+        this.updateAllRegionStates();
+        this.renderLegend();
+        this.updateSummary();
+    }
+
+    /**
+     * Check if a muscle is selected
+     * For simple keys: returns true if ALL children are selected
+     * For advanced keys: returns true if that specific key is selected
+     */
+    isMuscleSelected(muscleKey) {
+        // Check if it's a simple (parent) key
+        const children = SIMPLE_TO_ADVANCED_MAP[muscleKey];
+        if (children && children.length > 0) {
+            // Parent key: check if ALL children are selected
+            return children.every(child => this.selectedMuscles.has(child));
+        }
+        // Advanced key or no children: check directly
+        return this.selectedMuscles.has(muscleKey);
+    }
+
+    /**
+     * Check if a simple muscle group is partially selected
+     * (some but not all children selected)
+     */
+    isMusclePartiallySelected(muscleKey) {
+        const children = SIMPLE_TO_ADVANCED_MAP[muscleKey];
+        if (!children || children.length === 0) return false;
+        
+        const selectedCount = children.filter(child => this.selectedMuscles.has(child)).length;
+        return selectedCount > 0 && selectedCount < children.length;
+    }
+
+    /**
+     * Update the visual state of all muscle regions
+     * SVG regions use simple (parent) keys, so we check if ANY child is selected
+     */
+    updateAllRegionStates() {
+        const regions = this.container.querySelectorAll('.muscle-region:not(.non-selectable)');
+        
+        regions.forEach(region => {
+            const canonicalKey = this.getCanonicalKey(region);
+            if (!canonicalKey) return;
+            
+            // Check if this parent group has any children selected
+            const children = SIMPLE_TO_ADVANCED_MAP[canonicalKey] || [canonicalKey];
+            const selectedCount = children.filter(child => this.selectedMuscles.has(child)).length;
+            const isFullySelected = selectedCount === children.length;
+            const isPartiallySelected = selectedCount > 0 && selectedCount < children.length;
+            
+            region.classList.toggle('selected', isFullySelected);
+            region.classList.toggle('partial', isPartiallySelected);
+            
+            // Debug mode: add visual indicator
+            if (this.debugMode) {
+                region.style.strokeWidth = '0.5';
+            } else {
+                region.style.strokeWidth = '';
+            }
+        });
+    }
+
+    /**
+     * Render the legend/checklist
+     * Simple mode: shows parent muscle groups
+     * Advanced mode: shows sub-muscles grouped under parents
+     */
+    renderLegend() {
+        const legendContainer = this.container.querySelector('#muscle-legend');
+        if (!legendContainer) return;
+        
+        // Get muscles for current body side
+        const musclesForSide = MUSCLES_BY_SIDE[this.bodySide] || [];
+        
+        let legendHTML = `
+            <div class="legend-header">
+                <span class="legend-title">${this.bodySide === 'front' ? 'Front' : 'Back'} Muscles</span>
+                <span class="legend-mode-badge">${this.viewMode === 'simple' ? 'Simple' : 'Advanced'}</span>
+            </div>
+            <div class="legend-items">
+        `;
+        
+        if (this.viewMode === 'simple') {
+            // Simple mode: show parent groups only
+            const muscleKeys = musclesForSide.filter(key => MUSCLE_LABELS[key]);
+            legendHTML += muscleKeys.map(key => this.renderSimpleLegendItem(key)).join('');
+        } else {
+            // Advanced mode: show sub-muscles grouped under parents
+            musclesForSide.forEach(parentKey => {
+                const children = SIMPLE_TO_ADVANCED_MAP[parentKey];
+                if (children && children.length > 0) {
+                    legendHTML += this.renderAdvancedLegendGroup(parentKey, children);
+                }
+            });
+        }
+        
+        legendHTML += '</div>';
+        legendContainer.innerHTML = legendHTML;
+        
+        // Attach legend item event listeners
+        legendContainer.querySelectorAll('.legend-item').forEach(item => {
+            const muscleKey = item.dataset.muscle;
+            const parentKey = item.dataset.parent;
+            
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleMuscle(muscleKey);
+            });
+            
+            // Hover highlights the SVG region (parent key for advanced items)
+            const hoverKey = parentKey || muscleKey;
+            item.addEventListener('mouseenter', () => this.handleMuscleHover(hoverKey, true));
+            item.addEventListener('mouseleave', () => this.handleMuscleHover(hoverKey, false));
+        });
+        
+        // Attach parent header click handlers (select all children)
+        legendContainer.querySelectorAll('.legend-group-header').forEach(header => {
+            const parentKey = header.dataset.parent;
+            header.addEventListener('click', () => this.toggleMuscle(parentKey));
+            header.addEventListener('mouseenter', () => this.handleMuscleHover(parentKey, true));
+            header.addEventListener('mouseleave', () => this.handleMuscleHover(parentKey, false));
+        });
+    }
+
+    /**
+     * Render a simple mode legend item (parent muscle group)
+     */
+    renderSimpleLegendItem(parentKey) {
+        const isSelected = this.isMuscleSelected(parentKey);
+        const isPartial = this.isMusclePartiallySelected(parentKey);
+        const label = MUSCLE_LABELS[parentKey] || parentKey;
+        
+        let checkboxClass = 'legend-checkbox';
+        let checkboxIcon = '';
+        
+        if (isSelected) {
+            checkboxClass += ' checked';
+            checkboxIcon = '<i class="fas fa-check"></i>';
+        } else if (isPartial) {
+            checkboxClass += ' partial';
+            checkboxIcon = '<i class="fas fa-minus"></i>';
+        }
+        
+        return `
+            <label class="legend-item" data-muscle="${parentKey}">
+                <span class="${checkboxClass}">${checkboxIcon}</span>
+                <span class="legend-label">${label}</span>
+                ${this.debugMode ? `<code class="legend-key">${parentKey}</code>` : ''}
+            </label>
+        `;
+    }
+
+    /**
+     * Render an advanced mode legend group (parent + children)
+     */
+    renderAdvancedLegendGroup(parentKey, children) {
+        const parentLabel = MUSCLE_LABELS[parentKey] || parentKey;
+        const isParentSelected = this.isMuscleSelected(parentKey);
+        const isParentPartial = this.isMusclePartiallySelected(parentKey);
+        
+        let parentCheckClass = 'legend-checkbox small';
+        let parentCheckIcon = '';
+        if (isParentSelected) {
+            parentCheckClass += ' checked';
+            parentCheckIcon = '<i class="fas fa-check"></i>';
+        } else if (isParentPartial) {
+            parentCheckClass += ' partial';
+            parentCheckIcon = '<i class="fas fa-minus"></i>';
+        }
+        
+        let html = `
+            <div class="legend-group">
+                <div class="legend-group-header" data-parent="${parentKey}">
+                    <span class="${parentCheckClass}">${parentCheckIcon}</span>
+                    <span class="legend-group-title">${parentLabel}</span>
+                </div>
+                <div class="legend-group-children">
+        `;
+        
+        children.forEach(childKey => {
+            const isSelected = this.selectedMuscles.has(childKey);
+            const childLabel = MUSCLE_LABELS[childKey] || childKey;
+            
+            let checkboxClass = 'legend-checkbox';
+            let checkboxIcon = '';
+            if (isSelected) {
+                checkboxClass += ' checked';
+                checkboxIcon = '<i class="fas fa-check"></i>';
+            }
+            
+            html += `
+                <label class="legend-item legend-child" data-muscle="${childKey}" data-parent="${parentKey}">
+                    <span class="${checkboxClass}">${checkboxIcon}</span>
+                    <span class="legend-label">${childLabel}</span>
+                    ${this.debugMode ? `<code class="legend-key">${childKey}</code>` : ''}
+                </label>
+            `;
+        });
+        
+        html += '</div></div>';
+        return html;
+    }
+
+    /**
+     * Switch view mode (simple/advanced)
+     */
+    async switchViewMode(newMode) {
+        this.viewMode = newMode;
+        
+        // Update button states
+        this.container.querySelectorAll('[data-view]').forEach(btn => {
+            const isActive = btn.dataset.view === newMode;
+            btn.classList.toggle('btn-primary', isActive);
+            btn.classList.toggle('btn-outline-secondary', !isActive);
+        });
+        
+        // Re-render legend (may show different level of detail)
+        this.renderLegend();
+        this.updateSummary();
+    }
+
+    /**
+     * Switch body side (front/back)
+     */
+    async switchBodySide(newSide) {
+        this.bodySide = newSide;
+        
+        // Update tab states
+        this.container.querySelectorAll('[data-side]').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.side === newSide);
+        });
+        
+        await this.loadAndRenderSVG();
+    }
+
+    /**
+     * Select all muscles visible in current view
+     * Always selects at advanced (sub-muscle) level
+     */
+    selectAll() {
+        const musclesForSide = MUSCLES_BY_SIDE[this.bodySide] || [];
+        musclesForSide.forEach(parentKey => {
+            const children = SIMPLE_TO_ADVANCED_MAP[parentKey] || [parentKey];
+            children.forEach(child => this.selectedMuscles.add(child));
+        });
+        
+        this.updateAllRegionStates();
+        this.renderLegend();
+        this.updateSummary();
+    }
+
+    /**
+     * Clear all selections
+     */
+    clearAll() {
+        this.selectedMuscles.clear();
+        this.updateAllRegionStates();
+        this.renderLegend();
+        this.updateSummary();
+    }
+
+    /**
+     * Update the selection summary text
+     */
+    updateSummary() {
+        const summaryEl = this.container.querySelector('#selection-summary-text');
+        if (!summaryEl) return;
+        
+        if (this.selectedMuscles.size === 0) {
+            summaryEl.textContent = 'None (all muscles will be targeted)';
+            return;
+        }
+        
+        // Get unique display names
+        const displayNames = [];
+        this.selectedMuscles.forEach(key => {
+            const label = MUSCLE_LABELS[key];
+            if (label && !displayNames.includes(label)) {
+                displayNames.push(label);
+            }
+        });
+        
+        displayNames.sort();
+        if (displayNames.length <= 3) {
+            summaryEl.textContent = displayNames.join(', ');
+        } else {
+            summaryEl.textContent = `${displayNames.slice(0, 2).join(', ')} +${displayNames.length - 2} more`;
+        }
+    }
+
+    /**
+     * Show tooltip
+     */
+    showTooltip(event, canonicalKey) {
+        const tooltip = this.container.querySelector('#muscle-tooltip');
+        if (!tooltip) return;
+        
+        const label = MUSCLE_LABELS[canonicalKey] || canonicalKey;
+        tooltip.querySelector('.tooltip-label').textContent = label;
+        tooltip.querySelector('.tooltip-key').textContent = this.debugMode ? canonicalKey : '';
+        tooltip.classList.add('visible');
+        this.moveTooltip(event);
+    }
+
+    /**
+     * Move tooltip to follow cursor
+     */
+    moveTooltip(event) {
+        const tooltip = this.container.querySelector('#muscle-tooltip');
+        if (!tooltip || !tooltip.classList.contains('visible')) return;
+        
+        const wrapperRect = this.container.querySelector('.body-diagram-wrapper').getBoundingClientRect();
+        const x = event.clientX - wrapperRect.left + 15;
+        const y = event.clientY - wrapperRect.top - 35;
+        
+        tooltip.style.left = `${Math.max(5, x)}px`;
+        tooltip.style.top = `${Math.max(5, y)}px`;
+    }
+
+    /**
+     * Hide tooltip
+     */
+    hideTooltip() {
+        const tooltip = this.container.querySelector('#muscle-tooltip');
+        if (tooltip) {
+            tooltip.classList.remove('visible');
+        }
+    }
+
+    // ========================================================================
+    // PUBLIC API
+    // ========================================================================
+
+    /**
+     * Get selected muscle canonical keys
+     */
+    getSelectedMuscleIds() {
+        return Array.from(this.selectedMuscles);
+    }
+
+    /**
+     * Get selected muscle display names
+     */
+    getSelectedMuscleNames() {
+        return this.getSelectedMuscleIds().map(id => MUSCLE_LABELS[id] || id);
+    }
+
+    /**
+     * Get selected muscles mapped to backend names
+     */
+    getSelectedMusclesForBackend() {
+        const backendMuscles = new Set();
+        this.selectedMuscles.forEach(id => {
+            const backendName = MUSCLE_TO_BACKEND[id];
+            if (backendName) {
+                backendMuscles.add(backendName);
+            }
+        });
+        return Array.from(backendMuscles);
+    }
+
+    /**
+     * Get current view mode
+     */
+    getViewMode() {
+        return this.viewMode;
+    }
+
+    /**
+     * Set selections programmatically
+     */
+    setSelection(muscleIds) {
+        this.selectedMuscles = new Set(muscleIds);
+        this.updateAllRegionStates();
+        this.renderLegend();
+        this.updateSummary();
+    }
+
+    /**
+     * Enable/disable debug mode
+     */
+    setDebugMode(enabled) {
+        this.debugMode = enabled;
+        this.updateAllRegionStates();
+        this.renderLegend();
+    }
+}
+
+// ============================================================================
+// EXPORTS
+// ============================================================================
+
+window.MuscleSelector = MuscleSelector;
+window.MUSCLE_LABELS = MUSCLE_LABELS;
+window.MUSCLE_TO_BACKEND = MUSCLE_TO_BACKEND;
+window.SIMPLE_TO_ADVANCED_MAP = SIMPLE_TO_ADVANCED_MAP;
+window.ADVANCED_TO_SIMPLE_MAP = ADVANCED_TO_SIMPLE_MAP;
+window.VENDOR_SLUG_TO_CANONICAL = VENDOR_SLUG_TO_CANONICAL;

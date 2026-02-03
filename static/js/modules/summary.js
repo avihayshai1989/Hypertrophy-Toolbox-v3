@@ -1,6 +1,18 @@
 import { showToast } from './toast.js';
 
+// Check if the page already has its own updateWeeklySummary function defined
+// If so, skip the module's version to avoid conflicts
+function pageHasOwnUpdater() {
+    return typeof window.updateWeeklySummary === 'function' || 
+           document.getElementById('counting-mode') !== null;
+}
+
 export async function fetchWeeklySummary(method = 'Total') {
+    // Skip if page has its own update handler (new effective sets UI)
+    if (pageHasOwnUpdater()) {
+        return;
+    }
+    
     try {
         const response = await fetch(`/weekly_summary?method=${method}`, {
             headers: {
@@ -26,6 +38,11 @@ export async function fetchWeeklySummary(method = 'Total') {
 }
 
 export async function fetchSessionSummary(method = 'Total') {
+    // Skip if page has its own update handler (new effective sets UI)
+    if (pageHasOwnUpdater()) {
+        return;
+    }
+    
     try {
         const response = await fetch(`/session_summary?method=${method}`, {
             headers: {

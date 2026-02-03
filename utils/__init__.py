@@ -43,6 +43,9 @@ from .workout_log import (
 # User selection handling
 from .user_selection import get_user_selection
 
+# Plan generator
+from .plan_generator import generate_starter_plan
+
 # Define public interface
 __all__ = [
     # Core
@@ -80,7 +83,10 @@ __all__ = [
     "check_progression",
     
     # User selection
-    "get_user_selection"
+    "get_user_selection",
+    
+    # Plan generator
+    "generate_starter_plan",
 ]
 
 # Remove duplicate function definition

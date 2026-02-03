@@ -30,7 +30,7 @@ body:not(:has(#navbar)) .navbar,
     padding-top: 45px;
     /* Space for navbar */
     position: relative;
-    z-index: 1;
+    /* Removed z-index: 1 - it was creating a stacking context that trapped modals */
     /* Important: avoid nested vertical scrolling (body should be the only scroll container) */
     overflow-y: visible;
     box-sizing: border-box;
