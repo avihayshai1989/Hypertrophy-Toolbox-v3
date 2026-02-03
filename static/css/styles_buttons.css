@@ -104,6 +104,34 @@ button[type="submit"].btn {
     transform: translateY(-2px);
 }
 
+/* Program Library Buttons - Baby Blue */
+#save-program-btn,
+#load-program-btn {
+    background-color: #e0f7fa !important;  /* Light baby blue background */
+    color: #00838f !important;  /* Darker cyan text */
+    border: 1px solid #b2ebf2 !important;  /* Light baby blue border */
+}
+
+#save-program-btn:hover,
+#load-program-btn:hover {
+    background-color: #b2ebf2 !important;  /* Slightly darker on hover */
+    border-color: #80deea !important;
+    transform: translateY(-2px);
+}
+
+/* Clear Plan Button - Light Lava */
+#clear-plan-btn {
+    background-color: #ffebee !important;  /* Light lava/red background */
+    color: #c62828 !important;  /* Darker red text */
+    border: 1px solid #ffcdd2 !important;  /* Light lava border */
+}
+
+#clear-plan-btn:hover {
+    background-color: #ffcdd2 !important;  /* Slightly darker on hover */
+    border-color: #ef9a9a !important;
+    transform: translateY(-2px);
+}
+
 /* Active state for all buttons */
 .btn:active {
     transform: translateY(1px);

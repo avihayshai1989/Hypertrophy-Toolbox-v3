@@ -283,7 +283,26 @@ def remove_exercise():
             "Error removing exercise",
             extra={'exercise_id': data.get("id", 'unknown')}
         )
-        return error_response("INTERNAL_ERROR", "Unable to remove exercise", 500) 
+        return error_response("INTERNAL_ERROR", "Unable to remove exercise", 500)
+
+
+@workout_plan_bp.route("/clear_workout_plan", methods=["POST"])
+def clear_workout_plan():
+    """Clear all exercises from the workout plan."""
+    try:
+        with DatabaseHandler() as db_handler:
+            # First delete all related workout logs to avoid foreign key constraint errors
+            db_handler.execute_query("DELETE FROM workout_log WHERE workout_plan_id IN (SELECT id FROM user_selection)")
+            
+            # Then delete all exercises from user_selection
+            db_handler.execute_query("DELETE FROM user_selection")
+
+        logger.info("Workout plan cleared - all exercises removed")
+        return jsonify(success_response(message="Workout plan cleared successfully"))
+    except Exception as e:
+        logger.exception("Error clearing workout plan")
+        return error_response("INTERNAL_ERROR", "Unable to clear workout plan", 500)
+
 
 @workout_plan_bp.route("/get_routine_options")
 def get_routine_options():

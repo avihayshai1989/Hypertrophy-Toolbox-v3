@@ -2,7 +2,7 @@ import { showToast } from './modules/toast.js';
 import { fetchWorkoutPlan, handleRoutineSelection, updateExerciseDetails, updateExerciseForm, handleAddExercise } from './modules/workout-plan.js';
 import { initializeWorkoutLog, deleteWorkoutLog, updateScoredValue, handleDateChange, importFromWorkoutPlan, confirmClearWorkoutLog } from './modules/workout-log.js';
 import { initializeFilters, initializeAdvancedFilters, initializeSearchFilter, initializeFilterKeyboardEvents } from './modules/filters.js';
-import { addExercise, removeExercise } from './modules/exercises.js';
+import { addExercise, removeExercise, clearWorkoutPlan } from './modules/exercises.js';
 import { initializeUIHandlers, initializeFormHandlers, initializeTooltips, initializeDropdowns, handleTableSort } from './modules/ui-handlers.js';
 import { exportToExcel, exportToWorkoutLog, exportSummary } from './modules/exports.js';
 import { initializeWorkoutPlanHandlers, updateWorkoutPlanUI } from './modules/workout-plan.js';
@@ -41,6 +41,7 @@ const appDebugLog = (...args) => {
 // Make certain functions globally available
 window.addExercise = addExercise;
 window.removeExercise = removeExercise;
+window.clearWorkoutPlan = clearWorkoutPlan;
 window.exportToExcel = exportToExcel;
 window.exportToWorkoutLog = exportToWorkoutLog;
 window.exportSummary = exportSummary;

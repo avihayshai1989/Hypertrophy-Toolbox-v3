@@ -95,4 +95,34 @@ function resetFormFields() {
     if (document.getElementById('rpe')) {
         document.getElementById('rpe').value = '';
     }
+}
+
+export async function clearWorkoutPlan() {
+    try {
+        // Close the modal
+        const modal = document.getElementById('clearPlanModal');
+        if (modal) {
+            const bsModal = bootstrap.Modal.getInstance(modal);
+            if (bsModal) {
+                bsModal.hide();
+            }
+        }
+
+        const response = await fetch('/clear_workout_plan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+            showToast(result.message || 'Workout plan cleared successfully!');
+            fetchWorkoutPlan(); // Refresh the table to show empty state
+        } else {
+            throw new Error(result.error?.message || result.message || 'Failed to clear workout plan');
+        }
+    } catch (error) {
+        console.error('Error clearing workout plan:', error);
+        showToast(`Unable to clear workout plan: ${error.message}`, true);
+    }
 } 
