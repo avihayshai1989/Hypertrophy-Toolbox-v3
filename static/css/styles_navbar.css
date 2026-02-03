@@ -25,8 +25,8 @@
     --nav-gap: 12px;
     --nav-padding-x: 1rem;
     --nav-padding-y: 12px;
-    --nav-height: 56px;
-    --nav-height-compact: 48px;
+    --nav-height: 64px;
+    --nav-height-compact: 56px;
     
     /* Border Radius */
     --nav-radius: 12px;
@@ -91,9 +91,9 @@
     -moz-osx-font-smoothing: grayscale;
     border-bottom: 1px solid var(--nav-border);
     box-shadow: none;
-    height: var(--nav-height);
-    min-height: var(--nav-height);
-    max-height: var(--nav-height);
+    height: 64px !important;
+    min-height: 64px !important;
+    max-height: none;
     display: flex;
     align-items: center;
     overflow: visible;
@@ -128,9 +128,9 @@
   
   /* Compact Mode (on scroll) */
   #navbar.nb-compact {
-    height: var(--nav-height-compact);
-    min-height: var(--nav-height-compact);
-    max-height: var(--nav-height-compact);
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: none;
     box-shadow: var(--nav-shadow);
     backdrop-filter: saturate(140%) blur(8px);
     -webkit-backdrop-filter: saturate(140%) blur(8px);
@@ -365,6 +365,82 @@
   #navbar.nb-compact .nav-icon {
     width: 18px;
     height: 18px;
+  }
+  
+  /* ========================================================================
+     Developer Signature in Navbar
+     ======================================================================== */
+  #navbar .nav-signature {
+    margin-right: var(--nav-gap);
+  }
+  
+  #navbar .nav-signature-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--nav-radius-sm);
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(219, 39, 119, 0.15) 100%);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    text-decoration: none;
+    transition: all var(--nav-transition);
+  }
+  
+  #navbar .nav-signature-link:hover {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.25) 0%, rgba(219, 39, 119, 0.25) 100%);
+    border-color: rgba(124, 58, 237, 0.5);
+    transform: translateY(-1px);
+  }
+  
+  #navbar .nav-signature-link .signature-text {
+    font-size: 0.8rem;
+    color: var(--nav-text-muted);
+    font-weight: var(--nav-fw-normal);
+  }
+  
+  #navbar .nav-signature-link .signature-name {
+    font-size: 0.9rem;
+    font-weight: var(--nav-fw-semibold);
+    background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  #navbar .nav-signature-link .signature-icon {
+    font-size: 0.95rem;
+    color: #0A66C2;
+    transition: transform var(--nav-transition-fast);
+  }
+  
+  #navbar .nav-signature-link:hover .signature-icon {
+    transform: scale(1.1);
+  }
+  
+  #navbar .nav-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--nav-border);
+    margin: 0 8px;
+  }
+  
+  /* Dark mode adjustments */
+  [data-theme='dark'] #navbar .nav-signature-link {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(219, 39, 119, 0.2) 100%);
+  }
+  
+  [data-theme='dark'] #navbar .nav-signature-link:hover {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.35) 0%, rgba(219, 39, 119, 0.35) 100%);
+  }
+  
+  /* Hide on small screens */
+  @media (max-width: 991px) {
+    #navbar .nav-signature {
+      display: none;
+    }
+    #navbar .nav-divider {
+      display: none;
+    }
   }
   
   /* ========================================================================
@@ -702,4 +778,56 @@
 body:not(:has(#navbar)) .navbar {
   background-color: #212529;
   height: 40px;
+}
+
+/* ==========================================================================
+   Override layer styles - MUST be outside @layer for highest specificity
+   ========================================================================== */
+#navbar {
+  height: 64px !important;
+  min-height: 64px !important;
+  max-height: 64px !important;
+  background-color: var(--nav-bg, #0e1116) !important;
+  padding: 0 !important;
+}
+
+#navbar.nb-compact {
+  height: 56px !important;
+  min-height: 56px !important;
+  max-height: 56px !important;
+}
+
+/* Ensure all navbar children have matching background */
+#navbar.bg-dark,
+#navbar.navbar-dark {
+  background-color: var(--nav-bg, #0e1116) !important;
+}
+
+#navbar > .container-fluid {
+  height: 100% !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  align-items: center !important;
+}
+
+#navbar .navbar-collapse {
+  height: 100% !important;
+  background-color: transparent !important;
+}
+
+#navbar .navbar-nav {
+  height: 100% !important;
+  align-items: center !important;
+}
+
+#navbar .nav-item {
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+#navbar .nav-link {
+  height: auto !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
 }

@@ -4,381 +4,254 @@
 
 {% block page_css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_welcome.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_science.css') }}">
 {% endblock %}
 
 {% block content %}
 <main id="welcome" data-page="welcome">
 <div class="welcome-container">
-    <!-- 1. Hero Section - Welcome to Hypertrophy Toolbox -->
-    <section class="hero-section text-center mb-5" aria-labelledby="hero-heading">
-        <h1 id="hero-heading" class="display-4">Welcome to Hypertrophy Toolbox</h1>
-        <p class="lead">Your intelligent companion for science-based muscle building</p>
-    </section>
-
-    <!-- 2. Science Section -->
-    <section class="science-section mb-5" aria-labelledby="science-heading">
-        <h2 id="science-heading" class="text-center mb-4">The Science of Hypertrophy Made Simple</h2>
-        <div class="developer-signature text-center">
-            <p>Developed, planned, designed By: <span class="developer-name" tabindex="0" role="text">Yaakov Avihai Shai</span></p>
-        </div>
-        <!-- Science content here -->
-    </section>
-
-    <!-- 3. Getting Started Guide -->
-    <section class="guide-container" aria-labelledby="getting-started-heading">
-        <header class="guide-header">
-            <h2 id="getting-started-heading">Getting Started Guide</h2>
-            <p>Follow our step-by-step process to create, track, and optimize your personalized workout routine</p>
-        </header>
-        
-        <!-- Volume Planning Section -->
-        <div class="guide-section">
-            <h3 class="section-title">1. Volume Planning</h3>
-            <div class="guide-card">
-                <h4>Volume Splitter</h4>
-                <ul class="guide-list">
-                    <li><strong>Calculate Sets:</strong> Use the Volume Splitter to determine recommended sets per muscle group</li>
-                    <li><strong>Weekly Distribution:</strong> Get both weekly and per-session set recommendations</li>
-                    <li><strong>Export Data:</strong> Save calculations to Excel for reference during workout planning</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Building Your Workout Section -->
-        <div class="guide-section">
-            <h3 class="section-title">2. Building Your Workout</h3>
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="guide-card">
-                        <h4>Routine Selection</h4>
-                        <ul class="guide-list">
-                            <li><strong>Gym Routines:</strong> Full Body, Push-Pull-Legs, Upper-Lower, 2/3/4/6-Day splits</li>
-                            <li><strong>Home Workouts:</strong> Optimized routines for home training</li>
-                            <li><strong>Live Exercise Filter:</strong> Quick search functionality for instant results</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="guide-card">
-                        <h4>Exercise Parameters</h4>
-                        <ul class="guide-list">
-                            <li><strong>Weight & Sets:</strong> Specify working weight and number of sets</li>
-                            <li><strong>Rep Range:</strong> Set minimum and maximum repetitions</li>
-                            <li><strong>Intensity Metrics:</strong> Use RIR (0=failure) and RPE (1-10 scale)</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tracking & Analysis Section -->
-        <div class="guide-section">
-            <h3 class="section-title">3. Tracking & Analysis</h3>
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="guide-card">
-                        <h4>Performance Analysis</h4>
-                        <ul class="guide-list">
-                            <li><strong>Weekly Summary:</strong> Analyze set distribution and volume metrics</li>
-                            <li><strong>Session Summary:</strong> Review individual workout performance</li>
-                            <li><strong>Mirror View:</strong> Compare planned vs. actual performance</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="guide-card">
-                        <h4>Progression Planning</h4>
-                        <ul class="guide-list">
-                            <li><strong>Form Mastery:</strong> Focus on perfect exercise execution</li>
-                            <li><strong>Progressive Overload:</strong> Track weight, rep, and set increases</li>
-                            <li><strong>Goal Setting:</strong> Set specific targets for each exercise</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+    <!-- Developer Credit Banner -->
+    <div class="developer-credit-banner">
+        <div class="developer-credit-inner">
+            <span class="credit-prefix">Crafted with</span>
+            <i class="fas fa-heart credit-heart"></i>
+            <span class="credit-text">by</span>
+            <a href="https://il.linkedin.com/in/avihay1989" target="_blank" rel="noopener noreferrer" class="developer-link">
+                <span class="developer-name">Yaakov Avihai Shai</span>
+                <i class="fab fa-linkedin"></i>
+            </a>
         </div>
     </div>
 
-    <!-- 4. How to Use Guide -->
-    <section class="guide-container" aria-labelledby="how-to-use-heading">
-        <header class="guide-header">
-            <h2 id="how-to-use-heading">How to Use Hypertrophy Toolbox</h2>
-            <p>Master your fitness journey with our comprehensive guide to building and tracking your perfect workout routine</p>
-        </header>
-        
-        <!-- Exercise Filtering Section -->
-        <div class="guide-section">
-            <h3 class="section-title">Exercise Filtering</h3>
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-4">
-                    <div class="guide-card">
-                        <h4>Muscle Group Filters</h4>
-                        <ul class="guide-list">
-                            <li><strong>Primary Muscle Group:</strong> Filter exercises by the main muscle group activated during the selected exercise.</li>
-                            <li><strong>Secondary Muscle Group:</strong> Filter exercises by the secondary muscle group, which is also activated but not the primary focus.</li>
-                            <li><strong>Tertiary Muscle Group:</strong> Filter exercises by the tertiary muscle group, typically stabilizers, which have a minor impact.</li>
-                            <li><strong>Advanced Isolated Muscles:</strong> Use advanced filtering to target exercises by the scientific names of isolated muscle groups.</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-lg-4">
-                    <div class="guide-card">
-                        <h4>Exercise Properties</h4>
-                        <ul class="guide-list">
-                            <li><strong>Force:</strong> Filter exercises by force type, useful for balancing push-pull-legs programs.</li>
-                            <li><strong>Equipment:</strong> Filter exercises based on available or preferred equipment.</li>
-                            <li><strong>Mechanic:</strong> Filter by movement type—isolation (single joint) or compound (multiple joints).</li>
-                            <li><strong>Utility:</strong> Filter by Auxiliary (complementary) or Basic (core) exercises.</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-lg-4">
-                    <div class="guide-card">
-                        <h4>Advanced Filters</h4>
-                        <ul class="guide-list">
-                            <li><strong>Grips:</strong> Filter exercises based on grip position used during execution.</li>
-                            <li><strong>Stabilizers:</strong> Filter by stabilizer muscles activated.</li>
-                            <li><strong>Synergists:</strong> Filter by muscles that assist primary movers in joint actions.</li>
-                            <li><strong>Difficulty:</strong> Filter based on exercise technique complexity.</li>
-                        </ul>
-                    </div>
-                </div>
+    <!-- Hero Section -->
+    <section class="hero-section" aria-labelledby="hero-heading">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-icon">✨</span>
+                <span>AI-Powered Training</span>
+            </div>
+            <h1 id="hero-heading">Hypertrophy<br><span class="hero-accent">Toolbox</span></h1>
+            <p class="hero-lead">Science-based muscle building with intelligent volume planning, effective sets tracking, and AI-driven recommendations.</p>
+            <div class="hero-cta">
+                <a href="{{ url_for('workout_plan.workout_plan') }}" class="btn-hero-primary">
+                    <i class="fas fa-rocket"></i>
+                    Start Planning
+                </a>
+                <a href="{{ url_for('volume_splitter.volume_splitter') }}" class="btn-hero-secondary">
+                    <i class="fas fa-chart-pie"></i>
+                    Volume Calculator
+                </a>
             </div>
         </div>
-
-        <!-- Workout Controls Section -->
-        <div class="guide-section">
-            <h3 class="section-title">Workout Controls</h3>
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="guide-card">
-                        <h4>Basic Controls</h4>
-                        <ul class="guide-list">
-                            <li><strong>Add Exercise:</strong> Add selected exercise to your workout plan after completing required inputs.</li>
-                            <li><strong>Apply Filters:</strong> Apply selected filters to narrow down exercise options.</li>
-                            <li><strong>Clear Filters:</strong> Reset all filters to default state.</li>
-                            <li><strong>Export All Tables:</strong> Download all data to Excel.</li>
-                            <li><strong>Export to Workout Log:</strong> Transfer workout plan to log for progress tracking.</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="guide-card">
-                        <h4>Exercise Parameters</h4>
-                        <ul class="guide-list">
-                            <li><strong>Weight:</strong> Specify the weight for the selected exercise.</li>
-                            <li><strong>Sets:</strong> Specify the number of sets to perform.</li>
-                            <li><strong>RIR (Reps In Reserve):</strong> Number of reps left in the 'tank' (0-10, where 0 is failure).</li>
-                            <li><strong>RPE (Rate of Perceived Exertion):</strong> Exercise intensity scale (1-10, where 10 is maximum effort).</li>
-                            <li><strong>Min/Max Rep:</strong> Set the target repetition range for the exercise.</li>
-                        </ul>
-                    </div>
-                </div>
+        <div class="hero-visual">
+            <div class="hero-card hero-card-1">
+                <div class="hero-card-icon"><i class="fas fa-brain"></i></div>
+                <span>AI Suggestions</span>
             </div>
-        </div>
-    </div>
-
-    <!-- 5. Features Grid -->
-    <section class="features-grid row g-4 mb-5" aria-label="Feature highlights">
-        <!-- Workout Planner -->
-        <div class="col-md-6 col-lg-4">
-            <div class="feature-card card h-100">
-                <div class="card-body">
-                    <h3 class="card-title">Workout Planner</h3>
-                    <p class="card-text">
-                        Create customized workout routines for different splits:
-                        <ul>
-                            <li>Push-Pull-Legs</li>
-                            <li>Upper-Lower</li>
-                            <li>Full Body</li>
-                        </ul>
-                        Choose exercises based on muscle groups, equipment, and difficulty levels.
-                    </p>
-                    <a href="{{ url_for('workout_plan.workout_plan') }}" class="btn btn-primary" aria-label="Navigate to Workout Planner">Plan Your Workout</a>
-                </div>
+            <div class="hero-card hero-card-2">
+                <div class="hero-card-icon"><i class="fas fa-fire-alt"></i></div>
+                <span>Effective Sets</span>
             </div>
-        </div>
-
-        <!-- Progress Tracker -->
-        <div class="col-md-6 col-lg-4">
-            <div class="feature-card card h-100">
-                <div class="card-body">
-                    <h3 class="card-title">Progress Tracker</h3>
-                    <p class="card-text">
-                        Log your sets, reps, and weights to monitor growth over time.
-                        Track your progressive overload and performance trends.
-                    </p>
-                    <a href="{{ url_for('workout_log.workout_log') }}" class="btn btn-primary" aria-label="Navigate to Progress Tracker">Track Progress</a>
-                </div>
+            <div class="hero-card hero-card-3">
+                <div class="hero-card-icon"><i class="fas fa-history"></i></div>
+                <span>Auto Backup</span>
             </div>
-        </div>
-
-        <!-- Analytics Dashboard -->
-        <div class="col-md-6 col-lg-4">
-            <div class="feature-card card h-100">
-                <div class="card-body">
-                    <h3 class="card-title">Analytics Dashboard</h3>
-                    <p class="card-text">
-                        Visualize your progress with:
-                        <ul>
-                            <li>Weekly summaries</li>
-                            <li>Per session analysis</li>
-                            <li>Volume and intensity tracking</li>
-                        </ul>
-                    </p>
-                    <div class="btn-group">
-                        <a href="{{ url_for('weekly_summary.weekly_summary') }}" class="btn btn-primary" aria-label="Navigate to Weekly Summary">Weekly Summary</a>
-                        <a href="{{ url_for('session_summary.session_summary') }}" class="btn btn-primary" aria-label="Navigate to Session Summary">Session Summary</a>
-                    </div>
-                </div>
+            <div class="hero-card hero-card-4">
+                <div class="hero-card-icon"><i class="fas fa-chart-line"></i></div>
+                <span>Volume Tracking</span>
             </div>
-        </div>
-
-        <!-- Exercise Library -->
-        <div class="col-md-6 col-lg-4">
-            <div class="feature-card card h-100">
-                <div class="card-body">
-                    <h3 class="card-title">Exercise Library</h3>
-                    <p class="card-text">
-                        Browse an extensive library of exercises with detailed muscle activation data.
-                        Filter exercises by:
-                        <ul>
-                            <li>Primary muscle groups</li>
-                            <li>Secondary muscle groups</li>
-                            <li>Tertiary muscle groups</li>
-                        </ul>
-                    </p>
-                    <a href="{{ url_for('workout_plan.workout_plan') }}#exercise-library" class="btn btn-primary" aria-label="Navigate to Exercise Library">Explore Exercises</a>
-                </div>
+            <div class="hero-card hero-card-5">
+                <div class="hero-card-icon"><i class="fas fa-dumbbell"></i></div>
+                <span>100+ Exercises</span>
             </div>
-        </div>
-
-        <!-- Hypertrophy Insights -->
-        <div class="col-md-6 col-lg-4">
-            <div class="feature-card card h-100">
-                <div class="card-body">
-                    <h3 class="card-title">Hypertrophy Insights</h3>
-                    <p class="card-text">
-                        Science-based recommendations for:
-                        <ul>
-                            <li>Volume optimization</li>
-                            <li>Intensity management</li>
-                            <li>Recovery strategies</li>
-                        </ul>
-                    </p>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#insightsModal" aria-label="Open Hypertrophy Insights modal">Learn More</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- AI Assistant -->
-        <div class="col-md-6 col-lg-4">
-            <div class="feature-card card h-100">
-                <div class="card-body">
-                    <h3 class="card-title">AI Assistant</h3>
-                    <p class="card-text">
-                        Let our AI guide you in:
-                        <ul>
-                            <li>Fine-tuning your plan</li>
-                            <li>Adjusting volume and frequency</li>
-                            <li>Optimizing exercise selection</li>
-                        </ul>
-                    </p>
-                    <button class="btn btn-primary" id="ai-help-button" aria-label="Get AI Assistant help (feature under development)">Get AI Help</button>
-                </div>
+            <div class="hero-card hero-card-6">
+                <div class="hero-card-icon"><i class="fas fa-calendar-alt"></i></div>
+                <span>Weekly Plans</span>
             </div>
         </div>
     </section>
 
-    <!-- Erase Data Section - Only available on welcome page -->
-    <section class="erase-data-section mt-5 text-center" aria-labelledby="erase-data-heading">
-        <h2 id="erase-data-heading" class="visually-hidden">Data Management</h2>
-        <div class="alert alert-warning mb-3" role="alert" aria-live="polite">
-            <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
-            Warning: This action cannot be undone
+    <!-- Features Bento Grid -->
+    <section class="bento-grid" aria-label="Core Features">
+        <!-- Main Feature: AI Volume Recommendations -->
+        <article class="bento-item bento-featured" data-feature="ai">
+            <div class="bento-icon-wrap">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h3>AI Volume Recommendations</h3>
+            <p>Get intelligent suggestions for optimizing your training volume. Our AI analyzes your muscle group distribution and provides actionable insights for balanced development.</p>
+            <ul class="bento-list">
+                <li><i class="fas fa-check-circle"></i> Recovery-aware volume alerts</li>
+                <li><i class="fas fa-check-circle"></i> Push-Pull-Legs balance analysis</li>
+                <li><i class="fas fa-check-circle"></i> Per-session optimization tips</li>
+            </ul>
+            <a href="{{ url_for('volume_splitter.volume_splitter') }}" class="bento-link">
+                Try Volume Splitter <i class="fas fa-arrow-right"></i>
+            </a>
+        </article>
+
+        <!-- Effective Sets -->
+        <article class="bento-item" data-feature="effective-sets">
+            <div class="bento-icon-wrap">
+                <i class="fas fa-fire-alt"></i>
+            </div>
+            <h3>Effective Sets</h3>
+            <p>Track true hypertrophic stimulus with muscle-specific weighting. Secondary and tertiary activations are counted proportionally.</p>
+            <a href="{{ url_for('weekly_summary.weekly_summary') }}" class="bento-link">
+                View Summary <i class="fas fa-arrow-right"></i>
+            </a>
+        </article>
+
+        <!-- Program Library -->
+        <article class="bento-item" data-feature="backup">
+            <div class="bento-icon-wrap">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <h3>Program Library</h3>
+            <p>Save your workout programs as snapshots. Auto-backup before data reset ensures you never lose progress.</p>
+            <a href="{{ url_for('workout_plan.workout_plan') }}" class="bento-link">
+                Manage Programs <i class="fas fa-arrow-right"></i>
+            </a>
+        </article>
+
+        <!-- Workout Planning -->
+        <article class="bento-item" data-feature="planning">
+            <div class="bento-icon-wrap">
+                <i class="fas fa-dumbbell"></i>
+            </div>
+            <h3>Workout Planning</h3>
+            <p>Build custom routines with 500+ exercises. Filter by muscle, equipment, force type, and difficulty.</p>
+            <div class="bento-tags">
+                <span class="tag">PPL</span>
+                <span class="tag">Upper/Lower</span>
+                <span class="tag">Full Body</span>
+                <span class="tag">Home</span>
+            </div>
+            <a href="{{ url_for('workout_plan.workout_plan') }}" class="bento-link">
+                Plan Workout <i class="fas fa-arrow-right"></i>
+            </a>
+        </article>
+
+        <!-- Progress Analytics -->
+        <article class="bento-item" data-feature="analytics">
+            <div class="bento-icon-wrap">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Progress Analytics</h3>
+            <p>Weekly and per-session summaries with volume classification. Track progressive overload trends.</p>
+            <div class="bento-stats">
+                <div class="stat">
+                    <span class="stat-value">MV</span>
+                    <span class="stat-label">Maintenance</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">MEV</span>
+                    <span class="stat-label">Minimum Effective</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">MRV</span>
+                    <span class="stat-label">Max Recoverable</span>
+                </div>
+            </div>
+            <a href="{{ url_for('weekly_summary.weekly_summary') }}" class="bento-link">
+                View Analytics <i class="fas fa-arrow-right"></i>
+            </a>
+        </article>
+
+        <!-- Workout Log -->
+        <article class="bento-item" data-feature="log">
+            <div class="bento-icon-wrap">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <h3>Workout Log</h3>
+            <p>Record sets, reps, weight, RIR, and RPE. Compare planned vs. actual performance.</p>
+            <a href="{{ url_for('workout_log.workout_log') }}" class="bento-link">
+                Log Workout <i class="fas fa-arrow-right"></i>
+            </a>
+        </article>
+    </section>
+
+    <!-- Quick Start Guide -->
+    <section class="quick-start" aria-labelledby="quickstart-heading">
+        <header class="quick-start-header">
+            <h2 id="quickstart-heading">Quick Start</h2>
+            <p>Three steps to your optimized training program</p>
+        </header>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h4>Plan Volume</h4>
+                <p>Use the Volume Splitter to set weekly sets per muscle group. Get AI suggestions for balanced training.</p>
+                <a href="{{ url_for('volume_splitter.volume_splitter') }}" class="step-link">Open Splitter</a>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h4>Build Routine</h4>
+                <p>Select exercises for your split. Filter by equipment, force type, and target muscles.</p>
+                <a href="{{ url_for('workout_plan.workout_plan') }}" class="step-link">Create Plan</a>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h4>Track Progress</h4>
+                <p>Log workouts and review weekly summaries. Monitor effective sets and volume trends.</p>
+                <a href="{{ url_for('workout_log.workout_log') }}" class="step-link">Start Logging</a>
+            </div>
         </div>
-        <button id="eraseDataBtn" class="btn btn-danger btn-lg" aria-describedby="erase-data-warning" aria-label="Erase all data and start from scratch">
-            <i class="fas fa-trash-alt me-2" aria-hidden="true"></i>
-            Erase All Data, Start from Scratch
+    </section>
+
+    <!-- Science Principles Card -->
+    <section class="science-card" aria-labelledby="science-heading">
+        <div class="science-content">
+            <h2 id="science-heading">Science-Based Training</h2>
+            <p class="science-intro">Built on evidence-based hypertrophy principles from the latest research.</p>
+            <div class="science-grid">
+                <div class="science-item">
+                    <h5><i class="fas fa-bullseye"></i> Volume Landmarks</h5>
+                    <p>MV, MEV, MAV, MRV thresholds for each muscle group guide optimal set allocation.</p>
+                </div>
+                <div class="science-item">
+                    <h5><i class="fas fa-balance-scale"></i> Effective Sets</h5>
+                    <p>Primary muscles get 1.0 weight, secondary 0.5, tertiary 0.25 for accurate stimulus tracking.</p>
+                </div>
+                <div class="science-item">
+                    <h5><i class="fas fa-sync-alt"></i> Progressive Overload</h5>
+                    <p>Track weight, reps, and RIR progression to ensure continuous adaptation.</p>
+                </div>
+                <div class="science-item">
+                    <h5><i class="fas fa-clock"></i> Recovery Optimization</h5>
+                    <p>Per-session volume alerts prevent junk volume and optimize recovery between sessions.</p>
+                </div>
+            </div>
+        </div>
+        <div class="science-sidebar">
+            <div class="sidebar-card">
+                <h5>Optimal Rep Ranges</h5>
+                <div class="rep-range"><span>6-8</span> Compounds (strength bias)</div>
+                <div class="rep-range"><span>8-12</span> General hypertrophy</div>
+                <div class="rep-range"><span>15-20</span> Isolation / pump work</div>
+            </div>
+            <div class="sidebar-card">
+                <h5>Weekly Volume</h5>
+                <p>10-20 sets per muscle group, distributed across 2-4 sessions for optimal frequency.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Management Section -->
+    <section class="data-management" aria-labelledby="data-mgmt-heading">
+        <h2 id="data-mgmt-heading" class="visually-hidden">Data Management</h2>
+        <div class="data-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>This action cannot be undone. An auto-backup will be created first.</span>
+        </div>
+        <button id="eraseDataBtn" class="btn-erase" aria-describedby="erase-data-warning">
+            <i class="fas fa-trash-alt"></i>
+            Erase All Data
         </button>
     </section>
 </div>
 </main>
 
-<!-- Keep the modals at the end -->
-<!-- Insights Modal -->
-<div class="modal fade" id="insightsModal" tabindex="-1" aria-labelledby="insightsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="insightsModalLabel">Hypertrophy Science & Insights</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <h4>Key Training Principles for Hypertrophy</h4>
-                <h5>1. Choose the Right Rep Range</h5>
-                <p>All rep ranges from 5–30 reps can build muscle effectively if you apply progressive overload and train close to failure.</p>
-                
-                <div class="mb-4">
-                    <h6>Low Reps (6–8):</h6>
-                    <ul>
-                        <li>Best For: Compound lifts (e.g., squats, bench press)</li>
-                        <li>Benefits: Heavier loads; quicker fatigue</li>
-                    </ul>
-                    
-                    <h6>Moderate Reps (8–12):</h6>
-                    <ul>
-                        <li>Best For: A versatile range for both compound and isolation movements</li>
-                        <li>Benefits: Balances mechanical tension and metabolic stress</li>
-                    </ul>
-                    
-                    <h6>High Reps (15–30):</h6>
-                    <ul>
-                        <li>Best For: Isolation exercises or smaller muscle groups</li>
-                        <li>Benefits: Lower joint strain; emphasizes the "pump" effect</li>
-                    </ul>
-                </div>
-                
-                <h5>2. Optimal Training Volume</h5>
-                <ul>
-                    <li>10–20 sets per muscle group per week</li>
-                    <li>Spread across 2–4 sessions per week</li>
-                </ul>
-                
-                <h5>3. Recovery & Nutrition</h5>
-                <ul>
-                    <li>Protein: 1.6–2.2g per kg of bodyweight</li>
-                    <li>Sleep: 7-9 hours per night</li>
-                    <li>Rest between sets: 1-3 minutes</li>
-                </ul>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Construction Toast -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="constructionToast" class="toast align-items-center text-white bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                <i class="fas fa-hard-hat me-2"></i>
-                AI Assistant feature is currently under development. Coming soon!
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    </div>
-</div>
-
-<!-- Add this modal after your existing modals -->
+<!-- Erase Data Modal -->
 <div class="modal fade" id="eraseDataModal" tabindex="-1" aria-labelledby="eraseDataModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -390,17 +263,15 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p class="mb-0">Are you sure you want to erase all data and start from scratch? This action cannot be undone.</p>
-                <div class="alert alert-warning mt-3 mb-0">
-                    <small>
-                        <strong>This will delete:</strong>
-                        <ul class="mb-0">
-                            <li>All workout plans</li>
-                            <li>All progression goals</li>
-                            <li>All workout logs</li>
-                            <li>All volume plans</li>
-                        </ul>
-                    </small>
+                <p class="mb-3">Are you sure you want to erase all data? An auto-backup will be created before erasure.</p>
+                <div class="alert alert-warning mb-0">
+                    <strong>This will delete:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>All workout plans</li>
+                        <li>All progression goals</li>
+                        <li>All workout logs</li>
+                        <li>All volume plans</li>
+                    </ul>
                 </div>
             </div>
             <div class="modal-footer">
@@ -414,18 +285,30 @@
     </div>
 </div>
 
-<!-- Scripts -->
+<!-- Toast Notifications -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="polite" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-check-circle me-2"></i>
+                <span>Operation completed successfully</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="polite" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-times-circle me-2"></i>
+                <span>An error occurred</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <script>
-document.getElementById('ai-help-button').addEventListener('click', function() {
-    const toast = new bootstrap.Toast(document.getElementById('constructionToast'));
-    toast.show();
-});
-
-// Remove or comment out the openAIAssistant function
-// function openAIAssistant() { ... }
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Erase Data functionality
     const eraseDataBtn = document.getElementById('eraseDataBtn');
     const eraseDataModal = new bootstrap.Modal(document.getElementById('eraseDataModal'));
     const confirmEraseBtn = document.getElementById('confirmEraseBtn');
@@ -438,9 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await fetch('/erase-data', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
+                headers: { 'Content-Type': 'application/json' }
             });
             
             const data = await response.json();
@@ -448,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 eraseDataModal.hide();
                 const toast = new bootstrap.Toast(document.getElementById('successToast'));
-                document.querySelector('#successToast .toast-body').textContent = data.message;
+                document.querySelector('#successToast .toast-body span').textContent = data.message;
                 toast.show();
                 setTimeout(() => window.location.reload(), 2000);
             } else {
@@ -457,8 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             eraseDataModal.hide();
             const toast = new bootstrap.Toast(document.getElementById('errorToast'));
-            document.querySelector('#errorToast .toast-body').textContent = 
-                `Failed to erase data: ${error.message}`;
+            document.querySelector('#errorToast .toast-body span').textContent = `Failed to erase data: ${error.message}`;
             toast.show();
         }
     });
