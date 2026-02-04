@@ -1327,6 +1327,15 @@
   font-size: var(--wp-table-fs);
 }
 
+/* Ensure Utility and Grips columns show full text - prevent text cutoff */
+#workout[data-page="workout-plan"] .workout-plan-table td[data-label="Utility"],
+#workout[data-page="workout-plan"] .workout-plan-table td[data-label="Grips"] {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  word-wrap: break-word;
+}
+
 /* Allow table to expand page width - User Preference */
 #workout[data-page="workout-plan"] .workout-plan.table-container {
   width: fit-content;
@@ -1602,4 +1611,466 @@
 
 #workout[data-page="workout-plan"] .workout-plan-table tbody tr.filtered-out {
   display: none;
+}
+
+/* ========================================================================
+   720p (max-width: 1280px) - Very Compact UI
+   ======================================================================== */
+@media (max-width: 1280px) {
+  #workout[data-page="workout-plan"] .exercise-selection-grid {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group {
+    gap: 0.3rem !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group {
+    min-width: 65px !important;
+    flex: 1 1 75px !important;
+    flex-basis: 75px !important;
+    max-width: 100px !important;
+    gap: 2px !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-label {
+    font-size: 0.55rem;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control,
+  #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"] {
+    min-height: 24px;
+    padding: 2px 5px;
+    font-size: 0.68rem;
+    border-radius: 6px;
+  }
+
+  #workout[data-page="workout-plan"] .uniform-dropdown,
+  #workout[data-page="workout-plan"] .exercise-dropdown {
+    width: 100%;
+    max-width: 100%;
+    height: 24px;
+    font-size: 0.68rem;
+  }
+  
+  #workout[data-page="workout-plan"] .filter-dropdown {
+    height: 24px;
+    font-size: 0.65rem;
+    padding: 0.1rem 0.3rem;
+  }
+  
+  #workout[data-page="workout-plan"] .frame-title,
+  #workout[data-page="workout-plan"] .filters-title {
+    font-size: 0.58rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions {
+    padding: 0.35rem 0.5rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions .btn {
+    height: 26px !important;
+    min-width: 75px !important;
+    padding: 0 0.35rem !important;
+    font-size: 0.6rem !important;
+  }
+}
+
+/* ========================================================================
+   1366x768 (1281px - 1366px) - Compact UI
+   ======================================================================== */
+@media (min-width: 1281px) and (max-width: 1366px) {
+  #workout[data-page="workout-plan"] .exercise-selection-grid {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group {
+    gap: 0.35rem !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group {
+    min-width: 70px !important;
+    flex: 1 1 80px !important;
+    flex-basis: 80px !important;
+    max-width: 105px !important;
+    gap: 2px !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-label {
+    font-size: 0.57rem;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control,
+  #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"] {
+    min-height: 26px;
+    padding: 3px 6px;
+    font-size: 0.7rem;
+    border-radius: 6px;
+  }
+
+  #workout[data-page="workout-plan"] .uniform-dropdown,
+  #workout[data-page="workout-plan"] .exercise-dropdown {
+    width: 100%;
+    max-width: 100%;
+    height: 26px;
+    font-size: 0.7rem;
+  }
+  
+  #workout[data-page="workout-plan"] .filter-dropdown {
+    height: 26px;
+    font-size: 0.68rem;
+    padding: 0.125rem 0.325rem;
+  }
+  
+  #workout[data-page="workout-plan"] .frame-title,
+  #workout[data-page="workout-plan"] .filters-title {
+    font-size: 0.6rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions {
+    padding: 0.4rem 0.55rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions .btn {
+    height: 28px !important;
+    min-width: 80px !important;
+    padding: 0 0.4rem !important;
+    font-size: 0.62rem !important;
+  }
+}
+
+/* ========================================================================
+   1536x864 (1367px - 1536px) - Compact+ UI
+   ======================================================================== */
+@media (min-width: 1367px) and (max-width: 1536px) {
+  #workout[data-page="workout-plan"] .exercise-selection-grid {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group {
+    gap: 0.4rem !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group {
+    min-width: 75px !important;
+    flex: 1 1 85px !important;
+    flex-basis: 85px !important;
+    max-width: 115px !important;
+    gap: 3px !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-label {
+    font-size: 0.6rem;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control,
+  #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"] {
+    min-height: 28px;
+    padding: 3px 6px;
+    font-size: 0.72rem;
+    border-radius: 7px;
+  }
+
+  #workout[data-page="workout-plan"] .uniform-dropdown,
+  #workout[data-page="workout-plan"] .exercise-dropdown {
+    width: 100%;
+    max-width: 100%;
+    height: 28px;
+    font-size: 0.72rem;
+  }
+  
+  #workout[data-page="workout-plan"] .filter-dropdown {
+    height: 28px;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.35rem;
+  }
+  
+  #workout[data-page="workout-plan"] .frame-title,
+  #workout[data-page="workout-plan"] .filters-title {
+    font-size: 0.63rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions {
+    padding: 0.425rem 0.6rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions .btn {
+    height: 29px !important;
+    min-width: 85px !important;
+    padding: 0 0.425rem !important;
+    font-size: 0.65rem !important;
+  }
+}
+
+/* ========================================================================
+   1600x900 (1537px - 1600px) - Medium Compact UI
+   ======================================================================== */
+@media (min-width: 1537px) and (max-width: 1600px) {
+  #workout[data-page="workout-plan"] .exercise-selection-grid {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group {
+    gap: 0.45rem !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group {
+    min-width: 80px !important;
+    flex: 1 1 90px !important;
+    flex-basis: 90px !important;
+    max-width: 120px !important;
+    gap: 3px !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-label {
+    font-size: 0.62rem;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control,
+  #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"] {
+    min-height: 30px;
+    padding: 4px 7px;
+    font-size: 0.75rem;
+    border-radius: 7px;
+  }
+
+  #workout[data-page="workout-plan"] .uniform-dropdown,
+  #workout[data-page="workout-plan"] .exercise-dropdown {
+    width: 100%;
+    max-width: 100%;
+    height: 29px;
+    font-size: 0.75rem;
+  }
+  
+  #workout[data-page="workout-plan"] .filter-dropdown {
+    height: 29px;
+    font-size: 0.72rem;
+    padding: 0.175rem 0.375rem;
+  }
+  
+  #workout[data-page="workout-plan"] .frame-title,
+  #workout[data-page="workout-plan"] .filters-title {
+    font-size: 0.67rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions {
+    padding: 0.45rem 0.65rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions .btn {
+    height: 30px !important;
+    min-width: 90px !important;
+    padding: 0 0.45rem !important;
+    font-size: 0.67rem !important;
+  }
+}
+
+/* ========================================================================
+   1080p (1601px - 1920px) - Standard Compact UI
+   ======================================================================== */
+@media (min-width: 1601px) and (max-width: 1920px) {
+  #workout[data-page="workout-plan"] .exercise-selection-grid {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  #workout[data-page="workout-plan"] .exercise-selection-grid .selection-field {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  #workout[data-page="workout-plan"] .routine-cascade-container {
+    max-width: 100%;
+  }
+
+  #workout[data-page="workout-plan"] .cascade-row {
+    max-width: 100%;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group {
+    gap: 0.5rem !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group {
+    min-width: 90px !important;
+    flex: 1 1 100px !important;
+    flex-basis: 100px !important;
+    max-width: 130px !important;
+    gap: 4px !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-label {
+    font-size: 0.65rem;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control,
+  #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"] {
+    min-height: 32px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    border-radius: 8px;
+  }
+
+  #workout[data-page="workout-plan"] .uniform-dropdown,
+  #workout[data-page="workout-plan"] .exercise-dropdown {
+    width: 100%;
+    max-width: 100%;
+    height: 30px;
+    font-size: 0.8rem;
+  }
+  
+  #workout[data-page="workout-plan"] .filter-dropdown {
+    height: 30px;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  #workout[data-page="workout-plan"] .frame-title,
+  #workout[data-page="workout-plan"] .filters-title {
+    font-size: 0.7rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions .btn {
+    height: 32px !important;
+    min-width: 100px !important;
+    padding: 0 0.5rem !important;
+    font-size: 0.7rem !important;
+  }
+  
+  /* Fix Utility and Grips columns text cutoff at 1080p */
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Utility"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Grips"] {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    min-width: 80px;
+    word-wrap: break-word;
+  }
+  
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Utility"],
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Grips"] {
+    min-width: 80px;
+  }
+}
+
+/* ========================================================================
+   1440p (1921px - 2560px) - Standard UI
+   ======================================================================== */
+@media (min-width: 1921px) and (max-width: 2560px) {
+  #workout[data-page="workout-plan"] .input-fields-group {
+    gap: 0.65rem !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group {
+    min-width: 110px !important;
+    flex: 1 1 120px !important;
+    flex-basis: 120px !important;
+    max-width: 160px !important;
+    gap: 5px !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-label {
+    font-size: 0.78rem;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control,
+  #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"] {
+    min-height: 38px;
+    padding: 6px 10px;
+    font-size: 0.88rem;
+    border-radius: 10px;
+  }
+
+  #workout[data-page="workout-plan"] .uniform-dropdown,
+  #workout[data-page="workout-plan"] .exercise-dropdown {
+    height: 36px;
+    font-size: 0.88rem;
+  }
+  
+  #workout[data-page="workout-plan"] .filter-dropdown {
+    height: 36px;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.55rem;
+  }
+  
+  #workout[data-page="workout-plan"] .frame-title,
+  #workout[data-page="workout-plan"] .filters-title {
+    font-size: 0.85rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions {
+    padding: 0.65rem 1rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions .btn {
+    height: 38px !important;
+    min-width: 120px !important;
+    padding: 0 0.75rem !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+/* ========================================================================
+   4K (2561px+) - Large UI
+   ======================================================================== */
+@media (min-width: 2561px) {
+  #workout[data-page="workout-plan"] .input-fields-group {
+    gap: 0.85rem !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group {
+    min-width: 140px !important;
+    flex: 1 1 160px !important;
+    flex-basis: 160px !important;
+    max-width: 200px !important;
+    gap: 6px !important;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-label {
+    font-size: 0.95rem;
+  }
+
+  #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control,
+  #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"] {
+    min-height: 48px;
+    padding: 8px 14px;
+    font-size: 1.05rem;
+    border-radius: 12px;
+  }
+
+  #workout[data-page="workout-plan"] .uniform-dropdown,
+  #workout[data-page="workout-plan"] .exercise-dropdown {
+    height: 46px;
+    font-size: 1.05rem;
+  }
+  
+  #workout[data-page="workout-plan"] .filter-dropdown {
+    height: 46px;
+    font-size: 1rem;
+    padding: 0.5rem 0.8rem;
+  }
+  
+  #workout[data-page="workout-plan"] .frame-title,
+  #workout[data-page="workout-plan"] .filters-title {
+    font-size: 1rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions {
+    padding: 0.85rem 1.25rem;
+  }
+  
+  #workout[data-page="workout-plan"] .selection-actions .btn {
+    height: 48px !important;
+    min-width: 150px !important;
+    padding: 0 1rem !important;
+    font-size: 1rem !important;
+  }
 }

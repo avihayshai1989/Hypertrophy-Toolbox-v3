@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
     <!-- Core Application CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_tokens.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_general.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_utilities.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_layout.css') }}">
@@ -27,6 +28,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_modals.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_tooltips.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_dark_mode.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_accessibility.css') }}">
     <!-- Toast Styles - Load last to override Bootstrap -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_error.css') }}">
     
@@ -150,6 +152,25 @@
                         </a>
                     </li>
                     <li class="nav-item nav-divider" aria-hidden="true"></li>
+                    <!-- Accessibility Scale Control -->
+                    <li class="nav-item">
+                        <div class="scale-control-compact" role="group" aria-label="UI Scale Control">
+                            <button 
+                                id="scale-decrease" 
+                                class="scale-btn-compact" 
+                                type="button" 
+                                aria-label="Decrease text size"
+                                title="Decrease size (Ctrl+-)">−</button>
+                            <span id="scale-indicator" class="scale-indicator" aria-live="polite" title="Current scale level">3</span>
+                            <button 
+                                id="scale-increase" 
+                                class="scale-btn-compact" 
+                                type="button" 
+                                aria-label="Increase text size"
+                                title="Increase size (Ctrl++)">+</button>
+                        </div>
+                    </li>
+                    <li class="nav-item nav-divider" aria-hidden="true"></li>
                     <li class="nav-item">
                         <button id="darkModeToggle" class="nav-link" type="button" aria-label="Toggle Dark Mode">
                             <i class="fas fa-moon text-primary" aria-hidden="true"></i>
@@ -239,6 +260,7 @@
     </script>
     <script type="module" src="{{ url_for('static', filename='js/app.js') }}?v={{ range(1, 1000000) | random }}"></script>
     <script src="{{ url_for('static', filename='js/darkMode.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/accessibility.js') }}"></script>
     <script src="{{ url_for('static', filename='js/table-responsiveness.js') }}?v={{ range(1, 1000000) | random }}"></script>
     
     <!-- Page-Specific JS (Override in child templates) -->

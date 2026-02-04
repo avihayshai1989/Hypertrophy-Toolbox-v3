@@ -1,0 +1,343 @@
+/* ==========================================================================
+   Accessibility - UI Scaling System
+   Provides 5-level scaling options for accessibility
+   ========================================================================== */
+
+/* ========================================================================
+   CSS Custom Properties for Scaling
+   ======================================================================== */
+:root {
+    /* Default scale factor (Level 3 = 100%) */
+    --ui-scale: 1;
+    
+    /* Scale levels */
+    --scale-level-1: 0.8;   /* 80% - Smallest */
+    --scale-level-2: 0.9;   /* 90% - Small */
+    --scale-level-3: 1;     /* 100% - Default */
+    --scale-level-4: 1.1;   /* 110% - Large */
+    --scale-level-5: 1.2;   /* 120% - Largest */
+}
+
+/* ========================================================================
+   Scale Classes Applied to HTML Element
+   ======================================================================== */
+html[data-scale="1"] {
+    --ui-scale: 0.8;
+    font-size: 80%;
+}
+
+html[data-scale="2"] {
+    --ui-scale: 0.9;
+    font-size: 90%;
+}
+
+html[data-scale="3"] {
+    --ui-scale: 1;
+    font-size: 100%;
+}
+
+html[data-scale="4"] {
+    --ui-scale: 1.1;
+    font-size: 110%;
+}
+
+html[data-scale="5"] {
+    --ui-scale: 1.2;
+    font-size: 120%;
+}
+
+/* ========================================================================
+   Scale Control Styling
+   ======================================================================== */
+.scale-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: var(--nav-radius-sm, 8px);
+    background: transparent;
+}
+
+.scale-control-label {
+    font-size: 0.85rem;
+    color: var(--nav-text-muted, #a8b2c1);
+    margin-right: 4px;
+    white-space: nowrap;
+}
+
+.scale-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: var(--nav-surface, #141a23);
+    border-radius: var(--nav-radius-sm, 8px);
+    padding: 2px;
+    border: 1px solid var(--nav-border, #202837);
+}
+
+.scale-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--nav-text-muted, #a8b2c1);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all var(--nav-transition-fast, 150ms) ease;
+}
+
+.scale-btn:hover {
+    background: var(--nav-surface-hover, #1a202c);
+    color: var(--nav-text, #e9eef7);
+}
+
+.scale-btn:focus {
+    outline: 2px solid var(--nav-accent, #4f8cff);
+    outline-offset: 1px;
+}
+
+.scale-btn.active {
+    background: var(--nav-accent, #4f8cff);
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(79, 140, 255, 0.3);
+}
+
+.scale-btn.active:hover {
+    background: var(--nav-accent-hover, #6ba3ff);
+}
+
+/* Size indicators on buttons */
+.scale-btn[data-scale="1"] {
+    font-size: 0.65rem;
+}
+
+.scale-btn[data-scale="2"] {
+    font-size: 0.7rem;
+}
+
+.scale-btn[data-scale="3"] {
+    font-size: 0.75rem;
+}
+
+.scale-btn[data-scale="4"] {
+    font-size: 0.8rem;
+}
+
+.scale-btn[data-scale="5"] {
+    font-size: 0.85rem;
+}
+
+/* ========================================================================
+   Accessibility Menu Dropdown
+   ======================================================================== */
+.accessibility-dropdown {
+    position: relative;
+}
+
+.accessibility-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    color: var(--nav-text, #e9eef7);
+    font-size: 0.95rem;
+    cursor: pointer;
+    border-radius: var(--nav-radius-sm, 8px);
+    transition: background var(--nav-transition-fast, 150ms) ease;
+}
+
+.accessibility-toggle:hover {
+    background: var(--nav-surface-hover, #1a202c);
+}
+
+.accessibility-toggle:focus {
+    outline: 2px solid var(--nav-accent, #4f8cff);
+    outline-offset: 2px;
+}
+
+.accessibility-toggle i {
+    font-size: 1rem;
+}
+
+.accessibility-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 220px;
+    padding: 12px;
+    background: var(--nav-surface, #141a23);
+    border: 1px solid var(--nav-border, #202837);
+    border-radius: var(--nav-radius, 12px);
+    box-shadow: var(--nav-shadow, 0 6px 24px rgba(0, 0, 0, 0.25));
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all var(--nav-transition, 200ms) ease;
+    z-index: 1001;
+}
+
+.accessibility-dropdown.open .accessibility-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(4px);
+}
+
+.accessibility-section {
+    padding: 8px 0;
+}
+
+.accessibility-section:not(:last-child) {
+    border-bottom: 1px solid var(--nav-border, #202837);
+    margin-bottom: 8px;
+}
+
+.accessibility-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--nav-text-muted, #a8b2c1);
+    margin-bottom: 8px;
+}
+
+/* Scale indicator labels */
+.scale-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    padding: 0 2px;
+}
+
+.scale-label {
+    font-size: 0.65rem;
+    color: var(--nav-text-muted, #a8b2c1);
+}
+
+/* ========================================================================
+   Compact Scale Control (for navbar inline)
+   ======================================================================== */
+.scale-control-compact {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.scale-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 4px;
+    background: var(--nav-surface, #141a23);
+    border: 1px solid var(--nav-border, #202837);
+    border-radius: 4px;
+    color: var(--nav-accent, #4f8cff);
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.scale-btn-compact {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: var(--nav-surface, #141a23);
+    border: 1px solid var(--nav-border, #202837);
+    color: var(--nav-text-muted, #a8b2c1);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all var(--nav-transition-fast, 150ms) ease;
+}
+
+.scale-btn-compact:hover {
+    background: var(--nav-surface-hover, #1a202c);
+    color: var(--nav-text, #e9eef7);
+    border-color: var(--nav-accent, #4f8cff);
+}
+
+.scale-btn-compact:focus {
+    outline: 2px solid var(--nav-accent, #4f8cff);
+    outline-offset: 1px;
+}
+
+.scale-btn-compact:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ========================================================================
+   Responsive Adjustments
+   ======================================================================== */
+@media (max-width: 991.98px) {
+    .scale-control {
+        padding: 8px 0;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .scale-btn-group {
+        flex: 1;
+        max-width: 200px;
+        justify-content: center;
+    }
+    
+    .scale-btn {
+        flex: 1;
+        max-width: 36px;
+    }
+    
+    .accessibility-menu {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: var(--nav-radius-lg, 16px) var(--nav-radius-lg, 16px) 0 0;
+        transform: translateY(100%);
+    }
+    
+    .accessibility-dropdown.open .accessibility-menu {
+        transform: translateY(0);
+    }
+}
+
+/* ========================================================================
+   Print Styles - Reset scaling for print
+   ======================================================================== */
+@media print {
+    html[data-scale] {
+        font-size: 100% !important;
+    }
+    
+    .scale-control,
+    .accessibility-dropdown {
+        display: none !important;
+    }
+}
+
+/* ========================================================================
+   Smooth Scaling Transition
+   ======================================================================== */
+html {
+    transition: font-size 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        transition: none;
+    }
+}

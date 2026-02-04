@@ -25,7 +25,7 @@
     background-color: #f3e5f5 !important; /* Light purple background */
     color: #7b1fa2;
     font-weight: 500;
-    min-width: 100px;
+    min-width: 80px;
     position: relative;
 }
 
@@ -42,8 +42,13 @@
     top: 0;
     background-color: #fff;
     z-index: 1;
-    padding: 12px 8px;
+    padding: 10px 6px;
     border-bottom: 2px solid #dee2e6;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    min-width: fit-content;
 }
 
 /* Dark mode styles for table headers */
@@ -55,9 +60,11 @@
 
 /* Table cell styling */
 .workout-log-table td {
-    padding: 8px;
+    padding: 6px;
     vertical-align: middle;
     border-top: 1px solid #dee2e6;
+    font-size: 0.85rem;
+    white-space: nowrap;
 }
 
 /* Dark mode styles for table cells */
@@ -99,6 +106,251 @@
         display: block;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* 720p (max-width: 1280px) - Very Compact */
+@media (max-width: 1280px) {
+    .workout-log-table thead th {
+        padding: 6px 3px;
+        font-size: 0.62rem;
+        letter-spacing: 0.1px;
+    }
+    
+    .workout-log-table td {
+        padding: 4px 3px;
+        font-size: 0.68rem;
+    }
+    
+    .workout-log-frame {
+        overflow-x: auto;
+    }
+    
+    .workout-log-frame .tbl-wrap {
+        overflow-x: auto;
+        min-width: 100%;
+    }
+    
+    .workout-log-table {
+        min-width: 1200px;
+    }
+}
+
+/* 1366x768 (1281px - 1366px) - Compact */
+@media (min-width: 1281px) and (max-width: 1366px) {
+    .workout-log-table thead th {
+        padding: 7px 3px;
+        font-size: 0.65rem;
+        letter-spacing: 0.15px;
+    }
+    
+    .workout-log-table td {
+        padding: 4px 3px;
+        font-size: 0.72rem;
+    }
+    
+    .workout-log-frame {
+        overflow-x: auto;
+    }
+    
+    .workout-log-frame .tbl-wrap {
+        overflow-x: auto;
+        min-width: 100%;
+    }
+    
+    .workout-log-table {
+        min-width: 1250px;
+    }
+}
+
+/* 1536x864 (1367px - 1536px) - Compact+ */
+@media (min-width: 1367px) and (max-width: 1536px) {
+    .workout-log-table thead th {
+        padding: 7px 3px;
+        font-size: 0.67rem;
+        letter-spacing: 0.15px;
+    }
+    
+    .workout-log-table td {
+        padding: 5px 3px;
+        font-size: 0.75rem;
+    }
+    
+    .workout-log-frame {
+        overflow-x: auto;
+    }
+    
+    .workout-log-frame .tbl-wrap {
+        overflow-x: auto;
+        min-width: 100%;
+    }
+    
+    .workout-log-table {
+        min-width: 1300px;
+    }
+}
+
+/* 1600x900 (1537px - 1600px) - Medium Compact */
+@media (min-width: 1537px) and (max-width: 1600px) {
+    .workout-log-table thead th {
+        padding: 7px 4px;
+        font-size: 0.68rem;
+        letter-spacing: 0.18px;
+    }
+    
+    .workout-log-table td {
+        padding: 5px 4px;
+        font-size: 0.78rem;
+    }
+    
+    .workout-log-frame {
+        overflow-x: auto;
+    }
+    
+    .workout-log-frame .tbl-wrap {
+        overflow-x: auto;
+        min-width: 100%;
+    }
+    
+    .workout-log-table {
+        min-width: 1350px;
+    }
+}
+
+/* 1080p (1601px - 1920px) - Standard Compact */
+@media (min-width: 1601px) and (max-width: 1920px) {
+    .workout-log-table thead th {
+        padding: 4px 2px;
+        font-size: 0.55rem;
+        letter-spacing: 0;
+    }
+    
+    .workout-log-table td {
+        padding: 3px 2px;
+        font-size: 0.7rem;
+    }
+    
+    .workout-log-frame {
+        overflow-x: auto;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .workout-log-frame .tbl-wrap {
+        overflow-x: auto;
+        width: 100%;
+    }
+    
+    .workout-log-table {
+        width: 100%;
+        min-width: auto;
+        table-layout: fixed;
+    }
+    
+    /* Compact column widths for 1080p - 17 columns need very tight spacing */
+    .workout-log-table th,
+    .workout-log-table td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Specific column width distribution for 1080p */
+    .workout-log-table th:nth-child(1),
+    .workout-log-table td:nth-child(1) { width: 25px; } /* # */
+    
+    .workout-log-table th:nth-child(2),
+    .workout-log-table td:nth-child(2) { width: 70px; } /* Routine */
+    
+    .workout-log-table th:nth-child(3),
+    .workout-log-table td:nth-child(3) { width: 120px; } /* Exercise */
+    
+    .workout-log-table th:nth-child(4),
+    .workout-log-table td:nth-child(4) { width: 40px; } /* Planned Sets */
+    
+    .workout-log-table th:nth-child(5),
+    .workout-log-table td:nth-child(5) { width: 55px; } /* Planned Min Reps */
+    
+    .workout-log-table th:nth-child(6),
+    .workout-log-table td:nth-child(6) { width: 55px; } /* Planned Max Reps */
+    
+    .workout-log-table th:nth-child(7),
+    .workout-log-table td:nth-child(7) { width: 45px; } /* Planned RIR */
+    
+    .workout-log-table th:nth-child(8),
+    .workout-log-table td:nth-child(8) { width: 45px; } /* Planned RPE */
+    
+    .workout-log-table th:nth-child(9),
+    .workout-log-table td:nth-child(9) { width: 50px; } /* Planned Weight */
+    
+    .workout-log-table th:nth-child(10),
+    .workout-log-table td:nth-child(10) { width: 55px; } /* Scored Min Reps */
+    
+    .workout-log-table th:nth-child(11),
+    .workout-log-table td:nth-child(11) { width: 55px; } /* Scored Max Reps */
+    
+    .workout-log-table th:nth-child(12),
+    .workout-log-table td:nth-child(12) { width: 45px; } /* Scored RIR */
+    
+    .workout-log-table th:nth-child(13),
+    .workout-log-table td:nth-child(13) { width: 45px; } /* Scored RPE */
+    
+    .workout-log-table th:nth-child(14),
+    .workout-log-table td:nth-child(14) { width: 50px; } /* Scored Weight */
+    
+    .workout-log-table th:nth-child(15),
+    .workout-log-table td:nth-child(15) { width: 70px; } /* Last Progression */
+    
+    .workout-log-table th:nth-child(16),
+    .workout-log-table td:nth-child(16) { width: 80px; } /* Progressive Overload */
+    
+    .workout-log-table th:nth-child(17),
+    .workout-log-table td:nth-child(17) { width: 60px; } /* Actions */
+    
+    /* Make action buttons smaller */
+    .workout-log-table .btn {
+        padding: 2px 4px;
+        font-size: 0.65rem;
+    }
+    
+    .workout-log-table .btn i {
+        font-size: 0.65rem;
+    }
+}
+
+/* 1440p (1921px - 2560px) - Standard */
+@media (min-width: 1921px) and (max-width: 2560px) {
+    .workout-log-table thead th {
+        padding: 10px 6px;
+        font-size: 0.78rem;
+        letter-spacing: 0.25px;
+    }
+    
+    .workout-log-table td {
+        padding: 6px 6px;
+        font-size: 0.88rem;
+    }
+    
+    .workout-log-table {
+        min-width: 1600px;
+    }
+}
+
+/* 4K (2561px+) - Large */
+@media (min-width: 2561px) {
+    .workout-log-table thead th {
+        padding: 12px 8px;
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+    }
+    
+    .workout-log-table td {
+        padding: 8px 8px;
+        font-size: 1.05rem;
+    }
+    
+    .workout-log-table {
+        min-width: 1900px;
     }
 }
 

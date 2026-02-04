@@ -5,7 +5,7 @@
     left: 1.5rem;
     background-color: #fff;
     padding: 0 0.5rem;
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm, 0.85rem);
     font-weight: 600;
     color: #6c757d;
     text-transform: uppercase;
@@ -52,15 +52,15 @@
 /* Input Frame Specific */
 .input-frame {
     background-color: #f8f9fa;
-    padding: 1rem;
+    padding: var(--frame-padding, 1rem);
 }
 
 /* Horizontal Input Layout */
 .input-frame .row {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
-    padding: 0.75rem;
+    gap: var(--space-sm, 0.625rem);
+    padding: var(--space-sm, 0.5rem);
     justify-content: flex-start;
 }
 
@@ -75,10 +75,10 @@
     background-color: #fff;
     border-color: #ced4da;
     transition: all 0.2s ease-in-out;
-    width: 120px;
-    height: 32px;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.9rem;
+    width: clamp(80px, 10vw, 120px);
+    height: var(--input-height-md, 36px);
+    padding: var(--input-padding-y, 0.25rem) var(--input-padding-x, 0.5rem);
+    font-size: var(--input-font-size, 0.875rem);
 }
 
 .input-frame .form-control:focus {
@@ -158,10 +158,12 @@
     border: 1px solid #ddd;
     border-radius: 0.25rem;
     margin-bottom: 1rem;
-    overflow: visible;
+    overflow: hidden;
     transition: all 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .frame-header {
@@ -256,9 +258,13 @@
     position: relative;
     z-index: 1;
     background: #fff;
-    padding: 1rem;
+    padding: var(--frame-padding, 1rem);
     transition: all 0.3s ease-in-out;
     flex: 1;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
 }
 
 /* Hover effect for collapsed frames */
@@ -335,16 +341,20 @@
     border: 1px solid #dee2e6;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    padding: 1.5rem;
+    padding: var(--frame-padding, 1.25rem);
     margin: 1rem 0;
     width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    box-sizing: border-box;
 }
 
 /* Table Container within Frame */
 .workout-log-frame .table-responsive {
     margin: 0;
     border-radius: 6px;
-    overflow: hidden;
+    overflow-x: auto;
 }
 
 /* Table Styling */
@@ -354,28 +364,117 @@
     background: white;
 }
 
-/* Table Header */
-.workout-log-table thead th {
+/* Table Header - Note: More specific rules in workout_log.css */
+.workout-log-frame .workout-log-table thead th {
     background-color: #f8f9fa;
     border-bottom: 2px solid #dee2e6;
-    padding: 1rem;
+    padding: 0.625rem 0.375rem;
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
+    font-size: 0.75rem;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
 }
 
-/* Responsive Frame Adjustments */
+/* ============================================================
+   RESPONSIVE FRAME ADJUSTMENTS - Multi-Resolution
+   ============================================================ */
+
+/* Mobile/Tablet fallback */
 @media (max-width: 1200px) {
     .workout-log-frame {
         padding: 1rem;
+    }
+}
+
+/* 720p (max-width: 1280px) - Very Compact */
+@media (min-width: 1201px) and (max-width: 1280px) {
+    .workout-log-frame {
+        padding: 0.5rem;
+    }
+    
+    .workout-log-frame .workout-log-table thead th {
+        padding: 0.35rem 0.15rem;
+        font-size: 0.62rem;
+    }
+}
+
+/* 1366x768 (1281px - 1366px) - Compact */
+@media (min-width: 1281px) and (max-width: 1366px) {
+    .workout-log-frame {
+        padding: 0.55rem;
+    }
+    
+    .workout-log-frame .workout-log-table thead th {
+        padding: 0.4rem 0.175rem;
+        font-size: 0.65rem;
+    }
+}
+
+/* 1536x864 (1367px - 1536px) - Compact+ */
+@media (min-width: 1367px) and (max-width: 1536px) {
+    .workout-log-frame {
+        padding: 0.6rem;
+    }
+    
+    .workout-log-frame .workout-log-table thead th {
+        padding: 0.425rem 0.2rem;
+        font-size: 0.67rem;
+    }
+}
+
+/* 1600x900 (1537px - 1600px) - Medium Compact */
+@media (min-width: 1537px) and (max-width: 1600px) {
+    .workout-log-frame {
+        padding: 0.65rem;
+    }
+    
+    .workout-log-frame .workout-log-table thead th {
+        padding: 0.45rem 0.225rem;
+        font-size: 0.68rem;
+    }
+}
+
+/* 1080p (1601px - 1920px) - Standard Compact */
+@media (min-width: 1601px) and (max-width: 1920px) {
+    .workout-log-frame {
+        padding: var(--space-md, 0.75rem);
+    }
+    
+    .workout-log-frame .workout-log-table thead th {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.7rem;
+    }
+}
+
+/* 1440p (1921px - 2560px) - Standard */
+@media (min-width: 1921px) and (max-width: 2560px) {
+    .workout-log-frame {
+        padding: 1rem;
+    }
+    
+    .workout-log-frame .workout-log-table thead th {
+        padding: 0.65rem 0.35rem;
+        font-size: 0.78rem;
+    }
+}
+
+/* 4K (2561px+) - Large */
+@media (min-width: 2561px) {
+    .workout-log-frame {
+        padding: 1.25rem;
+    }
+    
+    .workout-log-frame .workout-log-table thead th {
+        padding: 0.85rem 0.5rem;
+        font-size: 0.95rem;
     }
 } 
 
 /* Summary Frame Styles */
 .summary-frame {
     background: white;
-    border: 1px solid #dee2e6;
+    border: 1px solid #d0d0d0;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     padding: 1.5rem;
@@ -402,6 +501,51 @@
     overflow: hidden;
 }
 
+/* 
+ * Fix for green/pink color fringing on table borders during scroll.
+ * This is caused by subpixel anti-aliasing during GPU-accelerated scrolling.
+ * The fix uses:
+ * 1. Hardware acceleration layer isolation (transform/backface-visibility)
+ * 2. Preventing subpixel rendering artifacts
+ */
+.summary-frame,
+.summary-section,
+.summary-tables,
+.summary-frame .table,
+.summary-section .table,
+.summary-tables .table {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* Override Bootstrap table borders with true neutral grays for summary tables */
+.summary-frame .table,
+.summary-section .table,
+.summary-tables .table {
+    border-color: #d0d0d0 !important;
+    --bs-table-border-color: #d0d0d0 !important;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.summary-frame .table > :not(caption) > * > *,
+.summary-section .table > :not(caption) > * > *,
+.summary-tables .table > :not(caption) > * > * {
+    border-color: #d0d0d0 !important;
+}
+
+.summary-frame .table th,
+.summary-frame .table td,
+.summary-section .table th,
+.summary-section .table td,
+.summary-tables .table th,
+.summary-tables .table td {
+    border-color: #d0d0d0 !important;
+}
+
 .summary-section .table-container {
     margin: 0;
     width: 100%;
@@ -414,8 +558,8 @@
 
 /* Table Header Styling */
 .summary-section thead th {
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #dee2e6;
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #d0d0d0;
     padding: 1rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -423,7 +567,7 @@
     letter-spacing: 0.5px;
 }
 
-/* Responsive Adjustments */
+/* Responsive Adjustments for Summary Frame */
 @media (max-width: 1200px) {
     .summary-frame {
         padding: 1rem;
@@ -432,12 +576,89 @@
     .summary-controls {
         padding: 0 0.5rem;
     }
+}
+
+/* 720p (max-width: 1280px) */
+@media (min-width: 1201px) and (max-width: 1280px) {
+    .summary-frame {
+        padding: 0.65rem;
+    }
+    .summary-section thead th {
+        padding: 0.55rem;
+        font-size: 0.68rem;
+    }
+}
+
+/* 1366x768 (1281px - 1366px) */
+@media (min-width: 1281px) and (max-width: 1366px) {
+    .summary-frame {
+        padding: 0.7rem;
+    }
+    .summary-section thead th {
+        padding: 0.6rem;
+        font-size: 0.7rem;
+    }
+}
+
+/* 1536x864 (1367px - 1536px) */
+@media (min-width: 1367px) and (max-width: 1536px) {
+    .summary-frame {
+        padding: 0.75rem;
+    }
+    .summary-section thead th {
+        padding: 0.65rem;
+        font-size: 0.72rem;
+    }
+}
+
+/* 1600x900 (1537px - 1600px) */
+@media (min-width: 1537px) and (max-width: 1600px) {
+    .summary-frame {
+        padding: 0.8rem;
+    }
+    .summary-section thead th {
+        padding: 0.7rem;
+        font-size: 0.74rem;
+    }
+}
+
+/* 1080p (1601px - 1920px) */
+@media (min-width: 1601px) and (max-width: 1920px) {
+    .summary-frame {
+        padding: 0.85rem;
+    }
+    .summary-section thead th {
+        padding: 0.75rem;
+        font-size: 0.78rem;
+    }
+}
+
+/* 1440p (1921px - 2560px) */
+@media (min-width: 1921px) and (max-width: 2560px) {
+    .summary-frame {
+        padding: 1.25rem;
+    }
+    .summary-section thead th {
+        padding: 0.9rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* 4K (2561px+) */
+@media (min-width: 2561px) {
+    .summary-frame {
+        padding: 1.5rem;
+    }
+    .summary-section thead th {
+        padding: 1.1rem;
+        font-size: 1rem;
+    }
 } 
 
 /* Summary Header Section */
 .summary-header {
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
+    background: #f5f5f5;
+    border: 1px solid #d0d0d0;
     border-radius: 8px;
     padding: 1.5rem;
     margin-bottom: 2rem;

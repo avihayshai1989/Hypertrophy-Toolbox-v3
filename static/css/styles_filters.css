@@ -83,7 +83,7 @@
 
 /* Filters Section */
 .filters-section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     z-index: 3;
 }
 
@@ -92,12 +92,208 @@
 }
 
 .filters.dropdown-group {
-    margin-top: 0.5rem;
+    margin-top: 0.375rem;
 }
 
 /* Enhance form layout */
 #filters-form {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* 720p (max-width: 1280px) - Very Compact */
+@media (max-width: 1280px) {
+    .filters-section {
+        margin-bottom: 0.375rem;
+    }
+    
+    .filters.dropdown-group {
+        margin-top: 0.15rem;
+    }
+    
+    #filters-form {
+        margin-top: 0.15rem;
+    }
+    
+    #filters-form .col-lg-3,
+    #filters-form .col-md-4,
+    #filters-form .col-sm-6 {
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+    }
+    
+    .filter-dropdown {
+        height: 24px;
+        font-size: 0.68rem;
+        padding: 0.125rem 0.325rem;
+    }
+}
+
+/* 1366x768 (1281px - 1366px) - Compact */
+@media (min-width: 1281px) and (max-width: 1366px) {
+    .filters-section {
+        margin-bottom: 0.4rem;
+    }
+    
+    .filters.dropdown-group {
+        margin-top: 0.175rem;
+    }
+    
+    #filters-form {
+        margin-top: 0.175rem;
+    }
+    
+    #filters-form .col-lg-3,
+    #filters-form .col-md-4,
+    #filters-form .col-sm-6 {
+        padding-left: 0.3rem;
+        padding-right: 0.3rem;
+    }
+    
+    .filter-dropdown {
+        height: 26px;
+        font-size: 0.7rem;
+        padding: 0.15rem 0.35rem;
+    }
+}
+
+/* 1536x864 (1367px - 1536px) - Compact+ */
+@media (min-width: 1367px) and (max-width: 1536px) {
+    .filters-section {
+        margin-bottom: 0.45rem;
+    }
+    
+    .filters.dropdown-group {
+        margin-top: 0.2rem;
+    }
+    
+    #filters-form {
+        margin-top: 0.2rem;
+    }
+    
+    #filters-form .col-lg-3,
+    #filters-form .col-md-4,
+    #filters-form .col-sm-6 {
+        padding-left: 0.325rem;
+        padding-right: 0.325rem;
+    }
+    
+    .filter-dropdown {
+        height: 28px;
+        font-size: 0.72rem;
+        padding: 0.175rem 0.375rem;
+    }
+}
+
+/* 1600x900 (1537px - 1600px) - Medium Compact */
+@media (min-width: 1537px) and (max-width: 1600px) {
+    .filters-section {
+        margin-bottom: 0.475rem;
+    }
+    
+    .filters.dropdown-group {
+        margin-top: 0.225rem;
+    }
+    
+    #filters-form {
+        margin-top: 0.225rem;
+    }
+    
+    #filters-form .col-lg-3,
+    #filters-form .col-md-4,
+    #filters-form .col-sm-6 {
+        padding-left: 0.35rem;
+        padding-right: 0.35rem;
+    }
+    
+    .filter-dropdown {
+        height: 29px;
+        font-size: 0.74rem;
+        padding: 0.185rem 0.385rem;
+    }
+}
+
+/* 1080p (1601px - 1920px) - Standard Compact */
+@media (min-width: 1601px) and (max-width: 1920px) {
+    .filters-section {
+        margin-bottom: 0.5rem;
+    }
+    
+    .filters.dropdown-group {
+        margin-top: 0.25rem;
+    }
+    
+    #filters-form {
+        margin-top: 0.25rem;
+    }
+    
+    #filters-form .col-lg-3,
+    #filters-form .col-md-4,
+    #filters-form .col-sm-6 {
+        padding-left: 0.375rem;
+        padding-right: 0.375rem;
+    }
+    
+    .filter-dropdown {
+        height: 30px;
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+/* 1440p (1921px - 2560px) - Standard */
+@media (min-width: 1921px) and (max-width: 2560px) {
+    .filters-section {
+        margin-bottom: 0.75rem;
+    }
+    
+    .filters.dropdown-group {
+        margin-top: 0.35rem;
+    }
+    
+    #filters-form {
+        margin-top: 0.35rem;
+    }
+    
+    #filters-form .col-lg-3,
+    #filters-form .col-md-4,
+    #filters-form .col-sm-6 {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    
+    .filter-dropdown {
+        height: 36px;
+        font-size: 0.85rem;
+        padding: 0.35rem 0.55rem;
+    }
+}
+
+/* 4K (2561px+) - Large */
+@media (min-width: 2561px) {
+    .filters-section {
+        margin-bottom: 1rem;
+    }
+    
+    .filters.dropdown-group {
+        margin-top: 0.5rem;
+    }
+    
+    #filters-form {
+        margin-top: 0.5rem;
+    }
+    
+    #filters-form .col-lg-3,
+    #filters-form .col-md-4,
+    #filters-form .col-sm-6 {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+    
+    .filter-dropdown {
+        height: 44px;
+        font-size: 1rem;
+        padding: 0.5rem 0.8rem;
+    }
 }
 
 /* Add subtle hover effect to the frame */

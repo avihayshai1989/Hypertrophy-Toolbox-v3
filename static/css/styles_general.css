@@ -1,3 +1,9 @@
+/* Override Bootstrap border colors with true neutral grays */
+:root {
+    --bs-border-color: #d0d0d0;
+    --bs-table-border-color: #d0d0d0;
+}
+
 /* General Styles */
 body {
     font-family: 'Inter', Arial, sans-serif;

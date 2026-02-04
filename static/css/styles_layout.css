@@ -53,20 +53,20 @@ body:not(:has(#navbar)) .navbar,
 .unified-frames-container {
     width: 100%;
     max-width: 100%;
-    margin: 0.5rem auto;
-    padding: 0 1rem;
+    margin: var(--space-sm, 0.5rem) auto;
+    padding: 0 var(--space-md, 0.875rem);
     box-sizing: border-box;
 }
 
 /* Container Layouts */
 .container {
-    margin: 20px auto;
-    padding: 20px;
+    margin: var(--space-lg, 1rem) auto;
+    padding: var(--space-lg, 1.25rem);
     background-color: #ffffff;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    max-width: 1400px;
-    width: 95%;
+    max-width: var(--container-max-fhd, 1800px);
+    width: 94%;
     animation: fadeIn 0.8s ease-in-out;
 }
 
@@ -88,9 +88,9 @@ body:not(:has(#navbar)) .navbar,
 
 .input-frame,
 .action-frame {
-    padding: 1.5rem;
+    padding: var(--frame-padding, 1.25rem);
     background: #ffffff;
-    border-radius: 8px;
+    border-radius: var(--frame-border-radius, 8px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
 }

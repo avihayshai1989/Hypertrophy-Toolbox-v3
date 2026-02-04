@@ -33,7 +33,7 @@
     width: 100%;
     padding: 8px;
     border-radius: 4px;
-    border: 1px solid #dee2e6;
+    border: 1px solid #d0d0d0;
 }
 
 .advanced-isolated-muscles-column {
@@ -43,6 +43,6 @@
 
 label[for="isolated_muscles_filter"] {
     font-weight: 600;
-    color: #495057;
+    color: #505050;
     margin-bottom: 0.5rem;
 } 
