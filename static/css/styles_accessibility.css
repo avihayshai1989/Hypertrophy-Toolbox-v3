@@ -1,49 +1,85 @@
 /* ==========================================================================
    Accessibility - UI Scaling System
-   Provides 5-level scaling options for accessibility
+   Provides 8-level scaling options using CSS zoom for instant scaling
    ========================================================================== */
 
 /* ========================================================================
    CSS Custom Properties for Scaling
    ======================================================================== */
 :root {
-    /* Default scale factor (Level 3 = 100%) */
+    /* Default scale factor (Level 6 = 100%) */
     --ui-scale: 1;
-    
-    /* Scale levels */
-    --scale-level-1: 0.8;   /* 80% - Smallest */
-    --scale-level-2: 0.9;   /* 90% - Small */
-    --scale-level-3: 1;     /* 100% - Default */
-    --scale-level-4: 1.1;   /* 110% - Large */
-    --scale-level-5: 1.2;   /* 120% - Largest */
 }
 
 /* ========================================================================
-   Scale Classes Applied to HTML Element
+   Text Rendering Optimizations for Sharp Text at All Zoom Levels
+   ======================================================================== */
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Extra sharpening for zoomed-out levels */
+html[data-scale="1"],
+html[data-scale="2"],
+html[data-scale="3"],
+html[data-scale="4"],
+html[data-scale="5"] {
+    -webkit-font-smoothing: subpixel-antialiased;
+    text-rendering: geometricPrecision;
+    font-smooth: always;
+}
+
+/* ========================================================================
+   Scale Classes - CSS variables only, zoom is applied via inline style
+   8 levels: 75%, 80%, 85%, 90%, 95%, 100% (default), 110%, 120%
    ======================================================================== */
 html[data-scale="1"] {
-    --ui-scale: 0.8;
-    font-size: 80%;
+    --ui-scale: 0.75;
+    --ui-scale-inverse: 1.333;
 }
 
 html[data-scale="2"] {
-    --ui-scale: 0.9;
-    font-size: 90%;
+    --ui-scale: 0.8;
+    --ui-scale-inverse: 1.25;
 }
 
 html[data-scale="3"] {
-    --ui-scale: 1;
-    font-size: 100%;
+    --ui-scale: 0.85;
+    --ui-scale-inverse: 1.176;
 }
 
 html[data-scale="4"] {
-    --ui-scale: 1.1;
-    font-size: 110%;
+    --ui-scale: 0.9;
+    --ui-scale-inverse: 1.111;
 }
 
 html[data-scale="5"] {
+    --ui-scale: 0.95;
+    --ui-scale-inverse: 1.053;
+}
+
+html[data-scale="6"] {
+    --ui-scale: 1;
+    --ui-scale-inverse: 1;
+}
+
+html[data-scale="7"] {
+    --ui-scale: 1.1;
+    --ui-scale-inverse: 0.909;
+}
+
+html[data-scale="8"] {
     --ui-scale: 1.2;
-    font-size: 120%;
+    --ui-scale-inverse: 0.833;
+}
+
+/* ========================================================================
+   Navbar Counter-Zoom - Keep navbar at consistent size
+   ======================================================================== */
+#navbar {
+    zoom: var(--ui-scale-inverse, 1);
 }
 
 /* ========================================================================
@@ -316,28 +352,15 @@ html[data-scale="5"] {
 }
 
 /* ========================================================================
-   Print Styles - Reset scaling for print
+   Print Styles - Reset zoom for print
    ======================================================================== */
 @media print {
     html[data-scale] {
-        font-size: 100% !important;
+        zoom: 1 !important;
     }
     
     .scale-control,
     .accessibility-dropdown {
         display: none !important;
-    }
-}
-
-/* ========================================================================
-   Smooth Scaling Transition
-   ======================================================================== */
-html {
-    transition: font-size 0.2s ease;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    html {
-        transition: none;
     }
 }

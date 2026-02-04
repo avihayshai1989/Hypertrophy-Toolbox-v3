@@ -91,6 +91,24 @@ def start_timer():
     """Store request start time for performance logging."""
     g.start_time = time.time()
 
+@app.context_processor
+def inject_scale_level():
+    """Inject UI scale level into all templates from cookie."""
+    scale = request.cookies.get('ui-scale-level', '6')
+    # Validate scale is 1-8
+    try:
+        scale_int = int(scale)
+        if scale_int < 1 or scale_int > 8:
+            scale = '6'
+    except (ValueError, TypeError):
+        scale = '6'
+    
+    zoom_values = {'1': '0.75', '2': '0.8', '3': '0.85', '4': '0.9', '5': '0.95', '6': '1', '7': '1.1', '8': '1.2'}
+    return {
+        'ui_scale_level': scale,
+        'ui_zoom_value': zoom_values.get(scale, '1')
+    }
+
 # Test routes removed - no longer needed
 
 @app.route('/erase-data', methods=['POST'])

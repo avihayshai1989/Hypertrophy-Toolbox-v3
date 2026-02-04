@@ -7,9 +7,9 @@
     'use strict';
 
     const STORAGE_KEY = 'ui-scale-level';
-    const DEFAULT_SCALE = 3;
+    const DEFAULT_SCALE = 6;
     const MIN_SCALE = 1;
-    const MAX_SCALE = 5;
+    const MAX_SCALE = 8;
 
     /**
      * AccessibilityController - Manages accessibility features
@@ -23,14 +23,27 @@
      * Initialize the controller
      */
     AccessibilityController.prototype.init = function() {
-        // Apply saved scale immediately
-        this.applyScale(this.currentScale);
+        // Sync localStorage to cookie if they differ (ensures server has latest)
+        this.syncCookie();
         
-        // Wait for DOM to be ready
+        // Setup controls when DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.setupControls());
         } else {
             this.setupControls();
+        }
+    };
+
+    /**
+     * Sync localStorage scale to cookie (server reads cookie for SSR)
+     */
+    AccessibilityController.prototype.syncCookie = function() {
+        const cookieMatch = document.cookie.match(/ui-scale-level=(\d)/);
+        const cookieScale = cookieMatch ? parseInt(cookieMatch[1], 10) : null;
+        
+        if (cookieScale !== this.currentScale) {
+            // Cookie doesn't match localStorage, update cookie
+            document.cookie = 'ui-scale-level=' + this.currentScale + '; path=/; max-age=31536000; SameSite=Lax';
         }
     };
 
@@ -49,17 +62,23 @@
     };
 
     /**
-     * Save scale to localStorage
+     * Save scale to localStorage AND cookie (cookie is read by server)
      */
     AccessibilityController.prototype.saveScale = function(level) {
         localStorage.setItem(STORAGE_KEY, String(level));
+        // Set cookie for server-side rendering (expires in 1 year)
+        document.cookie = 'ui-scale-level=' + level + '; path=/; max-age=31536000; SameSite=Lax';
     };
 
     /**
      * Apply scale to the document
+     * Updates inline style on html element (matches server-side rendering)
      */
     AccessibilityController.prototype.applyScale = function(level) {
+        const zoomValues = { 1: '0.75', 2: '0.8', 3: '0.85', 4: '0.9', 5: '0.95', 6: '1', 7: '1.1', 8: '1.2' };
         document.documentElement.setAttribute('data-scale', String(level));
+        document.documentElement.style.zoom = zoomValues[level];
+        
         this.currentScale = level;
         this.updateControlsUI();
     };
