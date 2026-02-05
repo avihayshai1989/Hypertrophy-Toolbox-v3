@@ -17,21 +17,23 @@ This will automatically:
 
 > **Note:** If the browser doesn't open automatically, manually navigate to `http://127.0.0.1:5000`
 
-### Option 2: Standalone Executable (No Python Required)
+### Option 2: Standalone Executable (No Installation Required)
 
-If you received a pre-built executable:
+**This option is for users who received a pre-packaged zip file.**
 
-1. Extract the zip file to any folder
-2. Double-click `Hypertrophy-Toolbox.exe`
-3. Browser opens automatically!
+**Requirements:** None! No Python, no installation, no setup needed.
 
-**To build the executable yourself:**
-```bash
-# Double-click build_exe.bat, or run:
-python -m pip install pyinstaller
-build_exe.bat
-```
-The executable will be in `dist/Hypertrophy-Toolbox/`
+**Steps:**
+1. Extract the zip file to any folder on your computer
+2. Open the extracted folder
+3. Double-click `Hypertrophy-Toolbox.exe`
+4. Your browser will open automatically to the app
+
+> **Troubleshooting:** 
+> - If Windows shows a security warning, click "More info" → "Run anyway"
+> - If browser doesn't open, manually go to `http://127.0.0.1:5000`
+
+---
 
 ### Option 3: Manual Setup (For Developers)
 
@@ -68,6 +70,24 @@ The executable will be in `dist/Hypertrophy-Toolbox/`
 | `build_exe.bat` | Builds standalone .exe for distribution |
 | `app_launcher.py` | Wrapper script for executable build |
 | `QUICK_START.md` | Detailed setup instructions |
+
+## 📦 Building the Standalone Executable (For Developers)
+
+To create the standalone `.exe` package for distribution to end users:
+
+1. **Install PyInstaller:**
+   ```bash
+   pip install pyinstaller
+   ```
+
+2. **Run the build script:**
+   ```bash
+   build_exe.bat
+   ```
+
+3. **Find the output in:** `dist/Hypertrophy-Toolbox/`
+
+4. **Distribute:** Zip the entire `dist/Hypertrophy-Toolbox/` folder and share with users
 
 ## ✨ Features
 

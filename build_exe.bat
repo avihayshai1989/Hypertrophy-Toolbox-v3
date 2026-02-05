@@ -1,4 +1,5 @@
 @echo off
+setlocal enabledelayedexpansion
 title Building Hypertrophy Toolbox Executable
 color 0E
 
@@ -8,41 +9,87 @@ echo    BUILDING STANDALONE EXECUTABLE
 echo  ========================================
 echo.
 
+:: Change to script directory
+cd /d "%~dp0"
+echo [INFO] Working directory: %cd%
+echo.
+
 :: Check if Python is installed
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo [ERROR] Python is not installed!
+    echo [ERROR] Python is not installed or not in PATH!
     pause
     exit /b 1
 )
 
-:: Activate virtual environment if exists
-if exist "venv\Scripts\activate.bat" (
-    call venv\Scripts\activate.bat
+for /f "tokens=*" %%i in ('python --version 2^>^&1') do set PYVER=%%i
+echo [OK] %PYVER% found
+echo.
+
+:: Check if virtual environment exists, create if not
+if not exist "venv" (
+    echo [SETUP] Creating virtual environment...
+    python -m venv venv
+    if errorlevel 1 (
+        echo [ERROR] Failed to create virtual environment!
+        pause
+        exit /b 1
+    )
+    echo [OK] Virtual environment created
+    echo.
+)
+
+:: Install dependencies if needed
+echo [INFO] Checking Flask...
+venv\Scripts\python.exe -c "import flask" >nul 2>&1
+if errorlevel 1 (
+    echo [SETUP] Installing dependencies...
+    venv\Scripts\pip.exe install -r requirements.txt
+    if errorlevel 1 (
+        echo [ERROR] Failed to install dependencies!
+        pause
+        exit /b 1
+    )
+    echo [OK] Dependencies installed
+    echo.
 )
 
 :: Install PyInstaller if not present
 echo [INFO] Checking PyInstaller...
-pip show pyinstaller >nul 2>&1
+venv\Scripts\python.exe -c "import PyInstaller" >nul 2>&1
 if errorlevel 1 (
     echo [SETUP] Installing PyInstaller...
-    pip install pyinstaller
+    venv\Scripts\pip.exe install pyinstaller
+    if errorlevel 1 (
+        echo [ERROR] Failed to install PyInstaller!
+        pause
+        exit /b 1
+    )
+    echo [OK] PyInstaller installed
+    echo.
 )
 
 :: Clean previous builds
 echo [INFO] Cleaning previous builds...
 if exist "dist" rmdir /s /q dist
 if exist "build" rmdir /s /q build
+if exist "Hypertrophy-Toolbox.spec" del /q "Hypertrophy-Toolbox.spec"
+
+:: Check if favicon exists, adjust command accordingly
+set ICON_ARG=
+if exist "static\images\favicon.ico" (
+    set ICON_ARG=--icon=static/images/favicon.ico
+)
 
 :: Build the executable
 echo.
 echo [BUILD] Creating executable (this may take several minutes)...
 echo.
 
-pyinstaller --name "Hypertrophy-Toolbox" ^
+venv\Scripts\pyinstaller.exe --name "Hypertrophy-Toolbox" ^
     --onedir ^
-    --windowed ^
-    --icon=static/images/favicon.ico ^
+    --console ^
+    %ICON_ARG% ^
     --add-data "templates;templates" ^
     --add-data "static;static" ^
     --add-data "data;data" ^
