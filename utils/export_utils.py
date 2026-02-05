@@ -225,6 +225,34 @@ def create_excel_workbook(
             'border': 1
         })
         
+        # Superset formatting - 4 color variations with visual indicators
+        superset_formats = {
+            1: workbook.add_format({
+                'border': 1,
+                'bg_color': '#E8E0F0',  # Light purple
+                'left': 5,  # Thick left border
+                'left_color': '#7C3AED'  # Purple
+            }),
+            2: workbook.add_format({
+                'border': 1,
+                'bg_color': '#E0F0F0',  # Light teal
+                'left': 5,
+                'left_color': '#0891B2'  # Teal
+            }),
+            3: workbook.add_format({
+                'border': 1,
+                'bg_color': '#E0F5ED',  # Light green
+                'left': 5,
+                'left_color': '#059669'  # Green
+            }),
+            4: workbook.add_format({
+                'border': 1,
+                'bg_color': '#FEF3E0',  # Light orange
+                'left': 5,
+                'left_color': '#D97706'  # Orange
+            })
+        }
+        
         for sheet_name, data in sheets_data.items():
             # Check if data is None or empty
             if data is None:
@@ -257,17 +285,36 @@ def create_excel_workbook(
             
             # Write data rows
             rows_written = 0
+            
+            # For Workout Plan sheet, build superset color map for visual grouping
+            superset_color_map = {}
+            if sheet_name == 'Workout Plan':
+                color_index = 0
+                for row_data in data:
+                    superset_group = row_data.get('superset_group')
+                    if superset_group and superset_group not in superset_color_map:
+                        color_index = (color_index % 4) + 1
+                        superset_color_map[superset_group] = color_index
+            
             for row_idx, row_data in enumerate(data, start=1):
                 if rows_written >= MAX_EXPORT_ROWS:
                     logger.warning(f"Reached max export rows ({MAX_EXPORT_ROWS}) for sheet {sheet_name}")
                     break
+                
+                # Determine cell format based on superset group (for Workout Plan sheet)
+                row_format = cell_format
+                if sheet_name == 'Workout Plan':
+                    superset_group = row_data.get('superset_group')
+                    if superset_group and superset_group in superset_color_map:
+                        color_num = superset_color_map[superset_group]
+                        row_format = superset_formats.get(color_num, cell_format)
                 
                 for col_idx, key in enumerate(headers):
                     value = row_data.get(key, '')
                     # Handle None values
                     if value is None:
                         value = ''
-                    worksheet.write(row_idx, col_idx, value, cell_format)
+                    worksheet.write(row_idx, col_idx, value, row_format)
                 
                 rows_written += 1
         

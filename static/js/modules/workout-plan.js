@@ -22,6 +22,48 @@ async function handleApiResponse(response) {
 let currentRoutineTabFilter = 'all';
 let allExercisesCache = [];
 
+// Superset selection state
+let selectedExerciseIds = new Set();
+let supersetColorMap = new Map(); // Maps superset_group to color index (1-4)
+
+/**
+ * Parses a routine string in "Environment - Program - Workout" format
+ * @param {string} routine - The routine string to parse
+ * @returns {Object} Object with env, program, workout properties
+ */
+function parseRoutine(routine) {
+    if (!routine) return { env: '', program: '', workout: '' };
+    const parts = routine.split(' - ').map(p => p.trim());
+    return {
+        env: parts[0] || '',
+        program: parts[1] || '',
+        workout: parts[2] || ''
+    };
+}
+
+/**
+ * Compares two routine strings for sorting
+ * Sorts by Environment, then Program, then Workout
+ * @param {string} a - First routine
+ * @param {string} b - Second routine
+ * @returns {number} Comparison result (-1, 0, or 1)
+ */
+function compareRoutines(a, b) {
+    const parsedA = parseRoutine(a);
+    const parsedB = parseRoutine(b);
+    
+    // Compare environment first
+    if (parsedA.env !== parsedB.env) {
+        return parsedA.env.localeCompare(parsedB.env);
+    }
+    // Then compare program
+    if (parsedA.program !== parsedB.program) {
+        return parsedA.program.localeCompare(parsedB.program);
+    }
+    // Finally compare workout
+    return parsedA.workout.localeCompare(parsedB.workout);
+}
+
 // Workout plan functionality
 export async function fetchWorkoutPlan() {
     try {
@@ -67,8 +109,8 @@ function updateRoutineTabs(exercises) {
         routineCounts[routine] = (routineCounts[routine] || 0) + 1;
     });
     
-    // Sort routines alphabetically for consistent ordering
-    const sortedRoutines = Object.keys(routineCounts).sort();
+    // Sort routines by Environment > Program > Workout for consistent ordering
+    const sortedRoutines = Object.keys(routineCounts).sort(compareRoutines);
     
     // Update "All" tab count
     const allCountEl = document.getElementById('tab-count-all');
@@ -822,28 +864,95 @@ export function updateWorkoutPlanTable(exercises) {
     }
 
     tbody.innerHTML = '';
+    
+    // Reset selection state when table is rebuilt
+    selectedExerciseIds.clear();
+    updateSupersetActionButtons();
 
-    // Sort exercises by order (null/0 values should come before numbered ones to maintain legacy order,
-    // then by exercise_order ascending for properly ordered items)
+    // Sort exercises: first by routine (Environment > Program > Workout), 
+    // then by exercise_order within each routine
     exercises.sort((a, b) => {
+        // First sort by routine (Environment - Program - Workout)
+        const routineCompare = compareRoutines(a.routine, b.routine);
+        if (routineCompare !== 0) {
+            return routineCompare;
+        }
+        // Within the same routine, sort by exercise_order
         const orderA = a.exercise_order || 0;
         const orderB = b.exercise_order || 0;
-        // Both have order values - sort ascending
         return orderA - orderB;
     });
+    
+    // Build superset color map and identify superset pairs
+    supersetColorMap.clear();
+    let colorIndex = 0;
+    const supersetGroups = new Map(); // Maps superset_group to array of exercise indices
+    
+    exercises.forEach((ex, idx) => {
+        if (ex.superset_group) {
+            if (!supersetGroups.has(ex.superset_group)) {
+                supersetGroups.set(ex.superset_group, []);
+                colorIndex = (colorIndex % 4) + 1;
+                supersetColorMap.set(ex.superset_group, colorIndex);
+            }
+            supersetGroups.get(ex.superset_group).push(idx);
+        }
+    });
 
-    exercises.forEach(exercise => {
+    exercises.forEach((exercise, idx) => {
         const row = document.createElement('tr');
         row.dataset.exerciseId = exercise.id;
+        row.dataset.routine = exercise.routine || '';
         
-        // Add drag handle and other cells with priority classes and data-labels
+        // Determine superset styling
+        let supersetClasses = '';
+        let supersetBadgeHtml = '';
+        const supersetGroup = exercise.superset_group;
+        
+        if (supersetGroup) {
+            const groupIndices = supersetGroups.get(supersetGroup) || [];
+            const posInGroup = groupIndices.indexOf(idx);
+            const colorNum = supersetColorMap.get(supersetGroup) || 1;
+            
+            row.dataset.supersetGroup = supersetGroup;
+            supersetClasses = `superset-group superset-group-${colorNum}`;
+            
+            // Only add superset-first/superset-last classes if exercises are actually adjacent
+            // This prevents broken visual connectors when viewing "All" routines
+            const isAdjacentSuperset = groupIndices.length >= 2 && 
+                (groupIndices[1] - groupIndices[0] === 1);
+            
+            if (isAdjacentSuperset) {
+                if (posInGroup === 0) {
+                    supersetClasses += ' superset-first';
+                } else if (posInGroup === groupIndices.length - 1) {
+                    supersetClasses += ' superset-last';
+                }
+            }
+            
+            supersetBadgeHtml = `<span class="superset-badge" style="--superset-row-color: var(--superset-color-${colorNum})"><i class="fas fa-link"></i> SS</span>`;
+        }
+        
+        if (supersetClasses) {
+            row.className = supersetClasses;
+        }
+        
+        // Add checkbox column, drag handle and other cells with priority classes and data-labels
         row.innerHTML = `
+            <td class="superset-select-col" data-label="Select">
+                <input type="checkbox" class="superset-checkbox" 
+                       data-exercise-id="${exercise.id}" 
+                       data-routine="${exercise.routine || ''}"
+                       data-superset-group="${supersetGroup || ''}"
+                       aria-label="Select ${exercise.exercise} for superset">
+            </td>
             <td class="drag-handle" title="Drag to reorder">
                 <i class="fas fa-grip-vertical"></i>
             </td>
             <td class="col--high" data-label="Routine">${exercise.routine || 'N/A'}</td>
             <td class="col--high exercise-cell" data-label="Exercise">
                 <span class="exercise-name">${exercise.exercise || 'N/A'}</span>
+                ${supersetBadgeHtml}
                 <button class="btn-swap" 
                         data-exercise-id="${exercise.id}"
                         title="Replace with similar exercise (same muscle + equipment)"
@@ -888,11 +997,215 @@ export function updateWorkoutPlanTable(exercises) {
             });
         }
         
+        // Add click handler for superset checkbox
+        const checkbox = row.querySelector('.superset-checkbox');
+        if (checkbox) {
+            checkbox.addEventListener('change', (e) => {
+                handleSupersetCheckboxChange(e.target);
+            });
+        }
+        
         tbody.appendChild(row);
     });
 
     // Initialize drag and drop after populating the table
     initializeDragAndDrop();
+    
+    // Initialize superset action buttons
+    initializeSupersetActions();
+}
+
+/**
+ * Handle superset checkbox change
+ * @param {HTMLInputElement} checkbox - The checkbox element
+ */
+function handleSupersetCheckboxChange(checkbox) {
+    const exerciseId = parseInt(checkbox.dataset.exerciseId);
+    const routine = checkbox.dataset.routine;
+    const supersetGroup = checkbox.dataset.supersetGroup;
+    const row = checkbox.closest('tr');
+    
+    if (checkbox.checked) {
+        selectedExerciseIds.add(exerciseId);
+        row.classList.add('superset-selected');
+    } else {
+        selectedExerciseIds.delete(exerciseId);
+        row.classList.remove('superset-selected');
+    }
+    
+    updateSupersetActionButtons();
+}
+
+/**
+ * Update the superset action buttons based on current selection
+ */
+function updateSupersetActionButtons() {
+    const actionsContainer = document.getElementById('superset-actions');
+    const linkBtn = document.getElementById('link-superset-btn');
+    const unlinkBtn = document.getElementById('unlink-superset-btn');
+    const infoSpan = document.getElementById('superset-selection-info');
+    
+    if (!actionsContainer || !linkBtn || !unlinkBtn || !infoSpan) return;
+    
+    const selectedCount = selectedExerciseIds.size;
+    
+    if (selectedCount === 0) {
+        actionsContainer.style.display = 'none';
+        return;
+    }
+    
+    actionsContainer.style.display = 'flex';
+    
+    // Get selected exercises info
+    const selectedCheckboxes = document.querySelectorAll('.superset-checkbox:checked');
+    const routines = new Set();
+    let hasExistingSuperset = false;
+    
+    selectedCheckboxes.forEach(cb => {
+        routines.add(cb.dataset.routine);
+        if (cb.dataset.supersetGroup) {
+            hasExistingSuperset = true;
+        }
+    });
+    
+    const sameRoutine = routines.size === 1;
+    
+    // Update info text
+    if (selectedCount === 1) {
+        if (hasExistingSuperset) {
+            infoSpan.textContent = '1 exercise selected (in superset)';
+            unlinkBtn.style.display = 'inline-flex';
+            linkBtn.style.display = 'none';
+        } else {
+            infoSpan.textContent = '1 exercise selected - select 1 more to create superset';
+            unlinkBtn.style.display = 'none';
+            linkBtn.style.display = 'inline-flex';
+            linkBtn.disabled = true;
+        }
+    } else if (selectedCount === 2) {
+        if (!sameRoutine) {
+            infoSpan.textContent = '⚠️ Exercises must be in the same routine';
+            infoSpan.style.color = 'var(--wp-bad)';
+            linkBtn.disabled = true;
+            unlinkBtn.style.display = 'none';
+            linkBtn.style.display = 'inline-flex';
+        } else if (hasExistingSuperset) {
+            infoSpan.textContent = '⚠️ One or both exercises already in a superset';
+            infoSpan.style.color = 'var(--wp-warn)';
+            linkBtn.disabled = true;
+            unlinkBtn.style.display = 'inline-flex';
+            linkBtn.style.display = 'none';
+        } else {
+            infoSpan.textContent = '2 exercises selected - ready to link';
+            infoSpan.style.color = 'var(--wp-good)';
+            linkBtn.disabled = false;
+            unlinkBtn.style.display = 'none';
+            linkBtn.style.display = 'inline-flex';
+        }
+    } else {
+        infoSpan.textContent = `${selectedCount} exercises selected - supersets can only have 2 exercises`;
+        infoSpan.style.color = 'var(--wp-warn)';
+        linkBtn.disabled = true;
+        unlinkBtn.style.display = 'none';
+        linkBtn.style.display = 'inline-flex';
+    }
+}
+
+/**
+ * Initialize superset action button click handlers
+ */
+function initializeSupersetActions() {
+    const linkBtn = document.getElementById('link-superset-btn');
+    const unlinkBtn = document.getElementById('unlink-superset-btn');
+    
+    if (linkBtn && !linkBtn.dataset.initialized) {
+        linkBtn.addEventListener('click', handleLinkSuperset);
+        linkBtn.dataset.initialized = 'true';
+    }
+    
+    if (unlinkBtn && !unlinkBtn.dataset.initialized) {
+        unlinkBtn.addEventListener('click', handleUnlinkSuperset);
+        unlinkBtn.dataset.initialized = 'true';
+    }
+}
+
+/**
+ * Handle linking selected exercises as a superset
+ */
+async function handleLinkSuperset() {
+    if (selectedExerciseIds.size !== 2) {
+        showToast('Please select exactly 2 exercises to create a superset', true);
+        return;
+    }
+    
+    const exerciseIds = Array.from(selectedExerciseIds);
+    
+    try {
+        const response = await fetch('/api/superset/link', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ exercise_ids: exerciseIds })
+        });
+        
+        const data = await response.json();
+        
+        if (data.ok) {
+            showToast(data.message || 'Superset created successfully');
+            // Clear selection and refresh table
+            selectedExerciseIds.clear();
+            document.querySelectorAll('.superset-checkbox:checked').forEach(cb => {
+                cb.checked = false;
+            });
+            // Refresh the workout plan to show updated superset styling
+            fetchWorkoutPlan();
+        } else {
+            showToast(data.error?.message || 'Failed to create superset', true);
+        }
+    } catch (error) {
+        console.error('Error creating superset:', error);
+        showToast('Failed to create superset', true);
+    }
+}
+
+/**
+ * Handle unlinking a superset
+ */
+async function handleUnlinkSuperset() {
+    // Get the first selected exercise that's in a superset
+    const selectedCheckbox = document.querySelector('.superset-checkbox:checked[data-superset-group]:not([data-superset-group=""])');
+    
+    if (!selectedCheckbox) {
+        showToast('Please select an exercise that is part of a superset', true);
+        return;
+    }
+    
+    const exerciseId = parseInt(selectedCheckbox.dataset.exerciseId);
+    
+    try {
+        const response = await fetch('/api/superset/unlink', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ exercise_id: exerciseId })
+        });
+        
+        const data = await response.json();
+        
+        if (data.ok) {
+            showToast(data.message || 'Superset unlinked successfully');
+            // Clear selection and refresh table
+            selectedExerciseIds.clear();
+            document.querySelectorAll('.superset-checkbox:checked').forEach(cb => {
+                cb.checked = false;
+            });
+            // Refresh the workout plan to show updated styling
+            fetchWorkoutPlan();
+        } else {
+            showToast(data.error?.message || 'Failed to unlink superset', true);
+        }
+    } catch (error) {
+        console.error('Error unlinking superset:', error);
+        showToast('Failed to unlink superset', true);
+    }
 }
 
 /**
@@ -1117,7 +1430,46 @@ function initializeDragAndDrop() {
     Sortable.create(tbody, {
         animation: 150,
         handle: '.drag-handle',
+        onStart: function(evt) {
+            // If dragging a superset item, mark its partner for visual feedback
+            const draggedRow = evt.item;
+            const supersetGroup = draggedRow.dataset.supersetGroup;
+            if (supersetGroup) {
+                const partnerRow = tbody.querySelector(`tr[data-superset-group="${supersetGroup}"]:not([data-exercise-id="${draggedRow.dataset.exerciseId}"])`);
+                if (partnerRow) {
+                    partnerRow.classList.add('superset-partner-dragging');
+                }
+            }
+        },
         onEnd: async function(evt) {
+            // Remove partner dragging class
+            tbody.querySelectorAll('.superset-partner-dragging').forEach(row => {
+                row.classList.remove('superset-partner-dragging');
+            });
+            
+            const draggedRow = evt.item;
+            const supersetGroup = draggedRow.dataset.supersetGroup;
+            
+            // If the dragged row is part of a superset, move its partner to be adjacent
+            if (supersetGroup) {
+                const allRows = Array.from(tbody.querySelectorAll('tr'));
+                const draggedIndex = allRows.indexOf(draggedRow);
+                const partnerRow = tbody.querySelector(`tr[data-superset-group="${supersetGroup}"]:not([data-exercise-id="${draggedRow.dataset.exerciseId}"])`);
+                
+                if (partnerRow) {
+                    const partnerIndex = allRows.indexOf(partnerRow);
+                    
+                    // Check if partner is not already adjacent
+                    if (Math.abs(draggedIndex - partnerIndex) !== 1) {
+                        // Move partner to be right after the dragged row
+                        if (draggedRow.nextSibling !== partnerRow) {
+                            draggedRow.parentNode.insertBefore(partnerRow, draggedRow.nextSibling);
+                        }
+                    }
+                }
+            }
+            
+            // Now get the final order and save it
             const rows = Array.from(tbody.querySelectorAll('tr'));
             const orderData = rows.map((row, index) => ({
                 id: parseInt(row.dataset.exerciseId),
@@ -1133,20 +1485,24 @@ function initializeDragAndDrop() {
                     body: JSON.stringify(orderData)
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    const errorMsg = errorData.error?.message || errorData.error || 'Failed to update exercise order';
+                const responseData = await response.json();
+                
+                if (!response.ok || responseData.ok === false) {
+                    const errorMsg = responseData.error?.message || responseData.error || 'Failed to update exercise order';
                     throw new Error(errorMsg);
                 }
 
-                const data = await handleApiResponse(response);
-                const message = data.message || 'Exercise order updated successfully';
-                showToast(message);
+                showToast(responseData.message || 'Exercise order updated successfully');
+                
+                // Refresh table to update superset visual styling
+                // Small delay to ensure database transaction is complete
+                await new Promise(resolve => setTimeout(resolve, 50));
+                await fetchWorkoutPlan();
             } catch (error) {
                 console.error('Error updating exercise order:', error);
                 showToast(error.message || 'Failed to update exercise order', true);
-                // Optionally refresh the table to restore original order
-                fetchWorkoutPlan();
+                // Refresh the table to restore original order
+                await fetchWorkoutPlan();
             }
         }
     });

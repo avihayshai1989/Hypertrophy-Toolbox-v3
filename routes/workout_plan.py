@@ -191,15 +191,26 @@ def get_workout_plan():
     try:
         logger.debug("Fetching workout plan")
         
-        # First check if exercise_order column exists
+        # First check if exercise_order and superset_group columns exist
         with DatabaseHandler() as db:
-            # Check if column exists using PRAGMA
-            if column_exists(db, 'user_selection', 'exercise_order'):
+            # Check if columns exist using PRAGMA
+            has_order = column_exists(db, 'user_selection', 'exercise_order')
+            has_superset = column_exists(db, 'user_selection', 'superset_group')
+            
+            # Build dynamic column selection
+            extra_cols = []
+            if has_order:
+                extra_cols.append("us.exercise_order")
+            if has_superset:
+                extra_cols.append("us.superset_group")
+            
+            extra_cols_str = ", " + ", ".join(extra_cols) if extra_cols else ""
+            
+            # Build ORDER BY clause - supersetted exercises should be adjacent
+            if has_order:
                 order_by_clause = "ORDER BY us.exercise_order, us.routine, us.exercise"
-                include_order = ", us.exercise_order"
             else:
                 order_by_clause = "ORDER BY us.routine, us.exercise"
-                include_order = ""
 
             query = f"""
             SELECT 
@@ -211,7 +222,7 @@ def get_workout_plan():
                 us.max_rep_range, 
                 us.rir, 
                 us.rpe,
-                us.weight{include_order},
+                us.weight{extra_cols_str},
                 e.primary_muscle_group, 
                 e.secondary_muscle_group, 
                 e.tertiary_muscle_group, 
@@ -231,7 +242,8 @@ def get_workout_plan():
                 "Workout plan fetched",
                 extra={
                     'exercise_count': len(results),
-                    'has_exercise_order': bool(include_order)
+                    'has_exercise_order': has_order,
+                    'has_superset_group': has_superset
                 }
             )
             
@@ -255,13 +267,29 @@ def remove_exercise():
             return error_response("VALIDATION_ERROR", "Invalid exercise ID", 400)
 
         with DatabaseHandler() as db_handler:
-            # First get exercise details for logging
+            # First get exercise details for logging and superset handling
             exercise_info = db_handler.fetch_one(
-                "SELECT routine, exercise FROM user_selection WHERE id = ?",
+                "SELECT routine, exercise, superset_group FROM user_selection WHERE id = ?",
                 (int(exercise_id),)
             )
             
-            # First delete related workout logs to avoid foreign key constraint error
+            # If exercise is part of a superset, unlink the partner exercise
+            if exercise_info and exercise_info.get('superset_group'):
+                superset_group = exercise_info['superset_group']
+                # Set superset_group to NULL for the partner exercise(s)
+                db_handler.execute_query(
+                    "UPDATE user_selection SET superset_group = NULL WHERE superset_group = ? AND id != ?",
+                    (superset_group, int(exercise_id))
+                )
+                logger.info(
+                    "Unlinked partner exercise from superset due to removal",
+                    extra={
+                        'superset_group': superset_group,
+                        'removed_exercise_id': exercise_id
+                    }
+                )
+            
+            # Delete related workout logs to avoid foreign key constraint error
             delete_logs_query = "DELETE FROM workout_log WHERE workout_plan_id = ?"
             db_handler.execute_query(delete_logs_query, (int(exercise_id),))
             
@@ -1035,3 +1063,237 @@ def replace_exercise():
             extra={'exercise_id': data.get('id') if data else 'unknown'}
         )
         return error_response("INTERNAL_ERROR", "Failed to replace exercise", 500)
+
+
+# =============================================================================
+# SUPERSET ENDPOINTS
+# =============================================================================
+
+@workout_plan_bp.route("/api/superset/link", methods=["POST"])
+def link_superset():
+    """
+    Link two exercises as a superset.
+    
+    Request body:
+        exercise_ids: List of exactly 2 exercise IDs from user_selection
+    
+    Validation:
+        - Exactly 2 exercise IDs required
+        - Both exercises must be in the same routine
+        - Neither exercise can already be in a superset
+    
+    Returns:
+        superset_group: The generated superset group identifier
+        exercises: Updated exercise data for both linked exercises
+    """
+    try:
+        data = request.get_json()
+        if not data:
+            return error_response("VALIDATION_ERROR", "No data provided", 400)
+        
+        exercise_ids = data.get('exercise_ids', [])
+        
+        # Validate exactly 2 exercises
+        if not isinstance(exercise_ids, list) or len(exercise_ids) != 2:
+            return error_response(
+                "VALIDATION_ERROR",
+                "Exactly 2 exercise IDs are required for a superset",
+                400
+            )
+        
+        # Validate IDs are integers
+        try:
+            exercise_ids = [int(eid) for eid in exercise_ids]
+        except (ValueError, TypeError):
+            return error_response("VALIDATION_ERROR", "Invalid exercise IDs", 400)
+        
+        with DatabaseHandler() as db:
+            # Check if superset_group column exists
+            if not column_exists(db, 'user_selection', 'superset_group'):
+                return error_response(
+                    "INTERNAL_ERROR",
+                    "Superset feature not available - database migration required",
+                    500
+                )
+            
+            # Fetch both exercises
+            exercises = db.fetch_all(
+                "SELECT id, routine, exercise, superset_group FROM user_selection WHERE id IN (?, ?)",
+                tuple(exercise_ids)
+            )
+            
+            if len(exercises) != 2:
+                return error_response(
+                    "NOT_FOUND",
+                    "One or both exercises not found",
+                    404
+                )
+            
+            ex1, ex2 = exercises[0], exercises[1]
+            
+            # Validate same routine
+            if ex1['routine'] != ex2['routine']:
+                return error_response(
+                    "VALIDATION_ERROR",
+                    f"Supersets must be within the same routine. '{ex1['exercise']}' is in '{ex1['routine']}' but '{ex2['exercise']}' is in '{ex2['routine']}'",
+                    400
+                )
+            
+            # Validate neither is already in a superset
+            if ex1.get('superset_group'):
+                return error_response(
+                    "VALIDATION_ERROR",
+                    f"'{ex1['exercise']}' is already in a superset. Unlink it first.",
+                    400
+                )
+            if ex2.get('superset_group'):
+                return error_response(
+                    "VALIDATION_ERROR",
+                    f"'{ex2['exercise']}' is already in a superset. Unlink it first.",
+                    400
+                )
+            
+            # Generate superset group identifier: SS-{routine}-{timestamp}
+            import time
+            superset_group = f"SS-{ex1['routine']}-{int(time.time())}"
+            
+            # Update both exercises with the superset group
+            db.execute_query(
+                "UPDATE user_selection SET superset_group = ? WHERE id IN (?, ?)",
+                (superset_group, exercise_ids[0], exercise_ids[1])
+            )
+            
+            # Fetch updated exercises with full metadata
+            updated_exercises = db.fetch_all("""
+                SELECT 
+                    us.id, us.routine, us.exercise, us.sets,
+                    us.min_rep_range, us.max_rep_range, us.rir, us.rpe, us.weight,
+                    us.superset_group,
+                    e.primary_muscle_group, e.secondary_muscle_group,
+                    e.tertiary_muscle_group, e.advanced_isolated_muscles,
+                    e.utility, e.grips, e.stabilizers, e.synergists
+                FROM user_selection us
+                LEFT JOIN exercises e ON us.exercise = e.exercise_name
+                WHERE us.id IN (?, ?)
+            """, tuple(exercise_ids))
+            
+            logger.info(
+                "Superset created",
+                extra={
+                    'superset_group': superset_group,
+                    'routine': ex1['routine'],
+                    'exercise_1': ex1['exercise'],
+                    'exercise_2': ex2['exercise']
+                }
+            )
+            
+            return jsonify(success_response(
+                data={
+                    "superset_group": superset_group,
+                    "exercises": [dict(ex) for ex in updated_exercises]
+                },
+                message=f"Linked '{ex1['exercise']}' and '{ex2['exercise']}' as superset"
+            ))
+            
+    except Exception as e:
+        logger.exception("Error creating superset")
+        return error_response("INTERNAL_ERROR", "Failed to create superset", 500)
+
+
+@workout_plan_bp.route("/api/superset/unlink", methods=["POST"])
+def unlink_superset():
+    """
+    Unlink exercises from a superset.
+    
+    Request body (one of):
+        exercise_id: Single exercise ID to unlink (also unlinks partner)
+        superset_group: The superset group identifier to unlink entirely
+    
+    Returns:
+        unlinked_ids: List of exercise IDs that were unlinked
+    """
+    try:
+        data = request.get_json()
+        if not data:
+            return error_response("VALIDATION_ERROR", "No data provided", 400)
+        
+        exercise_id = data.get('exercise_id')
+        superset_group = data.get('superset_group')
+        
+        if not exercise_id and not superset_group:
+            return error_response(
+                "VALIDATION_ERROR",
+                "Either exercise_id or superset_group is required",
+                400
+            )
+        
+        with DatabaseHandler() as db:
+            # Check if superset_group column exists
+            if not column_exists(db, 'user_selection', 'superset_group'):
+                return error_response(
+                    "INTERNAL_ERROR",
+                    "Superset feature not available - database migration required",
+                    500
+                )
+            
+            unlinked_ids = []
+            
+            if exercise_id:
+                # Get the superset group for this exercise
+                exercise = db.fetch_one(
+                    "SELECT id, exercise, superset_group FROM user_selection WHERE id = ?",
+                    (int(exercise_id),)
+                )
+                
+                if not exercise:
+                    return error_response("NOT_FOUND", "Exercise not found", 404)
+                
+                if not exercise.get('superset_group'):
+                    return error_response(
+                        "VALIDATION_ERROR",
+                        f"'{exercise['exercise']}' is not in a superset",
+                        400
+                    )
+                
+                superset_group = exercise['superset_group']
+            
+            # Get all exercises in the superset group
+            superset_exercises = db.fetch_all(
+                "SELECT id, exercise FROM user_selection WHERE superset_group = ?",
+                (superset_group,)
+            )
+            
+            if not superset_exercises:
+                return error_response(
+                    "NOT_FOUND",
+                    f"No exercises found with superset group '{superset_group}'",
+                    404
+                )
+            
+            # Unlink all exercises in the superset
+            db.execute_query(
+                "UPDATE user_selection SET superset_group = NULL WHERE superset_group = ?",
+                (superset_group,)
+            )
+            
+            unlinked_ids = [ex['id'] for ex in superset_exercises]
+            unlinked_names = [ex['exercise'] for ex in superset_exercises]
+            
+            logger.info(
+                "Superset unlinked",
+                extra={
+                    'superset_group': superset_group,
+                    'unlinked_ids': unlinked_ids,
+                    'exercises': unlinked_names
+                }
+            )
+            
+            return jsonify(success_response(
+                data={"unlinked_ids": unlinked_ids},
+                message=f"Unlinked superset: {', '.join(unlinked_names)}"
+            ))
+            
+    except Exception as e:
+        logger.exception("Error unlinking superset")
+        return error_response("INTERNAL_ERROR", "Failed to unlink superset", 500)
+

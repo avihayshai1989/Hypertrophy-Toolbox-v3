@@ -279,6 +279,17 @@
                 </ul>
             </nav>
             
+            <!-- Superset Action Buttons (shown when exercises are selected) -->
+            <div id="superset-actions" class="superset-actions" style="display: none;">
+                <button id="link-superset-btn" class="btn btn-link-superset" type="button" disabled>
+                    <i class="fas fa-link" aria-hidden="true"></i> Link as Superset
+                </button>
+                <button id="unlink-superset-btn" class="btn btn-unlink-superset" type="button" style="display: none;">
+                    <i class="fas fa-unlink" aria-hidden="true"></i> Unlink Superset
+                </button>
+                <span id="superset-selection-info" class="superset-selection-info"></span>
+            </div>
+            
             <div class="tbl-wrap tbl-wrap--full" role="region" aria-label="Workout plan exercises table">
                 <table class="table table-striped workout-plan-table tbl tbl--responsive" 
                        role="table" 
@@ -286,6 +297,10 @@
                        data-table-responsive="workout_plan">
                     <thead>
                         <tr>
+                            <th scope="col" class="superset-select-col" width="40" aria-label="Select for superset" title="Select exercises to create superset">
+                                <span class="superset-header-icon" aria-hidden="true"><i class="fas fa-link"></i></span>
+                                <span class="visually-hidden">Select for Superset</span>
+                            </th>
                             <th scope="col" width="30" aria-label="Drag handle"></th>
                             <th scope="col" class="col--high" data-label="Routine">Routine</th>
                             <th scope="col" class="col--high" data-label="Exercise">Exercise</th>

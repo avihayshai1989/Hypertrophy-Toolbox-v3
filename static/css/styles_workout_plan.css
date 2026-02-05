@@ -2074,3 +2074,271 @@
     font-size: 1rem !important;
   }
 }
+
+/* ==========================================================================
+   SUPERSET FEATURE STYLES
+   Visual styling for exercise supersets in the workout plan table
+   ========================================================================== */
+
+/* Superset color palette - cycles through 4 distinct colors */
+:root {
+  --superset-color-1: #7C3AED;  /* Purple */
+  --superset-color-2: #0891B2;  /* Teal */
+  --superset-color-3: #059669;  /* Green */
+  --superset-color-4: #D97706;  /* Orange */
+  --superset-bg-1: rgba(124, 58, 237, 0.08);
+  --superset-bg-2: rgba(8, 145, 178, 0.08);
+  --superset-bg-3: rgba(5, 150, 105, 0.08);
+  --superset-bg-4: rgba(217, 119, 6, 0.08);
+}
+
+/* Dark mode superset colors */
+[data-bs-theme="dark"] {
+  --superset-bg-1: rgba(124, 58, 237, 0.15);
+  --superset-bg-2: rgba(8, 145, 178, 0.15);
+  --superset-bg-3: rgba(5, 150, 105, 0.15);
+  --superset-bg-4: rgba(217, 119, 6, 0.15);
+}
+
+/* Superset action buttons container */
+.superset-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--wp-surface);
+  border-radius: var(--wp-radius-sm);
+  margin-bottom: 16px;
+  box-shadow: var(--wp-shadow-sm);
+  border: 1px solid var(--wp-border);
+}
+
+.superset-selection-info {
+  font-size: 0.875rem;
+  color: var(--wp-text-muted);
+  margin-left: auto;
+}
+
+/* Link/Unlink button styling */
+.btn-link-superset {
+  background: linear-gradient(135deg, #7C3AED, #5B21B6);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-link-superset:hover:not(:disabled) {
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.btn-link-superset:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-unlink-superset {
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-unlink-superset:hover {
+  background: linear-gradient(135deg, #F87171, #EF4444);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Column header for superset selection */
+th.superset-select-col {
+  width: 40px !important;
+  min-width: 40px !important;
+  text-align: center;
+  padding: 8px 4px !important;
+}
+
+.superset-header-icon {
+  color: var(--superset-color-1);
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* Checkbox column for superset selection */
+td.superset-select-col {
+  width: 40px !important;
+  min-width: 40px !important;
+  text-align: center;
+  padding: 8px 4px !important;
+  position: relative;
+}
+
+.superset-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--superset-color-1);
+}
+
+/* Superset row styling - base class */
+tr.superset-group {
+  position: relative;
+}
+
+/* Left border indicator for superset rows */
+tr.superset-group td:first-child::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--superset-row-color, var(--superset-color-1));
+  border-radius: 0;
+}
+
+tr.superset-first td:first-child::before {
+  border-radius: 4px 4px 0 0;
+  top: 4px;
+}
+
+tr.superset-last td:first-child::before {
+  border-radius: 0 0 4px 4px;
+  bottom: 4px;
+}
+
+/* Superset group color variations */
+tr.superset-group-1 {
+  --superset-row-color: var(--superset-color-1);
+  background-color: var(--superset-bg-1) !important;
+}
+
+tr.superset-group-2 {
+  --superset-row-color: var(--superset-color-2);
+  background-color: var(--superset-bg-2) !important;
+}
+
+tr.superset-group-3 {
+  --superset-row-color: var(--superset-color-3);
+  background-color: var(--superset-bg-3) !important;
+}
+
+tr.superset-group-4 {
+  --superset-row-color: var(--superset-color-4);
+  background-color: var(--superset-bg-4) !important;
+}
+
+/* Superset badge */
+.superset-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--superset-row-color, var(--superset-color-1));
+  color: white;
+  margin-left: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+}
+
+.superset-badge i {
+  font-size: 0.6rem;
+}
+
+/* Superset connector line between rows */
+tr.superset-first td.superset-select-col::after {
+  content: '';
+  position: absolute;
+  left: 19px;
+  bottom: -1px;
+  width: 2px;
+  height: 50%;
+  background: var(--superset-row-color, var(--superset-color-1));
+}
+
+tr.superset-last td.superset-select-col::after {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: -1px;
+  width: 2px;
+  height: 50%;
+  background: var(--superset-row-color, var(--superset-color-1));
+}
+
+/* Selection highlight for checkbox selection - MORE VISIBLE */
+tr.superset-selected {
+  outline: 3px solid var(--superset-color-1) !important;
+  outline-offset: -1px;
+  background-color: rgba(124, 58, 237, 0.15) !important;
+  box-shadow: inset 0 0 0 1px var(--superset-color-1);
+}
+
+tr.superset-selected td {
+  background-color: rgba(124, 58, 237, 0.12) !important;
+}
+
+tr.superset-selected.different-routine {
+  outline-color: var(--wp-bad) !important;
+  background-color: rgba(220, 53, 69, 0.12) !important;
+  box-shadow: inset 0 0 0 1px var(--wp-bad);
+}
+
+tr.superset-selected.different-routine td {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+/* Hover effect on superset rows */
+tr.superset-group:hover {
+  filter: brightness(0.97);
+}
+
+/* Visual feedback when dragging superset partner */
+tr.superset-partner-dragging {
+  outline: 2px dashed var(--superset-color-1);
+  outline-offset: -2px;
+  opacity: 0.7;
+  animation: partner-pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes partner-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.9; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .superset-actions {
+    flex-wrap: wrap;
+    padding: 10px;
+  }
+  
+  .superset-selection-info {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 8px;
+    text-align: center;
+  }
+  
+  .superset-badge {
+    font-size: 0.6rem;
+    padding: 1px 4px;
+  }
+}

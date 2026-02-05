@@ -61,9 +61,17 @@ def initialize_backup_tables(db: Optional[DatabaseHandler] = None) -> None:
                 rpe REAL,
                 weight REAL NOT NULL,
                 exercise_order INTEGER,
+                superset_group TEXT DEFAULT NULL,
                 FOREIGN KEY (backup_id) REFERENCES program_backups(id) ON DELETE CASCADE
             )
         """)
+        
+        # Add superset_group column if it doesn't exist (migration for existing backup tables)
+        cols = db.fetch_all("PRAGMA table_info(program_backup_items)")
+        col_names = {row['name'] for row in cols}
+        if 'superset_group' not in col_names:
+            db.execute_query("ALTER TABLE program_backup_items ADD COLUMN superset_group TEXT DEFAULT NULL")
+            logger.debug("Added superset_group column to program_backup_items table")
         
         # Create indexes for efficient lookups
         db.execute_query("""
@@ -136,24 +144,27 @@ def create_backup(
             logger.warning("user_selection table does not exist, creating empty backup")
             items = []
         else:
-            # Check if exercise_order column exists
+            # Check if exercise_order and superset_group columns exist
             has_order = _check_column_exists(db, 'user_selection', 'exercise_order')
+            has_superset = _check_column_exists(db, 'user_selection', 'superset_group')
+            
+            # Build SELECT columns based on available columns
+            base_cols = "routine, exercise, sets, min_rep_range, max_rep_range, rir, rpe, weight"
+            extra_cols = []
+            if has_order:
+                extra_cols.append("exercise_order")
+            if has_superset:
+                extra_cols.append("superset_group")
+            
+            select_cols = base_cols + (", " + ", ".join(extra_cols) if extra_cols else "")
+            order_clause = "ORDER BY exercise_order, routine, exercise" if has_order else "ORDER BY routine, exercise"
             
             # Fetch all items from active program
-            if has_order:
-                items = db.fetch_all("""
-                    SELECT routine, exercise, sets, min_rep_range, max_rep_range, 
-                           rir, rpe, weight, exercise_order
-                    FROM user_selection
-                    ORDER BY exercise_order, routine, exercise
-                """)
-            else:
-                items = db.fetch_all("""
-                    SELECT routine, exercise, sets, min_rep_range, max_rep_range, 
-                           rir, rpe, weight
-                    FROM user_selection
-                    ORDER BY routine, exercise
-                """)
+            items = db.fetch_all(f"""
+                SELECT {select_cols}
+                FROM user_selection
+                {order_clause}
+            """)
         
         item_count = len(items)
         
@@ -175,8 +186,8 @@ def create_backup(
                 db.execute_query("""
                     INSERT INTO program_backup_items 
                     (backup_id, routine, exercise, sets, min_rep_range, max_rep_range, 
-                     rir, rpe, weight, exercise_order)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     rir, rpe, weight, exercise_order, superset_group)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     backup_id,
                     item.get('routine'),
@@ -187,7 +198,8 @@ def create_backup(
                     item.get('rir'),
                     item.get('rpe'),
                     item.get('weight'),
-                    item.get('exercise_order')  # Will be None if column doesn't exist
+                    item.get('exercise_order'),  # Will be None if column doesn't exist
+                    item.get('superset_group')   # Will be None if column doesn't exist
                 ))
         
         logger.info(
@@ -255,7 +267,7 @@ def get_backup_details(backup_id: int) -> Optional[Dict[str, Any]]:
         # Get backup items
         items = db.fetch_all("""
             SELECT routine, exercise, sets, min_rep_range, max_rep_range, 
-                   rir, rpe, weight, exercise_order
+                   rir, rpe, weight, exercise_order, superset_group
             FROM program_backup_items
             WHERE backup_id = ?
             ORDER BY exercise_order, routine, exercise
@@ -303,7 +315,7 @@ def restore_backup(backup_id: int) -> Dict[str, Any]:
         # Get backup items
         items = db.fetch_all("""
             SELECT routine, exercise, sets, min_rep_range, max_rep_range, 
-                   rir, rpe, weight, exercise_order
+                   rir, rpe, weight, exercise_order, superset_group
             FROM program_backup_items
             WHERE backup_id = ?
         """, (backup_id,))
@@ -314,8 +326,9 @@ def restore_backup(backup_id: int) -> Dict[str, Any]:
         """)
         valid_exercise_names = {row['exercise_name'] for row in valid_exercises}
         
-        # Check if exercise_order column exists in user_selection
+        # Check if exercise_order and superset_group columns exist in user_selection
         has_order = _check_column_exists(db, 'user_selection', 'exercise_order')
+        has_superset = _check_column_exists(db, 'user_selection', 'superset_group')
         
         # Clear current active program (user_selection)
         # First delete workout_log entries that reference user_selection
@@ -338,7 +351,26 @@ def restore_backup(backup_id: int) -> Dict[str, Any]:
             
             # Insert item
             try:
-                if has_order and item.get('exercise_order') is not None:
+                # Build INSERT based on available columns
+                if has_order and has_superset:
+                    db.execute_query("""
+                        INSERT INTO user_selection 
+                        (routine, exercise, sets, min_rep_range, max_rep_range, 
+                         rir, rpe, weight, exercise_order, superset_group)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        item.get('routine'),
+                        exercise_name,
+                        item.get('sets'),
+                        item.get('min_rep_range'),
+                        item.get('max_rep_range'),
+                        item.get('rir'),
+                        item.get('rpe'),
+                        item.get('weight'),
+                        item.get('exercise_order'),
+                        item.get('superset_group')
+                    ))
+                elif has_order:
                     db.execute_query("""
                         INSERT INTO user_selection 
                         (routine, exercise, sets, min_rep_range, max_rep_range, 
@@ -354,6 +386,23 @@ def restore_backup(backup_id: int) -> Dict[str, Any]:
                         item.get('rpe'),
                         item.get('weight'),
                         item.get('exercise_order')
+                    ))
+                elif has_superset:
+                    db.execute_query("""
+                        INSERT INTO user_selection 
+                        (routine, exercise, sets, min_rep_range, max_rep_range, 
+                         rir, rpe, weight, superset_group)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        item.get('routine'),
+                        exercise_name,
+                        item.get('sets'),
+                        item.get('min_rep_range'),
+                        item.get('max_rep_range'),
+                        item.get('rir'),
+                        item.get('rpe'),
+                        item.get('weight'),
+                        item.get('superset_group')
                     ))
                 else:
                     db.execute_query("""

@@ -140,11 +140,20 @@ def _initialize_user_selection_table(db: DatabaseHandler) -> None:
             rir INTEGER,
             rpe REAL,
             weight REAL NOT NULL,
+            superset_group TEXT DEFAULT NULL,
             FOREIGN KEY (exercise) REFERENCES exercises(exercise_name) ON DELETE CASCADE,
             UNIQUE (routine, exercise, sets, min_rep_range, max_rep_range, rir, rpe, weight)
         )
         """
     )
+    
+    # Add superset_group column if it doesn't exist (migration for existing databases)
+    cols = db.fetch_all("PRAGMA table_info(user_selection)")
+    col_names = {row['name'] for row in cols}
+    if 'superset_group' not in col_names:
+        db.execute_query("ALTER TABLE user_selection ADD COLUMN superset_group TEXT DEFAULT NULL")
+        logger.info("Added superset_group column to user_selection table")
+    
     db.execute_query(
         """
         CREATE INDEX IF NOT EXISTS idx_user_selection_exercise

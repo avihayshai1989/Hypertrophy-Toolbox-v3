@@ -87,31 +87,36 @@ html[data-scale="8"] {
     }
 }
 
-/* Firefox: Don't counter-scale the navbar - let it scale naturally with the page
-   This prevents the glitchy "bump" effect when changing scale levels */
+/* Firefox: Disable all scaling effects - zoom is not properly supported
+   Hide the scale control since it doesn't work in Firefox */
 @-moz-document url-prefix() {
+    /* Override any zoom on html element */
+    html, html[data-scale] {
+        zoom: 1 !important;
+    }
+    
     #navbar {
-        /* No transform or zoom - navbar scales with page content in Firefox */
-        zoom: unset !important;
+        /* Ensure navbar stays full width regardless of any zoom attempts */
+        zoom: 1 !important;
         transform: none !important;
+        width: 100% !important;
+        max-width: 100vw !important;
     }
     
-    /* Ensure scale controls have fixed dimensions to prevent reflow */
+    /* Hide scale control in Firefox - feature not supported */
     .scale-control-compact {
-        min-width: 76px;
-        max-width: 76px;
+        display: none !important;
     }
     
-    .scale-indicator {
-        min-width: 22px;
-        max-width: 22px;
-        box-sizing: border-box;
+    /* Also hide the divider before the scale control */
+    .nav-item:has(.scale-control-compact) {
+        display: none !important;
     }
     
-    .scale-btn-compact {
-        min-width: 22px;
-        max-width: 22px;
-        box-sizing: border-box;
+    /* Hide the divider that comes before scale control */
+    .nav-item.nav-divider:has(+ .nav-item .scale-control-compact),
+    .nav-item:has(.scale-control-compact) + .nav-item.nav-divider {
+        display: none !important;
     }
 }
 

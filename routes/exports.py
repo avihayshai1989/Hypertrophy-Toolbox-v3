@@ -153,17 +153,55 @@ def export_to_excel():
                     # Verify the updates
                     verify = db.fetch_one("SELECT COUNT(DISTINCT exercise_order) as distinct_count FROM user_selection WHERE exercise_order IS NOT NULL")
                     logger.info(f"exercise_order recalculated: {updated_count} rows updated, {verify['distinct_count'] if verify else 0} distinct values")
-                
-                order_by_clause = "ORDER BY us.exercise_order, us.routine, us.exercise"
-            else:
-                order_by_clause = "ORDER BY us.routine, us.exercise"
             
-            user_selection_query = f"""
-            SELECT us.*, e.primary_muscle_group, e.secondary_muscle_group
-            FROM user_selection us
-            LEFT JOIN exercises e ON us.exercise = e.exercise_name
-            {order_by_clause}
-            """
+            # Check if superset_group column exists
+            has_superset = column_exists(db, 'user_selection', 'superset_group')
+            has_order = column_exists(db, 'user_selection', 'exercise_order')
+            
+            # Order by routine first, then group superset exercises together, then by exercise_order
+            if has_superset and has_order:
+                # For superset exercises: group them together by using a subquery to find 
+                # the minimum exercise_order within each superset group
+                # This ensures superset exercises appear consecutively at their first member's position
+                user_selection_query = """
+                    WITH superset_min_order AS (
+                        SELECT superset_group, routine, MIN(exercise_order) as min_order
+                        FROM user_selection
+                        WHERE superset_group IS NOT NULL
+                        GROUP BY superset_group, routine
+                    )
+                    SELECT us.*, e.primary_muscle_group, e.secondary_muscle_group,
+                           CASE 
+                               WHEN us.superset_group IS NOT NULL THEN smo.min_order
+                               ELSE us.exercise_order
+                           END as sort_order
+                    FROM user_selection us
+                    LEFT JOIN exercises e ON us.exercise = e.exercise_name
+                    LEFT JOIN superset_min_order smo 
+                        ON us.superset_group = smo.superset_group 
+                        AND us.routine = smo.routine
+                    ORDER BY us.routine, 
+                             sort_order,
+                             CASE WHEN us.superset_group IS NOT NULL THEN 0 ELSE 1 END,
+                             us.superset_group,
+                             us.exercise_order,
+                             us.exercise
+                """
+            elif has_order:
+                user_selection_query = """
+                    SELECT us.*, e.primary_muscle_group, e.secondary_muscle_group
+                    FROM user_selection us
+                    LEFT JOIN exercises e ON us.exercise = e.exercise_name
+                    ORDER BY us.routine, us.exercise_order, us.exercise
+                """
+            else:
+                user_selection_query = """
+                    SELECT us.*, e.primary_muscle_group, e.secondary_muscle_group
+                    FROM user_selection us
+                    LEFT JOIN exercises e ON us.exercise = e.exercise_name
+                    ORDER BY us.routine, us.exercise
+                """
+            
             user_selection = db.fetch_all(user_selection_query)
             if user_selection:
                 sheets_data['Workout Plan'] = user_selection

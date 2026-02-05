@@ -73,7 +73,7 @@
     /**
      * Apply scale to the document
      * Updates inline style on html element (matches server-side rendering)
-     * Uses zoom for Chrome/Safari/Edge, transform for Firefox
+     * Uses zoom for Chrome/Safari/Edge, disabled for Firefox (no good workaround)
      */
     AccessibilityController.prototype.applyScale = function(level) {
         const zoomValues = { 1: '0.75', 2: '0.8', 3: '0.85', 4: '0.9', 5: '0.95', 6: '1', 7: '1.1', 8: '1.2' };
@@ -82,14 +82,16 @@
         document.documentElement.setAttribute('data-scale', String(level));
         
         // Check if browser supports zoom (Firefox doesn't)
-        const supportsZoom = CSS.supports('zoom', '1');
+        // Note: CSS.supports may return true but Firefox still has buggy zoom behavior
+        const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
         
-        if (supportsZoom) {
+        if (!isFirefox) {
             document.documentElement.style.zoom = zoomValue;
         } else {
-            // Firefox fallback: use transform scale on body content
+            // Firefox: Remove any zoom style, scaling is not supported
+            document.documentElement.style.removeProperty('zoom');
+            // Just update the CSS variable for potential future use
             document.documentElement.style.setProperty('--ui-scale', zoomValue);
-            // Don't apply transform to html - let CSS handle it via the data-scale attribute
         }
         
         this.currentScale = level;
