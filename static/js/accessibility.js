@@ -73,11 +73,24 @@
     /**
      * Apply scale to the document
      * Updates inline style on html element (matches server-side rendering)
+     * Uses zoom for Chrome/Safari/Edge, transform for Firefox
      */
     AccessibilityController.prototype.applyScale = function(level) {
         const zoomValues = { 1: '0.75', 2: '0.8', 3: '0.85', 4: '0.9', 5: '0.95', 6: '1', 7: '1.1', 8: '1.2' };
+        const zoomValue = zoomValues[level];
+        
         document.documentElement.setAttribute('data-scale', String(level));
-        document.documentElement.style.zoom = zoomValues[level];
+        
+        // Check if browser supports zoom (Firefox doesn't)
+        const supportsZoom = CSS.supports('zoom', '1');
+        
+        if (supportsZoom) {
+            document.documentElement.style.zoom = zoomValue;
+        } else {
+            // Firefox fallback: use transform scale on body content
+            document.documentElement.style.setProperty('--ui-scale', zoomValue);
+            // Don't apply transform to html - let CSS handle it via the data-scale attribute
+        }
         
         this.currentScale = level;
         this.updateControlsUI();

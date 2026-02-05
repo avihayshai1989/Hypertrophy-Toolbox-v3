@@ -77,9 +77,51 @@ html[data-scale="8"] {
 
 /* ========================================================================
    Navbar Counter-Zoom - Keep navbar at consistent size
+   Note: zoom property is not supported in Firefox, use transform as fallback
    ======================================================================== */
-#navbar {
-    zoom: var(--ui-scale-inverse, 1);
+
+/* Chrome, Safari, Edge - use zoom */
+@supports (zoom: 1) {
+    #navbar {
+        zoom: var(--ui-scale-inverse, 1);
+    }
+}
+
+/* Firefox fallback - use transform scale with fixed dimensions */
+@supports not (zoom: 1) {
+    #navbar {
+        transform: scale(var(--ui-scale-inverse, 1));
+        transform-origin: top left;
+        width: calc(100% / var(--ui-scale-inverse, 1));
+    }
+}
+
+/* Firefox-specific fix to prevent layout shifts during scale changes */
+@-moz-document url-prefix() {
+    #navbar {
+        transform: scale(var(--ui-scale-inverse, 1));
+        transform-origin: top center;
+        width: calc(100vw / var(--ui-scale-inverse, 1));
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%) scale(var(--ui-scale-inverse, 1));
+    }
+    
+    /* Ensure scale controls don't cause reflow */
+    .scale-control-compact {
+        min-width: 80px;
+        width: 80px;
+    }
+    
+    .scale-indicator {
+        min-width: 24px;
+        width: 24px;
+    }
+    
+    .scale-btn-compact {
+        min-width: 24px;
+        width: 24px;
+    }
 }
 
 /* ========================================================================
