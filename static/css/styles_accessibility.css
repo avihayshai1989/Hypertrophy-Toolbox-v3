@@ -80,47 +80,38 @@ html[data-scale="8"] {
    Note: zoom property is not supported in Firefox, use transform as fallback
    ======================================================================== */
 
-/* Chrome, Safari, Edge - use zoom */
+/* Chrome, Safari, Edge - use zoom for counter-scaling navbar */
 @supports (zoom: 1) {
     #navbar {
         zoom: var(--ui-scale-inverse, 1);
     }
 }
 
-/* Firefox fallback - use transform scale with fixed dimensions */
-@supports not (zoom: 1) {
-    #navbar {
-        transform: scale(var(--ui-scale-inverse, 1));
-        transform-origin: top left;
-        width: calc(100% / var(--ui-scale-inverse, 1));
-    }
-}
-
-/* Firefox-specific fix to prevent layout shifts during scale changes */
+/* Firefox: Don't counter-scale the navbar - let it scale naturally with the page
+   This prevents the glitchy "bump" effect when changing scale levels */
 @-moz-document url-prefix() {
     #navbar {
-        transform: scale(var(--ui-scale-inverse, 1));
-        transform-origin: top center;
-        width: calc(100vw / var(--ui-scale-inverse, 1));
-        position: fixed;
-        left: 50%;
-        transform: translateX(-50%) scale(var(--ui-scale-inverse, 1));
+        /* No transform or zoom - navbar scales with page content in Firefox */
+        zoom: unset !important;
+        transform: none !important;
     }
     
-    /* Ensure scale controls don't cause reflow */
+    /* Ensure scale controls have fixed dimensions to prevent reflow */
     .scale-control-compact {
-        min-width: 80px;
-        width: 80px;
+        min-width: 76px;
+        max-width: 76px;
     }
     
     .scale-indicator {
-        min-width: 24px;
-        width: 24px;
+        min-width: 22px;
+        max-width: 22px;
+        box-sizing: border-box;
     }
     
     .scale-btn-compact {
-        min-width: 24px;
-        width: 24px;
+        min-width: 22px;
+        max-width: 22px;
+        box-sizing: border-box;
     }
 }
 
