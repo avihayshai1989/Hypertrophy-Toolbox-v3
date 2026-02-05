@@ -75,19 +75,22 @@ This will automatically:
 
 To create the standalone `.exe` package for distribution to end users:
 
-1. **Install PyInstaller:**
-   ```bash
-   pip install pyinstaller
-   ```
-
-2. **Run the build script:**
+1. **Run the build script:**
    ```bash
    build_exe.bat
    ```
+   (PyInstaller will be installed automatically if needed)
 
-3. **Find the output in:** `dist/Hypertrophy-Toolbox/`
+2. **Find the output in the `dist` folder:**
+   ```
+   dist/
+   └── Hypertrophy-Toolbox/
+       ├── Hypertrophy-Toolbox.exe   ← Main executable
+       ├── RUN_APP.bat
+       └── _internal/                 ← Required support files
+   ```
 
-4. **Distribute:** Zip the entire `dist/Hypertrophy-Toolbox/` folder and share with users
+3. **Distribute:** Zip the entire `dist/Hypertrophy-Toolbox/` folder and share with users
 
 ## ✨ Features
 
