@@ -424,17 +424,34 @@ function enhanceSelect(select, prefersReducedMotion) {
     
     // Add search if more than 12 options
     if (options.length > 12) {
+      // Create search container with count indicator
+      const searchContainer = document.createElement('div');
+      searchContainer.className = 'wpdd-search-container';
+      
       const searchInput = document.createElement('input');
       searchInput.type = 'text';
       searchInput.className = 'wpdd-search';
       searchInput.setAttribute('placeholder', 'Search...');
       searchInput.setAttribute('aria-label', 'Search options');
       
+      // Add count indicator showing total and visible count
+      const countIndicator = document.createElement('span');
+      countIndicator.className = 'wpdd-count-indicator';
+      countIndicator.textContent = `${options.length} total`;
+      countIndicator.setAttribute('aria-live', 'polite');
+      
       let debounceTimer;
       searchInput.addEventListener('input', (e) => {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
           filterOptions(e.target.value);
+          // Update count indicator
+          const visibleCount = options.filter(opt => opt.element.style.display !== 'none').length;
+          if (e.target.value) {
+            countIndicator.textContent = `${visibleCount} of ${options.length}`;
+          } else {
+            countIndicator.textContent = `${options.length} total`;
+          }
         }, 150);
       });
       
@@ -450,7 +467,9 @@ function enhanceSelect(select, prefersReducedMotion) {
         }
       });
       
-      popover.insertBefore(searchInput, popover.firstChild);
+      searchContainer.appendChild(searchInput);
+      searchContainer.appendChild(countIndicator);
+      popover.insertBefore(searchContainer, popover.firstChild);
     }
     
     return options;

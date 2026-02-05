@@ -304,10 +304,17 @@
   }
   
   /* Search input (for long lists) */
-  #workout[data-page="workout-plan"] .wpdd-search {
-    padding: 8px 12px;
+  #workout[data-page="workout-plan"] .wpdd-search-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin-bottom: 6px;
-    width: 100%;
+    flex-wrap: nowrap;
+  }
+  
+  #workout[data-page="workout-plan"] .wpdd-search {
+    flex: 1;
+    padding: 8px 12px;
     min-height: 36px;
     background: var(--wpdd-surface);
     border: 1px solid var(--wpdd-border);
@@ -321,6 +328,18 @@
     outline: none;
     border-color: var(--wpdd-accent);
     box-shadow: 0 0 0 2px rgba(79, 140, 255, 0.1);
+  }
+  
+  /* Count indicator showing total/filtered count */
+  #workout[data-page="workout-plan"] .wpdd-count-indicator {
+    font-size: 0.75rem;
+    color: var(--wpdd-muted);
+    white-space: nowrap;
+    padding: 4px 8px;
+    background: var(--wpdd-surface);
+    border-radius: 10px;
+    border: 1px solid var(--wpdd-border);
+    min-width: fit-content;
   }
   
   /* Mobile sheet variant */

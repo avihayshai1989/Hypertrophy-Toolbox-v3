@@ -166,6 +166,15 @@ export function initializeFilters() {
     
     // Initialize active states for any pre-selected filters (e.g., restored from previous state)
     initializeFilterActiveStates();
+    
+    // Log initial exercise count to console for debugging
+    const exerciseDropdown = document.getElementById("exercise");
+    if (exerciseDropdown) {
+        // Subtract 1 for the placeholder "Select Exercise" option
+        const exerciseCount = exerciseDropdown.options.length - 1;
+        console.log(`[Exercises] ${exerciseCount} exercises loaded and available for selection`);
+        filtersDebugLog(`[Exercises] Total available: ${exerciseCount}`);
+    }
 }
 
 async function clearFilters() {
