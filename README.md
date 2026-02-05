@@ -12,7 +12,10 @@ This will automatically:
 - Check for Python installation
 - Create a virtual environment
 - Install all dependencies
-- Launch the app and open your browser
+- Start the Flask server
+- Open your browser to `http://127.0.0.1:5000`
+
+> **Note:** If the browser doesn't open automatically, manually navigate to `http://127.0.0.1:5000`
 
 ### Option 2: Standalone Executable (No Python Required)
 

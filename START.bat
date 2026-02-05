@@ -1,4 +1,5 @@
 @echo off
+setlocal enabledelayedexpansion
 title Hypertrophy Toolbox
 color 0A
 
@@ -6,6 +7,11 @@ echo.
 echo  ========================================
 echo     HYPERTROPHY TOOLBOX - LAUNCHER
 echo  ========================================
+echo.
+
+:: Change to the script's directory
+cd /d "%~dp0"
+echo [INFO] Working directory: %cd%
 echo.
 
 :: Check if Python is installed
@@ -20,7 +26,8 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo [OK] Python found
+for /f "tokens=*" %%i in ('python --version 2^>^&1') do set PYVER=%%i
+echo [OK] %PYVER% found
 echo.
 
 :: Check if virtual environment exists
@@ -39,43 +46,61 @@ if not exist "venv" (
 :: Activate virtual environment
 echo [INFO] Activating virtual environment...
 call venv\Scripts\activate.bat
+if errorlevel 1 (
+    echo [ERROR] Failed to activate virtual environment!
+    pause
+    exit /b 1
+)
+echo [OK] Virtual environment activated
+echo.
 
 :: Check if dependencies are installed (check for Flask)
-python -c "import flask" >nul 2>&1
+echo [INFO] Checking dependencies...
+venv\Scripts\python.exe -c "import flask" >nul 2>&1
 if errorlevel 1 (
-    echo [SETUP] Installing dependencies (this may take a minute)...
-    pip install -r requirements.txt --quiet
+    echo [SETUP] Installing dependencies - this may take 1-2 minutes...
+    echo.
+    venv\Scripts\pip.exe install -r requirements.txt
     if errorlevel 1 (
+        echo.
         echo [ERROR] Failed to install dependencies!
         pause
         exit /b 1
     )
+    echo.
     echo [OK] Dependencies installed
+    echo.
+) else (
+    echo [OK] Dependencies already installed
     echo.
 )
 
-echo [OK] All dependencies ready
-echo.
-
-:: Find available port (default 5000)
+:: Set port
 set PORT=5000
 
 echo  ========================================
 echo    Starting Hypertrophy Toolbox...
-echo    
-echo    Opening browser in 3 seconds...
-echo    URL: http://localhost:%PORT%
 echo  ========================================
 echo.
-echo  Press Ctrl+C to stop the server
+echo    URL: http://127.0.0.1:%PORT%
+echo.
+echo    The browser will open automatically.
+echo    If not, manually open the URL above.
+echo.
+echo    Press Ctrl+C to stop the server.
+echo  ========================================
 echo.
 
-:: Start browser after a delay (in background)
-start /b cmd /c "timeout /t 3 /nobreak >nul && start http://localhost:%PORT%"
+:: Open browser after delay (use start command directly)
+start "" cmd /c "ping -n 4 127.0.0.1 >nul && start http://127.0.0.1:%PORT%"
 
-:: Run the Flask app
-python app.py
+:: Run the Flask app using the venv python explicitly
+echo [INFO] Starting Flask server...
+echo.
+venv\Scripts\python.exe app.py
 
-:: Deactivate when done
-call venv\Scripts\deactivate.bat
+:: If we get here, server stopped
+echo.
+echo [INFO] Server stopped.
+pause
 pause
