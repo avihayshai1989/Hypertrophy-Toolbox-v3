@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify
+import json
+import werkzeug.exceptions
 from utils.database import DatabaseHandler
 from utils.exercise_manager import (
     add_exercise as add_exercise_to_db,
@@ -103,6 +105,7 @@ def workout_plan():
 @workout_plan_bp.route("/add_exercise", methods=["POST"])
 def add_exercise():
     """Add a new exercise to the workout plan."""
+    data = None
     try:
         data = request.get_json()
         if not data:
@@ -151,12 +154,18 @@ def add_exercise():
             }
         )
         return jsonify(success_response(message="Exercise added successfully"))
+    except (werkzeug.exceptions.BadRequest, json.JSONDecodeError) as e:
+        logger.warning(
+            "Invalid JSON in add_exercise request",
+            extra={'error': str(e)}
+        )
+        return error_response("VALIDATION_ERROR", "Invalid JSON data", 400)
     except Exception as e:
         logger.exception(
             "Error adding exercise",
             extra={
-                'routine': data.get('routine', 'unknown'),
-                'exercise': data.get('exercise', 'unknown')
+                'routine': data.get('routine', 'unknown') if data else 'unknown',
+                'exercise': data.get('exercise', 'unknown') if data else 'unknown'
             }
         )
         return error_response("INTERNAL_ERROR", "Failed to add exercise", 500)
@@ -264,6 +273,7 @@ def get_workout_plan():
 
 @workout_plan_bp.route("/remove_exercise", methods=["POST"])
 def remove_exercise():
+    data = None
     try:
         data = request.get_json()
         if not data:
@@ -281,6 +291,10 @@ def remove_exercise():
                 "SELECT routine, exercise, superset_group FROM user_selection WHERE id = ?",
                 (int(exercise_id),)
             )
+            
+            # Return 404 if exercise doesn't exist
+            if not exercise_info:
+                return error_response("NOT_FOUND", f"Exercise with ID {exercise_id} not found", 404)
             
             # If exercise is part of a superset, unlink the partner exercise
             if exercise_info and exercise_info.get('superset_group'):
@@ -318,7 +332,7 @@ def remove_exercise():
     except Exception as e:
         logger.exception(
             "Error removing exercise",
-            extra={'exercise_id': data.get("id", 'unknown')}
+            extra={'exercise_id': data.get("id", 'unknown') if data else 'unknown'}
         )
         return error_response("INTERNAL_ERROR", "Unable to remove exercise", 500)
 
@@ -494,8 +508,12 @@ def get_routine_exercises(routine):
 @workout_plan_bp.route("/update_exercise", methods=["POST"])
 def update_exercise():
     """Update exercise details in the workout plan."""
+    exercise_id = None
     try:
         data = request.get_json()
+        if not data:
+            return error_response("VALIDATION_ERROR", "No data provided", 400)
+        
         exercise_id = data.get('id')
         updates = data.get('updates', {})
         
@@ -547,7 +565,7 @@ def update_exercise():
     except Exception as e:
         logger.exception(
             "Error updating exercise",
-            extra={'exercise_id': exercise_id if 'exercise_id' in locals() else 'unknown'}
+            extra={'exercise_id': exercise_id if exercise_id else 'unknown'}
         )
         return error_response("INTERNAL_ERROR", "Failed to update exercise", 500)
 
@@ -587,7 +605,7 @@ def initialize_exercise_order():
                     max_order = db.fetch_one(
                         "SELECT COALESCE(MAX(exercise_order), 0) as max_order FROM user_selection"
                     )
-                    current_order = (max_order.get('max_order', 0) or 0)
+                    current_order = (max_order.get('max_order', 0) or 0) if max_order else 0
                     
                     # Get rows with NULL order, sorted by id (oldest first)
                     null_rows = db.fetch_all(
@@ -913,6 +931,7 @@ def replace_exercise():
         On success: { "ok": true, "data": { "updated_row": {...} } }
         On failure: { "ok": false, "error": { "code": "...", "reason": "..." } }
     """
+    data = None
     try:
         data = request.get_json()
         if not data:
@@ -1066,7 +1085,7 @@ def replace_exercise():
             )
             
             # h) Fetch the updated row with full metadata for response
-            updated_row = db.fetch_one("""
+            updated_row_result = db.fetch_one("""
                 SELECT 
                     us.id, us.routine, us.exercise, us.sets,
                     us.min_rep_range, us.max_rep_range, us.rir, us.rpe, us.weight,
@@ -1078,6 +1097,9 @@ def replace_exercise():
                 WHERE us.id = ?
             """, (exercise_id,))
             
+            # Convert to dict and handle None case
+            updated_row: dict = dict(updated_row_result) if updated_row_result else {}
+            
             # Check if exercise_order column exists and include it
             if column_exists(db, 'user_selection', 'exercise_order'):
                 order_row = db.fetch_one(
@@ -1085,7 +1107,6 @@ def replace_exercise():
                     (exercise_id,)
                 )
                 if order_row and order_row.get('exercise_order'):
-                    updated_row = dict(updated_row)
                     updated_row['exercise_order'] = order_row['exercise_order']
             
             logger.info(
@@ -1103,7 +1124,7 @@ def replace_exercise():
             
             return jsonify(success_response(
                 data={
-                    "updated_row": dict(updated_row),
+                    "updated_row": updated_row,
                     "old_exercise": current_exercise,
                     "new_exercise": new_exercise
                 },

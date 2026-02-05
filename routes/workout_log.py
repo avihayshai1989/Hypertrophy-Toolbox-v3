@@ -55,6 +55,12 @@ def update_workout_log():
         params = list(valid_updates.values()) + [log_id]
 
         with DatabaseHandler() as db:
+            # Check if log entry exists
+            check_query = "SELECT id FROM workout_log WHERE id = ?"
+            existing = db.fetch_one(check_query, (log_id,))
+            if not existing:
+                return error_response("NOT_FOUND", f"Workout log entry with ID {log_id} not found", 404)
+            
             db.execute_query(query, params)
 
         logger.info(f"Updated workout log {log_id}")
@@ -73,6 +79,12 @@ def delete_workout_log():
             return error_response("VALIDATION_ERROR", "No log ID provided", 400)
         
         with DatabaseHandler() as db:
+            # Check if log entry exists
+            check_query = "SELECT id FROM workout_log WHERE id = ?"
+            existing = db.fetch_one(check_query, (log_id,))
+            if not existing:
+                return error_response("NOT_FOUND", f"Workout log entry with ID {log_id} not found", 404)
+            
             query = "DELETE FROM workout_log WHERE id = ?"
             db.execute_query(query, (log_id,))
         
@@ -96,6 +108,12 @@ def update_progression_date():
 
         query = "UPDATE workout_log SET last_progression_date = ? WHERE id = ?"
         with DatabaseHandler() as db:
+            # Check if log entry exists
+            check_query = "SELECT id FROM workout_log WHERE id = ?"
+            existing = db.fetch_one(check_query, (log_id,))
+            if not existing:
+                return error_response("NOT_FOUND", f"Workout log entry with ID {log_id} not found", 404)
+            
             db.execute_query(query, (new_date, log_id))
 
         logger.info(f"Updated progression date for log {log_id}")

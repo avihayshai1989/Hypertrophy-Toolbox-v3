@@ -206,7 +206,7 @@ class TestPriorityMuscleReallocation:
 class TestPatternCoverageAnalysis:
     """Tests for pattern coverage calculation."""
     
-    def test_pattern_coverage_structure(self):
+    def test_pattern_coverage_structure(self, clean_db):
         """Pattern coverage should return expected structure."""
         coverage = calculate_pattern_coverage()
         
@@ -216,7 +216,7 @@ class TestPatternCoverageAnalysis:
         assert "sets_per_routine" in coverage
         assert "ideal_sets_range" in coverage
     
-    def test_ideal_sets_range_values(self):
+    def test_ideal_sets_range_values(self, clean_db):
         """Should return correct ideal sets range (15-24)."""
         coverage = calculate_pattern_coverage()
         
@@ -238,7 +238,7 @@ class TestPatternCoverageWarnings:
         # The function checks for sets > 24
         pass
     
-    def test_ideal_sets_range_returned(self):
+    def test_ideal_sets_range_returned(self, clean_db):
         """Should return ideal sets range (15-24)."""
         coverage = calculate_pattern_coverage()
         
