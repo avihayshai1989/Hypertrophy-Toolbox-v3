@@ -2,15 +2,43 @@
 
 Design your workout plan using science - all the tools you need to design, track, and monitor your workouts.
 
-## 🚀 Quick Start
+## 🚀 Running the Application
+
+### Option 1: One-Click Start (Recommended for Windows Users)
+
+**Double-click `START.bat`** - That's it!
+
+This will automatically:
+- Check for Python installation
+- Create a virtual environment
+- Install all dependencies
+- Launch the app and open your browser
+
+### Option 2: Standalone Executable (No Python Required)
+
+If you received a pre-built executable:
+
+1. Extract the zip file to any folder
+2. Double-click `Hypertrophy-Toolbox.exe`
+3. Browser opens automatically!
+
+**To build the executable yourself:**
+```bash
+# Double-click build_exe.bat, or run:
+python -m pip install pyinstaller
+build_exe.bat
+```
+The executable will be in `dist/Hypertrophy-Toolbox/`
+
+### Option 3: Manual Setup (For Developers)
 
 1. **Create and activate virtual environment:**
    ```bash
-   python -m venv .venv
+   python -m venv venv
    # Windows
-   .venv\Scripts\activate
+   venv\Scripts\activate
    # Linux/Mac
-   source .venv/bin/activate
+   source venv/bin/activate
    ```
 
 2. **Install dependencies:**
@@ -26,6 +54,17 @@ Design your workout plan using science - all the tools you need to design, track
    ```
 
 4. **Open** `http://localhost:5000`
+
+---
+
+## 📁 Launcher Files
+
+| File | Description |
+|------|-------------|
+| `START.bat` | 1-click launcher (requires Python installed) |
+| `build_exe.bat` | Builds standalone .exe for distribution |
+| `app_launcher.py` | Wrapper script for executable build |
+| `QUICK_START.md` | Detailed setup instructions |
 
 ## ✨ Features
 
