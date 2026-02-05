@@ -81,14 +81,16 @@ To create the standalone `.exe` package for distribution to end users:
    ```
    (PyInstaller will be installed automatically if needed)
 
-2. **Find the output in the `dist` folder:**
+2. **Find the output in the `dist` folder (NOT `build`):**
    ```
-   dist/
+   dist/                              ← CORRECT folder
    └── Hypertrophy-Toolbox/
-       ├── Hypertrophy-Toolbox.exe   ← Main executable
+       ├── Hypertrophy-Toolbox.exe   ← Run this!
        ├── RUN_APP.bat
-       └── _internal/                 ← Required support files
+       └── _internal/                 ← Required support files (do not delete)
    ```
+
+   > **Important:** The `build` folder contains temporary files and will NOT work. Always use `dist`.
 
 3. **Distribute:** Zip the entire `dist/Hypertrophy-Toolbox/` folder and share with users
 
