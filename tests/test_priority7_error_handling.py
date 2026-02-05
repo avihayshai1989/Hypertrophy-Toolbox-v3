@@ -16,24 +16,56 @@ from utils.request_id import generate_request_id, get_request_id
 
 @pytest.fixture(scope='module')
 def error_app():
-    """Create test app with test database."""
+    """Create a fresh test app for error handling tests.
+    
+    Creates a new Flask app instance to avoid interference with
+    the shared app from conftest.py.
+    """
     import utils.config
+    from flask import Flask
+    from routes.workout_plan import workout_plan_bp, initialize_exercise_order
+    from routes.workout_log import workout_log_bp
+    from routes.main import main_bp
+    from routes.filters import filters_bp
+    from utils.db_initializer import initialize_database
+    from utils.database import add_progression_goals_table, add_volume_tracking_tables
+    from utils.errors import register_error_handlers
+    from utils.request_id import add_request_id_middleware
     
     # Use temp test database
     test_db = os.path.join(tempfile.gettempdir(), 'test_error_handling.db')
     original_db = utils.config.DB_FILE
     utils.config.DB_FILE = test_db
     
-    # Now import app (will use test DB)
-    from app import app
+    # Clean up any existing test database
+    if os.path.exists(test_db):
+        os.remove(test_db)
     
-    # Add error trigger route
-    if '__trigger_internal_error' not in app.view_functions:
-        @app.route('/__trigger_internal_error')
-        def __trigger_internal_error():
-            raise RuntimeError('forced test error')
-    
+    # Create fresh Flask app
+    app = Flask(__name__)
     app.config['TESTING'] = True
+    
+    # Register blueprints
+    app.register_blueprint(main_bp)
+    app.register_blueprint(workout_plan_bp)
+    app.register_blueprint(workout_log_bp)
+    app.register_blueprint(filters_bp)
+    
+    # Register middleware and error handlers
+    add_request_id_middleware(app)
+    register_error_handlers(app)
+    
+    # Add error trigger route BEFORE any requests
+    @app.route('/__trigger_internal_error')
+    def __trigger_internal_error():
+        raise RuntimeError('forced test error')
+    
+    # Initialize database within app context
+    with app.app_context():
+        initialize_database()
+        add_progression_goals_table()
+        add_volume_tracking_tables()
+        initialize_exercise_order()
     
     yield app
     

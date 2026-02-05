@@ -17,10 +17,22 @@ from utils.logger import setup_logging
 from utils.errors import error_response, register_error_handlers, is_xhr_request
 from utils.request_id import add_request_id_middleware
 import time
+import sys
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False  # This makes Flask handle URLs with or without trailing slashes
 app.wsgi_app = ProxyFix(app.wsgi_app)
+
+# Production optimizations when running as frozen executable
+if getattr(sys, 'frozen', False):
+    # Enable Jinja2 template caching (auto_reload=False, cache_size increased)
+    app.jinja_env.auto_reload = False
+    app.config['TEMPLATES_AUTO_RELOAD'] = False
+    # Disable debug mode for production
+    app.config['DEBUG'] = False
+    app.config['TESTING'] = False
+    # Enable response compression hints
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 31536000  # 1 year cache for static files
 
 # Setup structured logging
 logger = setup_logging(app)

@@ -362,17 +362,47 @@ class TestSupersetAutoSuggestion:
 
 # ==================== Fixtures ====================
 
+# NOTE: test_client is provided by conftest.py's 'client' fixture
+# We alias it here for compatibility with existing test code
 @pytest.fixture
-def test_client():
-    """Create a test client for the Flask app."""
-    # Import here to avoid circular imports
-    import sys
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from app import app
+def test_client(client, db_handler):
+    """Alias for the client fixture from conftest.py with proper test database setup."""
+    # Ensure test exercises exist in the database
+    _ensure_test_exercises(db_handler)
+    yield client
+
+
+def _ensure_test_exercises(db_handler):
+    """Insert test exercises with proper schema including movement patterns."""
+    exercises = [
+        # Main compound exercises
+        ('Back Squat', 'Quadriceps', 'Glutes', 'Hamstrings', 'Barbell', 'Compound', 'Basic', 'Intermediate', 'squat', 'squat'),
+        ('Barbell Bench Press', 'Chest', 'Triceps', 'Shoulders', 'Barbell', 'Compound', 'Basic', 'Intermediate', 'horizontal_push', 'press'),
+        ('Barbell Row', 'Back', 'Biceps', 'Rear Delts', 'Barbell', 'Compound', 'Basic', 'Intermediate', 'horizontal_pull', 'row'),
+        ('Deadlift', 'Hamstrings', 'Glutes', 'Lower Back', 'Barbell', 'Compound', 'Basic', 'Intermediate', 'hinge', 'deadlift'),
+        ('Pull Up', 'Back', 'Biceps', 'Rear Delts', 'Bodyweight', 'Compound', 'Basic', 'Intermediate', 'vertical_pull', 'pullup'),
+        ('Overhead Press', 'Shoulders', 'Triceps', 'Upper Chest', 'Barbell', 'Compound', 'Basic', 'Intermediate', 'vertical_push', 'press'),
+        # Isolation exercises
+        ('Barbell Curl', 'Biceps', None, None, 'Barbell', 'Isolated', 'Auxiliary', 'Novice', 'upper_isolation', 'curl'),
+        ('Tricep Pushdown', 'Triceps', None, None, 'Cable', 'Isolated', 'Auxiliary', 'Novice', 'upper_isolation', 'pushdown'),
+        ('Leg Curl', 'Hamstrings', None, None, 'Machine', 'Isolated', 'Auxiliary', 'Novice', 'lower_isolation', 'curl'),
+        ('Leg Extension', 'Quadriceps', None, None, 'Machine', 'Isolated', 'Auxiliary', 'Novice', 'lower_isolation', 'extension'),
+        # Core exercises
+        ('Plank', 'Core', None, None, 'Bodyweight', 'Isolated', 'Auxiliary', 'Novice', 'core_static', 'hold'),
+        ('Cable Crunch', 'Core', None, None, 'Cable', 'Isolated', 'Auxiliary', 'Novice', 'core_dynamic', 'crunch'),
+    ]
     
-    app.config['TESTING'] = True
-    with app.test_client() as client:
-        yield client
+    for ex in exercises:
+        try:
+            db_handler.execute_query(
+                """INSERT OR IGNORE INTO exercises 
+                   (exercise_name, primary_muscle_group, secondary_muscle_group, tertiary_muscle_group,
+                    equipment, mechanic, utility, difficulty, movement_pattern, movement_subpattern)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                ex
+            )
+        except Exception:
+            pass  # Ignore if already exists
 
 
 @pytest.fixture

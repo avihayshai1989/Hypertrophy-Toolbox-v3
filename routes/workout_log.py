@@ -8,7 +8,6 @@ from utils.volume_classifier import (
 )
 from utils.errors import success_response, error_response
 from utils.logger import get_logger
-import pandas as pd
 from io import BytesIO
 from datetime import datetime
 
@@ -177,6 +176,9 @@ def get_logs():
 @workout_log_bp.route('/export_workout_log')
 def export_workout_log():
     try:
+        # Lazy load pandas - only imported when export is requested
+        import pandas as pd
+        
         # Get workout log data
         logs = get_workout_logs()
         

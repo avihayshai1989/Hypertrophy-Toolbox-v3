@@ -15,11 +15,12 @@ from io import BytesIO
 from typing import List, Dict, Any, Generator, Optional
 from datetime import datetime
 from flask import Response, make_response
-from xlsxwriter import Workbook
 from werkzeug.utils import secure_filename
 import logging
 from utils.config import MAX_EXPORT_ROWS, EXPORT_BATCH_SIZE, MAX_FILENAME_LENGTH, STREAMING_THRESHOLD
 from utils.logger import get_logger
+
+# Note: xlsxwriter is lazy-loaded in functions that need it to improve startup time
 
 logger = get_logger()
 
@@ -123,6 +124,9 @@ def stream_excel_response(
         Flask Response object with streaming content
     """
     def generate():
+        # Lazy load xlsxwriter - only imported when export is requested
+        from xlsxwriter import Workbook
+        
         output = BytesIO()
         workbook = Workbook(output, {'in_memory': True})
         
@@ -209,6 +213,9 @@ def create_excel_workbook(
     workbook = None
     
     try:
+        # Lazy load xlsxwriter - only imported when export is requested
+        from xlsxwriter import Workbook
+        
         # Write to temporary file instead of BytesIO - this is more reliable
         workbook = Workbook(temp_file_path)
         worksheets_created = 0
