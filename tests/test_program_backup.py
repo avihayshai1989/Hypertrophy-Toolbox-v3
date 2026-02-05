@@ -409,17 +409,22 @@ class TestProgramBackupAPI:
         assert get_backup_details(backup['id']) is None
 
 
-class TestEraseDataWithAutoBackup:
-    """Test the erase-data endpoint with auto-backup integration."""
+class TestEraseDataDeletesBackups:
+    """Test the erase-data endpoint deletes all data including backups."""
     
-    def test_erase_data_creates_auto_backup(self, client, clean_db, exercise_factory, workout_plan_factory):
-        """Test that /erase-data creates auto-backup when program has data."""
+    def test_erase_data_deletes_backups(self, client, clean_db, exercise_factory, workout_plan_factory):
+        """Test that /erase-data deletes all backups (full reset)."""
         # Setup: Create exercise and add to workout plan
         exercise_factory("Test Exercise")
         workout_plan_factory(exercise_name="Test Exercise")
         
-        # Verify active program has data
-        assert get_active_program_count() == 1
+        # Create some backups
+        create_backup(name="Manual Backup 1")
+        create_backup(name="Manual Backup 2")
+        
+        # Verify backups exist
+        backups_before = list_backups()
+        assert len(backups_before) == 2
         
         # Call erase-data
         response = client.post('/erase-data')
@@ -428,18 +433,12 @@ class TestEraseDataWithAutoBackup:
         data = response.get_json()
         assert data['ok'] is True
         
-        # Check that auto-backup was created and returned in response
-        assert data['data'] is not None
-        assert data['data']['id'] is not None
-        assert data['data']['item_count'] == 1
-        
-        # Verify auto-backup exists in database
-        latest_auto = get_latest_auto_backup()
-        assert latest_auto is not None
-        assert latest_auto['id'] == data['data']['id']
+        # Verify all backups are deleted
+        backups_after = list_backups()
+        assert len(backups_after) == 0
     
-    def test_erase_data_no_backup_when_empty(self, client, clean_db):
-        """Test that /erase-data doesn't create backup when program is empty."""
+    def test_erase_data_on_empty_database(self, client, clean_db):
+        """Test that /erase-data works on empty database."""
         # Ensure program is empty
         assert get_active_program_count() == 0
         
@@ -449,26 +448,31 @@ class TestEraseDataWithAutoBackup:
         assert response.status_code == 200
         data = response.get_json()
         assert data['ok'] is True
-        
-        # Should not have auto_backup data (data key may be absent or None)
-        auto_backup_data = data.get('data')
-        assert auto_backup_data is None or 'id' not in (auto_backup_data or {})
+        assert data.get('data') is None
     
-    def test_erase_data_backups_survive(self, client, clean_db, exercise_factory, workout_plan_factory):
-        """Test that backups survive the erase-data operation."""
-        # Create exercise and manual backup
+    def test_erase_data_reinitializes_tables(self, client, clean_db, exercise_factory, workout_plan_factory):
+        """Test that /erase-data properly reinitializes all tables."""
+        # Setup: Create exercise and workout plan
         exercise_factory("Test Exercise")
         workout_plan_factory(exercise_name="Test Exercise")
-        manual_backup = create_backup(name="Manual Backup Before Erase")
+        
+        # Create a backup
+        create_backup(name="Test Backup")
         
         # Call erase-data
         response = client.post('/erase-data')
         assert response.status_code == 200
         
-        # Verify manual backup still exists
-        backups = list_backups()
-        manual_exists = any(b['name'] == "Manual Backup Before Erase" for b in backups)
-        assert manual_exists
+        # Verify workout plan is cleared
+        assert get_active_program_count() == 0
         
-        # Should also have the auto-backup
-        assert len(backups) == 2
+        # Verify backups are cleared
+        backups = list_backups()
+        assert len(backups) == 0
+        
+        # Verify we can create new backups (tables were reinitialized)
+        exercise_factory("New Exercise")
+        workout_plan_factory(exercise_name="New Exercise")
+        new_backup = create_backup(name="New Backup After Erase")
+        assert new_backup is not None
+        assert new_backup['item_count'] == 1

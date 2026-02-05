@@ -284,3 +284,178 @@ def calculate_isolated_muscles_stats() -> List[Dict[str, Any]]:
     except Exception as e:
         print(f"Error calculating isolated muscles stats: {e}")
         return []
+
+
+def calculate_pattern_coverage() -> Dict[str, Any]:
+    """
+    Analyze movement pattern coverage in the current workout plan.
+    
+    Returns:
+        Dictionary containing:
+        - per_routine: Dict mapping routine names to pattern coverage stats
+        - total: Aggregated pattern coverage across all routines
+        - warnings: List of actionable warnings about missing or imbalanced patterns
+        - sets_per_routine: Total sets per routine with min/max warnings
+    """
+    # Query to get exercise patterns with their sets per routine
+    query = """
+        SELECT
+            us.routine,
+            us.exercise,
+            us.sets,
+            e.movement_pattern,
+            e.movement_subpattern,
+            e.primary_muscle_group,
+            e.mechanic
+        FROM user_selection us
+        JOIN exercises e ON us.exercise = e.exercise_name
+        ORDER BY us.routine
+    """
+    
+    try:
+        with DatabaseHandler() as db:
+            rows = db.fetch_all(query)
+    except Exception as e:
+        print(f"Error calculating pattern coverage: {e}")
+        return {"per_routine": {}, "total": {}, "warnings": [], "sets_per_routine": {}}
+    
+    # Core movement patterns that should be present in a balanced program
+    CORE_PATTERNS = {
+        "squat": "Lower body push (quads, glutes)",
+        "hinge": "Lower body pull (hamstrings, glutes, back)",
+        "horizontal_push": "Upper body horizontal push (chest, shoulders, triceps)",
+        "horizontal_pull": "Upper body horizontal pull (back, biceps)",
+        "vertical_push": "Upper body vertical push (shoulders, triceps)",
+        "vertical_pull": "Upper body vertical pull (lats, biceps)",
+    }
+    
+    # Track patterns per routine
+    per_routine: Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    total_patterns: Dict[str, int] = defaultdict(int)
+    sets_per_routine: Dict[str, int] = defaultdict(int)
+    
+    for row in rows:
+        routine = row.get('routine', 'Unknown')
+        sets = row.get('sets', 0) or 0
+        pattern = row.get('movement_pattern', '')
+        
+        sets_per_routine[routine] += sets
+        
+        if pattern:
+            per_routine[routine][pattern] += sets
+            total_patterns[pattern] += sets
+        else:
+            # Fallback: classify by mechanic/muscle if no pattern stored
+            mechanic = (row.get('mechanic') or '').lower()
+            primary_muscle = (row.get('primary_muscle_group') or '').lower()
+            
+            # Infer pattern from muscle group
+            if 'quad' in primary_muscle or 'glute' in primary_muscle:
+                inferred = 'squat' if 'quad' in primary_muscle else 'hinge'
+            elif 'chest' in primary_muscle:
+                inferred = 'horizontal_push'
+            elif 'lat' in primary_muscle or 'back' in primary_muscle:
+                if mechanic == 'compound':
+                    inferred = 'vertical_pull'
+                else:
+                    inferred = 'horizontal_pull'
+            elif 'bicep' in primary_muscle or 'tricep' in primary_muscle:
+                inferred = 'upper_isolation'
+            elif 'calf' in primary_muscle or 'hamstring' in primary_muscle:
+                inferred = 'lower_isolation'
+            elif 'core' in primary_muscle or 'abs' in primary_muscle:
+                inferred = 'core_dynamic'
+            else:
+                inferred = 'other'
+            
+            per_routine[routine][inferred] += sets
+            total_patterns[inferred] += sets
+    
+    # Generate warnings
+    warnings: List[Dict[str, str]] = []
+    
+    # Check for missing core patterns
+    for pattern, description in CORE_PATTERNS.items():
+        if total_patterns.get(pattern, 0) == 0:
+            warnings.append({
+                "level": "high",
+                "type": "missing_pattern",
+                "message": f"Missing {pattern.replace('_', ' ')} exercises",
+                "description": f"No {description} exercises found. Consider adding exercises like "
+                              f"{'squats, leg press' if pattern == 'squat' else ''}"
+                              f"{'deadlifts, hip thrusts' if pattern == 'hinge' else ''}"
+                              f"{'bench press, push-ups' if pattern == 'horizontal_push' else ''}"
+                              f"{'rows, face pulls' if pattern == 'horizontal_pull' else ''}"
+                              f"{'overhead press, dips' if pattern == 'vertical_push' else ''}"
+                              f"{'pull-ups, lat pulldowns' if pattern == 'vertical_pull' else ''}.",
+            })
+    
+    # Check sets per routine (ideal: 15-24)
+    MIN_SETS = 15
+    MAX_SETS = 24
+    
+    for routine, total_sets in sets_per_routine.items():
+        if total_sets < MIN_SETS:
+            warnings.append({
+                "level": "medium",
+                "type": "low_volume",
+                "message": f"Routine '{routine}' has only {total_sets} sets",
+                "description": f"Consider adding {MIN_SETS - total_sets} more sets. "
+                              f"Target is {MIN_SETS}-{MAX_SETS} sets per session for optimal results.",
+            })
+        elif total_sets > MAX_SETS:
+            warnings.append({
+                "level": "medium",
+                "type": "high_volume",
+                "message": f"Routine '{routine}' has {total_sets} sets",
+                "description": f"Consider reducing by {total_sets - MAX_SETS} sets. "
+                              f"High volume ({MAX_SETS}+ sets) may impair recovery.",
+            })
+    
+    # Check for isolation skew (too much isolation vs compound)
+    total_isolation = total_patterns.get('upper_isolation', 0) + total_patterns.get('lower_isolation', 0)
+    total_compound = sum(
+        total_patterns.get(p, 0) 
+        for p in ['squat', 'hinge', 'horizontal_push', 'horizontal_pull', 'vertical_push', 'vertical_pull']
+    )
+    
+    if total_compound > 0 and total_isolation > total_compound * 1.5:
+        warnings.append({
+            "level": "medium",
+            "type": "isolation_skew",
+            "message": "High isolation-to-compound ratio",
+            "description": f"Isolation work ({total_isolation} sets) significantly exceeds "
+                          f"compound work ({total_compound} sets). Consider balancing with more "
+                          f"compound movements for better overall development.",
+        })
+    
+    # Check for push/pull imbalance
+    total_push = total_patterns.get('horizontal_push', 0) + total_patterns.get('vertical_push', 0)
+    total_pull = total_patterns.get('horizontal_pull', 0) + total_patterns.get('vertical_pull', 0)
+    
+    if total_push > 0 and total_pull > 0:
+        ratio = total_push / total_pull if total_pull > 0 else float('inf')
+        if ratio > 1.5:
+            warnings.append({
+                "level": "medium",
+                "type": "push_pull_imbalance",
+                "message": "Push-dominant program",
+                "description": f"Push volume ({total_push} sets) exceeds pull volume ({total_pull} sets) "
+                              f"by more than 50%. Consider adding more pulling exercises for shoulder health.",
+            })
+        elif ratio < 0.67:
+            warnings.append({
+                "level": "low",
+                "type": "push_pull_imbalance",
+                "message": "Pull-dominant program",
+                "description": f"Pull volume ({total_pull} sets) exceeds push volume ({total_push} sets). "
+                              f"This is generally okay but ensure adequate chest/shoulder work.",
+            })
+    
+    return {
+        "per_routine": dict(per_routine),
+        "total": dict(total_patterns),
+        "warnings": warnings,
+        "sets_per_routine": dict(sets_per_routine),
+        "ideal_sets_range": {"min": MIN_SETS, "max": MAX_SETS},
+    }

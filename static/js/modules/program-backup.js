@@ -4,22 +4,7 @@
  * Provides UI interactions for saving, loading, restoring, and deleting program backups.
  */
 import { showToast } from './toast.js';
-
-/**
- * Helper function to handle standardized API responses
- * @param {Response} response - Fetch response object
- * @returns {Promise<Object>} Extracted data or throws error
- */
-async function handleApiResponse(response) {
-    const data = await response.json();
-    
-    if (data.ok === false) {
-        const errorMsg = data.error?.message || data.error || 'An error occurred';
-        throw new Error(errorMsg);
-    }
-    
-    return data.ok === true ? (data.data !== undefined ? data.data : data) : data;
-}
+import { api } from './fetch-wrapper.js';
 
 /**
  * Format a date string for display
@@ -48,8 +33,8 @@ function formatDate(dateStr) {
  */
 export async function fetchBackups() {
     try {
-        const response = await fetch('/api/backups');
-        return await handleApiResponse(response);
+        const data = await api.get('/api/backups', { showErrorToast: false });
+        return data.data !== undefined ? data.data : data;
     } catch (error) {
         console.error('Error fetching backups:', error);
         throw error;
@@ -64,14 +49,8 @@ export async function fetchBackups() {
  */
 export async function createBackup(name, note = null) {
     try {
-        const response = await fetch('/api/backups', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name, note })
-        });
-        return await handleApiResponse(response);
+        const data = await api.post('/api/backups', { name, note }, { showErrorToast: false });
+        return data.data !== undefined ? data.data : data;
     } catch (error) {
         console.error('Error creating backup:', error);
         throw error;
@@ -85,13 +64,8 @@ export async function createBackup(name, note = null) {
  */
 export async function restoreBackup(backupId) {
     try {
-        const response = await fetch(`/api/backups/${backupId}/restore`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        return await handleApiResponse(response);
+        const data = await api.post(`/api/backups/${backupId}/restore`, {}, { showErrorToast: false });
+        return data.data !== undefined ? data.data : data;
     } catch (error) {
         console.error('Error restoring backup:', error);
         throw error;
@@ -105,10 +79,7 @@ export async function restoreBackup(backupId) {
  */
 export async function deleteBackup(backupId) {
     try {
-        const response = await fetch(`/api/backups/${backupId}`, {
-            method: 'DELETE'
-        });
-        await handleApiResponse(response);
+        await api.delete(`/api/backups/${backupId}`, { showErrorToast: false });
     } catch (error) {
         console.error('Error deleting backup:', error);
         throw error;

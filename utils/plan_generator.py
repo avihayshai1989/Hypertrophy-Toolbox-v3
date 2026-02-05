@@ -28,6 +28,188 @@ from utils.movement_patterns import (
 logger = get_logger()
 
 
+# Estimated starting weights (in kg) by movement pattern and experience level
+# These provide reasonable initial values instead of N/A or 0
+# Values are conservative to encourage proper form before adding weight
+ESTIMATED_WEIGHTS: Dict[str, Dict[str, float]] = {
+    # Lower body compound movements
+    MovementPattern.SQUAT.value: {
+        "novice": 40.0,      # Bar + 10kg plates
+        "intermediate": 85.0,
+        "advanced": 125.0,
+    },
+    MovementPattern.HINGE.value: {
+        "novice": 50.0,      # Bar + 15kg plates
+        "intermediate": 100.0,
+        "advanced": 140.0,
+    },
+    # Upper body compound movements
+    MovementPattern.HORIZONTAL_PUSH.value: {
+        "novice": 40.0,      # Bar + 10kg plates
+        "intermediate": 70.0,
+        "advanced": 100.0,
+    },
+    MovementPattern.VERTICAL_PUSH.value: {
+        "novice": 30.0,      # Bar + 5kg plates
+        "intermediate": 50.0,
+        "advanced": 70.0,
+    },
+    MovementPattern.HORIZONTAL_PULL.value: {
+        "novice": 35.0,      # Cable or dumbbell rows
+        "intermediate": 60.0,
+        "advanced": 85.0,
+    },
+    MovementPattern.VERTICAL_PULL.value: {
+        "novice": 35.0,      # Assisted or lat pulldown
+        "intermediate": 65.0,
+        "advanced": 90.0,
+    },
+    # Core movements (typically bodyweight + optional resistance)
+    MovementPattern.CORE_STATIC.value: {
+        "novice": 0.0,       # Bodyweight
+        "intermediate": 0.0,
+        "advanced": 10.0,    # Weighted plank
+    },
+    MovementPattern.CORE_DYNAMIC.value: {
+        "novice": 0.0,       # Bodyweight
+        "intermediate": 5.0,
+        "advanced": 10.0,
+    },
+    # Isolation movements
+    MovementPattern.UPPER_ISOLATION.value: {
+        "novice": 7.5,       # Light dumbbells
+        "intermediate": 12.5,
+        "advanced": 17.5,
+    },
+    MovementPattern.LOWER_ISOLATION.value: {
+        "novice": 20.0,      # Machine weight
+        "intermediate": 35.0,
+        "advanced": 55.0,
+    },
+}
+
+# Mapping from muscle groups to relevant movement patterns and isolation subpatterns
+# Used for priority muscle reallocation
+
+# Subpattern-specific weight adjustments (multipliers)
+# Some subpatterns use lighter/heavier weights than the pattern default
+SUBPATTERN_WEIGHT_MULTIPLIERS: Dict[str, float] = {
+    # Hinge subpatterns
+    MovementSubpattern.HIP_THRUST.value: 1.2,     # Typically heavier than deadlifts for same level
+    MovementSubpattern.DEADLIFT.value: 1.0,
+    MovementSubpattern.GOODMORNING.value: 0.5,    # Lighter due to leverage
+    # Push subpatterns
+    MovementSubpattern.FLY.value: 0.4,            # Much lighter than presses
+    MovementSubpattern.DIP.value: 0.0,            # Bodyweight base
+    # Pull subpatterns
+    MovementSubpattern.FACE_PULL.value: 0.4,      # Light cable work
+    MovementSubpattern.PULLUP.value: 0.0,         # Bodyweight base
+    # Upper isolation
+    MovementSubpattern.BICEP_CURL.value: 1.0,
+    MovementSubpattern.TRICEP_EXTENSION.value: 0.8,
+    MovementSubpattern.LATERAL_RAISE.value: 0.6,  # Very light
+    MovementSubpattern.REAR_DELT.value: 0.5,
+    # Lower isolation
+    MovementSubpattern.LEG_CURL.value: 0.8,
+    MovementSubpattern.LEG_EXTENSION.value: 1.0,
+    MovementSubpattern.CALF_RAISE.value: 1.5,     # Can handle more weight
+    MovementSubpattern.HIP_ABDUCTION.value: 0.6,
+    MovementSubpattern.HIP_ADDUCTION.value: 0.6,
+}
+
+
+MUSCLE_TO_PATTERNS: Dict[str, Dict[str, Any]] = {
+    # Upper body muscles
+    "chest": {
+        "patterns": [MovementPattern.HORIZONTAL_PUSH],
+        "isolation_subpatterns": [MovementSubpattern.FLY],
+    },
+    "biceps": {
+        "patterns": [MovementPattern.HORIZONTAL_PULL, MovementPattern.VERTICAL_PULL],
+        "isolation_subpatterns": [MovementSubpattern.BICEP_CURL],
+    },
+    "triceps": {
+        "patterns": [MovementPattern.HORIZONTAL_PUSH, MovementPattern.VERTICAL_PUSH],
+        "isolation_subpatterns": [MovementSubpattern.TRICEP_EXTENSION],
+    },
+    "front-shoulder": {
+        "patterns": [MovementPattern.VERTICAL_PUSH, MovementPattern.HORIZONTAL_PUSH],
+        "isolation_subpatterns": [],
+    },
+    "middle-shoulder": {
+        "patterns": [MovementPattern.VERTICAL_PUSH],
+        "isolation_subpatterns": [MovementSubpattern.LATERAL_RAISE],
+    },
+    "rear-shoulder": {
+        "patterns": [MovementPattern.HORIZONTAL_PULL],
+        "isolation_subpatterns": [MovementSubpattern.REAR_DELT, MovementSubpattern.FACE_PULL],
+    },
+    "latissimus dorsi": {
+        "patterns": [MovementPattern.VERTICAL_PULL, MovementPattern.HORIZONTAL_PULL],
+        "isolation_subpatterns": [],
+    },
+    "upper back": {
+        "patterns": [MovementPattern.HORIZONTAL_PULL, MovementPattern.VERTICAL_PULL],
+        "isolation_subpatterns": [MovementSubpattern.FACE_PULL],
+    },
+    "trapezius": {
+        "patterns": [MovementPattern.HINGE],
+        "isolation_subpatterns": [],
+    },
+    "middle-traps": {
+        "patterns": [MovementPattern.HORIZONTAL_PULL],
+        "isolation_subpatterns": [MovementSubpattern.FACE_PULL],
+    },
+    "upper traps": {
+        "patterns": [MovementPattern.HINGE],
+        "isolation_subpatterns": [],
+    },
+    # Lower body muscles
+    "quadriceps": {
+        "patterns": [MovementPattern.SQUAT],
+        "isolation_subpatterns": [MovementSubpattern.LEG_EXTENSION],
+    },
+    "hamstrings": {
+        "patterns": [MovementPattern.HINGE],
+        "isolation_subpatterns": [MovementSubpattern.LEG_CURL],
+    },
+    "gluteus maximus": {
+        "patterns": [MovementPattern.HINGE, MovementPattern.SQUAT],
+        "isolation_subpatterns": [MovementSubpattern.HIP_THRUST],
+    },
+    "calves": {
+        "patterns": [],
+        "isolation_subpatterns": [MovementSubpattern.CALF_RAISE],
+    },
+    "hip-adductors": {
+        "patterns": [MovementPattern.SQUAT],
+        "isolation_subpatterns": [MovementSubpattern.HIP_ADDUCTION],
+    },
+    # Core muscles
+    "abs/core": {
+        "patterns": [MovementPattern.CORE_STATIC, MovementPattern.CORE_DYNAMIC],
+        "isolation_subpatterns": [],
+    },
+    "rectus abdominis": {
+        "patterns": [MovementPattern.CORE_DYNAMIC],
+        "isolation_subpatterns": [MovementSubpattern.CRUNCH],
+    },
+    "external obliques": {
+        "patterns": [MovementPattern.CORE_DYNAMIC],
+        "isolation_subpatterns": [MovementSubpattern.ROTATION],
+    },
+    "lower back": {
+        "patterns": [MovementPattern.HINGE],
+        "isolation_subpatterns": [],
+    },
+    # Arm muscles
+    "forearms": {
+        "patterns": [MovementPattern.HORIZONTAL_PULL, MovementPattern.VERTICAL_PULL],
+        "isolation_subpatterns": [],
+    },
+}
+
+
 @dataclass
 class GeneratorConfig:
     """Configuration for the plan generator."""
@@ -48,6 +230,15 @@ class GeneratorConfig:
     movement_restrictions: Optional[Dict[str, bool]] = None  # e.g., {"no_overhead_press": True}
     target_muscle_groups: Optional[List[str]] = None  # Filter to specific muscle groups
     
+    # Priority muscle reallocation
+    priority_muscles: Optional[List[str]] = None  # Muscles to prioritize (get extra volume)
+    
+    # Phase 3: Time budget optimization
+    time_budget_minutes: Optional[int] = None  # Target workout duration (e.g., 45, 60, 90)
+    
+    # Phase 3: Merge mode - keep existing + add missing patterns
+    merge_mode: bool = False  # If True, keep existing exercises and only add missing patterns
+    
     # Behavior flags
     beginner_consistency_mode: bool = True  # Keep same main lifts across sessions for novices
     persist: bool = True  # Insert into user_selection
@@ -65,6 +256,53 @@ class GeneratorConfig:
             raise ValueError("goal must be 'hypertrophy', 'strength', or 'general'")
         if self.volume_scale <= 0 or self.volume_scale > 2:
             raise ValueError("volume_scale must be between 0 and 2")
+        
+        # Validate time budget (Phase 3)
+        if self.time_budget_minutes is not None:
+            if not isinstance(self.time_budget_minutes, int) or self.time_budget_minutes < 15 or self.time_budget_minutes > 180:
+                raise ValueError("time_budget_minutes must be between 15 and 180")
+        
+        # Merge mode cannot be used with overwrite=True
+        if self.merge_mode and self.overwrite:
+            logger.info("merge_mode=True implies overwrite=False, adjusting")
+            self.overwrite = False
+        
+        # Validate priority muscles
+        if self.priority_muscles:
+            if not isinstance(self.priority_muscles, list):
+                raise ValueError("priority_muscles must be a list")
+            if len(self.priority_muscles) > 2:
+                logger.warning(
+                    "More than 2 priority muscles provided (%d). Using first 2.",
+                    len(self.priority_muscles),
+                )
+                self.priority_muscles = self.priority_muscles[:2]
+            
+            # Normalize and validate muscle names
+            valid_muscles = set(MUSCLE_TO_PATTERNS.keys())
+            normalized = []
+            for muscle in self.priority_muscles:
+                muscle_lower = muscle.lower()
+                if muscle_lower in valid_muscles:
+                    normalized.append(muscle_lower)
+                else:
+                    # Try partial match
+                    matches = [m for m in valid_muscles if muscle_lower in m or m in muscle_lower]
+                    if matches:
+                        normalized.append(matches[0])
+                        logger.debug(
+                            "Priority muscle '%s' matched to '%s'",
+                            muscle,
+                            matches[0],
+                        )
+                    else:
+                        logger.warning(
+                            "Priority muscle '%s' not recognized. Available: %s",
+                            muscle,
+                            ", ".join(sorted(valid_muscles)),
+                        )
+            
+            self.priority_muscles = normalized if normalized else None
 
 
 @dataclass
@@ -409,6 +647,38 @@ class PrescriptionCalculator:
         """Get RPE for a given role."""
         return self.rules.RPE_DEFAULTS.get(role, 8.0)
     
+    def get_estimated_weight(
+        self,
+        pattern: MovementPattern,
+        subpattern: Optional[MovementSubpattern] = None,
+    ) -> float:
+        """
+        Get estimated starting weight based on movement pattern and experience level.
+        
+        Args:
+            pattern: The movement pattern (e.g., SQUAT, HORIZONTAL_PUSH)
+            subpattern: Optional subpattern for more specific weight adjustments
+            
+        Returns:
+            Estimated starting weight in kilograms (kg)
+        """
+        experience = self.config.experience_level
+        
+        # Get base weight for the pattern
+        pattern_weights = ESTIMATED_WEIGHTS.get(pattern.value, {})
+        base_weight = pattern_weights.get(experience, 20.0)  # Default fallback
+        
+        # Apply subpattern multiplier if available
+        if subpattern:
+            multiplier = SUBPATTERN_WEIGHT_MULTIPLIERS.get(subpattern.value, 1.0)
+            # Handle bodyweight exercises (multiplier of 0.0)
+            if multiplier == 0.0:
+                return 0.0  # Bodyweight
+            base_weight *= multiplier
+        
+        # Round to nearest 2.5 kg for practical gym use
+        return round(base_weight / 2.5) * 2.5
+    
     def calculate_prescription(
         self,
         slot: SlotDefinition,
@@ -424,13 +694,16 @@ class PrescriptionCalculator:
         
         min_reps, max_reps = self.get_rep_range(role, is_core)
         
+        # Get estimated starting weight based on pattern, subpattern, and experience
+        estimated_weight = self.get_estimated_weight(slot.pattern, slot.subpattern_preference)
+        
         return {
             "sets": self.get_sets(sets_role),
             "min_rep_range": min_reps,
             "max_rep_range": max_reps,
             "rir": self.get_rir(rir_role),
             "rpe": self.get_rpe(rir_role),
-            "weight": 0.0,  # Placeholder for new trainees
+            "weight": estimated_weight,
         }
 
 
@@ -522,6 +795,356 @@ class PlanGenerator:
         
         return routines
     
+    def _apply_priority_muscle_boost(
+        self, 
+        routines: Dict[str, List[ExerciseRow]]
+    ) -> Dict[str, List[ExerciseRow]]:
+        """
+        Apply volume boost for priority muscles.
+        
+        Strategy:
+        1. Find exercises that target priority muscles
+        2. Add +1 set to existing accessories targeting those muscles
+        3. Stay within 24 sets/session budget
+        4. Apply "clear volume for volume": reduce non-essential add-ons first
+        5. Never remove core movement patterns
+        
+        Returns:
+            Modified routines with adjusted volumes
+        """
+        if not self.config.priority_muscles:
+            return routines
+        
+        rules = PrescriptionRules()
+        priority_lower = [m.lower() for m in self.config.priority_muscles]
+        
+        # Get relevant patterns and subpatterns for priority muscles
+        relevant_patterns: Set[MovementPattern] = set()
+        relevant_subpatterns: Set[MovementSubpattern] = set()
+        
+        for muscle in priority_lower:
+            mapping = MUSCLE_TO_PATTERNS.get(muscle)
+            if mapping:
+                relevant_patterns.update(mapping.get("patterns", []))
+                relevant_subpatterns.update(mapping.get("isolation_subpatterns", []))
+        
+        logger.debug("Priority muscles: %s", priority_lower)
+        logger.debug("Relevant patterns: %s", [p.value for p in relevant_patterns])
+        logger.debug("Relevant subpatterns: %s", [s.value for s in relevant_subpatterns])
+        
+        for routine_name, exercises in routines.items():
+            total_sets = sum(ex.sets for ex in exercises)
+            sets_budget = rules.MAX_SETS_PER_SESSION - total_sets
+            
+            if sets_budget <= 0:
+                # Need to "clear volume" - reduce non-priority accessories first
+                cleared = self._clear_volume_for_priority(
+                    exercises, 
+                    relevant_patterns, 
+                    target_sets_to_clear=2
+                )
+                sets_budget += cleared
+            
+            if sets_budget <= 0:
+                logger.debug(
+                    "Routine %s: No budget for priority boost after clearing",
+                    routine_name,
+                )
+                continue
+            
+            # Find exercises targeting priority muscles (by pattern or muscle group)
+            priority_exercises = []
+            for ex in exercises:
+                # Check by muscle group match (via DB lookup or cached data)
+                is_priority = self._exercise_targets_priority_muscle(
+                    ex.exercise, priority_lower
+                )
+                
+                # Also check by pattern match
+                if ex.pattern:
+                    pattern = MovementPattern(ex.pattern) if ex.pattern else None
+                    if pattern in relevant_patterns:
+                        is_priority = True
+                
+                if is_priority and ex.role == "accessory":
+                    priority_exercises.append(ex)
+            
+            # Boost priority exercises (add 1 set each, within budget)
+            boosted = 0
+            for ex in priority_exercises:
+                if sets_budget <= 0:
+                    break
+                if ex.sets < 4:  # Cap accessory sets at 4
+                    ex.sets += 1
+                    sets_budget -= 1
+                    boosted += 1
+                    logger.debug(
+                        "Boosted %s in routine %s to %d sets",
+                        ex.exercise,
+                        routine_name,
+                        ex.sets,
+                    )
+            
+            if boosted == 0 and sets_budget > 0:
+                # No accessories to boost, try boosting main lifts
+                for ex in exercises:
+                    if sets_budget <= 0:
+                        break
+                    
+                    if ex.pattern:
+                        pattern = MovementPattern(ex.pattern) if ex.pattern else None
+                        if pattern in relevant_patterns and ex.role == "main" and ex.sets < 5:
+                            ex.sets += 1
+                            sets_budget -= 1
+                            logger.debug(
+                                "Boosted main lift %s in routine %s to %d sets",
+                                ex.exercise,
+                                routine_name,
+                                ex.sets,
+                            )
+        
+        return routines
+    
+    def _clear_volume_for_priority(
+        self,
+        exercises: List[ExerciseRow],
+        relevant_patterns: Set[MovementPattern],
+        target_sets_to_clear: int = 2,
+    ) -> int:
+        """
+        Clear volume from non-priority accessories to make room for priority work.
+        
+        Strategy: "Clear volume for volume" - reduce non-essential add-ons first.
+        Never remove core movement patterns entirely.
+        
+        Returns:
+            Number of sets cleared
+        """
+        cleared = 0
+        
+        # Protected patterns that should never be reduced to 0
+        protected_patterns = {
+            MovementPattern.SQUAT,
+            MovementPattern.HINGE,
+            MovementPattern.HORIZONTAL_PUSH,
+            MovementPattern.HORIZONTAL_PULL,
+            MovementPattern.VERTICAL_PUSH,
+            MovementPattern.VERTICAL_PULL,
+            MovementPattern.CORE_STATIC,
+            MovementPattern.CORE_DYNAMIC,
+        }
+        
+        # Sort by priority: non-priority isolations first, then other accessories
+        def reduction_priority(ex: ExerciseRow) -> int:
+            is_priority = False
+            if ex.pattern:
+                try:
+                    pattern = MovementPattern(ex.pattern)
+                    is_priority = pattern in relevant_patterns
+                except ValueError:
+                    pass
+            
+            if ex.role == "main":
+                return 100  # Main lifts last
+            if is_priority:
+                return 50  # Priority accessories protected
+            if ex.pattern in ("upper_isolation", "lower_isolation"):
+                return 0  # Non-priority isolations first
+            return 25  # Other accessories middle
+        
+        exercises_sorted = sorted(exercises, key=reduction_priority)
+        
+        for ex in exercises_sorted:
+            if cleared >= target_sets_to_clear:
+                break
+            
+            # Check if this is a protected core pattern
+            is_protected = False
+            if ex.pattern:
+                try:
+                    pattern = MovementPattern(ex.pattern)
+                    is_protected = pattern in protected_patterns and ex.role == "main"
+                except ValueError:
+                    pass
+            
+            # Reduce sets but never below 1, and be careful with main lifts
+            min_sets = 2 if ex.role == "main" else 1
+            if ex.sets > min_sets and not is_protected:
+                reduction = min(ex.sets - min_sets, target_sets_to_clear - cleared)
+                ex.sets -= reduction
+                cleared += reduction
+                logger.debug(
+                    "Cleared %d set(s) from %s (now %d sets) for priority reallocation",
+                    reduction,
+                    ex.exercise,
+                    ex.sets,
+                )
+        
+        return cleared
+    
+    def _exercise_targets_priority_muscle(
+        self,
+        exercise_name: str,
+        priority_muscles: List[str],
+    ) -> bool:
+        """Check if an exercise targets any of the priority muscles."""
+        # Look up exercise in cache
+        exercises = self.selector._load_exercises()
+        
+        for ex in exercises:
+            if ex.get("exercise_name") == exercise_name:
+                primary = (ex.get("primary_muscle_group") or "").lower()
+                secondary = (ex.get("secondary_muscle_group") or "").lower()
+                
+                for muscle in priority_muscles:
+                    if muscle in primary or muscle in secondary:
+                        return True
+                    # Partial match (e.g., "glute" matches "gluteus maximus")
+                    if any(muscle in m or m in muscle for m in [primary, secondary] if m):
+                        return True
+                
+                break
+        
+        return False
+    
+    def _get_existing_patterns(self, routine: str) -> Set[MovementPattern]:
+        """Get movement patterns already covered in a routine (for merge mode)."""
+        patterns: Set[MovementPattern] = set()
+        
+        try:
+            with DatabaseHandler() as db:
+                rows = db.fetch_all(
+                    """
+                    SELECT us.exercise, e.movement_pattern
+                    FROM user_selection us
+                    LEFT JOIN exercises e ON us.exercise = e.exercise_name
+                    WHERE us.routine = ?
+                    """,
+                    (routine,),
+                )
+                
+                for row in rows:
+                    pattern_str = row.get("movement_pattern")
+                    if pattern_str:
+                        try:
+                            pattern = MovementPattern(pattern_str)
+                            patterns.add(pattern)
+                        except ValueError:
+                            pass
+        except Exception as e:
+            logger.warning("Failed to get existing patterns for routine %s: %s", routine, e)
+        
+        return patterns
+    
+    def _estimate_workout_duration(self, exercises: List[ExerciseRow]) -> int:
+        """
+        Estimate workout duration in minutes based on exercises and sets.
+        
+        Rules (average time per set including rest):
+        - Main compound lifts: 3-4 minutes/set (heavier weights, longer rest)
+        - Accessory compounds: 2.5 minutes/set
+        - Isolation exercises: 2 minutes/set (shorter rest)
+        - Core exercises: 1.5 minutes/set
+        """
+        total_seconds = 0
+        
+        for ex in exercises:
+            pattern = MovementPattern(ex.pattern) if ex.pattern else None
+            
+            if ex.role == "main":
+                # Main lifts need more rest
+                seconds_per_set = 210  # 3.5 minutes
+            elif pattern in (MovementPattern.CORE_STATIC, MovementPattern.CORE_DYNAMIC):
+                seconds_per_set = 90  # 1.5 minutes
+            elif pattern in (MovementPattern.UPPER_ISOLATION, MovementPattern.LOWER_ISOLATION):
+                seconds_per_set = 120  # 2 minutes
+            else:
+                seconds_per_set = 150  # 2.5 minutes
+            
+            total_seconds += ex.sets * seconds_per_set
+        
+        # Add warmup time (approximately 5-10 minutes)
+        total_seconds += 420  # 7 minutes average warmup
+        
+        return total_seconds // 60
+    
+    def _optimize_for_time_budget(
+        self, 
+        routines: Dict[str, List[ExerciseRow]]
+    ) -> Dict[str, List[ExerciseRow]]:
+        """
+        Optimize the plan to fit within the time budget.
+        
+        Strategy:
+        1. Calculate estimated duration
+        2. If over budget, progressively reduce:
+           a. Accessory isolation sets
+           b. Accessory compound sets
+           c. Remove isolation exercises entirely
+        3. Never reduce main lift sets below 2
+        """
+        if not self.config.time_budget_minutes:
+            return routines
+        
+        target_minutes = self.config.time_budget_minutes
+        
+        for routine_name, exercises in routines.items():
+            current_duration = self._estimate_workout_duration(exercises)
+            
+            if current_duration <= target_minutes:
+                logger.debug(
+                    "Routine %s within time budget (%d/%d minutes)",
+                    routine_name,
+                    current_duration,
+                    target_minutes,
+                )
+                continue
+            
+            logger.info(
+                "Optimizing routine %s for time budget (%d -> %d minutes)",
+                routine_name,
+                current_duration,
+                target_minutes,
+            )
+            
+            # Phase 1: Reduce isolation sets
+            for ex in exercises:
+                if current_duration <= target_minutes:
+                    break
+                pattern = MovementPattern(ex.pattern) if ex.pattern else None
+                if pattern in (MovementPattern.UPPER_ISOLATION, MovementPattern.LOWER_ISOLATION):
+                    while ex.sets > 1 and current_duration > target_minutes:
+                        ex.sets -= 1
+                        current_duration = self._estimate_workout_duration(exercises)
+            
+            # Phase 2: Reduce accessory compound sets
+            for ex in exercises:
+                if current_duration <= target_minutes:
+                    break
+                if ex.role == "accessory":
+                    while ex.sets > 1 and current_duration > target_minutes:
+                        ex.sets -= 1
+                        current_duration = self._estimate_workout_duration(exercises)
+            
+            # Phase 3: Remove isolation exercises if still over
+            if current_duration > target_minutes:
+                exercises[:] = [
+                    ex for ex in exercises
+                    if MovementPattern(ex.pattern) not in (
+                        MovementPattern.UPPER_ISOLATION, 
+                        MovementPattern.LOWER_ISOLATION
+                    ) if ex.pattern
+                ]
+                current_duration = self._estimate_workout_duration(exercises)
+            
+            logger.debug(
+                "Routine %s optimized to ~%d minutes",
+                routine_name,
+                current_duration,
+            )
+        
+        return routines
+    
     def generate(self) -> GeneratedPlan:
         """Generate the complete workout plan."""
         blueprint = self._get_blueprint()
@@ -534,11 +1157,42 @@ class PlanGenerator:
                     self.config.experience_level == "novice"):
                 self.selector.reset_used_exercises()
             
+            # Merge mode: only add slots for missing patterns
+            if self.config.merge_mode:
+                existing_patterns = self._get_existing_patterns(routine_name)
+                
+                if existing_patterns:
+                    logger.info(
+                        "Merge mode: Routine %s has existing patterns: %s",
+                        routine_name,
+                        [p.value for p in existing_patterns],
+                    )
+                    
+                    # Filter slots to only include missing patterns
+                    slots = [
+                        slot for slot in slots
+                        if slot.pattern not in existing_patterns
+                    ]
+                    
+                    logger.info(
+                        "Merge mode: Adding %d new exercises to routine %s",
+                        len(slots),
+                        routine_name,
+                    )
+            
             exercises = self._build_routine(routine_name, slots)
             routines[routine_name] = exercises
         
         # Adjust total volume if needed
         routines = self._adjust_volume(routines)
+        
+        # Apply priority muscle volume boost if configured
+        if self.config.priority_muscles:
+            routines = self._apply_priority_muscle_boost(routines)
+        
+        # Apply time budget optimization if configured (Phase 3)
+        if self.config.time_budget_minutes:
+            routines = self._optimize_for_time_budget(routines)
         
         return GeneratedPlan(routines=routines, config=self.config)
     
@@ -669,6 +1323,9 @@ def generate_starter_plan(
     preferred_exercises: Optional[Dict[str, List[str]]] = None,
     movement_restrictions: Optional[Dict[str, bool]] = None,
     target_muscle_groups: Optional[List[str]] = None,
+    priority_muscles: Optional[List[str]] = None,
+    time_budget_minutes: Optional[int] = None,
+    merge_mode: bool = False,
     beginner_consistency_mode: bool = True,
     persist: bool = True,
     overwrite: bool = True,
@@ -687,9 +1344,12 @@ def generate_starter_plan(
         preferred_exercises: Dict mapping pattern to preferred exercise names
         movement_restrictions: Dict of movement restrictions (e.g., {"no_overhead_press": True})
         target_muscle_groups: List of muscle groups to target (filter exercises)
+        priority_muscles: List of muscles to prioritize (get extra volume)
+        time_budget_minutes: Target workout duration in minutes (15-180)
+        merge_mode: If True, keep existing exercises and only add missing patterns
         beginner_consistency_mode: Keep same main lifts for novices
         persist: Whether to save to database
-        overwrite: Whether to overwrite existing routines
+        overwrite: Whether to overwrite existing routines (ignored if merge_mode=True)
         
     Returns:
         Dictionary containing the generated plan and metadata
@@ -705,6 +1365,9 @@ def generate_starter_plan(
         preferred_exercises=preferred_exercises,
         movement_restrictions=movement_restrictions,
         target_muscle_groups=target_muscle_groups,
+        priority_muscles=priority_muscles,
+        time_budget_minutes=time_budget_minutes,
+        merge_mode=merge_mode,
         beginner_consistency_mode=beginner_consistency_mode,
         persist=persist,
         overwrite=overwrite,
@@ -716,6 +1379,18 @@ def generate_starter_plan(
     result = plan.to_dict()
     result["total_exercises"] = plan.total_exercises
     result["sets_per_routine"] = plan.total_sets_per_routine
+    
+    # Add estimated duration if time budget optimization was applied
+    if config.time_budget_minutes:
+        result["estimated_duration_minutes"] = {
+            routine: generator._estimate_workout_duration(exercises)
+            for routine, exercises in plan.routines.items()
+        }
+        result["time_budget_minutes"] = config.time_budget_minutes
+    
+    # Indicate merge mode was used
+    if config.merge_mode:
+        result["merge_mode"] = True
     
     if persist:
         try:

@@ -21,14 +21,11 @@
 :root {
   /* Typography - zoom-friendly with clamp() */
   --tbl-font-size: clamp(0.85rem, 0.9vw, 1rem);
-  --tbl-font-size-compact: clamp(0.75rem, 0.8vw, 0.85rem);
   --tbl-line-height: 1.5;
 
   /* Spacing - adaptive cell padding */
   --tbl-cell-pad-y: clamp(0.5rem, 0.75vw, 0.75rem);
   --tbl-cell-pad-x: clamp(0.6rem, 1vw, 1rem);
-  --tbl-cell-pad-y-compact: clamp(0.25rem, 0.35vw, 0.4rem);
-  --tbl-cell-pad-x-compact: clamp(0.4rem, 0.6vw, 0.6rem);
 
   /* Borders */
   --tbl-border-color: #d0d0d0;
@@ -133,11 +130,6 @@ body.dark-mode {
   backface-visibility: hidden;
 }
 
-/* Compact density mode */
-.tbl--compact {
-  font-size: var(--tbl-font-size-compact);
-}
-
 .tbl th,
 .tbl td,
 .tbl--responsive th,
@@ -148,12 +140,6 @@ body.dark-mode {
   text-align: left;
   overflow-wrap: anywhere;
   transition: padding 0.2s ease, font-size 0.2s ease;
-}
-
-.tbl--compact th,
-.tbl--compact td {
-  padding: var(--tbl-cell-pad-y-compact) var(--tbl-cell-pad-x-compact);
-  line-height: 1.3;
 }
 
 /* ============================================================
@@ -470,7 +456,6 @@ body.dark-mode {
   z-index: 20;
 }
 
-.tbl-density-toggle,
 .tbl-col-chooser-trigger {
   padding: 0.5rem 0.875rem;
   font-size: 0.875rem;
@@ -493,14 +478,12 @@ body.dark-mode {
   }
 }
 
-.tbl-density-toggle:hover,
 .tbl-col-chooser-trigger:hover {
   background-color: var(--tbl-row-hover-bg);
   border-color: var(--bs-primary, #0d6efd);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.tbl-density-toggle:focus,
 .tbl-col-chooser-trigger:focus {
   outline: 2px solid var(--bs-primary, #0d6efd);
   outline-offset: 2px;
@@ -517,9 +500,9 @@ body.dark-mode {
 }
 
 .tbl-col-chooser-menu {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  left: 0;
+  position: fixed;
+  top: auto;
+  left: auto;
   max-width: 280px;
   min-width: 200px;
   max-height: 400px;
@@ -528,7 +511,7 @@ body.dark-mode {
   border: 1px solid var(--tbl-border-color);
   border-radius: 0.375rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 20000;
+  z-index: 100000;
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
@@ -570,6 +553,69 @@ body.dark-mode {
 
 .tbl-col-chooser-menu input[type="checkbox"] {
   cursor: pointer;
+}
+
+/* ============================================================
+   VIEW MODE TOGGLE (Simple/Advanced)
+   ============================================================ */
+
+.tbl-view-mode-toggle {
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--tbl-border-color);
+  border-radius: 0.375rem;
+  background-color: var(--bs-body-bg, #ffffff);
+  color: var(--bs-body-color, #212529);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tbl-view-mode-toggle:hover {
+  background-color: var(--tbl-row-hover-bg);
+  border-color: var(--bs-primary, #0d6efd);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tbl-view-mode-toggle:focus {
+  outline: 2px solid var(--bs-primary, #0d6efd);
+  outline-offset: 2px;
+}
+
+/* Advanced mode styling - indicate active state */
+.tbl-view-mode-toggle[data-view-mode="advanced"] {
+  background-color: var(--bs-primary, #0d6efd);
+  color: #ffffff;
+  border-color: var(--bs-primary, #0d6efd);
+}
+
+.tbl-view-mode-toggle[data-view-mode="advanced"]:hover {
+  background-color: var(--bs-primary-dark, #0b5ed7);
+}
+
+/* ============================================================
+   SIMPLE/ADVANCED VIEW MODE COLUMN VISIBILITY
+   Hides specific columns when table is in Simple mode.
+   Uses CSS so dynamically added rows inherit visibility.
+   ============================================================ */
+
+.tbl--view-simple th[data-label="Tertiary Muscle"],
+.tbl--view-simple td[data-label="Tertiary Muscle"],
+.tbl--view-simple th[data-label="Utility"],
+.tbl--view-simple td[data-label="Utility"],
+.tbl--view-simple th[data-label="Movement Pattern"],
+.tbl--view-simple td[data-label="Movement Pattern"],
+.tbl--view-simple th[data-label="Movement Subpattern"],
+.tbl--view-simple td[data-label="Movement Subpattern"],
+.tbl--view-simple th[data-label="Stabilizers"],
+.tbl--view-simple td[data-label="Stabilizers"],
+.tbl--view-simple th[data-label="Synergists"],
+.tbl--view-simple td[data-label="Synergists"] {
+  display: none !important;
 }
 
 /* ============================================================

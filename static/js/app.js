@@ -100,10 +100,15 @@ window.generateStarterPlan = async function() {
             return;
         }
         
-        // Target muscle groups - collect selected muscles from muscle selector
-        let targetMuscleGroups = [];
+        // Priority muscles - collect selected muscles from muscle selector (max 2)
+        let priorityMuscles = [];
         if (window.muscleSelector) {
-            targetMuscleGroups = window.muscleSelector.getSelectedMusclesForBackend();
+            priorityMuscles = window.muscleSelector.getSelectedMusclesForBackend();
+            // Limit to 2 priority muscles
+            if (priorityMuscles.length > 2) {
+                showToast('Maximum 2 priority muscles allowed. Using first 2 selected.', 'warning');
+                priorityMuscles = priorityMuscles.slice(0, 2);
+            }
         }
         
         // Make API request
@@ -121,7 +126,7 @@ window.generateStarterPlan = async function() {
                 overwrite: overwrite,
                 movement_restrictions: Object.keys(movementRestrictions).length > 0 ? movementRestrictions : null,
                 equipment_whitelist: equipmentWhitelist,
-                target_muscle_groups: targetMuscleGroups.length > 0 ? targetMuscleGroups : null,
+                priority_muscles: priorityMuscles.length > 0 ? priorityMuscles : null,
                 persist: true
             })
         });

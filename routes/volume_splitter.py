@@ -229,6 +229,28 @@ def get_volume_plan(plan_id):
     finally:
         conn.close() 
 
+@volume_splitter_bp.route('/api/volume_plan/<int:plan_id>', methods=['DELETE'])
+def delete_volume_plan(plan_id):
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        # Check if plan exists
+        cursor.execute('SELECT id FROM volume_plans WHERE id = ?', (plan_id,))
+        if not cursor.fetchone():
+            return jsonify({'success': False, 'error': 'Plan not found'}), 404
+        
+        # Delete the plan (muscle_volumes will cascade delete)
+        cursor.execute('DELETE FROM volume_plans WHERE id = ?', (plan_id,))
+        conn.commit()
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        conn.close()
+
 @volume_splitter_bp.route('/api/export_volume_excel', methods=['POST'])
 def export_volume_excel():
     data = request.get_json() or {}

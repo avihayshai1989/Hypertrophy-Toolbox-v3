@@ -309,12 +309,15 @@
                             <th scope="col" class="col--low" data-label="Tertiary Muscle">Tertiary Muscle</th>
                             <th scope="col" class="col--low" data-label="Isolated Muscles">Isolated Muscles</th>
                             <th scope="col" class="col--low" data-label="Utility">Utility</th>
+                            <th scope="col" class="col--low" data-label="Movement Pattern">Movement Pattern</th>
+                            <th scope="col" class="col--low" data-label="Movement Subpattern">Movement Subpattern</th>
                             <th scope="col" class="col--high is-num" data-label="Sets">Sets</th>
                             <th scope="col" class="col--high is-num" data-label="Min Rep">Min Rep</th>
                             <th scope="col" class="col--high is-num" data-label="Max Rep">Max Rep</th>
                             <th scope="col" class="col--med is-num" data-label="RIR">RIR</th>
                             <th scope="col" class="col--med is-num" data-label="RPE">RPE</th>
                             <th scope="col" class="col--high is-num" data-label="Weight">Weight</th>
+                            <th scope="col" class="col--med" data-label="Execution Style" title="Set AMRAP/EMOM timing">Style</th>
                             <th scope="col" class="col--low" data-label="Grips">Grips</th>
                             <th scope="col" class="col--low" data-label="Stabilizers">Stabilizers</th>
                             <th scope="col" class="col--low" data-label="Synergists">Synergists</th>
@@ -332,252 +335,162 @@
 
     <!-- Generate Starter Plan Modal -->
     <div class="modal fade" id="generatePlanModal" tabindex="-1" aria-labelledby="generatePlanModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 90vw; width: 1600px;">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header py-2">
                     <h5 class="modal-title" id="generatePlanModalLabel">
                         <i class="fas fa-magic me-2"></i>Generate Starter Plan
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body py-3">
                     <form id="generatePlanForm">
-                        <div class="row g-3">
-                            <!-- Training Days -->
-                            <div class="col-md-6">
-                                <label for="gen-training-days" class="form-label">Training Days per Week</label>
-                                <select id="gen-training-days" class="form-select" required>
-                                    <option value="1">1 day (Single Full-Body)</option>
-                                    <option value="2">2 days (A/B Split)</option>
-                                    <option value="3" selected>3 days (A/B/C Rotation)</option>
-                                    <option value="4">4 days (Upper/Lower)</option>
-                                    <option value="5">5 days (PPL + Upper/Lower)</option>
+                        <!-- Row 1: All 6 dropdowns/controls -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-xl-2 col-lg-4 col-md-6">
+                                <label for="gen-training-days" class="form-label small mb-1">Training Days</label>
+                                <select id="gen-training-days" class="form-select form-select-sm" required>
+                                    <option value="1">1 day (Full-Body)</option>
+                                    <option value="2">2 days (A/B)</option>
+                                    <option value="3" selected>3 days (A/B/C)</option>
+                                    <option value="4">4 days (U/L)</option>
+                                    <option value="5">5 days (PPL+)</option>
                                 </select>
-                                <div class="form-text">How many days per week will you train?</div>
                             </div>
-
-                            <!-- Environment -->
-                            <div class="col-md-6">
-                                <label for="gen-environment" class="form-label">Training Environment</label>
-                                <select id="gen-environment" class="form-select" required>
-                                    <option value="gym" selected>🏋️ Gym (Full Equipment)</option>
-                                    <option value="home">🏠 Home (Minimal Equipment)</option>
+                            <div class="col-xl-2 col-lg-4 col-md-6">
+                                <label for="gen-environment" class="form-label small mb-1">Environment</label>
+                                <select id="gen-environment" class="form-select form-select-sm" required>
+                                    <option value="gym" selected>🏋️ Gym</option>
+                                    <option value="home">🏠 Home</option>
                                 </select>
-                                <div class="form-text">Where will you be training?</div>
                             </div>
-
-                            <!-- Experience Level -->
-                            <div class="col-md-6">
-                                <label for="gen-experience" class="form-label">Experience Level</label>
-                                <select id="gen-experience" class="form-select" required>
-                                    <option value="novice" selected>Novice (< 1 year)</option>
-                                    <option value="intermediate">Intermediate (1-3 years)</option>
-                                    <option value="advanced">Advanced (3+ years)</option>
+                            <div class="col-xl-2 col-lg-4 col-md-6">
+                                <label for="gen-experience" class="form-label small mb-1">Experience</label>
+                                <select id="gen-experience" class="form-select form-select-sm" required>
+                                    <option value="novice" selected>Novice (&lt;1yr)</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
                                 </select>
-                                <div class="form-text">Your training experience</div>
                             </div>
-
-                            <!-- Goal -->
-                            <div class="col-md-6">
-                                <label for="gen-goal" class="form-label">Training Goal</label>
-                                <select id="gen-goal" class="form-select" required>
-                                    <option value="hypertrophy" selected>💪 Hypertrophy (Muscle Growth)</option>
-                                    <option value="strength">🏆 Strength (Max Strength)</option>
-                                    <option value="general">⚖️ General Fitness</option>
+                            <div class="col-xl-2 col-lg-4 col-md-6">
+                                <label for="gen-goal" class="form-label small mb-1">Goal</label>
+                                <select id="gen-goal" class="form-select form-select-sm" required>
+                                    <option value="hypertrophy" selected>💪 Hypertrophy</option>
+                                    <option value="strength">🏆 Strength</option>
+                                    <option value="general">⚖️ General</option>
                                 </select>
-                                <div class="form-text">Your primary training objective</div>
                             </div>
-
-                            <!-- Volume Scale -->
-                            <div class="col-md-6">
-                                <label for="gen-volume-scale" class="form-label">Volume Scale</label>
+                            <div class="col-xl-2 col-lg-4 col-md-6">
+                                <label for="gen-volume-scale" class="form-label small mb-1">Volume: <span id="volume-scale-value" class="fw-bold">1.0x</span></label>
                                 <input type="range" class="form-range" id="gen-volume-scale" min="0.6" max="1.2" step="0.1" value="1.0">
-                                <div class="d-flex justify-content-between">
-                                    <small class="text-muted">Lower Volume</small>
-                                    <small id="volume-scale-value" class="fw-bold">1.0x</small>
-                                    <small class="text-muted">Higher Volume</small>
-                                </div>
-                                <div class="form-text">Adjust if you're a heavy lifter or need less volume</div>
                             </div>
-
-                            <!-- Overwrite Option -->
-                            <div class="col-md-6">
-                                <label class="form-label">Existing Plan</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="gen-overwrite" checked>
-                                    <label class="form-check-label" for="gen-overwrite">
-                                        Overwrite existing routines (A, B, C)
-                                    </label>
-                                </div>
-                                <div class="form-text">Uncheck to create new routine names (A_gen1, etc.)</div>
-                            </div>
-
-                            <!-- Movement Restrictions -->
-                            <div class="col-12">
-                                <label class="form-label">Movement Restrictions (Optional)</label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="gen-no-overhead">
-                                            <label class="form-check-label" for="gen-no-overhead">
-                                                No Overhead Press (shoulder issues)
-                                            </label>
-                                        </div>
+                            <div class="col-xl-2 col-lg-4 col-md-6">
+                                <label class="form-label small mb-1">Options</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input" type="checkbox" id="gen-overwrite" checked>
+                                        <label class="form-check-label small" for="gen-overwrite">Overwrite</label>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="gen-no-deadlift">
-                                            <label class="form-check-label" for="gen-no-deadlift">
-                                                No Deadlifts (back issues)
-                                            </label>
-                                        </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input" type="checkbox" id="gen-no-overhead">
+                                        <label class="form-check-label small" for="gen-no-overhead">No Overhead Press</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input" type="checkbox" id="gen-no-deadlift">
+                                        <label class="form-check-label small" for="gen-no-deadlift">No Deadlifts</label>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Available Equipment -->
+                        <!-- Row 2: Equipment -->
+                        <div class="row g-2 mb-2">
                             <div class="col-12">
-                                <label class="form-label">
-                                    <i class="fas fa-dumbbell me-1"></i>Available Equipment
+                                <label class="form-label small mb-1"><i class="fas fa-dumbbell me-1"></i>Equipment</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-barbell" value="Barbell" checked>
+                                        <label class="form-check-label small" for="gen-eq-barbell"><i class="fas fa-weight-hanging text-secondary"></i> Barbell</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-dumbbells" value="Dumbbells" checked>
+                                        <label class="form-check-label small" for="gen-eq-dumbbells"><i class="fas fa-dumbbell text-secondary"></i> Dumbbells</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-cables" value="Cables" checked>
+                                        <label class="form-check-label small" for="gen-eq-cables"><i class="fas fa-link text-secondary"></i> Cables</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-machine" value="Machine" checked>
+                                        <label class="form-check-label small" for="gen-eq-machine"><i class="fas fa-cogs text-secondary"></i> Machine</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-bodyweight" value="Bodyweight" checked>
+                                        <label class="form-check-label small" for="gen-eq-bodyweight"><i class="fas fa-running text-secondary"></i> Bodyweight</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-kettlebells" value="Kettlebells">
+                                        <label class="form-check-label small" for="gen-eq-kettlebells"><i class="fas fa-bowling-ball text-secondary"></i> Kettlebells</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-smith" value="Smith_Machine">
+                                        <label class="form-check-label small" for="gen-eq-smith"><i class="fas fa-grip-lines-vertical text-secondary"></i> Smith Machine</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-trapbar" value="Trapbar">
+                                        <label class="form-check-label small" for="gen-eq-trapbar"><i class="fas fa-hexagon text-secondary"></i> Trap Bar</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-band" value="Band">
+                                        <label class="form-check-label small" for="gen-eq-band"><i class="fas fa-ribbon text-secondary"></i> Band</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-trx" value="Trx">
+                                        <label class="form-check-label small" for="gen-eq-trx"><i class="fas fa-compress-arrows-alt text-secondary"></i> TRX</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-plate" value="Plate">
+                                        <label class="form-check-label small" for="gen-eq-plate"><i class="fas fa-circle text-secondary"></i> Plate</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0">
+                                        <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-medicine" value="Medicine_Ball">
+                                        <label class="form-check-label small" for="gen-eq-medicine"><i class="fas fa-basketball-ball text-secondary"></i> Medicine Ball</label>
+                                    </div>
+                                    <span class="ms-2">
+                                        <button type="button" class="btn btn-sm btn-link p-0 me-1" onclick="document.querySelectorAll('.equipment-check').forEach(c => c.checked = true)">All</button>
+                                        <button type="button" class="btn btn-sm btn-link p-0" onclick="document.querySelectorAll('.equipment-check').forEach(c => c.checked = false)">None</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Preview -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-12">
+                                <div class="p-2 bg-light rounded small" id="plan-preview">
+                                    <strong><i class="fas fa-info-circle me-1"></i>Preview:</strong>
+                                    <span id="plan-preview-content">A, B, C • ~7 exercises • 18 sets • 6-15 reps</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 4: Muscle selector full width -->
+                        <div class="row">
+                            <div class="col-12">
+                                <label class="form-label small mb-1">
+                                    <i class="fas fa-star me-1"></i>Priority Muscle Groups 
+                                    <span class="text-muted">(Optional, max 2 - get extra volume)</span>
                                 </label>
-                                <p class="text-muted small mb-2">Select the equipment you have access to. Exercises will be filtered based on your selection.</p>
-                                <div class="row g-2">
-                                    <!-- Common Equipment -->
-                                    <div class="col-md-4 col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-barbell" value="Barbell" checked>
-                                            <label class="form-check-label" for="gen-eq-barbell">
-                                                <i class="fas fa-weight-hanging text-secondary me-1"></i>Barbell
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-dumbbells" value="Dumbbells" checked>
-                                            <label class="form-check-label" for="gen-eq-dumbbells">
-                                                <i class="fas fa-dumbbell text-secondary me-1"></i>Dumbbells
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-cables" value="Cables" checked>
-                                            <label class="form-check-label" for="gen-eq-cables">
-                                                <i class="fas fa-link text-secondary me-1"></i>Cables
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-machine" value="Machine" checked>
-                                            <label class="form-check-label" for="gen-eq-machine">
-                                                <i class="fas fa-cogs text-secondary me-1"></i>Machine
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-bodyweight" value="Bodyweight" checked>
-                                            <label class="form-check-label" for="gen-eq-bodyweight">
-                                                <i class="fas fa-running text-secondary me-1"></i>Bodyweight
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-kettlebells" value="Kettlebells">
-                                            <label class="form-check-label" for="gen-eq-kettlebells">
-                                                <i class="fas fa-bowling-ball text-secondary me-1"></i>Kettlebells
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <!-- Specialty Equipment -->
-                                    <div class="col-md-4 col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-smith" value="Smith_Machine">
-                                            <label class="form-check-label" for="gen-eq-smith">
-                                                <i class="fas fa-grip-lines-vertical text-secondary me-1"></i>Smith Machine
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-trapbar" value="Trapbar">
-                                            <label class="form-check-label" for="gen-eq-trapbar">
-                                                <i class="fas fa-hexagon text-secondary me-1"></i>Trap Bar
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-band" value="Band">
-                                            <label class="form-check-label" for="gen-eq-band">
-                                                <i class="fas fa-ribbon text-secondary me-1"></i>Resistance Band
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-trx" value="Trx">
-                                            <label class="form-check-label" for="gen-eq-trx">
-                                                <i class="fas fa-compress-arrows-alt text-secondary me-1"></i>TRX / Suspension
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-plate" value="Plate">
-                                            <label class="form-check-label" for="gen-eq-plate">
-                                                <i class="fas fa-circle text-secondary me-1"></i>Weight Plate
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-medicine" value="Medicine_Ball">
-                                            <label class="form-check-label" for="gen-eq-medicine">
-                                                <i class="fas fa-basketball-ball text-secondary me-1"></i>Medicine Ball
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-2">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary me-1" onclick="document.querySelectorAll('.equipment-check').forEach(c => c.checked = true)">
-                                        <i class="fas fa-check-double me-1"></i>Select All
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.querySelectorAll('.equipment-check').forEach(c => c.checked = false)">
-                                        <i class="fas fa-times me-1"></i>Clear All
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Target Muscle Groups -->
-                            <div class="col-12">
-                                <label class="form-label">
-                                    <i class="fas fa-user me-1"></i>Target Muscle Groups (Optional)
-                                </label>
-                                <p class="text-muted small mb-2">Click on muscles to select specific areas to target. Leave empty to target all muscle groups.</p>
                                 <div id="muscle-selector-container" class="muscle-selector-container">
                                     <!-- Muscle selector will be rendered here by JavaScript -->
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Preview Section -->
-                        <div class="mt-4 p-3 bg-light rounded" id="plan-preview">
-                            <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>Plan Preview</h6>
-                            <div id="plan-preview-content">
-                                <p class="mb-1"><strong>Routines:</strong> A, B (2-day split)</p>
-                                <p class="mb-1"><strong>Exercises per session:</strong> ~7</p>
-                                <p class="mb-1"><strong>Sets per session:</strong> ~18</p>
-                                <p class="mb-0"><strong>Rep range:</strong> 6-10 (main), 10-15 (accessories)</p>
-                            </div>
-                        </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="generatePlanSubmit" onclick="generateStarterPlan()">
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success btn-sm" id="generatePlanSubmit" onclick="generateStarterPlan()">
                         <i class="fas fa-magic me-1"></i>Generate Plan
                     </button>
                 </div>
@@ -644,38 +557,33 @@ document.addEventListener('DOMContentLoaded', function() {
         const volumeScaleVal = document.getElementById('gen-volume-scale')?.value || '1.0';
         
         let routines = 'A';
-        let splitName = 'Single Full-Body';
+        let splitName = 'Full-Body';
         if (trainingDays === '2') {
             routines = 'A, B';
-            splitName = '2-day A/B split';
+            splitName = 'A/B';
         } else if (trainingDays === '3') {
             routines = 'A, B, C';
-            splitName = '3-day A/B/C rotation';
+            splitName = 'A/B/C';
         } else if (trainingDays === '4') {
             routines = 'A, B, C, D';
-            splitName = '4-day Upper/Lower split';
+            splitName = 'U/L';
         } else if (trainingDays === '5') {
             routines = 'A, B, C, D, E';
-            splitName = '5-day PPL + Upper/Lower';
+            splitName = 'PPL+';
         }
         
-        let repRange = '6-10 (main), 10-15 (accessories)';
+        let repRange = '6-10, 10-15';
         if (goal === 'strength') {
-            repRange = '3-6 (main), 6-10 (accessories)';
+            repRange = '3-6, 6-10';
         } else if (goal === 'general') {
-            repRange = '5-8 (main), 8-12 (accessories)';
+            repRange = '5-8, 8-12';
         }
         
         const baseSets = Math.round(18 * parseFloat(volumeScaleVal));
         
         const previewContent = document.getElementById('plan-preview-content');
         if (previewContent) {
-            previewContent.innerHTML = `
-                <p class="mb-1"><strong>Routines:</strong> ${routines} (${splitName})</p>
-                <p class="mb-1"><strong>Exercises per session:</strong> ~7</p>
-                <p class="mb-1"><strong>Sets per session:</strong> ~${baseSets}</p>
-                <p class="mb-0"><strong>Rep range:</strong> ${repRange}</p>
-            `;
+            previewContent.textContent = `${routines} (${splitName}) • ~7 ex • ${baseSets} sets • ${repRange}`;
         }
     }
 });

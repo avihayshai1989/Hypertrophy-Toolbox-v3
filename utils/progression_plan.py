@@ -1,7 +1,9 @@
 from .database import DatabaseHandler
 from datetime import datetime, timedelta
+from typing import List, Dict, Any, Optional
 
-def get_exercise_history(exercise):
+
+def get_exercise_history(exercise: str) -> List[Dict[str, Any]]:
     """Get the exercise history from workout log."""
     query = """
     SELECT *
@@ -14,49 +16,316 @@ def get_exercise_history(exercise):
     with DatabaseHandler() as db:
         return db.fetch_all(query, (exercise,))
 
-def generate_progression_suggestions(history):
-    """Generate progression suggestions based on exercise history."""
+
+def _calculate_weight_increment(current_weight: float, is_novice: bool = True) -> float:
+    """
+    Calculate appropriate weight increment based on double progression rules.
+    
+    Rules:
+    - Under 20kg: +2.5kg
+    - 20kg and above: +5kg
+    - Novices get smaller increments for safety
+    """
+    if current_weight < 20:
+        return 2.5 if not is_novice else 2.5
+    else:
+        return 5.0 if not is_novice else 2.5
+
+
+def _check_acceptable_effort(scored_rir: Optional[int], scored_rpe: Optional[float]) -> bool:
+    """
+    Check if effort was acceptable for progression (not too easy, not grinding).
+    
+    Acceptable effort:
+    - RIR 1-3 (close to failure but not grinding)
+    - RPE 7-9 (challenging but not max)
+    """
+    if scored_rir is not None:
+        return 1 <= scored_rir <= 3
+    if scored_rpe is not None:
+        return 7.0 <= scored_rpe <= 9.0
+    # If no effort data, assume acceptable
+    return True
+
+
+def _get_progression_status(
+    scored_max_reps: Optional[int],
+    planned_min_reps: Optional[int],
+    planned_max_reps: Optional[int],
+    scored_rir: Optional[int] = None,
+    scored_rpe: Optional[float] = None
+) -> str:
+    """
+    Determine double progression status.
+    
+    Returns:
+    - "increase_weight": Hit top of range with good effort
+    - "increase_reps": Below minimum range  
+    - "maintain": Within range, continue current load
+    - "reduce_weight": Consistently below range (needs history analysis)
+    """
+    if scored_max_reps is None or planned_max_reps is None or planned_min_reps is None:
+        return "maintain"
+    
+    acceptable_effort = _check_acceptable_effort(scored_rir, scored_rpe)
+    
+    if scored_max_reps >= planned_max_reps and acceptable_effort:
+        return "increase_weight"
+    elif scored_max_reps < planned_min_reps:
+        return "increase_reps"
+    else:
+        return "maintain"
+
+
+def _analyze_consistency(history: List[Dict[str, Any]], min_sessions: int = 2) -> Dict[str, Any]:
+    """
+    Analyze training consistency for smarter suggestions.
+    
+    Returns dict with:
+    - consecutive_at_top: sessions in a row hitting top of rep range
+    - consecutive_below_min: sessions in a row below min rep range
+    - avg_reps: average scored_max_reps across history
+    """
+    if len(history) < min_sessions:
+        return {"consecutive_at_top": 0, "consecutive_below_min": 0, "avg_reps": None}
+    
+    consecutive_at_top = 0
+    consecutive_below_min = 0
+    total_reps = 0
+    valid_reps_count = 0
+    
+    for session in history:
+        scored = session.get("scored_max_reps")
+        planned_max = session.get("planned_max_reps")
+        planned_min = session.get("planned_min_reps")
+        
+        if scored is not None:
+            total_reps += scored
+            valid_reps_count += 1
+            
+            if planned_max and scored >= planned_max:
+                consecutive_at_top += 1
+            else:
+                break  # Stop counting consecutive
+                
+    # Reset and count below min
+    for session in history:
+        scored = session.get("scored_max_reps")
+        planned_min = session.get("planned_min_reps")
+        
+        if scored is not None and planned_min is not None:
+            if scored < planned_min:
+                consecutive_below_min += 1
+            else:
+                break
+    
+    return {
+        "consecutive_at_top": consecutive_at_top,
+        "consecutive_below_min": consecutive_below_min,
+        "avg_reps": total_reps / valid_reps_count if valid_reps_count > 0 else None
+    }
+
+
+def generate_progression_suggestions(
+    history: List[Dict[str, Any]], 
+    is_novice: bool = True
+) -> List[Dict[str, Any]]:
+    """
+    Generate progression suggestions using double progression methodology.
+    
+    Double Progression Rules:
+    1. Train within a rep range (e.g., 8-12 reps)
+    2. When you hit the TOP of the range with good technique → increase weight
+    3. When below MINIMUM of range → keep weight, focus on reps
+    4. When in range → continue current load
+    
+    Args:
+        history: List of workout_log records, most recent first
+        is_novice: If True, use more conservative increments
+        
+    Returns:
+        List of suggestion dictionaries with type, title, description, action, priority
+    """
     if not history:
         return []
     
     latest = history[0]
+    exercise = latest.get("exercise", "this exercise")
     suggestions = []
     
-    # Technique improvement suggestion
+    # Extract data from latest session
+    scored_max_reps = latest.get("scored_max_reps")
+    scored_weight = latest.get("scored_weight")
+    planned_min_reps = latest.get("planned_min_reps")
+    planned_max_reps = latest.get("planned_max_reps")
+    planned_sets = latest.get("planned_sets")
+    scored_rir = latest.get("scored_rir")
+    scored_rpe = latest.get("scored_rpe")
+    
+    # Analyze consistency across sessions
+    consistency = _analyze_consistency(history)
+    
+    # Determine progression status
+    status = _get_progression_status(
+        scored_max_reps, planned_min_reps, planned_max_reps, scored_rir, scored_rpe
+    )
+    
+    # Primary suggestion based on double progression
+    if status == "increase_weight" and scored_weight is not None:
+        weight_increment = _calculate_weight_increment(scored_weight, is_novice)
+        new_weight = scored_weight + weight_increment
+        
+        # Check if consistently at top (stronger signal)
+        if consistency["consecutive_at_top"] >= 2:
+            confidence = "consistently"
+            priority = "high"
+        else:
+            confidence = ""
+            priority = "medium"
+        
+        suggestions.append({
+            "type": "double_progression_weight",
+            "title": "Increase Weight (Double Progression)",
+            "description": (
+                f"You've {confidence} hit the top of your rep range ({planned_max_reps} reps) "
+                f"on {exercise}. Increase weight from {scored_weight}kg to {new_weight}kg "
+                f"and work back up through the rep range ({planned_min_reps}-{planned_max_reps})."
+            ),
+            "action": f"Next session: {new_weight}kg × {planned_min_reps}-{planned_max_reps} reps",
+            "priority": priority,
+            "suggested_weight": new_weight
+        })
+        
+    elif status == "increase_reps":
+        # Check if consistently below (may need weight reduction)
+        if consistency["consecutive_below_min"] >= 2:
+            # Suggest weight reduction
+            if scored_weight and scored_weight > 5:
+                reduced_weight = scored_weight - _calculate_weight_increment(scored_weight, is_novice)
+                suggestions.append({
+                    "type": "reduce_weight",
+                    "title": "Reduce Weight",
+                    "description": (
+                        f"You've been below the minimum rep range ({planned_min_reps} reps) "
+                        f"for {consistency['consecutive_below_min']} sessions. Consider reducing "
+                        f"weight from {scored_weight}kg to {reduced_weight}kg to get reps back in range."
+                    ),
+                    "action": f"Try {reduced_weight}kg and aim for {planned_min_reps}-{planned_max_reps} reps",
+                    "priority": "high",
+                    "suggested_weight": reduced_weight
+                })
+        else:
+            # Just need to push reps
+            suggestions.append({
+                "type": "double_progression_reps",
+                "title": "Push Reps Into Range",
+                "description": (
+                    f"Your reps ({scored_max_reps}) are below the target range "
+                    f"({planned_min_reps}-{planned_max_reps}) on {exercise}. "
+                    f"Keep the weight at {scored_weight}kg and focus on adding reps."
+                ),
+                "action": f"Target: {scored_weight}kg × {planned_min_reps}+ reps",
+                "priority": "high"
+            })
+            
+    elif status == "maintain":
+        # Within range - good progress
+        if scored_max_reps and planned_min_reps and planned_max_reps:
+            reps_to_top = planned_max_reps - scored_max_reps
+            if reps_to_top > 0:
+                suggestions.append({
+                    "type": "maintain_progress",
+                    "title": "Continue Current Load",
+                    "description": (
+                        f"You're within your rep range on {exercise}. "
+                        f"Add {reps_to_top} more rep(s) to hit the top of the range "
+                        f"before increasing weight."
+                    ),
+                    "action": f"Target: {scored_weight}kg × {planned_max_reps} reps",
+                    "priority": "medium"
+                })
+    
+    # Technique suggestion (always useful, lower priority)
     suggestions.append({
         "type": "technique",
         "title": "Technique Improvement",
-        "description": f"Focus on improving your {latest['exercise']} form and mobility.",
-        "action": "Set a goal date for mastering proper technique"
+        "description": f"Focus on improving your {exercise} form and mobility for better results.",
+        "action": "Set a goal date for mastering proper technique",
+        "priority": "low"
     })
     
-    # Repetition increase suggestion
-    if latest['scored_max_reps']:
-        suggestions.append({
-            "type": "reps",
-            "title": "Increase Repetitions",
-            "description": f"Add 1 rep to your {latest['exercise']} sets (current max: {latest['scored_max_reps']})",
-            "action": "Set a goal date for achieving this increment"
-        })
-    
-    # Weight increase suggestion
-    if latest['scored_weight']:
-        weight_increment = 2.5 if latest['scored_weight'] < 20 else 5
-        suggestions.append({
-            "type": "weight",
-            "title": "Increase Working Weight",
-            "description": f"Increase your {latest['exercise']} weight by {weight_increment}kg (current: {latest['scored_weight']}kg)",
-            "action": "Set a goal date and target weight increment"
-        })
-    
-    # Additional set suggestion
-    if latest['planned_sets']:
+    # Volume suggestion (only if other progressions are stable)
+    if planned_sets and status == "maintain" and consistency.get("consecutive_at_top", 0) == 0:
         suggestions.append({
             "type": "sets",
-            "title": "Add Another Set",
-            "description": f"Add one more set to your {latest['exercise']} (current: {latest['planned_sets']} sets)",
-            "action": "Set a goal date for adapting to increased volume"
+            "title": "Add Volume",
+            "description": (
+                f"If you're comfortable at {planned_sets} sets, consider adding one more set "
+                f"for increased volume on {exercise}."
+            ),
+            "action": f"Progress to {planned_sets + 1} sets when ready",
+            "priority": "low"
         })
+    
+    # Always show these additional progression options
+    # These let the user manually choose their progression path
+    
+    # Increase Weight option (always show)
+    if scored_weight is not None:
+        weight_increment = _calculate_weight_increment(scored_weight, is_novice)
+        new_weight = scored_weight + weight_increment
+        weight_description = f"Increase the weight for {exercise} from {scored_weight}kg to {new_weight}kg."
+        weight_action = f"Set weight goal: {new_weight}kg"
+    else:
+        new_weight = None
+        weight_description = f"Set a weight goal for {exercise}."
+        weight_action = "Set weight goal"
+    
+    suggestions.append({
+        "type": "weight",
+        "title": "Increase Weight",
+        "description": weight_description,
+        "action": weight_action,
+        "priority": "medium",
+        "suggested_weight": new_weight
+    })
+    
+    # Increase Repetitions option (always show)
+    if scored_max_reps is not None:
+        target_reps = scored_max_reps + 2
+        reps_description = f"Increase your reps for {exercise} from {scored_max_reps} to {target_reps} reps."
+        reps_action = f"Set reps goal: {target_reps} reps"
+    else:
+        target_reps = None
+        reps_description = f"Set a repetition goal for {exercise}."
+        reps_action = "Set reps goal"
+    
+    suggestions.append({
+        "type": "reps",
+        "title": "Increase Repetitions",
+        "description": reps_description,
+        "action": reps_action,
+        "priority": "medium"
+    })
+    
+    # Add Another Set option (always show)
+    if planned_sets is not None:
+        sets_description = (
+            f"Add an extra set to {exercise}. Currently doing {planned_sets} sets, "
+            f"progress to {planned_sets + 1} sets."
+        )
+        sets_action = f"Set volume goal: {planned_sets + 1} sets"
+    else:
+        sets_description = f"Set a volume goal for {exercise}."
+        sets_action = "Set volume goal"
+    
+    suggestions.append({
+        "type": "sets",
+        "title": "Add Another Set",
+        "description": sets_description,
+        "action": sets_action,
+        "priority": "medium"
+    })
     
     return suggestions
 

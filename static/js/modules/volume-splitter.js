@@ -1,3 +1,5 @@
+import { showToast } from './toast.js';
+
 let volumeConfig = null;
 let currentMode = 'basic';
 let calculateDebounceId = null;
@@ -75,6 +77,8 @@ export function initializeVolumeSplitter() {
     if (historyBody) {
         historyBody.addEventListener('click', handleHistoryClick);
     }
+
+    initDeleteModal();
 
     renderSliders();
     modeVolumeState[currentMode] = collectVolumes();
@@ -191,8 +195,58 @@ function loadPlan(planId) {
         })
         .catch(error => {
             console.error('Error loading plan:', error);
-            alert('Failed to load plan. Please try again.');
+            showToast('error', 'Failed to load plan. Please try again.');
         });
+}
+
+let pendingDeletePlanId = null;
+let deleteModal = null;
+
+function initDeleteModal() {
+    const modalElement = document.getElementById('deleteVolumePlanModal');
+    if (modalElement && typeof bootstrap !== 'undefined') {
+        deleteModal = new bootstrap.Modal(modalElement);
+        
+        document.getElementById('confirmDeleteVolumePlan')?.addEventListener('click', () => {
+            if (pendingDeletePlanId) {
+                executeDeletePlan(pendingDeletePlanId);
+            }
+        });
+    }
+}
+
+function deletePlan(planId) {
+    pendingDeletePlanId = planId;
+    if (deleteModal) {
+        deleteModal.show();
+    } else {
+        // Fallback if modal not initialized
+        executeDeletePlan(planId);
+    }
+}
+
+function executeDeletePlan(planId) {
+    fetch(`/api/volume_plan/${planId}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (deleteModal) deleteModal.hide();
+        if (result.success) {
+            showToast('success', 'Volume plan deleted successfully!');
+            loadVolumeHistory();
+        } else {
+            showToast('error', result.error || 'Failed to delete volume plan.');
+        }
+    })
+    .catch(error => {
+        if (deleteModal) deleteModal.hide();
+        console.error('Error deleting plan:', error);
+        showToast('error', 'Failed to delete plan. Please try again.');
+    })
+    .finally(() => {
+        pendingDeletePlanId = null;
+    });
 }
 
 function exportVolumePlan() {
@@ -216,15 +270,15 @@ function exportVolumePlan() {
     .then(response => response.json())
     .then(result => {
         if (result.success) {
-            alert('Volume plan saved successfully!');
+            showToast('success', 'Volume plan saved successfully!');
             loadVolumeHistory();
         } else {
-            alert('Failed to save volume plan. Please try again.');
+            showToast('error', 'Failed to save volume plan. Please try again.');
         }
     })
     .catch(error => {
         console.error('Error saving plan:', error);
-        alert('Failed to save plan. Please try again.');
+        showToast('error', 'Failed to save plan. Please try again.');
     });
 }
 
@@ -274,6 +328,8 @@ function loadVolumeHistory() {
                     <td>
                         <button class="btn btn-sm btn-primary load-plan" 
                                 data-plan-id="${id}">Load</button>
+                        <button class="btn btn-sm btn-danger delete-plan ms-1" 
+                                data-plan-id="${id}">Delete</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -312,7 +368,7 @@ function exportToExcel() {
     })
     .catch(error => {
         console.error('Error exporting to Excel:', error);
-        alert('Failed to export plan. Please try again.');
+        showToast('error', 'Failed to export plan. Please try again.');
     });
 } 
 
@@ -630,6 +686,15 @@ function handleHistoryClick(event) {
         const planId = loadBtn.dataset.planId;
         if (planId) {
             loadPlan(planId);
+        }
+        return;
+    }
+    
+    const deleteBtn = event.target.closest('.delete-plan');
+    if (deleteBtn) {
+        const planId = deleteBtn.dataset.planId;
+        if (planId) {
+            deletePlan(planId);
         }
     }
 }

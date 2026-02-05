@@ -12,6 +12,37 @@
  * DO NOT OVERRIDE THESE unless absolutely necessary.
  */
 
+/* ============================================
+   REMOVE ALL FOCUS SHADOWS ON MOUSE CLICK
+   Only show focus indicators for keyboard navigation
+   ============================================ */
+.modal *:focus,
+.modal button:focus,
+.modal input:focus,
+.modal select:focus,
+.modal textarea:focus,
+.modal a:focus,
+.modal .btn:focus,
+.modal .form-control:focus,
+.modal .form-select:focus,
+.modal .form-check-input:focus,
+.modal .form-range:focus,
+.modal .btn-close:focus,
+.modal .nav-link:focus,
+.modal [type="checkbox"]:focus,
+.modal [type="radio"]:focus,
+.modal [tabindex]:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Only show focus ring for keyboard navigation (accessibility) */
+.modal *:focus-visible {
+    outline: 2px solid rgba(13, 110, 253, 0.5) !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
+}
+
 /* Modal content styling */
 .modal-content {
     border-radius: 1rem;

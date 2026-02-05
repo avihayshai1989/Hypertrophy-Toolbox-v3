@@ -1,9 +1,11 @@
 import { showToast } from './toast.js';
+import { api } from './fetch-wrapper.js';
 
 /**
  * Helper function to handle standardized API responses
  * @param {Response} response - Fetch response object
  * @returns {Promise<Object>} Extracted data or throws error
+ * @deprecated Use api wrapper from fetch-wrapper.js instead
  */
 async function handleApiResponse(response) {
     const data = await response.json();
@@ -25,6 +27,220 @@ let allExercisesCache = [];
 // Superset selection state
 let selectedExerciseIds = new Set();
 let supersetColorMap = new Map(); // Maps superset_group to color index (1-4)
+
+// Execution style state
+let executionStyleOptions = null;
+
+/**
+ * Fetches execution style options from the API (cached)
+ */
+async function getExecutionStyleOptions() {
+    if (executionStyleOptions) return executionStyleOptions;
+    try {
+        const response = await api.get('/api/execution_style_options');
+        executionStyleOptions = response.data || response;
+        return executionStyleOptions;
+    } catch (error) {
+        console.error('Failed to load execution style options:', error);
+        return null;
+    }
+}
+
+/**
+ * Renders an execution style badge for an exercise
+ * @param {Object} exercise - The exercise object
+ * @returns {string} HTML string for the badge
+ */
+function renderExecutionStyleBadge(exercise) {
+    const style = exercise.execution_style || 'standard';
+    const timeCap = exercise.time_cap_seconds;
+    const emomInterval = exercise.emom_interval_seconds;
+    const emomRounds = exercise.emom_rounds;
+    
+    let badgeClass = 'execution-badge';
+    let icon = '';
+    let label = '';
+    let details = '';
+    
+    switch (style) {
+        case 'amrap':
+            badgeClass += ' execution-badge--amrap';
+            icon = '<i class="fas fa-stopwatch"></i>';
+            label = 'AMRAP';
+            if (timeCap) {
+                details = `<span class="execution-details">${timeCap}s</span>`;
+            }
+            break;
+        case 'emom':
+            badgeClass += ' execution-badge--emom';
+            icon = '<i class="fas fa-clock"></i>';
+            label = 'EMOM';
+            if (emomInterval && emomRounds) {
+                details = `<span class="execution-details">${emomRounds}×${emomInterval}s</span>`;
+            }
+            break;
+        default:
+            badgeClass += ' execution-badge--standard';
+            icon = '<i class="fas fa-dumbbell"></i>';
+            label = 'STD';
+    }
+    
+    return `<button class="btn ${badgeClass}" title="Click to change execution style">
+        ${icon} <span class="execution-label">${label}</span>${details}
+    </button>`;
+}
+
+/**
+ * Shows execution style picker for an exercise
+ * @param {number} exerciseId - The exercise ID
+ * @param {Object} currentExercise - Current exercise data from cache
+ */
+async function showExecutionStylePicker(exerciseId, currentExercise) {
+    const options = await getExecutionStyleOptions();
+    if (!options) {
+        showToast('Failed to load execution style options', true);
+        return;
+    }
+    
+    // Remove any existing picker
+    const existingPicker = document.querySelector('.execution-style-picker');
+    if (existingPicker) existingPicker.remove();
+    
+    const currentStyle = currentExercise?.execution_style || 'standard';
+    const timeCap = currentExercise?.time_cap_seconds || 60;
+    const emomInterval = currentExercise?.emom_interval_seconds || 60;
+    const emomRounds = currentExercise?.emom_rounds || 5;
+    
+    // Create picker element
+    const picker = document.createElement('div');
+    picker.className = 'execution-style-picker';
+    picker.innerHTML = `
+        <div class="execution-picker-content">
+            <div class="execution-picker-header">
+                <h6><i class="fas fa-stopwatch me-2"></i>Execution Style</h6>
+                <button class="btn-close btn-close-picker" aria-label="Close"></button>
+            </div>
+            <div class="execution-picker-body">
+                <div class="execution-style-options">
+                    <label class="execution-option ${currentStyle === 'standard' ? 'active' : ''}">
+                        <input type="radio" name="exec-style-${exerciseId}" value="standard" ${currentStyle === 'standard' ? 'checked' : ''}>
+                        <span class="option-icon"><i class="fas fa-dumbbell"></i></span>
+                        <span class="option-text">
+                            <strong>Standard</strong>
+                            <small>Traditional sets with rest</small>
+                        </span>
+                    </label>
+                    <label class="execution-option ${currentStyle === 'amrap' ? 'active' : ''}">
+                        <input type="radio" name="exec-style-${exerciseId}" value="amrap" ${currentStyle === 'amrap' ? 'checked' : ''}>
+                        <span class="option-icon"><i class="fas fa-stopwatch"></i></span>
+                        <span class="option-text">
+                            <strong>AMRAP</strong>
+                            <small>As Many Reps As Possible</small>
+                        </span>
+                    </label>
+                    <label class="execution-option ${currentStyle === 'emom' ? 'active' : ''}">
+                        <input type="radio" name="exec-style-${exerciseId}" value="emom" ${currentStyle === 'emom' ? 'checked' : ''}>
+                        <span class="option-icon"><i class="fas fa-clock"></i></span>
+                        <span class="option-text">
+                            <strong>EMOM</strong>
+                            <small>Every Minute On the Minute</small>
+                        </span>
+                    </label>
+                </div>
+                
+                <div class="execution-params amrap-params" style="display: ${currentStyle === 'amrap' ? 'block' : 'none'}">
+                    <label class="param-label">
+                        <span>Time Cap (seconds)</span>
+                        <input type="number" class="form-control form-control-sm" id="time-cap-${exerciseId}" 
+                               value="${timeCap}" min="10" max="600" step="5">
+                    </label>
+                </div>
+                
+                <div class="execution-params emom-params" style="display: ${currentStyle === 'emom' ? 'block' : 'none'}">
+                    <label class="param-label">
+                        <span>Interval (seconds)</span>
+                        <input type="number" class="form-control form-control-sm" id="emom-interval-${exerciseId}" 
+                               value="${emomInterval}" min="15" max="180" step="5">
+                    </label>
+                    <label class="param-label">
+                        <span>Rounds</span>
+                        <input type="number" class="form-control form-control-sm" id="emom-rounds-${exerciseId}" 
+                               value="${emomRounds}" min="1" max="20">
+                    </label>
+                </div>
+            </div>
+            <div class="execution-picker-footer">
+                <button class="btn btn-sm btn-outline-secondary btn-cancel-exec">Cancel</button>
+                <button class="btn btn-sm btn-primary btn-save-exec" data-exercise-id="${exerciseId}">
+                    <i class="fas fa-check me-1"></i>Apply
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Position picker near the clicked cell
+    const cell = document.querySelector(`.execution-style-cell[data-exercise-id="${exerciseId}"]`);
+    if (cell) {
+        const rect = cell.getBoundingClientRect();
+        picker.style.position = 'fixed';
+        picker.style.top = `${rect.bottom + 5}px`;
+        picker.style.left = `${Math.max(10, rect.left - 100)}px`;
+        picker.style.zIndex = '1050';
+    }
+    
+    document.body.appendChild(picker);
+    
+    // Event listeners
+    const radios = picker.querySelectorAll('input[type="radio"]');
+    radios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            picker.querySelectorAll('.execution-option').forEach(opt => opt.classList.remove('active'));
+            radio.closest('.execution-option').classList.add('active');
+            
+            const style = radio.value;
+            picker.querySelector('.amrap-params').style.display = style === 'amrap' ? 'block' : 'none';
+            picker.querySelector('.emom-params').style.display = style === 'emom' ? 'block' : 'none';
+        });
+    });
+    
+    picker.querySelector('.btn-close-picker').addEventListener('click', () => picker.remove());
+    picker.querySelector('.btn-cancel-exec').addEventListener('click', () => picker.remove());
+    
+    picker.querySelector('.btn-save-exec').addEventListener('click', async () => {
+        const selectedStyle = picker.querySelector(`input[name="exec-style-${exerciseId}"]:checked`).value;
+        const payload = {
+            exercise_id: exerciseId,
+            execution_style: selectedStyle
+        };
+        
+        if (selectedStyle === 'amrap') {
+            payload.time_cap_seconds = parseInt(picker.querySelector(`#time-cap-${exerciseId}`).value) || 60;
+        } else if (selectedStyle === 'emom') {
+            payload.emom_interval_seconds = parseInt(picker.querySelector(`#emom-interval-${exerciseId}`).value) || 60;
+            payload.emom_rounds = parseInt(picker.querySelector(`#emom-rounds-${exerciseId}`).value) || 5;
+        }
+        
+        try {
+            const result = await api.post('/api/execution_style', payload);
+            showToast(`Execution style set to ${selectedStyle.toUpperCase()}`);
+            picker.remove();
+            // Refresh the workout plan to show updated badge
+            await fetchWorkoutPlan();
+        } catch (error) {
+            showToast(error.message || 'Failed to update execution style', true);
+        }
+    });
+    
+    // Close on outside click
+    setTimeout(() => {
+        document.addEventListener('click', function closeOnOutside(e) {
+            if (!picker.contains(e.target) && !e.target.closest('.execution-style-cell')) {
+                picker.remove();
+                document.removeEventListener('click', closeOnOutside);
+            }
+        });
+    }, 100);
+}
 
 /**
  * Parses a routine string in "Environment - Program - Workout" format
@@ -67,13 +283,10 @@ function compareRoutines(a, b) {
 // Workout plan functionality
 export async function fetchWorkoutPlan() {
     try {
-        const response = await fetch('/get_workout_plan');
+        const data = await api.get('/get_workout_plan');
         
-        if (!response.ok) {
-            throw new Error('Failed to fetch workout plan');
-        }
-
-        const exercises = await handleApiResponse(response);
+        // api wrapper returns the response data directly (from data.data if standardized)
+        const exercises = data.data !== undefined ? data.data : data;
         
         // Cache all exercises for tab filtering
         allExercisesCache = exercises;
@@ -90,7 +303,10 @@ export async function fetchWorkoutPlan() {
         // No need to reinitialize here
     } catch (error) {
         console.error('Error loading workout plan:', error);
-        showToast(error.message || 'Failed to load workout plan', true);
+        // api wrapper already shows error toast, but we can show a fallback
+        if (!error.code) {
+            showToast(error.message || 'Failed to load workout plan', true);
+        }
     }
 }
 
@@ -292,56 +508,52 @@ export function reloadWorkoutPlan(data) {
     });
 }
 
-export function updateExerciseDetails(exercise) {
+export async function updateExerciseDetails(exercise) {
     if (!exercise) return;
 
     const detailsContainer = document.getElementById('exercise-details');
     if (!detailsContainer) return;
 
-    fetch(`/get_exercise_info/${exercise}`)
-        .then(async response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch exercise details');
-            }
-            const data = await handleApiResponse(response);
-            
-            detailsContainer.innerHTML = `
-                <div class="exercise-info">
-                    <h5>Exercise Details</h5>
-                    <div class="detail-row">
-                        <span class="detail-label">Primary Muscle:</span>
-                        <span class="detail-value">${data.primary_muscle_group || 'N/A'}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Secondary Muscle:</span>
-                        <span class="detail-value">${data.secondary_muscle_group || 'N/A'}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Equipment:</span>
-                        <span class="detail-value">${data.equipment || 'N/A'}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Force Type:</span>
-                        <span class="detail-value">${data.force || 'N/A'}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Level:</span>
-                        <span class="detail-value">${data.level || 'N/A'}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Mechanic:</span>
-                        <span class="detail-value">${data.mechanic || 'N/A'}</span>
-                    </div>
+    try {
+        const data = await api.get(`/get_exercise_info/${exercise}`, { showLoading: false, showErrorToast: false });
+        const info = data.data || data;
+        
+        detailsContainer.innerHTML = `
+            <div class="exercise-info">
+                <h5>Exercise Details</h5>
+                <div class="detail-row">
+                    <span class="detail-label">Primary Muscle:</span>
+                    <span class="detail-value">${info.primary_muscle_group || 'N/A'}</span>
                 </div>
-            `;
-        })
-        .catch(error => {
-            console.error('Error fetching exercise details:', error);
-            showToast(error.message || 'Failed to load exercise details', true);
-        });
+                <div class="detail-row">
+                    <span class="detail-label">Secondary Muscle:</span>
+                    <span class="detail-value">${info.secondary_muscle_group || 'N/A'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Equipment:</span>
+                    <span class="detail-value">${info.equipment || 'N/A'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Force Type:</span>
+                    <span class="detail-value">${info.force || 'N/A'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Level:</span>
+                    <span class="detail-value">${info.level || 'N/A'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Mechanic:</span>
+                    <span class="detail-value">${info.mechanic || 'N/A'}</span>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Error fetching exercise details:', error);
+        showToast(error.message || 'Failed to load exercise details', true);
+    }
 }
 
-export function updateExerciseForm(exercise) {
+export async function updateExerciseForm(exercise) {
     if (!exercise) return;
 
     // Preserve the currently selected routine
@@ -357,39 +569,34 @@ export function updateExerciseForm(exercise) {
         'rpe': '7'
     };
 
-    // Update form fields based on selected exercise
-    fetch(`/get_exercise_info/${exercise}`)
-        .then(async response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch exercise info');
-            }
-            const data = await handleApiResponse(response);
-            
-            // Set values with fallback to defaults
-            document.getElementById('sets').value = data.recommended_sets || defaultValues.sets;
-            document.getElementById('min_rep').value = data.min_reps || defaultValues.min_rep;
-            document.getElementById('max_rep_range').value = data.max_reps || defaultValues.max_rep_range;
-            document.getElementById('rir').value = data.recommended_rir || defaultValues.rir;
-            document.getElementById('weight').value = data.recommended_weight || defaultValues.weight;
-            document.getElementById('rpe').value = data.rpe_based ? (data.recommended_rpe || defaultValues.rpe) : defaultValues.rpe;
+    try {
+        const data = await api.get(`/get_exercise_info/${exercise}`, { showLoading: false, showErrorToast: false });
+        const info = data.data || data;
+        
+        // Set values with fallback to defaults
+        document.getElementById('sets').value = info.recommended_sets || defaultValues.sets;
+        document.getElementById('min_rep').value = info.min_reps || defaultValues.min_rep;
+        document.getElementById('max_rep_range').value = info.max_reps || defaultValues.max_rep_range;
+        document.getElementById('rir').value = info.recommended_rir || defaultValues.rir;
+        document.getElementById('weight').value = info.recommended_weight || defaultValues.weight;
+        document.getElementById('rpe').value = info.rpe_based ? (info.recommended_rpe || defaultValues.rpe) : defaultValues.rpe;
 
-            // Restore the selected routine
-            if (selectedRoutine) {
-                document.getElementById('routine').value = selectedRoutine;
-            }
-        })
-        .catch(error => {
-            console.error('Error updating exercise form:', error);
-            showToast(error.message || 'Failed to load exercise recommendations', true);
-            
-            // On error, set default values
-            document.getElementById('sets').value = defaultValues.sets;
-            document.getElementById('min_rep').value = defaultValues.min_rep;
-            document.getElementById('max_rep_range').value = defaultValues.max_rep_range;
-            document.getElementById('rir').value = defaultValues.rir;
-            document.getElementById('weight').value = defaultValues.weight;
-            document.getElementById('rpe').value = defaultValues.rpe;
-        });
+        // Restore the selected routine
+        if (selectedRoutine) {
+            document.getElementById('routine').value = selectedRoutine;
+        }
+    } catch (error) {
+        console.error('Error updating exercise form:', error);
+        showToast(error.message || 'Failed to load exercise recommendations', true);
+        
+        // On error, set default values
+        document.getElementById('sets').value = defaultValues.sets;
+        document.getElementById('min_rep').value = defaultValues.min_rep;
+        document.getElementById('max_rep_range').value = defaultValues.max_rep_range;
+        document.getElementById('rir').value = defaultValues.rir;
+        document.getElementById('weight').value = defaultValues.weight;
+        document.getElementById('rpe').value = defaultValues.rpe;
+    }
 }
 
 export function handleExerciseSelection() {
@@ -452,12 +659,8 @@ export function handleRoutineSelection() {
                 await filterExercises(true);
             } else {
                 // No active filters, fetch exercises for the selected routine
-                const response = await fetch(`/get_routine_exercises/${encodeURIComponent(selectedRoutine)}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch exercises for routine');
-                }
-
-                const exercises = await handleApiResponse(response);
+                const data = await api.get(`/get_routine_exercises/${encodeURIComponent(selectedRoutine)}`, { showLoading: false, showErrorToast: false });
+                const exercises = data.data || data;
                 
                 // Update exercise dropdown and maintain selection if possible
                 const currentExercise = exerciseSelect.value;
@@ -743,22 +946,8 @@ export function handleAddExercise(e) {
 
 async function sendExerciseData(exerciseData) {
     try {
-        const response = await fetch('/add_exercise', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(exerciseData)
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            const errorMsg = errorData.error?.message || errorData.error || 'Failed to add exercise';
-            throw new Error(errorMsg);
-        }
-        
-        const data = await handleApiResponse(response);
-        const message = data.message || 'Exercise added successfully';
+        const data = await api.post('/add_exercise', exerciseData, { showErrorToast: false });
+        const message = data.message || data.data?.message || 'Exercise added successfully';
         
         showToast(message);
         fetchWorkoutPlan(); // Refresh the table
@@ -965,12 +1154,17 @@ export function updateWorkoutPlanTable(exercises) {
             <td class="col--low" data-label="Tertiary Muscle">${exercise.tertiary_muscle_group || 'N/A'}</td>
             <td class="col--low" data-label="Isolated Muscles">${exercise.advanced_isolated_muscles || 'N/A'}</td>
             <td class="col--low" data-label="Utility">${exercise.utility || 'N/A'}</td>
+            <td class="col--low" data-label="Movement Pattern">${exercise.movement_pattern || 'N/A'}</td>
+            <td class="col--low" data-label="Movement Subpattern">${exercise.movement_subpattern || 'N/A'}</td>
             <td class="col--high is-num editable" data-field="sets" data-label="Sets">${exercise.sets || 'N/A'}</td>
             <td class="col--high is-num editable" data-field="min_rep_range" data-label="Min Rep">${exercise.min_rep_range || 'N/A'}</td>
             <td class="col--high is-num editable" data-field="max_rep_range" data-label="Max Rep">${exercise.max_rep_range || 'N/A'}</td>
             <td class="col--med is-num editable" data-field="rir" data-label="RIR">${exercise.rir || 'N/A'}</td>
             <td class="col--med is-num editable" data-field="rpe" data-label="RPE">${exercise.rpe || 'N/A'}</td>
             <td class="col--high is-num editable" data-field="weight" data-label="Weight">${exercise.weight || 'N/A'}</td>
+            <td class="col--med execution-style-cell" data-label="Execution Style" data-exercise-id="${exercise.id}">
+                ${renderExecutionStyleBadge(exercise)}
+            </td>
             <td class="col--low" data-label="Grips">${exercise.grips || 'N/A'}</td>
             <td class="col--low" data-label="Stabilizers">${exercise.stabilizers || 'N/A'}</td>
             <td class="col--low" data-label="Synergists">${exercise.synergists || 'N/A'}</td>
@@ -1002,6 +1196,15 @@ export function updateWorkoutPlanTable(exercises) {
         if (checkbox) {
             checkbox.addEventListener('change', (e) => {
                 handleSupersetCheckboxChange(e.target);
+            });
+        }
+        
+        // Add click handler for execution style badge
+        const execStyleCell = row.querySelector('.execution-style-cell');
+        if (execStyleCell) {
+            execStyleCell.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showExecutionStylePicker(exercise.id, exercise);
             });
         }
         
@@ -1141,29 +1344,19 @@ async function handleLinkSuperset() {
     const exerciseIds = Array.from(selectedExerciseIds);
     
     try {
-        const response = await fetch('/api/superset/link', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ exercise_ids: exerciseIds })
+        const data = await api.post('/api/superset/link', { exercise_ids: exerciseIds }, { showErrorToast: false });
+        
+        showToast(data.message || 'Superset created successfully');
+        // Clear selection and refresh table
+        selectedExerciseIds.clear();
+        document.querySelectorAll('.superset-checkbox:checked').forEach(cb => {
+            cb.checked = false;
         });
-        
-        const data = await response.json();
-        
-        if (data.ok) {
-            showToast(data.message || 'Superset created successfully');
-            // Clear selection and refresh table
-            selectedExerciseIds.clear();
-            document.querySelectorAll('.superset-checkbox:checked').forEach(cb => {
-                cb.checked = false;
-            });
-            // Refresh the workout plan to show updated superset styling
-            fetchWorkoutPlan();
-        } else {
-            showToast(data.error?.message || 'Failed to create superset', true);
-        }
+        // Refresh the workout plan to show updated superset styling
+        fetchWorkoutPlan();
     } catch (error) {
         console.error('Error creating superset:', error);
-        showToast('Failed to create superset', true);
+        showToast(error.message || 'Failed to create superset', true);
     }
 }
 
@@ -1182,29 +1375,19 @@ async function handleUnlinkSuperset() {
     const exerciseId = parseInt(selectedCheckbox.dataset.exerciseId);
     
     try {
-        const response = await fetch('/api/superset/unlink', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ exercise_id: exerciseId })
+        const data = await api.post('/api/superset/unlink', { exercise_id: exerciseId }, { showErrorToast: false });
+        
+        showToast(data.message || 'Superset unlinked successfully');
+        // Clear selection and refresh table
+        selectedExerciseIds.clear();
+        document.querySelectorAll('.superset-checkbox:checked').forEach(cb => {
+            cb.checked = false;
         });
-        
-        const data = await response.json();
-        
-        if (data.ok) {
-            showToast(data.message || 'Superset unlinked successfully');
-            // Clear selection and refresh table
-            selectedExerciseIds.clear();
-            document.querySelectorAll('.superset-checkbox:checked').forEach(cb => {
-                cb.checked = false;
-            });
-            // Refresh the workout plan to show updated styling
-            fetchWorkoutPlan();
-        } else {
-            showToast(data.error?.message || 'Failed to unlink superset', true);
-        }
+        // Refresh the workout plan to show updated styling
+        fetchWorkoutPlan();
     } catch (error) {
         console.error('Error unlinking superset:', error);
-        showToast('Failed to unlink superset', true);
+        showToast(error.message || 'Failed to unlink superset', true);
     }
 }
 
@@ -1229,24 +1412,19 @@ async function handleSwapExercise(exerciseId, currentExerciseName) {
     swapBtn.classList.add('loading');
     
     try {
-        const response = await fetch('/replace_exercise', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: exerciseId,
-                strategy: 'ai'  // Try AI-based suggestion first
-            })
-        });
+        const data = await api.post('/replace_exercise', {
+            id: exerciseId,
+            strategy: 'ai'  // Try AI-based suggestion first
+        }, { showLoading: false, showErrorToast: false }); // We handle our own loading state
         
-        const data = await response.json();
+        // api wrapper returns raw response, check if we got updated_row
+        const responseData = data.data || data;
         
-        if (data.ok === true && data.data?.updated_row) {
+        if (responseData?.updated_row) {
             // Success - update the row in place
-            const updatedRow = data.data.updated_row;
-            const oldExercise = data.data.old_exercise;
-            const newExercise = data.data.new_exercise;
+            const updatedRow = responseData.updated_row;
+            const oldExercise = responseData.old_exercise;
+            const newExercise = responseData.new_exercise;
             
             // Update the exercise name in the cell
             const exerciseNameSpan = row.querySelector('.exercise-name');
@@ -1269,8 +1447,8 @@ async function handleSwapExercise(exerciseId, currentExerciseName) {
             
         } else {
             // Handle specific error reasons
-            const reason = data.error?.reason || 'unknown';
-            const message = data.error?.message || data.message || 'Failed to replace exercise';
+            const reason = responseData?.error?.reason || 'unknown';
+            const message = responseData?.error?.message || responseData?.message || 'Failed to replace exercise';
             
             if (reason === 'no_candidates') {
                 showToast('warning', 'No alternative found for this muscle/equipment.');
@@ -1285,7 +1463,19 @@ async function handleSwapExercise(exerciseId, currentExerciseName) {
         
     } catch (error) {
         console.error('Error swapping exercise:', error);
-        showToast('error', 'Failed to replace exercise. Please try again.');
+        // Handle specific error reasons from the error object
+        const reason = error?.reason || 'unknown';
+        const message = error?.message || 'Failed to replace exercise. Please try again.';
+        
+        if (reason === 'no_candidates') {
+            showToast('warning', 'No alternative found for this muscle/equipment.');
+        } else if (reason === 'duplicate') {
+            showToast('warning', 'All alternatives are already in this routine.');
+        } else if (reason === 'not_found') {
+            showToast('error', 'Exercise not found in workout plan.');
+        } else {
+            showToast('error', message);
+        }
     } finally {
         // Restore button state
         swapBtn.disabled = false;
@@ -1406,20 +1596,13 @@ function makeTableCellEditable(cell, exerciseId, fieldName) {
 
 async function updateExerciseField(exerciseId, fieldName, value) {
     const updates = { [fieldName]: value };
-    const response = await fetch('/update_exercise', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            id: exerciseId,
-            updates: updates
-        })
-    });
+    // Use api wrapper with showLoading: false for quick inline edits
+    const data = await api.post('/update_exercise', {
+        id: exerciseId,
+        updates: updates
+    }, { showLoading: false, showErrorToast: false });
     
-    // Let handleApiResponse handle all response parsing to avoid consuming body twice
-    const data = await handleApiResponse(response);
-    return data;
+    return data.data || data;
 }
 
 // Add this function to initialize drag-and-drop
@@ -1477,22 +1660,9 @@ function initializeDragAndDrop() {
             }));
 
             try {
-                const response = await fetch('/update_exercise_order', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(orderData)
-                });
+                const data = await api.post('/update_exercise_order', orderData, { showLoading: false, showErrorToast: false });
 
-                const responseData = await response.json();
-                
-                if (!response.ok || responseData.ok === false) {
-                    const errorMsg = responseData.error?.message || responseData.error || 'Failed to update exercise order';
-                    throw new Error(errorMsg);
-                }
-
-                showToast(responseData.message || 'Exercise order updated successfully');
+                showToast(data.message || 'Exercise order updated successfully');
                 
                 // Refresh table to update superset visual styling
                 // Small delay to ensure database transaction is complete

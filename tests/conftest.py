@@ -71,21 +71,15 @@ def app(test_db_path):
     # Add erase-data endpoint (defined in app.py, not a blueprint)
     from flask import jsonify
     from utils.errors import success_response, error_response
-    from utils.program_backup import create_auto_backup_before_erase
     
     @app.route('/erase-data', methods=['POST'])
     def erase_data():
         try:
-            # Create auto-backup before erasing (if active program has data)
-            auto_backup = None
-            try:
-                auto_backup = create_auto_backup_before_erase()
-            except Exception as backup_error:
-                pass  # Don't fail the erase if backup creation fails
-            
-            # Drop program data tables (but NOT backup tables)
+            # Drop ALL tables including backup tables (full reset)
             with DatabaseHandler() as db:
                 tables = [
+                    'program_backup_items',  # Drop child table first (FK constraint)
+                    'program_backups',        # Then parent backup table
                     'user_selection',
                     'progression_goals',
                     'muscle_volumes',
@@ -100,21 +94,11 @@ def app(test_db_path):
             add_progression_goals_table()
             add_volume_tracking_tables()
             initialize_exercise_order()
-            
-            # Include auto-backup info in response if one was created
-            response_data = {
-                'message': 'All data has been erased and tables reinitialized successfully.'
-            }
-            if auto_backup:
-                response_data['auto_backup'] = {
-                    'id': auto_backup['id'],
-                    'name': auto_backup['name'],
-                    'item_count': auto_backup['item_count']
-                }
+            initialize_backup_tables()
             
             return jsonify(success_response(
-                data=response_data.get('auto_backup'),
-                message=response_data['message']
+                data=None,
+                message='All data has been erased and tables reinitialized successfully.'
             ))
         except Exception as e:
             return error_response("INTERNAL_ERROR", "Failed to erase data", 500)

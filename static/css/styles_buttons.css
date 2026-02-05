@@ -138,10 +138,49 @@ button[type="submit"].btn {
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-/* Focus state */
-.btn:focus {
+/* Focus state - only show for keyboard navigation, not mouse clicks */
+.btn:focus,
+.btn-primary:focus,
+.btn-secondary:focus,
+.btn-success:focus,
+.btn-danger:focus,
+.btn-warning:focus,
+.btn-info:focus,
+.btn-light:focus,
+.btn-dark:focus,
+.btn-outline-primary:focus,
+.btn-outline-secondary:focus,
+.btn-outline-success:focus,
+.btn-outline-danger:focus,
+.btn-outline-warning:focus,
+.btn-outline-info:focus,
+.btn-outline-light:focus,
+.btn-outline-dark:focus,
+.btn-check:focus + .btn {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-success:focus-visible,
+.btn-danger:focus-visible,
+.btn-warning:focus-visible,
+.btn-info:focus-visible,
+.btn-light:focus-visible,
+.btn-dark:focus-visible,
+.btn-outline-primary:focus-visible,
+.btn-outline-secondary:focus-visible,
+.btn-outline-success:focus-visible,
+.btn-outline-danger:focus-visible,
+.btn-outline-warning:focus-visible,
+.btn-outline-info:focus-visible,
+.btn-outline-light:focus-visible,
+.btn-outline-dark:focus-visible,
+.btn-check:focus-visible + .btn {
     outline: none;
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25) !important;
 }
 
 /* Loading State */
@@ -539,4 +578,34 @@ button[type="submit"].btn {
         border-radius: 22px !important;
         margin: 5px 8px !important;
     }
+}
+
+/* ============================================
+   GLOBAL FOCUS SHADOW OVERRIDE
+   Removes focus shadows on mouse click for ALL elements
+   ============================================ */
+*:focus,
+*:active:focus,
+*.active:focus,
+.btn-check:focus + .btn,
+.btn-check:active + .btn,
+.form-check-input:focus,
+.form-control:focus,
+.form-select:focus,
+.form-range:focus,
+.nav-link:focus,
+.page-link:focus,
+.accordion-button:focus,
+.dropdown-item:focus,
+.list-group-item:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+*:focus-visible,
+*:active:focus-visible,
+*.active:focus-visible {
+    outline: 2px solid rgba(13, 110, 253, 0.5) !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
 } 

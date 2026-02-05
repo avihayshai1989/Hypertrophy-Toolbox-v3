@@ -82,8 +82,7 @@
                     <div class="tbl-wrap tbl-wrap--full" role="region" aria-label="Weekly summary table">
                         <table class="table table-striped tbl tbl--responsive" 
                                role="table" 
-                               aria-label="Weekly muscle group summary"
-                               data-table-responsive="weekly_summary">
+                               aria-label="Weekly muscle group summary">
                             <thead>
                                 <tr>
                                     <th scope="col" class="col--high" data-label="Muscle Group">Muscle Group</th>
@@ -108,8 +107,7 @@
                 <div class="tbl-wrap tbl-wrap--full" role="region" aria-label="Exercise categories table">
                     <table class="table table-striped tbl tbl--responsive" 
                            role="table" 
-                           aria-label="Exercise categories"
-                           data-table-responsive="weekly_categories">
+                           aria-label="Exercise categories">
                         <thead>
                             <tr>
                                 <th scope="col" class="col--high" data-label="Category">Category</th>
@@ -146,8 +144,7 @@
                 <div class="tbl-wrap tbl-wrap--full" role="region" aria-label="Isolated muscles statistics table">
                     <table class="table table-striped tbl tbl--responsive" 
                            role="table" 
-                           aria-label="Isolated muscles statistics"
-                           data-table-responsive="weekly_isolated">
+                           aria-label="Isolated muscles statistics">
                         <thead>
                             <tr>
                                 <th scope="col" class="col--high" data-label="Isolated Muscle">Isolated Muscle</th>
@@ -182,6 +179,21 @@
                 </div>
             </div>
             <!-- AGENT:END B-3 PRIORITY-CLASSES -->
+        </div>
+
+        <!-- Movement Pattern Coverage Section -->
+        <div class="summary-section mt-4" id="pattern-coverage-section">
+            <h3 class="text-center mb-4">
+                <i class="fas fa-project-diagram me-2"></i>Movement Pattern Coverage
+            </h3>
+            <div id="pattern-coverage-container">
+                <!-- Will be populated dynamically -->
+                <div class="text-center py-3">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Volume Formula Explanation -->
@@ -229,6 +241,144 @@ function getVolumeDetails(effectiveSets) {
         label: volumeLabel,
         tooltip: `${volumeLabel}: ${ranges[volumeLabel]} (Current: ${effectiveSets.toFixed(1)} effective sets)`
     };
+}
+
+// Pattern name formatting
+function formatPatternName(pattern) {
+    const nameMap = {
+        'squat': 'Squat',
+        'hinge': 'Hinge',
+        'horizontal_push': 'Horizontal Push',
+        'horizontal_pull': 'Horizontal Pull',
+        'vertical_push': 'Vertical Push',
+        'vertical_pull': 'Vertical Pull',
+        'core_static': 'Core (Static)',
+        'core_dynamic': 'Core (Dynamic)',
+        'upper_isolation': 'Upper Isolation',
+        'lower_isolation': 'Lower Isolation',
+        'other': 'Other'
+    };
+    return nameMap[pattern] || pattern.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
+
+// Function to fetch and display pattern coverage
+async function updatePatternCoverage() {
+    const container = document.getElementById('pattern-coverage-container');
+    
+    try {
+        const response = await fetch('/api/pattern_coverage');
+        if (!response.ok) throw new Error('Failed to fetch pattern coverage');
+        
+        const result = await response.json();
+        if (!result.success || !result.data) throw new Error('Invalid response');
+        
+        const data = result.data;
+        const hasData = Object.keys(data.total || {}).length > 0;
+        
+        if (!hasData) {
+            container.innerHTML = `
+                <div class="alert alert-secondary text-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No exercises in your workout plan yet. Add exercises to see pattern coverage analysis.
+                </div>`;
+            return;
+        }
+        
+        // Build the pattern coverage display
+        let html = '';
+        
+        // Warnings section
+        if (data.warnings && data.warnings.length > 0) {
+            html += `<div class="mb-4">`;
+            data.warnings.forEach(warning => {
+                const alertClass = warning.level === 'high' ? 'danger' : 
+                                   warning.level === 'medium' ? 'warning' : 'info';
+                const icon = warning.level === 'high' ? 'exclamation-circle' : 
+                             warning.level === 'medium' ? 'exclamation-triangle' : 'info-circle';
+                html += `
+                    <div class="alert alert-${alertClass} d-flex align-items-start mb-2">
+                        <i class="fas fa-${icon} me-2 mt-1"></i>
+                        <div>
+                            <strong>${warning.message}</strong><br>
+                            <small>${warning.description}</small>
+                        </div>
+                    </div>`;
+            });
+            html += `</div>`;
+        }
+        
+        // Total pattern coverage
+        html += `
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <h5 class="mb-3">Total Sets by Movement Pattern</h5>
+                    <div class="d-flex flex-wrap gap-2">`;
+        
+        // Core patterns first, then others
+        const corePatterns = ['squat', 'hinge', 'horizontal_push', 'horizontal_pull', 'vertical_push', 'vertical_pull'];
+        const otherPatterns = Object.keys(data.total).filter(p => !corePatterns.includes(p));
+        const allPatterns = [...corePatterns, ...otherPatterns];
+        
+        allPatterns.forEach(pattern => {
+            const sets = data.total[pattern] || 0;
+            if (sets > 0 || corePatterns.includes(pattern)) {
+                const isCore = corePatterns.includes(pattern);
+                const btnClass = sets === 0 ? 'outline-danger' : 
+                                 sets < 3 ? 'outline-warning' : 'outline-success';
+                html += `
+                    <span class="badge bg-${btnClass} text-dark border" style="font-size: 0.9rem; padding: 8px 12px;">
+                        ${isCore ? '<i class="fas fa-check-circle me-1"></i>' : ''}
+                        ${formatPatternName(pattern)}: <strong>${sets}</strong>
+                    </span>`;
+            }
+        });
+        
+        html += `</div></div></div>`;
+        
+        // Sets per routine
+        if (Object.keys(data.sets_per_routine || {}).length > 0) {
+            html += `
+                <div class="row g-3">
+                    <div class="col-12">
+                        <h5 class="mb-3">Sets per Routine</h5>
+                        <div class="d-flex flex-wrap gap-3">`;
+            
+            const idealMin = data.ideal_sets_range?.min || 15;
+            const idealMax = data.ideal_sets_range?.max || 24;
+            
+            Object.entries(data.sets_per_routine).forEach(([routine, sets]) => {
+                const status = sets < idealMin ? 'warning' : 
+                               sets > idealMax ? 'danger' : 'success';
+                const icon = sets < idealMin ? 'arrow-down' : 
+                             sets > idealMax ? 'arrow-up' : 'check';
+                html += `
+                    <div class="card border-${status}" style="min-width: 150px;">
+                        <div class="card-body text-center py-2">
+                            <h6 class="card-title mb-1">Routine ${routine}</h6>
+                            <p class="card-text mb-0">
+                                <span class="text-${status}">
+                                    <i class="fas fa-${icon} me-1"></i>
+                                    <strong>${sets}</strong> sets
+                                </span>
+                            </p>
+                            <small class="text-muted">Target: ${idealMin}-${idealMax}</small>
+                        </div>
+                    </div>`;
+            });
+            
+            html += `</div></div></div>`;
+        }
+        
+        container.innerHTML = html;
+        
+    } catch (error) {
+        console.error('Error fetching pattern coverage:', error);
+        container.innerHTML = `
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Unable to load pattern coverage analysis.
+            </div>`;
+    }
 }
 
 // Function to update the weekly summary table based on the selected modes
@@ -333,7 +483,10 @@ async function updateWeeklySummary() {
 }
 
 // Initialize table when the page loads
-document.addEventListener("DOMContentLoaded", updateWeeklySummary);
+document.addEventListener("DOMContentLoaded", function() {
+    updateWeeklySummary();
+    updatePatternCoverage();
+});
 
 function get_category_tooltip(category) {
     const tooltips = {

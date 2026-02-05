@@ -19,12 +19,12 @@ Interactive SVG body diagram component for selecting target muscle groups in the
 |------|---------|
 | [static/js/modules/muscle-selector.js](../static/js/modules/muscle-selector.js) | Main JavaScript module |
 | [static/css/styles_muscle_selector.css](../static/css/styles_muscle_selector.css) | Styling for the component |
-| [static/svg/body_simple_front.svg](../static/svg/body_simple_front.svg) | Simple view - front body SVG |
-| [static/svg/body_simple_back.svg](../static/svg/body_simple_back.svg) | Simple view - back body SVG |
-| [static/svg/body_advanced_front.svg](../static/svg/body_advanced_front.svg) | Advanced view - front body SVG |
-| [static/svg/body_advanced_back.svg](../static/svg/body_advanced_back.svg) | Advanced view - back body SVG |
+| [static/vendor/react-body-highlighter/body_anterior.svg](../static/vendor/react-body-highlighter/body_anterior.svg) | Front view body SVG |
+| [static/vendor/react-body-highlighter/body_posterior.svg](../static/vendor/react-body-highlighter/body_posterior.svg) | Back view body SVG |
 | [templates/workout_plan.html](../templates/workout_plan.html) | Integration in Generate Plan modal |
 | [static/js/app.js](../static/js/app.js) | API integration (generateStarterPlan function) |
+
+See [muscle_selector_vendor.md](muscle_selector_vendor.md) for vendor SVG attribution and mapping details.
 
 ## Architecture
 

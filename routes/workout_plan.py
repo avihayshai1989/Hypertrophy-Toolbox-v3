@@ -196,6 +196,7 @@ def get_workout_plan():
             # Check if columns exist using PRAGMA
             has_order = column_exists(db, 'user_selection', 'exercise_order')
             has_superset = column_exists(db, 'user_selection', 'superset_group')
+            has_execution_style = column_exists(db, 'user_selection', 'execution_style')
             
             # Build dynamic column selection
             extra_cols = []
@@ -203,6 +204,11 @@ def get_workout_plan():
                 extra_cols.append("us.exercise_order")
             if has_superset:
                 extra_cols.append("us.superset_group")
+            if has_execution_style:
+                extra_cols.append("us.execution_style")
+                extra_cols.append("us.time_cap_seconds")
+                extra_cols.append("us.emom_interval_seconds")
+                extra_cols.append("us.emom_rounds")
             
             extra_cols_str = ", " + ", ".join(extra_cols) if extra_cols else ""
             
@@ -230,7 +236,9 @@ def get_workout_plan():
                 e.utility, 
                 e.grips, 
                 e.stabilizers, 
-                e.synergists
+                e.synergists,
+                e.movement_pattern,
+                e.movement_subpattern
             FROM user_selection us
             LEFT JOIN exercises e ON us.exercise = e.exercise_name
             {order_by_clause}
@@ -243,7 +251,8 @@ def get_workout_plan():
                 extra={
                     'exercise_count': len(results),
                     'has_exercise_order': has_order,
-                    'has_superset_group': has_superset
+                    'has_superset_group': has_superset,
+                    'has_execution_style': has_execution_style
                 }
             )
             
@@ -652,6 +661,7 @@ def generate_starter_plan_route():
         preferred_exercises: dict (optional, pattern -> list of exercise names)
         movement_restrictions: dict (optional, e.g. {"no_overhead_press": true})
         target_muscle_groups: list[str] (optional, filter to specific muscles)
+        priority_muscles: list[str] (optional, muscles to prioritize with extra volume)
         beginner_consistency_mode: bool (default true for novices)
         persist: bool (default true, save to database)
         overwrite: bool (default true, replace existing routines)
@@ -669,6 +679,7 @@ def generate_starter_plan_route():
                 'environment': data.get('environment', 'gym'),
                 'experience_level': data.get('experience_level', 'novice'),
                 'goal': data.get('goal', 'hypertrophy'),
+                'priority_muscles': data.get('priority_muscles'),
             }
         )
         
@@ -713,6 +724,19 @@ def generate_starter_plan_route():
                 400
             )
         
+        # Phase 3: Validate time budget
+        time_budget_minutes = data.get('time_budget_minutes')
+        if time_budget_minutes is not None:
+            if not isinstance(time_budget_minutes, int) or time_budget_minutes < 15 or time_budget_minutes > 180:
+                return error_response(
+                    "VALIDATION_ERROR",
+                    "time_budget_minutes must be between 15 and 180",
+                    400
+                )
+        
+        # Phase 3: Merge mode flag
+        merge_mode = data.get('merge_mode', False)
+        
         # Generate the plan
         result = generate_starter_plan(
             training_days=training_days,
@@ -725,6 +749,9 @@ def generate_starter_plan_route():
             preferred_exercises=data.get('preferred_exercises'),
             movement_restrictions=data.get('movement_restrictions'),
             target_muscle_groups=data.get('target_muscle_groups'),
+            priority_muscles=data.get('priority_muscles'),
+            time_budget_minutes=time_budget_minutes,
+            merge_mode=merge_mode,
             beginner_consistency_mode=data.get('beginner_consistency_mode', True),
             persist=data.get('persist', True),
             overwrite=data.get('overwrite', True),
@@ -736,6 +763,8 @@ def generate_starter_plan_route():
                 'total_exercises': result.get('total_exercises'),
                 'routines': list(result.get('routines', {}).keys()),
                 'persisted': result.get('persisted'),
+                'merge_mode': merge_mode,
+                'time_budget': time_budget_minutes,
             }
         )
         
@@ -764,6 +793,12 @@ def get_generator_options():
                 "SELECT DISTINCT equipment FROM exercises WHERE equipment IS NOT NULL ORDER BY equipment"
             )
             available_equipment = [row['equipment'] for row in equipment_rows if row.get('equipment')]
+            
+            # Get available muscle groups for priority selection
+            muscle_rows = db.fetch_all(
+                "SELECT DISTINCT primary_muscle_group FROM exercises WHERE primary_muscle_group IS NOT NULL ORDER BY primary_muscle_group"
+            )
+            available_muscles = [row['primary_muscle_group'] for row in muscle_rows if row.get('primary_muscle_group')]
         
         options = {
             "training_days": {
@@ -792,6 +827,24 @@ def get_generator_options():
                 "no_overhead_press",
                 "no_deadlift",
             ],
+            "priority_muscles": {
+                "available": available_muscles,
+                "description": "Select muscle groups to prioritize with extra volume",
+                "max_selections": 2,
+            },
+            # Phase 3: Time budget optimization
+            "time_budget": {
+                "min": 15,
+                "max": 180,
+                "default": None,
+                "presets": [30, 45, 60, 75, 90],
+                "description": "Target workout duration in minutes. The generator will optimize exercises and sets to fit within this time."
+            },
+            # Phase 3: Merge mode
+            "merge_mode": {
+                "default": False,
+                "description": "Keep existing exercises and only add exercises for missing movement patterns. Useful for enhancing an existing plan."
+            },
         }
         
         return jsonify(success_response(data=options))
@@ -1297,3 +1350,332 @@ def unlink_superset():
         logger.exception("Error unlinking superset")
         return error_response("INTERNAL_ERROR", "Failed to unlink superset", 500)
 
+
+# ==================== Phase 3: Execution Styles ====================
+
+@workout_plan_bp.route("/api/execution_style", methods=["POST"])
+def set_execution_style():
+    """
+    Set the execution style for an exercise (AMRAP, EMOM, or standard).
+    
+    Request body (JSON):
+        exercise_id: int - user_selection.id of the exercise
+        execution_style: "standard" | "amrap" | "emom"
+        time_cap_seconds: int (optional, for AMRAP - default 60)
+        emom_interval_seconds: int (optional, for EMOM - default 60)
+        emom_rounds: int (optional, for EMOM - default 5)
+    
+    Returns:
+        Updated exercise data
+    """
+    try:
+        data = request.get_json()
+        if not data:
+            return error_response("VALIDATION_ERROR", "No data provided", 400)
+        
+        exercise_id = data.get('exercise_id')
+        execution_style = data.get('execution_style', 'standard')
+        time_cap_seconds = data.get('time_cap_seconds')
+        emom_interval_seconds = data.get('emom_interval_seconds')
+        emom_rounds = data.get('emom_rounds')
+        
+        # Validate exercise_id
+        if not exercise_id or not str(exercise_id).isdigit():
+            return error_response("VALIDATION_ERROR", "Invalid exercise ID", 400)
+        
+        # Validate execution_style
+        valid_styles = {'standard', 'amrap', 'emom'}
+        if execution_style not in valid_styles:
+            return error_response(
+                "VALIDATION_ERROR",
+                f"Invalid execution style. Must be one of: {', '.join(valid_styles)}",
+                400
+            )
+        
+        # Apply defaults and validate based on style
+        if execution_style == 'amrap':
+            time_cap_seconds = time_cap_seconds if time_cap_seconds else 60
+            if not isinstance(time_cap_seconds, int) or time_cap_seconds < 10 or time_cap_seconds > 600:
+                return error_response(
+                    "VALIDATION_ERROR",
+                    "time_cap_seconds must be between 10 and 600 seconds",
+                    400
+                )
+            emom_interval_seconds = None
+            emom_rounds = None
+        elif execution_style == 'emom':
+            emom_interval_seconds = emom_interval_seconds if emom_interval_seconds else 60
+            emom_rounds = emom_rounds if emom_rounds else 5
+            
+            if not isinstance(emom_interval_seconds, int) or emom_interval_seconds < 15 or emom_interval_seconds > 180:
+                return error_response(
+                    "VALIDATION_ERROR",
+                    "emom_interval_seconds must be between 15 and 180 seconds",
+                    400
+                )
+            if not isinstance(emom_rounds, int) or emom_rounds < 1 or emom_rounds > 20:
+                return error_response(
+                    "VALIDATION_ERROR",
+                    "emom_rounds must be between 1 and 20",
+                    400
+                )
+            time_cap_seconds = None
+        else:  # standard
+            time_cap_seconds = None
+            emom_interval_seconds = None
+            emom_rounds = None
+        
+        with DatabaseHandler() as db:
+            # Check if columns exist
+            cols = db.fetch_all("PRAGMA table_info(user_selection)")
+            col_names = {row['name'] for row in cols}
+            
+            if 'execution_style' not in col_names:
+                return error_response(
+                    "INTERNAL_ERROR",
+                    "Execution style feature not available - database migration required",
+                    500
+                )
+            
+            # Verify exercise exists
+            exercise = db.fetch_one(
+                "SELECT id, exercise, routine FROM user_selection WHERE id = ?",
+                (int(exercise_id),)
+            )
+            
+            if not exercise:
+                return error_response("NOT_FOUND", "Exercise not found", 404)
+            
+            # Update execution style
+            db.execute_query(
+                """
+                UPDATE user_selection 
+                SET execution_style = ?,
+                    time_cap_seconds = ?,
+                    emom_interval_seconds = ?,
+                    emom_rounds = ?
+                WHERE id = ?
+                """,
+                (execution_style, time_cap_seconds, emom_interval_seconds, emom_rounds, int(exercise_id))
+            )
+            
+            # Fetch updated row
+            updated = db.fetch_one(
+                """
+                SELECT id, routine, exercise, execution_style, 
+                       time_cap_seconds, emom_interval_seconds, emom_rounds
+                FROM user_selection WHERE id = ?
+                """,
+                (int(exercise_id),)
+            )
+            
+            logger.info(
+                "Execution style updated",
+                extra={
+                    'exercise_id': exercise_id,
+                    'exercise': exercise['exercise'],
+                    'execution_style': execution_style,
+                    'time_cap_seconds': time_cap_seconds,
+                    'emom_interval_seconds': emom_interval_seconds,
+                    'emom_rounds': emom_rounds
+                }
+            )
+            
+            return jsonify(success_response(
+                data=dict(updated) if updated else None,
+                message=f"Set '{exercise['exercise']}' to {execution_style.upper()} style"
+            ))
+            
+    except Exception as e:
+        logger.exception("Error setting execution style")
+        return error_response("INTERNAL_ERROR", "Failed to set execution style", 500)
+
+
+@workout_plan_bp.route("/api/execution_style_options")
+def get_execution_style_options():
+    """
+    Get available execution style options with descriptions.
+    
+    Returns options and tooltips for AMRAP and EMOM modes.
+    """
+    options = {
+        "styles": {
+            "standard": {
+                "name": "Standard",
+                "description": "Traditional set-based training with rest between sets",
+                "icon": "fa-dumbbell"
+            },
+            "amrap": {
+                "name": "AMRAP",
+                "full_name": "As Many Reps As Possible",
+                "description": "Perform as many reps as possible within a time cap. Great for conditioning and metabolic stress.",
+                "icon": "fa-stopwatch",
+                "defaults": {
+                    "time_cap_seconds": 60
+                },
+                "tooltip": "Set a time limit and perform maximum quality reps. Rest is minimal. Focus on form over speed."
+            },
+            "emom": {
+                "name": "EMOM",
+                "full_name": "Every Minute On the Minute",
+                "description": "Start a set at the beginning of each minute. Remaining time is rest. Great for pacing and density.",
+                "icon": "fa-clock",
+                "defaults": {
+                    "emom_interval_seconds": 60,
+                    "emom_rounds": 5
+                },
+                "tooltip": "At the start of each interval, perform your target reps. Rest until the next interval begins. Builds work capacity."
+            }
+        },
+        "limits": {
+            "time_cap_seconds": {"min": 10, "max": 600},
+            "emom_interval_seconds": {"min": 15, "max": 180},
+            "emom_rounds": {"min": 1, "max": 20}
+        }
+    }
+    
+    return jsonify(success_response(data=options))
+
+
+# ==================== Phase 3: Superset Auto-Suggestion ====================
+
+@workout_plan_bp.route("/api/superset/suggest", methods=["GET"])
+def suggest_supersets():
+    """
+    Analyze the workout plan and suggest optimal superset pairings.
+    
+    Suggestions are based on:
+    1. Antagonist muscle pairing (e.g., biceps/triceps, chest/back, quads/hamstrings)
+    2. Non-competing muscle groups to minimize fatigue interference
+    3. Time efficiency optimization
+    
+    Returns:
+        List of suggested superset pairings with reasoning
+    """
+    try:
+        routine = request.args.get('routine')
+        
+        # Antagonist pairing rules for optimal supersets
+        ANTAGONIST_PAIRS = {
+            # Upper body
+            'biceps': ['triceps'],
+            'triceps': ['biceps'],
+            'chest': ['upper back', 'latissimus dorsi', 'middle-traps'],
+            'latissimus dorsi': ['chest', 'front-shoulder'],
+            'upper back': ['chest', 'front-shoulder'],
+            'front-shoulder': ['latissimus dorsi', 'upper back'],
+            'rear-shoulder': ['front-shoulder', 'middle-shoulder'],
+            # Lower body
+            'quadriceps': ['hamstrings', 'gluteus maximus'],
+            'hamstrings': ['quadriceps'],
+            'gluteus maximus': ['quadriceps', 'hip-adductors'],
+            'calves': ['quadriceps', 'hamstrings'],  # Non-competing with main movers
+        }
+        
+        with DatabaseHandler() as db:
+            # Fetch current workout plan
+            query = """
+                SELECT 
+                    us.id, us.routine, us.exercise, us.superset_group,
+                    e.primary_muscle_group, e.secondary_muscle_group
+                FROM user_selection us
+                LEFT JOIN exercises e ON us.exercise = e.exercise_name
+            """
+            params = []
+            
+            if routine:
+                query += " WHERE us.routine = ?"
+                params.append(routine)
+            
+            query += " ORDER BY us.routine, us.exercise_order"
+            
+            exercises = db.fetch_all(query, params if params else None)
+            
+            if not exercises:
+                return jsonify(success_response(
+                    data={"suggestions": [], "message": "No exercises found in workout plan"}
+                ))
+            
+            # Group by routine
+            routines = {}
+            for ex in exercises:
+                r = ex['routine']
+                if r not in routines:
+                    routines[r] = []
+                routines[r].append(ex)
+            
+            suggestions = []
+            
+            for routine_name, routine_exercises in routines.items():
+                # Skip exercises already in supersets
+                available = [
+                    ex for ex in routine_exercises 
+                    if not ex.get('superset_group')
+                ]
+                
+                # Find optimal pairings
+                paired = set()
+                
+                for i, ex1 in enumerate(available):
+                    if ex1['id'] in paired:
+                        continue
+                    
+                    muscle1 = (ex1.get('primary_muscle_group') or '').lower()
+                    if not muscle1:
+                        continue
+                    
+                    # Find best partner based on antagonist pairing
+                    best_partner = None
+                    best_reason = None
+                    
+                    for j, ex2 in enumerate(available):
+                        if i == j or ex2['id'] in paired:
+                            continue
+                        
+                        muscle2 = (ex2.get('primary_muscle_group') or '').lower()
+                        if not muscle2:
+                            continue
+                        
+                        # Check for antagonist pairing
+                        antagonists = ANTAGONIST_PAIRS.get(muscle1, [])
+                        if muscle2 in antagonists or any(m in muscle2 for m in antagonists):
+                            # Calculate pairing score
+                            best_partner = ex2
+                            best_reason = f"Antagonist pair: {muscle1.title()} / {muscle2.title()} - allows one muscle to rest while the other works"
+                            break
+                    
+                    if best_partner:
+                        suggestions.append({
+                            "routine": routine_name,
+                            "exercise_1": {
+                                "id": ex1['id'],
+                                "name": ex1['exercise'],
+                                "muscle": muscle1.title()
+                            },
+                            "exercise_2": {
+                                "id": best_partner['id'],
+                                "name": best_partner['exercise'],
+                                "muscle": (best_partner.get('primary_muscle_group') or '').title()
+                            },
+                            "reason": best_reason,
+                            "benefit": "Saves time without compromising performance"
+                        })
+                        paired.add(ex1['id'])
+                        paired.add(best_partner['id'])
+            
+            logger.info(
+                "Superset suggestions generated",
+                extra={
+                    'routine_filter': routine,
+                    'suggestion_count': len(suggestions)
+                }
+            )
+            
+            return jsonify(success_response(data={
+                "suggestions": suggestions,
+                "total_pairs": len(suggestions)
+            }))
+            
+    except Exception as e:
+        logger.exception("Error generating superset suggestions")
+        return error_response("INTERNAL_ERROR", "Failed to generate superset suggestions", 500)

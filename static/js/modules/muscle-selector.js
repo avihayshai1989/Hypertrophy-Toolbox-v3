@@ -547,11 +547,15 @@ class MuscleSelector {
     /**
      * Toggle a muscle selection
      * In Simple mode: toggles all children of a parent group
-     * In Advanced mode: toggles individual sub-muscles
+     * In Advanced mode: toggles individual sub-muscles, OR all children if clicking a parent group header
      */
     toggleMuscle(muscleKey) {
-        if (this.viewMode === 'simple') {
-            // In simple mode, toggle ALL children of the parent group
+        // Check if this is a parent key (has children in SIMPLE_TO_ADVANCED_MAP)
+        const isParentKey = SIMPLE_TO_ADVANCED_MAP.hasOwnProperty(muscleKey) && SIMPLE_TO_ADVANCED_MAP[muscleKey].length > 0;
+        
+        if (this.viewMode === 'simple' || isParentKey) {
+            // In simple mode OR when clicking a parent group header in advanced mode,
+            // toggle ALL children of the parent group
             const children = SIMPLE_TO_ADVANCED_MAP[muscleKey] || [muscleKey];
             const allSelected = children.every(child => this.selectedMuscles.has(child));
             
@@ -642,6 +646,10 @@ class MuscleSelector {
         const legendContainer = this.container.querySelector('#muscle-legend');
         if (!legendContainer) return;
         
+        // Save scroll position before re-rendering
+        const legendItems = legendContainer.querySelector('.legend-items');
+        const scrollTop = legendItems ? legendItems.scrollTop : 0;
+        
         // Get muscles for current body side
         const musclesForSide = MUSCLES_BY_SIDE[this.bodySide] || [];
         
@@ -693,6 +701,12 @@ class MuscleSelector {
             header.addEventListener('mouseenter', () => this.handleMuscleHover(parentKey, true));
             header.addEventListener('mouseleave', () => this.handleMuscleHover(parentKey, false));
         });
+        
+        // Restore scroll position after re-rendering
+        const newLegendItems = legendContainer.querySelector('.legend-items');
+        if (newLegendItems && scrollTop > 0) {
+            newLegendItems.scrollTop = scrollTop;
+        }
     }
 
     /**

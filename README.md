@@ -96,6 +96,9 @@ To create the standalone `.exe` package for distribution to end users:
 
 ## ✨ Features
 
+- **Auto Starter Plan Generator** - Generate complete workout plans based on movement patterns with customizable experience, goals, and priority muscles
+- **Double Progression System** - Smart progression suggestions that tell you when to increase weight or reps
+- **Movement Pattern Coverage** - Analyze your program balance (squat, hinge, push, pull) with actionable warnings
 - **Workout Plan Builder** - Create custom routines with exercises filtered by muscle groups, equipment, and more
 - **Exercise Database** - Comprehensive library with scientific parameters (RIR, RPE, rep ranges)
 - **Workout Logging** - Track actual performance vs. planned workouts
@@ -118,10 +121,10 @@ See the [`docs/`](docs/) folder:
 
 ## 🛠️ Tech Stack
 
-- **Backend**: Flask 3.1+, Python 3.12, SQLite
+- **Backend**: Flask 3.1+, Python 3.14, SQLite
 - **Frontend**: Vanilla JavaScript (ES6+), HTML5, CSS3
 - **Styling**: Custom Bootstrap 5.1.3 build + custom CSS
-- **Testing**: pytest (240 tests)
+- **Testing**: pytest (321 tests)
 
 ## 🧪 Running Tests
 

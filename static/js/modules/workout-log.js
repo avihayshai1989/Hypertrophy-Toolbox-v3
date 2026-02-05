@@ -107,18 +107,7 @@ export async function importFromWorkoutPlan() {
             importBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Importing...';
         }
 
-        const response = await fetch('/export_to_workout_log', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.error?.message || data.error || 'Failed to import workout plan');
-        }
+        const data = await api.post('/export_to_workout_log', {}, { showLoading: false, showErrorToast: false });
 
         showToast('success', data.message || 'Successfully imported workout plan');
         
@@ -154,21 +143,9 @@ export async function confirmClearWorkoutLog() {
             clearBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Clearing...';
         }
 
-        console.log('Making fetch request to /clear_workout_log');
-        const response = await fetch('/clear_workout_log', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        console.log('Response status:', response.status);
-        const data = await response.json();
+        console.log('Making api request to /clear_workout_log');
+        const data = await api.post('/clear_workout_log', {}, { showLoading: false, showErrorToast: false });
         console.log('Response data:', data);
-        
-        if (!response.ok) {
-            throw new Error(data.error?.message || data.error || 'Failed to clear workout log');
-        }
 
         // Hide the modal
         const modalElement = document.getElementById('clearLogModal');
@@ -576,15 +553,10 @@ async function filterWorkoutLogs() {
         const date = document.getElementById('date-filter')?.value;
         const routine = document.getElementById('routine-filter')?.value;
 
-        const response = await fetch('/filter_workout_logs', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ date, routine })
-        });
-
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error);
-
+        const response = await api.post('/filter_workout_logs', { date, routine }, { showLoading: false, showErrorToast: false });
+        
+        // response.data contains the logs array
+        const data = response.data !== undefined ? response.data : response;
         updateWorkoutLogTable(data);
     } catch (error) {
         console.error('Error filtering workout logs:', error);
@@ -636,42 +608,28 @@ function createWorkoutLogRow(log) {
     `;
 }
 
-export function checkProgressionStatus(logId) {
+export async function checkProgressionStatus(logId) {
     const row = document.querySelector(`tr[data-log-id="${logId}"]`);
     if (!row) return;
 
     const progressionBadge = row.querySelector('.progression-badge');
     if (!progressionBadge) return;
 
-    fetch(`/check_progression/${logId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (!response.ok) throw new Error(data.error);
-            
-            progressionBadge.className = `badge ${data.achieved ? 'bg-success' : 'bg-warning'}`;
-            progressionBadge.textContent = data.achieved ? 'Achieved' : 'Pending';
-        })
-        .catch(error => {
-            console.error('Error checking progression:', error);
-            showToast('error', 'Failed to check progression status');
-        });
+    try {
+        const data = await api.get(`/check_progression/${logId}`, { showLoading: false, showErrorToast: false });
+        const result = data.data !== undefined ? data.data : data;
+        
+        progressionBadge.className = `badge ${result.achieved ? 'bg-success' : 'bg-warning'}`;
+        progressionBadge.textContent = result.achieved ? 'Achieved' : 'Pending';
+    } catch (error) {
+        console.error('Error checking progression:', error);
+        showToast('error', 'Failed to check progression status');
+    }
 }
 
 export async function deleteWorkoutLog(logId) {
     try {
-        const response = await fetch('/delete_workout_log', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: logId })
-        });
-
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.error || 'Failed to delete log entry');
-        }
+        await api.post('/delete_workout_log', { id: logId }, { showLoading: false, showErrorToast: false });
 
         // Remove the row from the table
         const row = document.querySelector(`tr[data-log-id="${logId}"]`);
@@ -682,28 +640,17 @@ export async function deleteWorkoutLog(logId) {
         showToast('success', 'Log entry deleted successfully');
     } catch (error) {
         console.error('Error:', error);
-        showToast('error', 'Failed to delete log entry');
+        showToast('error', error.message || 'Failed to delete log entry');
     }
 }
 
 export async function handleDateChange(event, logId) {
     try {
         const newDate = event.target.value;
-        const response = await fetch('/update_progression_date', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: logId,
-                date: newDate
-            })
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.error || 'Failed to update progression date');
-        }
+        await api.post('/update_progression_date', {
+            id: logId,
+            date: newDate
+        }, { showLoading: false, showErrorToast: false });
 
         // Update the display text
         const cell = event.target.closest('.editable');

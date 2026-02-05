@@ -1336,19 +1336,18 @@
   word-wrap: break-word;
 }
 
-/* Allow table to expand page width - User Preference */
+/* Allow table to expand page width - User Preference (with scrolling at constrained widths) */
 #workout[data-page="workout-plan"] .workout-plan.table-container {
-  width: fit-content;
+  width: 100%;
   min-width: 100%;
-  overflow: visible !important;
-  /* Force visible overflow to prevent inner scrollbar */
+  overflow-x: auto;
 }
 
 #workout[data-page="workout-plan"] .tbl-wrap,
 #workout[data-page="workout-plan"] .tbl-wrap--full {
-  overflow-x: visible !important;
-  overflow-y: visible !important;
-  max-width: none !important;
+  overflow-x: auto;
+  overflow-y: visible;
+  max-width: 100%;
   display: block !important;
 }
 
@@ -1420,7 +1419,7 @@
 
   #workout[data-page="workout-plan"] .workout-plan.table-container {
     padding: var(--wp-padding);
-    overflow: visible !important;
+    overflow-x: auto;
   }
 
   #workout[data-page="workout-plan"] .workout-plan.table-container .tbl-controls {
@@ -1945,19 +1944,192 @@
     font-size: 0.7rem !important;
   }
   
-  /* Fix Utility and Grips columns text cutoff at 1080p */
-  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Utility"],
-  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Grips"] {
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
-    min-width: 80px;
-    word-wrap: break-word;
+  /* ========================================================================
+     1080p Table Optimizations - Fit all columns in 1920x1080 viewport
+     ======================================================================== */
+  
+  /* Reduce table cell padding and font size for compact display */
+  #workout[data-page="workout-plan"] .workout-plan-table thead th {
+    padding: 6px 5px;
+    font-size: 0.75rem;
+    white-space: nowrap;
   }
   
+  #workout[data-page="workout-plan"] .workout-plan-table tbody td {
+    padding: 5px 4px;
+    font-size: 0.75rem;
+  }
+  
+  /* Make table container fit without scrollbar */
+  #workout[data-page="workout-plan"] .workout-plan.table-container {
+    width: 100%;
+    min-width: unset;
+    overflow-x: hidden;
+    padding: var(--wp-padding-sm);
+  }
+  
+  #workout[data-page="workout-plan"] .tbl-wrap,
+  #workout[data-page="workout-plan"] .tbl-wrap--full {
+    overflow-x: hidden;
+    overflow-y: visible;
+    max-width: 100%;
+  }
+  
+  /* Table should fit viewport width without scrolling */
+  #workout[data-page="workout-plan"] .workout-plan-table {
+    table-layout: auto;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Specific column width assignments for optimal fit at 1920x1080 */
+  #workout[data-page="workout-plan"] .workout-plan-table th.superset-select-col,
+  #workout[data-page="workout-plan"] .workout-plan-table td:nth-child(1) {
+    width: 28px;
+    min-width: 28px;
+    max-width: 28px;
+    padding: 3px 2px;
+  }
+  
+  /* Drag handle column */
+  #workout[data-page="workout-plan"] .workout-plan-table th:nth-child(2),
+  #workout[data-page="workout-plan"] .workout-plan-table td:nth-child(2) {
+    width: 22px;
+    min-width: 22px;
+    max-width: 22px;
+    padding: 3px 2px;
+  }
+  
+  /* Routine column */
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Routine"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Routine"] {
+    width: 60px;
+    min-width: 55px;
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Exercise column - needs more space */
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Exercise"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Exercise"] {
+    width: 160px;
+    min-width: 140px;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Muscle columns */
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Primary Muscle"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Primary Muscle"],
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Secondary Muscle"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Secondary Muscle"] {
+    width: 85px;
+    min-width: 75px;
+    max-width: 95px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  
+  /* Utility, Movement Pattern, Subpattern columns */
   #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Utility"],
-  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Grips"] {
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Utility"] {
+    width: 60px;
+    min-width: 55px;
+    max-width: 70px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Movement Pattern"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Movement Pattern"],
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Movement Subpattern"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Movement Subpattern"] {
+    width: 90px;
     min-width: 80px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Numeric columns - compact */
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Sets"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Sets"],
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Min Rep"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Min Rep"],
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Max Rep"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Max Rep"],
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="RIR"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="RIR"],
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="RPE"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="RPE"] {
+    width: 42px;
+    min-width: 38px;
+    max-width: 48px;
+    text-align: center;
+    padding: 4px 3px;
+  }
+  
+  /* Weight column */
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Weight"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Weight"] {
+    width: 55px;
+    min-width: 50px;
+    max-width: 65px;
+    text-align: center;
+    padding: 4px 3px;
+  }
+  
+  /* Style column */
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Execution Style"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Execution Style"] {
+    width: 55px;
+    min-width: 50px;
+    max-width: 65px;
+    text-align: center;
+    padding: 4px 3px;
+  }
+  
+  /* Grips column */
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Grips"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Grips"] {
+    width: 65px;
+    min-width: 58px;
+    max-width: 75px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Actions column - compact */
+  #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Actions"],
+  #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Actions"] {
+    width: 50px;
+    min-width: 45px;
+    max-width: 60px;
+    text-align: center;
+    padding: 3px 4px;
+  }
+  
+  /* Compact table buttons - icon only, minimal size */
+  #workout[data-page="workout-plan"] .workout-plan-table .btn {
+    padding: 3px 5px;
+    min-height: 24px;
+    width: 26px;
+    height: 26px;
+  }
+  
+  #workout[data-page="workout-plan"] .workout-plan-table .btn i {
+    font-size: 0.75rem !important;
+  }
+  
+  /* Execution badge compact */
+  #workout[data-page="workout-plan"] .execution-badge {
+    padding: 2px 5px;
+    font-size: 0.65rem;
   }
 }
 
@@ -2340,5 +2512,264 @@ tr.superset-partner-dragging {
   .superset-badge {
     font-size: 0.6rem;
     padding: 1px 4px;
+  }
+}
+
+/* ==========================================================================
+   Execution Style Feature (AMRAP/EMOM)
+   ========================================================================== */
+
+/* Execution Style Badge */
+.execution-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--wp-radius-sm);
+  font-size: 0.75rem;
+  font-weight: var(--wp-fw-semibold);
+  cursor: pointer;
+  transition: var(--wp-transition);
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.execution-badge:hover {
+  transform: scale(1.05);
+}
+
+.execution-badge--standard {
+  background: var(--wp-surface);
+  color: var(--wp-text-muted);
+  border-color: var(--wp-border);
+}
+
+.execution-badge--standard:hover {
+  background: var(--wp-surface-elevated);
+  border-color: var(--wp-accent);
+  color: var(--wp-accent);
+}
+
+.execution-badge--amrap {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+  color: white;
+  border-color: #ff6b6b;
+}
+
+.execution-badge--amrap:hover {
+  background: linear-gradient(135deg, #ff5252 0%, #e53935 100%);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+}
+
+.execution-badge--emom {
+  background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+  color: white;
+  border-color: #4ecdc4;
+}
+
+.execution-badge--emom:hover {
+  background: linear-gradient(135deg, #3dbdb4 0%, #3a9080 100%);
+  box-shadow: 0 2px 8px rgba(78, 205, 196, 0.4);
+}
+
+.execution-label {
+  font-weight: var(--wp-fw-bold);
+  letter-spacing: 0.5px;
+}
+
+.execution-details {
+  font-size: 0.65rem;
+  opacity: 0.9;
+  margin-left: 2px;
+}
+
+/* Execution Style Picker Popup */
+.execution-style-picker {
+  background: var(--wp-surface-elevated);
+  border: 1px solid var(--wp-border);
+  border-radius: var(--wp-radius);
+  box-shadow: var(--wp-shadow-lg);
+  min-width: 280px;
+  max-width: 320px;
+  animation: picker-appear 0.2s ease-out;
+}
+
+@keyframes picker-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.execution-picker-content {
+  padding: 0;
+}
+
+.execution-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--wp-border);
+  background: var(--wp-surface);
+  border-radius: var(--wp-radius) var(--wp-radius) 0 0;
+}
+
+.execution-picker-header h6 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: var(--wp-fw-semibold);
+  color: var(--wp-text);
+}
+
+.btn-close-picker {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--wp-text-muted);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.btn-close-picker:hover {
+  color: var(--wp-text);
+}
+
+.execution-picker-body {
+  padding: 16px;
+}
+
+.execution-style-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.execution-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 2px solid var(--wp-border);
+  border-radius: var(--wp-radius-sm);
+  cursor: pointer;
+  transition: var(--wp-transition);
+}
+
+.execution-option:hover {
+  border-color: var(--wp-accent);
+  background: var(--wp-surface);
+}
+
+.execution-option.active {
+  border-color: var(--wp-accent);
+  background: rgba(79, 140, 255, 0.1);
+}
+
+.execution-option input[type="radio"] {
+  display: none;
+}
+
+.option-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--wp-surface);
+  border-radius: 50%;
+  font-size: 0.9rem;
+  color: var(--wp-text-muted);
+}
+
+.execution-option.active .option-icon {
+  background: var(--wp-accent);
+  color: white;
+}
+
+.option-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.option-text strong {
+  font-size: 0.85rem;
+  color: var(--wp-text);
+}
+
+.option-text small {
+  font-size: 0.7rem;
+  color: var(--wp-text-muted);
+}
+
+/* Execution style parameters */
+.execution-params {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--wp-border);
+}
+
+.param-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.param-label span {
+  font-size: 0.8rem;
+  color: var(--wp-text-muted);
+}
+
+.param-label input {
+  width: 80px;
+  text-align: center;
+}
+
+.execution-picker-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--wp-border);
+  background: var(--wp-surface);
+  border-radius: 0 0 var(--wp-radius) var(--wp-radius);
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .execution-badge--standard {
+  background: var(--wp-surface-elevated);
+}
+
+[data-theme='dark'] .execution-option:hover {
+  background: var(--wp-surface-elevated);
+}
+
+[data-theme='dark'] .execution-option.active {
+  background: rgba(79, 140, 255, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .execution-style-picker {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    max-width: none;
+    width: auto;
+  }
+  
+  .execution-badge {
+    padding: 3px 6px;
+    font-size: 0.7rem;
+  }
+  
+  .execution-details {
+    display: none;
   }
 }

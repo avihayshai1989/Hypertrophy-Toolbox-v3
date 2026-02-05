@@ -1,4 +1,5 @@
 import { showToast } from './toast.js';
+import { api } from './fetch-wrapper.js';
 
 export function initializeProgressionPlan() {
     const exerciseSelect = document.getElementById('exerciseSelect');
@@ -106,19 +107,12 @@ export function initializeProgressionPlan() {
             if (goalType !== 'technique') {
                 try {
                     console.log(`Fetching current value for ${exercise} (${goalType})`);
-                    const response = await fetch('/get_current_value', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ exercise, goal_type: goalType }),
-                    });
+                    const response = await api.post('/get_current_value', 
+                        { exercise, goal_type: goalType }, 
+                        { showLoading: false, showErrorToast: false }
+                    );
                     
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch current value');
-                    }
-                    
-                    const data = await response.json();
+                    const data = response.data !== undefined ? response.data : response;
                     console.log('Received current value data:', data);
                     
                     if (data.error) {
@@ -215,18 +209,7 @@ export function initializeProgressionPlan() {
             
             console.log('Saving goal:', formData);
             
-            const response = await fetch('/save_progression_goal', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-            
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to save goal');
-            }
+            await api.post('/save_progression_goal', formData, { showErrorToast: false });
             
             goalModal.hide();
             showToast('Goal saved successfully');
@@ -250,24 +233,17 @@ export function initializeProgressionPlan() {
         }
         
         try {
-            const requestBody = JSON.stringify({ exercise });
-            console.log('Sending request with body:', requestBody);
+            console.log('Sending request for exercise:', exercise);
             
-            const response = await fetch('/get_exercise_suggestions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: requestBody,
-            });
+            const response = await api.post('/get_exercise_suggestions', 
+                { exercise }, 
+                { showLoading: false, showErrorToast: false }
+            );
             
             console.log('Response received:', response);
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to fetch suggestions');
-            }
             
-            const suggestions = await response.json();
+            // Extract suggestions array from response
+            const suggestions = response.data !== undefined ? response.data : response;
             console.log('Suggestions data:', suggestions);
             
             if (!Array.isArray(suggestions)) {
@@ -348,30 +324,72 @@ export function initializeProgressionPlan() {
         }
     });
     
-    // Handle goal deletion
-    document.addEventListener('click', async function(e) {
+    // Delete confirmation modal setup
+    const deleteModalElement = document.getElementById('deleteGoalModal');
+    const deleteModal = new bootstrap.Modal(deleteModalElement, {
+        keyboard: true,
+        backdrop: true,
+        focus: true,
+    });
+    let pendingDeleteGoalId = null;
+    let pendingDeleteButton = null;
+
+    // Handle goal deletion - show modal
+    document.addEventListener('click', function(e) {
         if (e.target.closest('.delete-goal')) {
             const button = e.target.closest('.delete-goal');
+            pendingDeleteGoalId = button.dataset.goalId;
+            pendingDeleteButton = button;
+            deleteModal.show();
+        }
+    });
+
+    // Handle delete confirmation
+    document.getElementById('confirmDeleteGoal').addEventListener('click', async function() {
+        if (!pendingDeleteGoalId) return;
+        
+        try {
+            await api.delete(`/delete_progression_goal/${pendingDeleteGoalId}`, { showErrorToast: false });
+            
+            deleteModal.hide();
+            showToast('Goal deleted successfully');
+            // Remove the row from the table
+            if (pendingDeleteButton) {
+                pendingDeleteButton.closest('tr').remove();
+            }
+        } catch (error) {
+            console.error('Error deleting goal:', error);
+            deleteModal.hide();
+            showToast('Failed to delete goal: ' + error.message, true);
+        } finally {
+            pendingDeleteGoalId = null;
+            pendingDeleteButton = null;
+        }
+    });
+
+    // Handle goal completion
+    document.addEventListener('click', async function(e) {
+        if (e.target.closest('.complete-goal')) {
+            const button = e.target.closest('.complete-goal');
             const goalId = button.dataset.goalId;
             
-            if (confirm('Are you sure you want to delete this goal?')) {
-                try {
-                    const response = await fetch(`/delete_progression_goal/${goalId}`, {
-                        method: 'DELETE',
-                    });
-                    
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || 'Failed to delete goal');
-                    }
-                    
-                    showToast('Goal deleted successfully');
-                    // Remove the row from the table
-                    button.closest('tr').remove();
-                } catch (error) {
-                    console.error('Error deleting goal:', error);
-                    showToast('Failed to delete goal: ' + error.message, true);
+            try {
+                await api.post(`/complete_progression_goal/${goalId}`, {}, { showErrorToast: false });
+                
+                showToast('Goal marked as completed!');
+                // Update the row to show completed status
+                const row = button.closest('tr');
+                const statusCell = row.querySelector('.badge');
+                if (statusCell) {
+                    statusCell.classList.remove('bg-primary');
+                    statusCell.classList.add('bg-success');
+                    statusCell.textContent = 'Completed';
                 }
+                // Remove the complete button
+                button.remove();
+            } catch (error) {
+                console.error('Error completing goal:', error);
+                showToast('Failed to complete goal: ' + error.message, true);
             }
         }
     });

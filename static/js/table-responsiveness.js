@@ -16,8 +16,7 @@ tableDebugLog('[TableResponsiveness] Version 2024-11-11-03 loaded');
  * Table Responsiveness JavaScript
  * 
  * Provides:
- * - Column visibility toggles with localStorage persistence
- * - Density mode switching (comfortable/compact)
+ * - Column visibility toggles with localStorage persistence (Simple/Advanced mode)
  * - ResizeObserver-based dynamic rows-per-page calculation
  * - Accessibility-compliant interactions
  * 
@@ -122,11 +121,21 @@ tableDebugLog('[TableResponsiveness] Version 2024-11-11-03 loaded');
   }
 
   // ============================================================
-  // COLUMN CHOOSER
+  // COLUMN CHOOSER (Simple/Advanced View Mode)
   // ============================================================
 
+  // Columns to HIDE in Simple mode (these are shown only in Advanced mode)
+  const ADVANCED_ONLY_COLUMNS = [
+    'Tertiary Muscle',
+    'Utility',
+    'Movement Pattern',
+    'Movement Subpattern',
+    'Stabilizers',
+    'Synergists'
+  ];
+
   /**
-   * Initialize column chooser for a table
+   * Initialize column chooser for a table (Simple/Advanced mode toggle)
    * @param {HTMLElement} tableEl - Table element
    * @param {string} pageKey - Unique identifier for the page (e.g., 'workout_plan')
    */
@@ -145,357 +154,132 @@ tableDebugLog('[TableResponsiveness] Version 2024-11-11-03 loaded');
     }
 
   // Check if already initialized for this specific table
-  const existingChooser = qs('.tbl-col-chooser[data-table-key="' + pageKey + '"]', wrapper);
+  const existingChooser = qs('.tbl-view-mode-toggle[data-table-key="' + pageKey + '"]', wrapper);
     if (existingChooser) {
   tableDebugLog('[initColumnChooser] Already initialized for', pageKey, '- exiting');
       return; // Already initialized
     }
     
-  tableDebugLog('[initColumnChooser] Creating new column chooser for', pageKey);
+  tableDebugLog('[initColumnChooser] Creating new view mode toggle for', pageKey);
   tableDebugTrace('[initColumnChooser] Called from:');
 
-    // Create column chooser UI
-    const chooserEl = createColumnChooserUI(tableEl, pageKey);
-    if (!chooserEl) return;
+    // Create view mode toggle UI
+    const toggleEl = createViewModeToggleUI(tableEl, pageKey);
+    if (!toggleEl) return;
 
     // Mark with page key to prevent duplicate initialization
-    chooserEl.dataset.tableKey = pageKey;
+    toggleEl.dataset.tableKey = pageKey;
 
-    const menu = qs('[data-col-chooser-menu]', chooserEl);
-    const trigger = qs('[data-col-chooser-trigger]', chooserEl);
-    if (!menu || !trigger) return;
-
-    // Load preferences
+    // Load preferences - default to 'simple' mode
     const prefs = getPrefs();
-    const hiddenCols = new Set(prefs[pageKey]?.hidden || []);
-
-    // Setup checkboxes
-    qsa('input[type=checkbox][data-col]', menu).forEach(checkbox => {
-      const colIdentifier = checkbox.dataset.col; // Now stores data-label value
-      checkbox.checked = !hiddenCols.has(colIdentifier);
-  tableDebugLog('[Checkbox Setup] Column:', colIdentifier, 'Checked:', checkbox.checked);
-
-      checkbox.addEventListener('change', () => {
-  tableDebugLog('[Checkbox Change] Column:', colIdentifier, 'New state:', checkbox.checked);
-        toggleColumn(tableEl, colIdentifier, checkbox.checked, pageKey);
-      });
-
-      // Apply initial visibility
-      if (!checkbox.checked) {
-        applyColumnVisibility(tableEl, colIdentifier, false);
-      }
-    });
-
-    // Setup trigger button click handler - no need to check for duplicate since
-    // initColumnChooser already prevents duplicate initialization
-  tableDebugLog('[initColumnChooser] Attaching click listener to trigger:', trigger);
-    trigger.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const isActive = menu.classList.contains('active');
-  tableDebugLog('[Columns Button] Clicked, isActive:', isActive, 'trigger element:', trigger);
-      
-      if (isActive) {
-        // Close menu
-  tableDebugLog('[Columns Button] Closing menu');
-        menu.classList.remove('active');
-        trigger.setAttribute('aria-expanded', 'false');
-        // Reset positioning when closed
-        menu.style.position = '';
-        menu.style.top = '';
-        menu.style.left = '';
-        menu.style.right = '';
-        menu.style.bottom = '';
-        menu.style.width = '';
-      } else {
-        // Open menu
-  tableDebugLog('[Columns Button] Opening menu');
-        lastMenuOpenTimestamp = Date.now();
-        menu.classList.add('active');
-        trigger.setAttribute('aria-expanded', 'true');
-        positionMenuToAvoidOverflow(trigger, menu);
-      }
-    });
-
-    // Set up global event handlers only once
-    if (!window._tblControlsGlobalHandlersSet) {
-      window._tblControlsGlobalHandlersSet = true;
-      
-      // Close menu when clicking outside
-      document.addEventListener('click', (e) => {
-        // Use setTimeout to allow the trigger button's click handler to run first
-        setTimeout(() => {
-          const allMenus = qsa('.tbl-col-chooser-menu.active');
-          allMenus.forEach(activeMenu => {
-            const chooser = activeMenu.closest('[data-col-chooser]');
-            const trigger = chooser ? qs('[data-col-chooser-trigger]', chooser) : null;
-            
-            // Close if clicking outside the chooser AND not clicking the trigger
-            if (chooser && !chooser.contains(e.target)) {
-              tableDebugLog('[Global Click] Closing menu - clicked outside');
-              activeMenu.classList.remove('active');
-              if (trigger) {
-                trigger.setAttribute('aria-expanded', 'false');
-              }
-              // Reset positioning
-              activeMenu.style.position = '';
-              activeMenu.style.top = '';
-              activeMenu.style.left = '';
-              activeMenu.style.right = '';
-              activeMenu.style.bottom = '';
-              activeMenu.style.width = '';
-            }
-          });
-        }, 0);
-      });
-
-      // Close menu when scrolling
-      const closeOnScroll = () => {
-        if (Date.now() - lastMenuOpenTimestamp < 200) {
-          return; // Ignore scroll events fired immediately after opening
-        }
-        if (qsa('.tbl-col-chooser-menu.active').length) {
-          tableDebugLog('[Global Scroll] Closing menu');
-        }
-        const allMenus = qsa('.tbl-col-chooser-menu.active');
-        allMenus.forEach(activeMenu => {
-          activeMenu.classList.remove('active');
-          const chooser = activeMenu.closest('[data-col-chooser]');
-          if (chooser) {
-            const menuTrigger = qs('[data-col-chooser-trigger]', chooser);
-            if (menuTrigger) {
-              menuTrigger.setAttribute('aria-expanded', 'false');
-            }
-          }
-          // Reset positioning
-          activeMenu.style.position = '';
-          activeMenu.style.top = '';
-          activeMenu.style.left = '';
-          activeMenu.style.right = '';
-          activeMenu.style.bottom = '';
-          activeMenu.style.width = '';
-        });
-      };
-      
-      window.addEventListener('scroll', closeOnScroll, { passive: true });
-
-      // Handle escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          tableDebugLog('[Global Keydown] Escape pressed, closing menus');
-          const allMenus = qsa('.tbl-col-chooser-menu.active');
-          allMenus.forEach(activeMenu => {
-            activeMenu.classList.remove('active');
-            const chooser = activeMenu.closest('[data-col-chooser]');
-            if (chooser) {
-              const menuTrigger = qs('[data-col-chooser-trigger]', chooser);
-              if (menuTrigger) {
-                menuTrigger.setAttribute('aria-expanded', 'false');
-                menuTrigger.focus();
-              }
-            }
-            // Reset positioning
-            activeMenu.style.position = '';
-            activeMenu.style.top = '';
-            activeMenu.style.left = '';
-            activeMenu.style.right = '';
-            activeMenu.style.bottom = '';
-            activeMenu.style.width = '';
-          });
-        }
-      });
-    }
+    const currentMode = prefs[pageKey]?.viewMode || 'simple';
     
-    // Also close on scroll within the table container (per-instance handler)
-    const tableContainer = trigger.closest('.tbl-wrap');
-    if (tableContainer && !tableContainer.dataset.scrollHandlerSet) {
-      tableContainer.dataset.scrollHandlerSet = 'true';
-      tableContainer.addEventListener('scroll', () => {
-        if (Date.now() - lastMenuOpenTimestamp < 200) {
-          return;
-        }
-        if (menu.classList.contains('active')) {
-          tableDebugLog('[Table Scroll] Closing menu');
-          menu.classList.remove('active');
-          trigger.setAttribute('aria-expanded', 'false');
-          // Reset positioning
-          menu.style.position = '';
-          menu.style.top = '';
-          menu.style.left = '';
-          menu.style.right = '';
-          menu.style.bottom = '';
-          menu.style.width = '';
-        }
-      }, { passive: true });
-    }
+    // Apply initial mode
+    applyViewMode(tableEl, currentMode, pageKey);
+    
+    // Update button state
+    updateViewModeButton(toggleEl, currentMode);
   }
 
   /**
-   * Position menu to avoid viewport overflow
-   * Uses fixed positioning to avoid being clipped by parent overflow containers
-   * @param {HTMLElement} trigger - Trigger button
-   * @param {HTMLElement} menu - Menu element
-   */
-  function positionMenuToAvoidOverflow(trigger, menu) {
-    // Use requestAnimationFrame to get accurate measurements after menu is visible
-    requestAnimationFrame(() => {
-      const triggerRect = trigger.getBoundingClientRect();
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const padding = 10;
-      
-      // Estimate menu height (it should be visible now with visibility:visible)
-      // Force a layout to get dimensions
-      const menuHeight = menu.offsetHeight || 400; // fallback to max-height
-      const menuWidth = 280; // max-width from CSS
-
-      // Calculate available space
-      const spaceBelow = viewportHeight - triggerRect.bottom - padding;
-      const spaceAbove = triggerRect.top - padding;
-
-      // Use fixed positioning to escape parent overflow clipping
-      menu.style.position = 'fixed';
-      menu.style.width = menuWidth + 'px';
-
-      // Vertical positioning - prefer below, only go above if necessary
-      if (spaceBelow < menuHeight && spaceAbove > spaceBelow && spaceAbove > menuHeight) {
-        // Position ABOVE the trigger
-        menu.style.top = 'auto';
-        menu.style.bottom = (viewportHeight - triggerRect.top + 10) + 'px';
-      } else {
-        // Position BELOW the trigger (default and preferred)
-        menu.style.top = (triggerRect.bottom + 10) + 'px';
-        menu.style.bottom = 'auto';
-      }
-
-      // Horizontal positioning
-      const idealLeft = triggerRect.left;
-      
-      if (idealLeft + menuWidth > viewportWidth - padding) {
-        // Align to right edge of trigger
-        menu.style.left = 'auto';
-        menu.style.right = (viewportWidth - triggerRect.right) + 'px';
-      } else {
-        // Align to left edge of trigger
-        menu.style.left = idealLeft + 'px';
-        menu.style.right = 'auto';
-      }
-    });
-  }
-
-  /**
-   * Create column chooser UI if it doesn't exist
+   * Create view mode toggle UI (Simple/Advanced button)
    * @param {HTMLElement} tableEl - Table element
    * @param {string} pageKey - Page identifier
-   * @returns {HTMLElement} Chooser element
+   * @returns {HTMLElement} Toggle element
    */
-  function createColumnChooserUI(tableEl, pageKey) {
+  function createViewModeToggleUI(tableEl, pageKey) {
     const wrapper = tableEl.closest('.tbl-wrap');
     if (!wrapper) return null;
 
     const controls = getOrCreateControlsContainer(wrapper);
     if (!controls) return null;
 
-    // Create trigger button
-    const trigger = document.createElement('button');
-    trigger.type = 'button';
-    trigger.className = 'tbl-col-chooser-trigger';
-    trigger.setAttribute('data-col-chooser-trigger', '');
-    trigger.setAttribute('aria-expanded', 'false');
-    trigger.setAttribute('aria-haspopup', 'true');
-    trigger.innerHTML = '<i class="fas fa-columns" aria-hidden="true"></i> Columns';
+    // Create toggle button
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'tbl-view-mode-toggle';
+    toggle.setAttribute('data-view-mode-toggle', '');
+    toggle.setAttribute('aria-pressed', 'false');
+    toggle.innerHTML = '<i class="fas fa-columns" aria-hidden="true"></i> <span class="mode-text">Simple</span>';
 
-    // Create menu
-    const menu = document.createElement('div');
-    menu.className = 'tbl-col-chooser-menu';
-    menu.setAttribute('data-col-chooser-menu', '');
-    menu.setAttribute('role', 'menu');
-
-    // Find all columns with data-label attributes (each column individually)
-    const columns = [];
-    qsa('th[data-label]', tableEl).forEach((th, index) => {
-      const dataLabel = th.getAttribute('data-label');
-      const classList = Array.from(th.classList);
-      const priorityClass = classList.find(c => c.startsWith('col--'));
+    // Click handler
+    toggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       
-      if (dataLabel && priorityClass) {
-        columns.push({
-          dataLabel: dataLabel,
-          label: dataLabel, // Use data-label as display text
-          priority: priorityClass.split('--')[1], // 'high', 'med', 'low'
-          index: index // Keep track of column index for uniqueness
-        });
+      const prefs = getPrefs();
+      const currentMode = prefs[pageKey]?.viewMode || 'simple';
+      const newMode = currentMode === 'simple' ? 'advanced' : 'simple';
+      
+      tableDebugLog('[View Mode] Switching from', currentMode, 'to', newMode);
+      
+      // Save preference
+      if (!prefs[pageKey]) {
+        prefs[pageKey] = {};
       }
+      prefs[pageKey].viewMode = newMode;
+      setPrefs(prefs);
+      
+      // Apply mode
+      applyViewMode(tableEl, newMode, pageKey);
+      
+      // Update button
+      updateViewModeButton(toggle, newMode);
     });
 
-  tableDebugLog('[createColumnChooserUI] Found columns:', columns.map(c => ({ label: c.label, priority: c.priority, index: c.index })));
-
-    // Sort by priority (high -> med -> low) then by index
-    const priorityOrder = { high: 1, med: 2, low: 3 };
-    columns.sort((a, b) => {
-      const priorityDiff = (priorityOrder[a.priority] || 99) - (priorityOrder[b.priority] || 99);
-      return priorityDiff !== 0 ? priorityDiff : a.index - b.index;
-    });
-
-    // Create checkboxes for each column
-    columns.forEach(col => {
-      const label = document.createElement('label');
-      label.setAttribute('role', 'menuitemcheckbox');
-
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.checked = true;
-      checkbox.dataset.col = col.dataLabel; // Use data-label as identifier
-      checkbox.setAttribute('aria-label', `Toggle ${col.label} column`);
-
-      const span = document.createElement('span');
-      span.textContent = col.label;
-
-      label.appendChild(checkbox);
-      label.appendChild(span);
-      menu.appendChild(label);
-    });
-
-    // Assemble
-    const chooserContainer = document.createElement('div');
-    chooserContainer.className = 'tbl-col-chooser';
-    chooserContainer.setAttribute('data-col-chooser', '');
-    chooserContainer.appendChild(trigger);
-    chooserContainer.appendChild(menu);
-
-    controls.appendChild(chooserContainer);
-    return chooserContainer;
+    controls.appendChild(toggle);
+    return toggle;
   }
 
   /**
-   * Toggle column visibility
+   * Update view mode button appearance
+   * @param {HTMLElement} button - Toggle button element
+   * @param {string} mode - Current mode ('simple' or 'advanced')
+   */
+  function updateViewModeButton(button, mode) {
+    const modeText = button.querySelector('.mode-text');
+    const icon = button.querySelector('i');
+    
+    if (mode === 'advanced') {
+      if (modeText) modeText.textContent = 'Advanced';
+      if (icon) {
+        icon.className = 'fas fa-th';
+      }
+      button.setAttribute('aria-pressed', 'true');
+      button.classList.add('active');
+    } else {
+      if (modeText) modeText.textContent = 'Simple';
+      if (icon) {
+        icon.className = 'fas fa-columns';
+      }
+      button.setAttribute('aria-pressed', 'false');
+      button.classList.remove('active');
+    }
+  }
+
+  /**
+   * Apply view mode to table (show/hide columns based on mode)
+   * Uses CSS class on table so dynamically added rows inherit visibility
    * @param {HTMLElement} tableEl - Table element
-   * @param {string} colIdentifier - Column identifier (data-label value)
-   * @param {boolean} show - Whether to show the column
+   * @param {string} mode - View mode ('simple' or 'advanced')
    * @param {string} pageKey - Page identifier
    */
-  function toggleColumn(tableEl, colIdentifier, show, pageKey) {
-  tableDebugLog('[toggleColumn] Called with:', { colIdentifier, show, pageKey });
-    applyColumnVisibility(tableEl, colIdentifier, show);
-
-    // Update preferences
-    const prefs = getPrefs();
-    if (!prefs[pageKey]) {
-      prefs[pageKey] = { hidden: [] };
-    }
-
-    const hiddenSet = new Set(prefs[pageKey].hidden || []);
-
-    if (show) {
-      hiddenSet.delete(colIdentifier);
+  function applyViewMode(tableEl, mode, pageKey) {
+    tableDebugLog('[applyViewMode] Applying mode:', mode);
+    
+    // Use CSS class for column visibility so dynamic rows inherit it
+    if (mode === 'simple') {
+      tableEl.classList.add('tbl--view-simple');
+      tableEl.classList.remove('tbl--view-advanced');
     } else {
-      hiddenSet.add(colIdentifier);
+      tableEl.classList.remove('tbl--view-simple');
+      tableEl.classList.add('tbl--view-advanced');
     }
+  }
 
-    prefs[pageKey].hidden = Array.from(hiddenSet);
-  tableDebugLog('[toggleColumn] Updated hidden columns:', prefs[pageKey].hidden);
-    setPrefs(prefs);
+  // Keep legacy function for backward compatibility (no-op for click handlers)
+  function toggleColumn(tableEl, colIdentifier, show, pageKey) {
+    tableDebugLog('[toggleColumn] Legacy call ignored - use view mode toggle instead');
   }
 
   /**
@@ -539,121 +323,6 @@ tableDebugLog('[TableResponsiveness] Version 2024-11-11-03 loaded');
     bodyCells.forEach(cell => {
       cell.style.display = show ? '' : 'none';
     });
-  }
-
-  // ============================================================
-  // DENSITY TOGGLE
-  // ============================================================
-
-  /**
-   * Initialize density toggle for a table
-   * @param {HTMLElement} tableEl - Table element
-   * @param {string} pageKey - Page identifier
-   */
-  function initDensityToggle(tableEl, pageKey) {
-    if (!tableEl || !pageKey) return;
-
-    const wrapper = tableEl.closest('.tbl-wrap');
-    if (!wrapper) return;
-
-    // Find or create density toggle - look in parent for existing controls
-    let toggleBtn = qs('[data-density-toggle]', wrapper.parentElement);
-
-    if (!toggleBtn) {
-      toggleBtn = createDensityToggle(tableEl, pageKey);
-    }
-
-    if (!toggleBtn) return;
-
-    // Load preference
-    const prefs = getPrefs();
-    const density = prefs[pageKey]?.density || 'comfortable';
-    applyDensity(tableEl, density);
-
-    // Remove existing listeners by replacing with a clone
-    // This ensures we don't have duplicate listeners
-    const newToggleBtn = toggleBtn.cloneNode(true);
-    if (toggleBtn.parentElement) {
-      toggleBtn.parentElement.replaceChild(newToggleBtn, toggleBtn);
-      toggleBtn = newToggleBtn;
-    }
-
-    // Setup toggle with listener
-    toggleBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const currentDensity = tableEl.classList.contains('tbl--compact') ? 'compact' : 'comfortable';
-      const newDensity = currentDensity === 'comfortable' ? 'compact' : 'comfortable';
-
-      applyDensity(tableEl, newDensity);
-
-      // Save preference
-      const prefs = getPrefs();
-      if (!prefs[pageKey]) {
-        prefs[pageKey] = {};
-      }
-      prefs[pageKey].density = newDensity;
-      setPrefs(prefs);
-
-      // Update button text
-      updateDensityButtonText(toggleBtn, newDensity);
-    });
-
-    // Set initial button text
-    updateDensityButtonText(toggleBtn, density);
-  }
-
-  /**
-   * Create density toggle button
-   * @param {HTMLElement} tableEl - Table element
-   * @param {string} pageKey - Page identifier
-   * @returns {HTMLElement} Toggle button
-   */
-  function createDensityToggle(tableEl, pageKey) {
-  const wrapper = tableEl.closest('.tbl-wrap');
-  if (!wrapper) return null;
-
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'tbl-density-toggle';
-    button.setAttribute('data-density-toggle', '');
-    button.setAttribute('aria-label', 'Toggle table density');
-    button.setAttribute('title', 'Toggle between comfortable and compact density');
-    button.innerHTML = '<i class="fas fa-compress-arrows-alt" aria-hidden="true"></i> <span class="density-text">Comfortable</span>';
-
-    // Find or reuse existing controls container
-    const controls = getOrCreateControlsContainer(wrapper);
-    if (!controls) return null;
-
-    controls.appendChild(button);
-    return button;
-  }
-
-  /**
-   * Apply density mode to table
-   * @param {HTMLElement} tableEl - Table element
-   * @param {string} density - 'comfortable' or 'compact'
-   */
-  function applyDensity(tableEl, density) {
-    if (density === 'compact') {
-      tableEl.classList.add('tbl--compact');
-    } else {
-      tableEl.classList.remove('tbl--compact');
-    }
-  }
-
-  /**
-   * Update density button text
-   * @param {HTMLElement} button - Button element
-   * @param {string} density - Current density
-   */
-  function updateDensityButtonText(button, density) {
-    const textSpan = qs('.density-text', button);
-    if (textSpan) {
-      textSpan.textContent = density === 'comfortable' ? 'Comfortable' : 'Compact';
-    }
-    button.setAttribute('aria-label', `Switch to ${density === 'comfortable' ? 'compact' : 'comfortable'} density`);
   }
 
   // ============================================================
@@ -744,11 +413,8 @@ tableDebugLog('[TableResponsiveness] Version 2024-11-11-03 loaded');
       const pageKey = table.dataset.tableResponsive;
       if (!pageKey) return;
 
-      // Initialize column chooser
+      // Initialize column chooser (Simple/Advanced mode)
       initColumnChooser(table, pageKey);
-
-      // Initialize density toggle
-      initDensityToggle(table, pageKey);
 
       // Initialize dynamic rows (if callback provided)
       const onPageSize = table.dataset.tableOnPageSize;
@@ -776,7 +442,6 @@ tableDebugLog('[TableResponsiveness] Version 2024-11-11-03 loaded');
 
   window.TableResponsiveness = {
     initColumnChooser,
-    initDensityToggle,
     fitRowsToViewport,
     getPrefs,
     setPrefs,

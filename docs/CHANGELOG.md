@@ -2,6 +2,52 @@
 
 All notable changes to Hypertrophy Toolbox v3.
 
+## v1.5.0 - February 5, 2026
+
+### New Features: Auto Starter Plan Generator Phase 2
+
+#### Double Progression Logic
+- Smart progression suggestions based on rep range performance
+- When hitting top of rep range (e.g., 12 reps in 8-12 range) → suggests weight increase
+- When below minimum (e.g., 6 reps in 8-12 range) → suggests pushing reps back into range
+- Detects repeated failures and suggests weight reduction
+- Conservative increments for novices (2.5kg) vs experienced lifters (5kg)
+- Considers effort (RIR 1-3 or RPE 7-9) before suggesting weight increase
+
+#### Priority Muscle Reallocation
+- New `priority_muscles` parameter in plan generator API
+- Automatically boosts volume for selected muscle groups
+- Adds +1 set to existing accessories targeting priority muscles
+- "Clear volume for volume" strategy: reduces non-essential work to make room
+- Never removes core movement patterns (squat, hinge, push, pull)
+- Available via `/get_generator_options` endpoint
+
+#### Movement Pattern Coverage Analysis
+- New `/api/pattern_coverage` endpoint
+- Analyzes workout plan for movement pattern balance
+- Tracks sets per routine (warns if outside 15-24 range)
+- Detects missing core patterns (squat, hinge, horizontal/vertical push/pull)
+- Warns about push/pull imbalance (>50% skew)
+- Flags excessive isolation-to-compound ratio
+- Returns actionable recommendations with severity levels
+
+### API Changes
+- `POST /generate_starter_plan`: Added `priority_muscles` parameter
+- `GET /get_generator_options`: Added `priority_muscles.available` with all muscle groups
+- `GET /api/pattern_coverage`: New endpoint for program analysis
+- `POST /get_exercise_suggestions`: Enhanced with double progression logic
+
+### Tests
+- Added 25 tests for double progression logic
+- Added 15 tests for priority muscle and pattern coverage
+- Total test coverage: 294 tests passing
+
+### Documentation
+- New `docs/PLAN_GENERATOR_IMPLEMENTATION.md` tracking document
+- Documents Phase 1 (complete) and Phase 2 features
+
+---
+
 ## v1.4.1 - November 10, 2025
 
 ### Bug Fixes

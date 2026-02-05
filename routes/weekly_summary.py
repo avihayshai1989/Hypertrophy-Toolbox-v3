@@ -3,6 +3,7 @@ from utils.weekly_summary import (
     calculate_exercise_categories,
     calculate_isolated_muscles_stats,
     calculate_weekly_summary,
+    calculate_pattern_coverage,
 )
 from utils.business_logic import BusinessLogic
 from utils.volume_classifier import (
@@ -101,4 +102,36 @@ def weekly_summary():
         print(f"Error in weekly_summary: {e}")
         if request.headers.get("Accept") == "application/json":
             return jsonify({"error": "Unable to fetch weekly summary"}), 500
-        return render_template("error.html", message="Unable to load weekly summary."), 500 
+        return render_template("error.html", message="Unable to load weekly summary."), 500
+
+
+@weekly_summary_bp.route("/api/pattern_coverage")
+def get_pattern_coverage():
+    """
+    Get movement pattern coverage analysis for the current workout plan.
+    
+    Returns JSON with:
+    - per_routine: Pattern breakdown by routine
+    - total: Aggregated pattern counts
+    - warnings: Actionable recommendations (missing patterns, volume issues, imbalances)
+    - sets_per_routine: Total sets per routine
+    - ideal_sets_range: Target min/max sets per session
+    
+    Warnings include:
+    - Missing core movement patterns (squat, hinge, push, pull)
+    - Session volume outside 15-24 set range
+    - Push/pull imbalance
+    - Isolation vs compound skew
+    """
+    try:
+        coverage = calculate_pattern_coverage()
+        return jsonify({
+            "success": True,
+            "data": coverage
+        })
+    except Exception as e:
+        print(f"Error in pattern_coverage: {e}")
+        return jsonify({
+            "success": False,
+            "error": "Unable to calculate pattern coverage"
+        }), 500

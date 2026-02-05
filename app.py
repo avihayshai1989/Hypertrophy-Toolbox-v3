@@ -11,7 +11,6 @@ from routes.main import main_bp
 from routes.progression_plan import progression_plan_bp
 from routes.volume_splitter import volume_splitter_bp
 from routes.program_backup import program_backup_bp, init_backup_tables
-from utils.program_backup import create_auto_backup_before_erase
 from datetime import datetime
 from werkzeug.middleware.proxy_fix import ProxyFix
 from utils.logger import setup_logging
@@ -114,26 +113,11 @@ def inject_scale_level():
 @app.route('/erase-data', methods=['POST'])
 def erase_data():
     try:
-        # Create auto-backup before erasing (if active program has data)
-        auto_backup = None
-        try:
-            auto_backup = create_auto_backup_before_erase()
-            if auto_backup:
-                logger.info(
-                    "Auto-backup created before erase",
-                    extra={
-                        'backup_id': auto_backup['id'],
-                        'backup_name': auto_backup['name'],
-                        'item_count': auto_backup['item_count']
-                    }
-                )
-        except Exception as backup_error:
-            # Don't fail the erase if backup creation fails
-            logger.warning(f"Failed to create auto-backup before erase: {backup_error}")
-        
-        # Drop program data tables (but NOT backup tables)
+        # Drop ALL tables including backup tables (full reset)
         with DatabaseHandler() as db:
             tables = [
+                'program_backup_items',  # Drop child table first (FK constraint)
+                'program_backups',        # Then parent backup table
                 'user_selection',
                 'progression_goals',
                 'muscle_volumes',
@@ -154,22 +138,15 @@ def erase_data():
         add_volume_tracking_tables()
         logger.info("Initializing exercise order...")
         initialize_exercise_order()
+        logger.info("Reinitializing backup tables...")
+        init_backup_tables()
         
         from utils.errors import success_response
         
-        # Include auto-backup info in response if one was created
         response_message = 'All data has been erased and tables reinitialized successfully.'
-        auto_backup_data = None
-        if auto_backup:
-            auto_backup_data = {
-                'id': auto_backup['id'],
-                'name': auto_backup['name'],
-                'item_count': auto_backup['item_count']
-            }
-            response_message += f" Auto-backup '{auto_backup['name']}' created with {auto_backup['item_count']} exercises."
         
         return jsonify(success_response(
-            data=auto_backup_data,
+            data=None,
             message=response_message
         ))
     except Exception as e:

@@ -249,4 +249,52 @@
 
 .suggestion-card[data-goal-type="reps"] .card-title {
     color: #198754;  /* Bootstrap success */
+}
+
+/* Badge styles for light mode */
+.current-goals .badge.bg-primary {
+    background-color: #0d6efd !important;
+    color: #fff !important;
+}
+
+.current-goals .badge.bg-success {
+    background-color: #198754 !important;
+    color: #fff !important;
+}
+
+/* Badge styles for dark mode */
+[data-theme='dark'] .current-goals .badge.bg-primary {
+    background-color: #0d6efd !important;
+    color: #fff !important;
+}
+
+[data-theme='dark'] .current-goals .badge.bg-success {
+    background-color: #198754 !important;
+    color: #fff !important;
+}
+
+/* Complete goal button */
+.complete-goal {
+    padding: 0.25rem 0.5rem;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.complete-goal:hover {
+    background-color: #198754;
+    color: white;
+}
+
+[data-theme='dark'] .complete-goal {
+    color: #198754;
+    background-color: transparent;
+    border-color: #198754;
+}
+
+[data-theme='dark'] .complete-goal:hover {
+    color: white;
+    background-color: #198754;
 } 

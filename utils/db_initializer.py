@@ -105,6 +105,41 @@ def _initialize_isolated_muscles_table(db: DatabaseHandler) -> None:
     )
 
 
+def _rebuild_isolated_muscles_mapping(db: DatabaseHandler) -> None:
+    """Rebuild exercise_isolated_muscles from the advanced_isolated_muscles column."""
+    try:
+        db.execute_query("DELETE FROM exercise_isolated_muscles")
+        db.execute_query(
+            """
+            WITH RECURSIVE split(exercise_name, rest, part) AS (
+              SELECT exercise_name,
+                     REPLACE(COALESCE(advanced_isolated_muscles,''), ';', ',') || ',',
+                     ''
+              FROM exercises
+              WHERE advanced_isolated_muscles IS NOT NULL
+                AND TRIM(advanced_isolated_muscles) <> ''
+
+              UNION ALL
+              SELECT exercise_name,
+                     substr(rest, instr(rest, ',') + 1),
+                     TRIM(substr(rest, 1, instr(rest, ',') - 1))
+              FROM split
+              WHERE rest <> ''
+            )
+            INSERT OR IGNORE INTO exercise_isolated_muscles (exercise_name, muscle)
+            SELECT exercise_name, 
+                   LOWER(REPLACE(REPLACE(TRIM(part), ' ', '-'), '_', '-'))
+            FROM split
+            WHERE part <> ''
+            """
+        )
+        row = db.fetch_one("SELECT COUNT(*) AS count FROM exercise_isolated_muscles")
+        count = int(row["count"]) if row and row.get("count") is not None else 0
+        logger.info("Rebuilt exercise_isolated_muscles with %s mappings", count)
+    except sqlite3.Error:
+        logger.exception("Failed to rebuild exercise_isolated_muscles mapping")
+
+
 def _initialize_user_selection_table(db: DatabaseHandler) -> None:
     if os.getenv("TESTING") == "1":
         db.execute_query("DROP TABLE IF EXISTS user_selection")
@@ -153,6 +188,20 @@ def _initialize_user_selection_table(db: DatabaseHandler) -> None:
     if 'superset_group' not in col_names:
         db.execute_query("ALTER TABLE user_selection ADD COLUMN superset_group TEXT DEFAULT NULL")
         logger.info("Added superset_group column to user_selection table")
+    
+    # Phase 3: Add execution style columns for AMRAP/EMOM support
+    if 'execution_style' not in col_names:
+        db.execute_query("ALTER TABLE user_selection ADD COLUMN execution_style TEXT DEFAULT 'standard'")
+        logger.info("Added execution_style column to user_selection table")
+    if 'time_cap_seconds' not in col_names:
+        db.execute_query("ALTER TABLE user_selection ADD COLUMN time_cap_seconds INTEGER DEFAULT NULL")
+        logger.info("Added time_cap_seconds column to user_selection table")
+    if 'emom_interval_seconds' not in col_names:
+        db.execute_query("ALTER TABLE user_selection ADD COLUMN emom_interval_seconds INTEGER DEFAULT NULL")
+        logger.info("Added emom_interval_seconds column to user_selection table")
+    if 'emom_rounds' not in col_names:
+        db.execute_query("ALTER TABLE user_selection ADD COLUMN emom_rounds INTEGER DEFAULT NULL")
+        logger.info("Added emom_rounds column to user_selection table")
     
     db.execute_query(
         """
@@ -287,6 +336,10 @@ def _seed_exercises_from_backup_if_needed(db: DatabaseHandler) -> None:
             final_count,
             isolated_count,
         )
+        # Rebuild mapping table if it's underpopulated (less than 10% of exercises)
+        if final_count > 0 and isolated_count < final_count * 0.1:
+            logger.info("Rebuilding exercise_isolated_muscles from advanced_isolated_muscles column...")
+            _rebuild_isolated_muscles_mapping(db)
     except sqlite3.Error:
         logger.exception("Unable to confirm row counts after seeding")
 

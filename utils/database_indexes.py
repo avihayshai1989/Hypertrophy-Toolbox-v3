@@ -6,9 +6,10 @@ from utils.logger import get_logger
 logger = get_logger()
 
 def create_performance_indexes():
-    """Create indexes on hot filter columns."""
+    """Create indexes on hot filter columns and query optimization."""
     with DatabaseHandler() as db:
         indexes = [
+            # Exercise filter indexes
             ("idx_exercises_primary_muscle", "exercises", "primary_muscle_group"),
             ("idx_exercises_equipment", "exercises", "equipment"),
             ("idx_exercises_mechanic", "exercises", "mechanic"),
@@ -17,9 +18,19 @@ def create_performance_indexes():
             ("idx_exercises_secondary_muscle", "exercises", "secondary_muscle_group"),
             ("idx_exercises_difficulty", "exercises", "difficulty"),
             ("idx_exercises_utility", "exercises", "utility"),
+            
+            # Composite indexes for common filter combinations
             ("idx_exercises_primary_equipment", "exercises", "primary_muscle_group, equipment"),
             ("idx_exercises_primary_mechanic", "exercises", "primary_muscle_group, mechanic"),
             ("idx_exercises_equipment_mechanic", "exercises", "equipment, mechanic"),
+            
+            # Movement pattern indexes (for plan generator and pattern coverage)
+            ("idx_exercises_movement_pattern", "exercises", "movement_pattern"),
+            ("idx_exercises_pattern_muscle", "exercises", "movement_pattern, primary_muscle_group"),
+            
+            # User selection indexes (for plan queries and pattern coverage)
+            ("idx_user_selection_routine", "user_selection", "routine"),
+            ("idx_user_selection_routine_exercise", "user_selection", "routine, exercise"),
         ]
         for index_name, table_name, columns in indexes:
             try:

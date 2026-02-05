@@ -1,4 +1,5 @@
 import { showToast } from './toast.js';
+import { api } from './fetch-wrapper.js';
 
 const FILTERS_DEBUG = false;
 const filtersDebugLog = (...args) => {
@@ -6,24 +7,6 @@ const filtersDebugLog = (...args) => {
         console.log(...args);
     }
 };
-
-/**
- * Helper function to handle standardized API responses
- * @param {Response} response - Fetch response object
- * @returns {Promise<Object>} Extracted data or throws error
- */
-async function handleApiResponse(response) {
-    const data = await response.json();
-    
-    // Check if response is in standardized format
-    if (data.ok === false) {
-        const errorMsg = data.error?.message || data.error || 'An error occurred';
-        throw new Error(errorMsg);
-    }
-    
-    // If response.ok is true, return the data property, otherwise return the entire object (backward compatibility)
-    return data.ok === true ? (data.data !== undefined ? data.data : data) : data;
-}
 
 // Debounce timer for filtering
 let filterDebounceTimer = null;
@@ -71,30 +54,22 @@ export async function filterExercises(preserveSelection = false) {
 
         // If no filters are selected, reload all exercises
         if (Object.keys(filters).length === 0) {
-            const response = await fetch("/get_all_exercises");
-            if (response.ok) {
-                const exercises = await handleApiResponse(response);
+            try {
+                const response = await api.get("/get_all_exercises", { showLoading: false, showErrorToast: false });
+                const exercises = response.data !== undefined ? response.data : response;
                 if (exerciseDropdown && Array.isArray(exercises)) {
                     updateExerciseDropdown(exercises, preserveSelection);
                     showToast(`Showing all ${exercises.length} exercises`);
                 }
+            } catch (e) {
+                console.error("Error fetching all exercises:", e);
             }
             return;
         }
 
-        const response = await fetch("/filter_exercises", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(filters)
-        });
+        const response = await api.post("/filter_exercises", filters, { showLoading: false, showErrorToast: false });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            const errorMsg = errorData.error?.message || errorData.error || "Failed to filter exercises";
-            throw new Error(errorMsg);
-        }
-
-        const exercises = await handleApiResponse(response);
+        const exercises = response.data !== undefined ? response.data : response;
         updateExerciseDropdown(exercises, preserveSelection);
         
         // Show message about filtered results

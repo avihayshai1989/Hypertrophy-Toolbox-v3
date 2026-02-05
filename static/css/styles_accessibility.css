@@ -402,3 +402,171 @@ html[data-scale="8"] {
         display: none !important;
     }
 }
+
+/* ========================================================================
+   FOCUS STYLES - Remove mouse focus shadows, keep keyboard accessibility
+   This is the FINAL override loaded last in the CSS chain
+   ======================================================================== */
+
+/* Remove ALL focus shadows/outlines on mouse click */
+*:focus,
+*:active:focus,
+*.active:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus,
+a:focus,
+[tabindex]:focus,
+.btn:focus,
+.btn-primary:focus,
+.btn-secondary:focus,
+.btn-success:focus,
+.btn-danger:focus,
+.btn-warning:focus,
+.btn-info:focus,
+.btn-light:focus,
+.btn-dark:focus,
+.btn-link:focus,
+.btn-outline-primary:focus,
+.btn-outline-secondary:focus,
+.btn-outline-success:focus,
+.btn-outline-danger:focus,
+.btn-outline-warning:focus,
+.btn-outline-info:focus,
+.btn-outline-light:focus,
+.btn-outline-dark:focus,
+.btn-close:focus,
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus,
+.form-range:focus,
+.nav-link:focus,
+.nav-tabs .nav-link:focus,
+.nav-pills .nav-link:focus,
+.page-link:focus,
+.accordion-button:focus,
+.dropdown-item:focus,
+.dropdown-toggle:focus,
+.list-group-item:focus,
+.card:focus,
+[type="checkbox"]:focus,
+[type="radio"]:focus,
+[type="range"]:focus,
+[role="button"]:focus,
+[role="tab"]:focus,
+[role="checkbox"]:focus,
+.btn-check:focus + .btn,
+.btn-check:checked + .btn:focus,
+.btn-check:active + .btn:focus,
+.modal *:focus,
+.modal button:focus,
+.modal input:focus,
+.modal select:focus,
+.modal .btn:focus,
+.modal .form-control:focus,
+.modal .form-select:focus,
+.modal .form-check-input:focus,
+.modal .nav-link:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* ONLY show focus ring for keyboard navigation (Tab key) */
+*:focus-visible,
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible,
+.form-check-input:focus-visible,
+.nav-link:focus-visible,
+input:focus-visible,
+select:focus-visible,
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid rgba(13, 110, 253, 0.5) !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
+}
+
+/* ========================================================================
+   CRITICAL: Focus shadow fix for SCALED LEVELS (zoom < 100%)
+   When CSS zoom is applied, box-shadow can render incorrectly
+   ======================================================================== */
+html[data-scale="1"] *:focus,
+html[data-scale="2"] *:focus,
+html[data-scale="3"] *:focus,
+html[data-scale="4"] *:focus,
+html[data-scale="5"] *:focus,
+html[data-scale="1"] *:active:focus,
+html[data-scale="2"] *:active:focus,
+html[data-scale="3"] *:active:focus,
+html[data-scale="4"] *:active:focus,
+html[data-scale="5"] *:active:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+}
+
+/* Specific overrides for Bootstrap elements at scaled levels */
+html[data-scale="1"] .btn:focus,
+html[data-scale="2"] .btn:focus,
+html[data-scale="3"] .btn:focus,
+html[data-scale="4"] .btn:focus,
+html[data-scale="5"] .btn:focus,
+html[data-scale="1"] .form-control:focus,
+html[data-scale="2"] .form-control:focus,
+html[data-scale="3"] .form-control:focus,
+html[data-scale="4"] .form-control:focus,
+html[data-scale="5"] .form-control:focus,
+html[data-scale="1"] .form-select:focus,
+html[data-scale="2"] .form-select:focus,
+html[data-scale="3"] .form-select:focus,
+html[data-scale="4"] .form-select:focus,
+html[data-scale="5"] .form-select:focus,
+html[data-scale="1"] .form-check-input:focus,
+html[data-scale="2"] .form-check-input:focus,
+html[data-scale="3"] .form-check-input:focus,
+html[data-scale="4"] .form-check-input:focus,
+html[data-scale="5"] .form-check-input:focus,
+html[data-scale="1"] .nav-link:focus,
+html[data-scale="2"] .nav-link:focus,
+html[data-scale="3"] .nav-link:focus,
+html[data-scale="4"] .nav-link:focus,
+html[data-scale="5"] .nav-link:focus,
+html[data-scale="1"] .btn-close:focus,
+html[data-scale="2"] .btn-close:focus,
+html[data-scale="3"] .btn-close:focus,
+html[data-scale="4"] .btn-close:focus,
+html[data-scale="5"] .btn-close:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+}
+
+/* Modal specific overrides for scaled levels */
+html[data-scale="1"] .modal *:focus,
+html[data-scale="2"] .modal *:focus,
+html[data-scale="3"] .modal *:focus,
+html[data-scale="4"] .modal *:focus,
+html[data-scale="5"] .modal *:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+}
+
+/* Focus-visible for scaled levels (keyboard only) */
+html[data-scale="1"] *:focus-visible,
+html[data-scale="2"] *:focus-visible,
+html[data-scale="3"] *:focus-visible,
+html[data-scale="4"] *:focus-visible,
+html[data-scale="5"] *:focus-visible {
+    outline: 2px solid rgba(13, 110, 253, 0.5) !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+}

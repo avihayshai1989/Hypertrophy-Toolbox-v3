@@ -1,4 +1,5 @@
 import { showToast } from './toast.js';
+import { api } from './fetch-wrapper.js';
 
 // Check if the page already has its own updateWeeklySummary function defined
 // If so, skip the module's version to avoid conflicts
@@ -14,23 +15,13 @@ export async function fetchWeeklySummary(method = 'Total') {
     }
     
     try {
-        const response = await fetch(`/weekly_summary?method=${method}`, {
-            headers: {
-                'Accept': 'application/json'  // Explicitly request JSON response
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error('Failed to fetch weekly summary');
-        }
-        
-        const data = await response.json();
+        const data = await api.get(`/weekly_summary?method=${method}`, { showLoading: false, showErrorToast: false });
         
         if (!data) {
             throw new Error('No data received from server');
         }
         
-        updateSummaryUI(data);
+        updateSummaryUI(data.data || data);
     } catch (error) {
         console.error('Error fetching weekly summary:', error);
         showToast('Failed to fetch weekly summary', true);
@@ -44,23 +35,13 @@ export async function fetchSessionSummary(method = 'Total') {
     }
     
     try {
-        const response = await fetch(`/session_summary?method=${method}`, {
-            headers: {
-                'Accept': 'application/json'  // Explicitly request JSON response
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error('Failed to fetch session summary');
-        }
-        
-        const data = await response.json();
+        const data = await api.get(`/session_summary?method=${method}`, { showLoading: false, showErrorToast: false });
         
         if (!data) {
             throw new Error('No data received from server');
         }
         
-        updateSummaryUI(data);
+        updateSummaryUI(data.data || data);
     } catch (error) {
         console.error('Error fetching session summary:', error);
         showToast('Failed to fetch session summary', true);

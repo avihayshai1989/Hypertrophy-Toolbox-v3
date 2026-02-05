@@ -1,3 +1,45 @@
+/* Global focus fix - only show focus ring for keyboard navigation */
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus,
+.form-range:focus,
+.btn-close:focus,
+input:focus,
+select:focus,
+textarea:focus,
+[type="checkbox"]:focus,
+[type="radio"]:focus,
+[type="range"]:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.form-control:focus-visible,
+.form-select:focus-visible,
+.form-check-input:focus-visible,
+.form-range:focus-visible,
+.btn-close:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[type="checkbox"]:focus-visible,
+[type="radio"]:focus-visible,
+[type="range"]:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* Range slider thumb focus fix */
+.form-range:focus::-webkit-slider-thumb,
+.form-range:focus::-moz-range-thumb {
+    box-shadow: none !important;
+}
+
+.form-range:focus-visible::-webkit-slider-thumb,
+.form-range:focus-visible::-moz-range-thumb {
+    box-shadow: 0 0 0 1px #fff, 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
 /* Form Container */
 .form-container {
     display: flex;

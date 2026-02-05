@@ -49,6 +49,12 @@
 .uniform-input:focus {
     border-color: #86b7fe;
     outline: 0;
+    box-shadow: none;
+}
+
+.uniform-input:focus-visible {
+    border-color: #86b7fe;
+    outline: 0;
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
@@ -79,4 +85,52 @@ html.theme-animating *::before,
 html.theme-animating *::after {
     transition: none !important;
     animation: none !important;
+}
+
+/* ============================================
+   FINAL OVERRIDE: Remove ALL focus shadows on mouse click
+   This must be at the end to override Bootstrap
+   ============================================ */
+*:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus,
+a:focus,
+.btn:focus,
+.btn-primary:focus,
+.btn-secondary:focus,
+.btn-success:focus,
+.btn-danger:focus,
+.btn-warning:focus,
+.btn-info:focus,
+.btn-light:focus,
+.btn-dark:focus,
+.btn-outline-primary:focus,
+.btn-outline-secondary:focus,
+.btn-outline-success:focus,
+.btn-outline-danger:focus,
+.btn-close:focus,
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus,
+.form-range:focus,
+.nav-link:focus,
+.nav-tabs .nav-link:focus,
+.nav-pills .nav-link:focus,
+[type="checkbox"]:focus,
+[type="radio"]:focus,
+[tabindex]:focus,
+.btn-check:focus + .btn,
+.btn-check:checked + .btn:focus,
+.btn-check:active + .btn:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Keyboard focus only (accessibility) */
+*:focus-visible {
+    outline: 2px solid rgba(13, 110, 253, 0.5) !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
 }
