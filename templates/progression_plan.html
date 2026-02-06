@@ -5,6 +5,8 @@
 {% block page_css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_progression.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_dropdowns.css') }}">
+    <!-- Flatpickr for custom date format -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 {% endblock %}
 
 {% block content %}
@@ -58,7 +60,7 @@
                         <td>{{ goal.goal_type }}</td>
                         <td>{{ goal.current_value }}</td>
                         <td>{{ goal.target_value }}</td>
-                        <td>{{ goal.goal_date }}</td>
+                        <td>{{ goal.goal_date|datetime('%d-%m-%Y') }}</td>
                         <td>
                             <span class="badge bg-primary">In Progress</span>
                         </td>
@@ -142,7 +144,7 @@
                     
                     <div class="mb-3">
                         <label for="goalDate" class="form-label">Goal Date</label>
-                        <input type="date" class="form-control" id="goalDate" required autocomplete="off">
+                        <input type="text" class="form-control goal-date-input" id="goalDate" required autocomplete="off" placeholder="DD-MM-YYYY">
                     </div>
                 </form>
             </div>
@@ -160,4 +162,6 @@
     </div>
 </div>
 
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 {% endblock %}

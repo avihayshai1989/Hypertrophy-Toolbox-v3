@@ -1,6 +1,9 @@
 import { showToast } from './toast.js';
 import { api } from './fetch-wrapper.js';
 
+// Store flatpickr instance
+let goalDatePicker = null;
+
 export function initializeProgressionPlan() {
     const exerciseSelect = document.getElementById('exerciseSelect');
     const suggestionsContainer = document.getElementById('suggestionsContainer');
@@ -28,6 +31,10 @@ export function initializeProgressionPlan() {
         inputs.forEach(input => {
             input.disabled = false;
         });
+        // Clear the flatpickr date
+        if (goalDatePicker) {
+            goalDatePicker.clear();
+        }
         // Restore focus to the previous element
         if (previousActiveElement) {
             previousActiveElement.focus();
@@ -62,6 +69,18 @@ export function initializeProgressionPlan() {
         }
     });
     
+    // Initialize flatpickr for goal date with DD-MM-YYYY format
+    const goalDateInput = document.getElementById('goalDate');
+    if (goalDateInput && typeof flatpickr !== 'undefined') {
+        goalDatePicker = flatpickr(goalDateInput, {
+            dateFormat: 'd-m-Y',
+            minDate: 'today',
+            allowInput: true,
+            clickOpens: true,
+            disableMobile: true // Force desktop picker on all devices
+        });
+    }
+    
     console.log('Initializing progression plan with elements:', {
         exerciseSelect,
         suggestionsContainer,
@@ -85,67 +104,88 @@ export function initializeProgressionPlan() {
     document.addEventListener('click', async function(e) {
         if (e.target.classList.contains('set-goal-btn')) {
             console.log('Goal button clicked:', e.target);
-            const goalType = e.target.dataset.goalType;
+            const rawGoalType = e.target.dataset.goalType;
             const exercise = e.target.dataset.exercise;
-            console.log('Goal type:', goalType, 'Exercise:', exercise);
+            const prefilledCurrentValue = e.target.dataset.currentValue;
+            const prefilledTargetValue = e.target.dataset.targetValue;
+            
+            // Map specialized goal types to base types for storage and API calls
+            const goalTypeMapping = {
+                'double_progression_weight': 'weight',
+                'double_progression_reps': 'reps',
+                'reduce_weight': 'weight',
+                'maintain_progress': 'reps',
+                'weight': 'weight',
+                'reps': 'reps',
+                'sets': 'sets',
+                'technique': 'technique'
+            };
+            const goalType = goalTypeMapping[rawGoalType] || rawGoalType;
+            console.log('Goal type:', rawGoalType, '-> mapped to:', goalType, 'Exercise:', exercise);
+            console.log('Prefilled values - current:', prefilledCurrentValue, 'target:', prefilledTargetValue);
             
             // Pre-fill current values based on goal type
             const currentValueInput = document.getElementById('currentValue');
             const targetValueInput = document.getElementById('targetValue');
-            const goalDateInput = document.getElementById('goalDate');
             
-            // Set min date to today
-            const today = new Date().toISOString().split('T')[0];
-            goalDateInput.min = today;
-            
-            // Default to 4 weeks from now
+            // Default to 4 weeks from now using flatpickr
             const fourWeeksFromNow = new Date();
             fourWeeksFromNow.setDate(fourWeeksFromNow.getDate() + 28);
-            goalDateInput.value = fourWeeksFromNow.toISOString().split('T')[0];
+            if (goalDatePicker) {
+                goalDatePicker.setDate(fourWeeksFromNow, true);
+            }
             
-            // Fetch current value from workout history
+            // Use pre-filled values if available, otherwise fetch from API
             if (goalType !== 'technique') {
-                try {
-                    console.log(`Fetching current value for ${exercise} (${goalType})`);
-                    const response = await api.post('/get_current_value', 
-                        { exercise, goal_type: goalType }, 
-                        { showLoading: false, showErrorToast: false }
-                    );
-                    
-                    const data = response.data !== undefined ? response.data : response;
-                    console.log('Received current value data:', data);
-                    
-                    if (data.error) {
-                        throw new Error(data.error);
+                if (prefilledCurrentValue && prefilledCurrentValue !== '' && prefilledTargetValue && prefilledTargetValue !== '') {
+                    // Use the pre-calculated values from the suggestion
+                    console.log('Using prefilled values from suggestion');
+                    currentValueInput.value = prefilledCurrentValue;
+                    targetValueInput.value = prefilledTargetValue;
+                } else {
+                    // Fallback: Fetch current value from workout history
+                    try {
+                        console.log(`Fetching current value for ${exercise} (${goalType})`);
+                        const response = await api.post('/get_current_value', 
+                            { exercise, goal_type: goalType }, 
+                            { showLoading: false, showErrorToast: false }
+                        );
+                        
+                        const data = response.data !== undefined ? response.data : response;
+                        console.log('Received current value data:', data);
+                        
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        
+                        // Ensure we're getting a number
+                        const currentValue = parseFloat(data.current_value) || 0;
+                        console.log('Parsed current value:', currentValue);
+                        currentValueInput.value = data.current_value;
+                        
+                        // Update target value based on current value using suggested increments
+                        switch(goalType) {
+                            case 'reps':
+                                // Suggest adding 2 reps
+                                targetValueInput.value = currentValue + 2;
+                                break;
+                            case 'weight':
+                                // Use same increment logic as suggestion cards: 2.5kg if < 20, else 5kg
+                                const weightIncrement = currentValue < 20 ? 2.5 : 5;
+                                targetValueInput.value = currentValue + weightIncrement;
+                                break;
+                            case 'sets':
+                                // Suggest adding 1 set
+                                targetValueInput.value = currentValue + 1;
+                                break;
+                        }
+                    } catch (error) {
+                        console.error('Error fetching current value:', error);
+                        currentValueInput.value = '0';
+                        targetValueInput.value = goalType === 'reps' ? '2' : 
+                                               goalType === 'weight' ? '5' : 
+                                               goalType === 'sets' ? '1' : '0';
                     }
-                    
-                    // Ensure we're getting a number
-                    const currentValue = parseFloat(data.current_value) || 0;
-                    console.log('Parsed current value:', currentValue);
-                    currentValueInput.value = data.current_value;
-                    
-                    // Update target value based on current value using suggested increments
-                    switch(goalType) {
-                        case 'reps':
-                            // Suggest adding 2 reps
-                            targetValueInput.value = currentValue + 2;
-                            break;
-                        case 'weight':
-                            // Use same increment logic as suggestion cards: 2.5kg if < 20, else 5kg
-                            const weightIncrement = currentValue < 20 ? 2.5 : 5;
-                            targetValueInput.value = currentValue + weightIncrement;
-                            break;
-                        case 'sets':
-                            // Suggest adding 1 set
-                            targetValueInput.value = currentValue + 1;
-                            break;
-                    }
-                } catch (error) {
-                    console.error('Error fetching current value:', error);
-                    currentValueInput.value = '0';
-                    targetValueInput.value = goalType === 'reps' ? '2' : 
-                                           goalType === 'weight' ? '5' : 
-                                           goalType === 'sets' ? '1' : '0';
                 }
             }
             
@@ -190,12 +230,22 @@ export function initializeProgressionPlan() {
     document.getElementById('saveGoal').addEventListener('click', async function(e) {
         e.preventDefault();
         try {
+            // Get the date in YYYY-MM-DD format for backend
+            let goalDateValue = '';
+            if (goalDatePicker && goalDatePicker.selectedDates.length > 0) {
+                const selectedDate = goalDatePicker.selectedDates[0];
+                const year = selectedDate.getFullYear();
+                const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                const day = String(selectedDate.getDate()).padStart(2, '0');
+                goalDateValue = `${year}-${month}-${day}`;
+            }
+            
             const formData = {
                 exercise: document.getElementById('exerciseName').value,
                 goal_type: document.getElementById('goalType').value,
                 current_value: document.getElementById('currentValue').value,
                 target_value: document.getElementById('targetValue').value,
-                goal_date: document.getElementById('goalDate').value
+                goal_date: goalDateValue
             };
             
             // Validate form data
@@ -281,6 +331,9 @@ export function initializeProgressionPlan() {
         suggestions.forEach(suggestion => {
             const card = document.createElement('div');
             card.className = 'col-md-6 col-lg-3';
+            // Include current_value and suggested_value as data attributes if available
+            const currentValue = suggestion.current_value !== undefined ? suggestion.current_value : '';
+            const suggestedValue = suggestion.suggested_value !== undefined ? suggestion.suggested_value : '';
             card.innerHTML = `
                 <div class="card suggestion-card" data-goal-type="${suggestion.type}">
                     <div class="card-body d-flex flex-column">
@@ -288,7 +341,9 @@ export function initializeProgressionPlan() {
                         <p class="card-text">${suggestion.description}</p>
                         <button class="btn btn-primary set-goal-btn mt-auto" 
                                 data-goal-type="${suggestion.type}"
-                                data-exercise="${exercise}">
+                                data-exercise="${exercise}"
+                                data-current-value="${currentValue}"
+                                data-target-value="${suggestedValue}">
                             ${suggestion.action}
                         </button>
                     </div>

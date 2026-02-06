@@ -193,7 +193,9 @@ def generate_progression_suggestions(
             ),
             "action": f"Next session: {new_weight}kg × {planned_min_reps}-{planned_max_reps} reps",
             "priority": priority,
-            "suggested_weight": new_weight
+            "suggested_weight": new_weight,
+            "current_value": scored_weight,
+            "suggested_value": new_weight
         })
         
     elif status == "increase_reps":
@@ -212,7 +214,9 @@ def generate_progression_suggestions(
                     ),
                     "action": f"Try {reduced_weight}kg and aim for {planned_min_reps}-{planned_max_reps} reps",
                     "priority": "high",
-                    "suggested_weight": reduced_weight
+                    "suggested_weight": reduced_weight,
+                    "current_value": scored_weight,
+                    "suggested_value": reduced_weight
                 })
         else:
             # Just need to push reps
@@ -225,7 +229,9 @@ def generate_progression_suggestions(
                     f"Keep the weight at {scored_weight}kg and focus on adding reps."
                 ),
                 "action": f"Target: {scored_weight}kg × {planned_min_reps}+ reps",
-                "priority": "high"
+                "priority": "high",
+                "current_value": scored_max_reps,
+                "suggested_value": planned_min_reps
             })
             
     elif status == "maintain":
@@ -242,7 +248,9 @@ def generate_progression_suggestions(
                         f"before increasing weight."
                     ),
                     "action": f"Target: {scored_weight}kg × {planned_max_reps} reps",
-                    "priority": "medium"
+                    "priority": "medium",
+                    "current_value": scored_max_reps,
+                    "suggested_value": planned_max_reps
                 })
     
     # Technique suggestion (always useful, lower priority)
@@ -264,7 +272,9 @@ def generate_progression_suggestions(
                 f"for increased volume on {exercise}."
             ),
             "action": f"Progress to {planned_sets + 1} sets when ready",
-            "priority": "low"
+            "priority": "low",
+            "current_value": planned_sets,
+            "suggested_value": planned_sets + 1
         })
     
     # Always show these additional progression options
@@ -287,7 +297,9 @@ def generate_progression_suggestions(
         "description": weight_description,
         "action": weight_action,
         "priority": "medium",
-        "suggested_weight": new_weight
+        "suggested_weight": new_weight,
+        "current_value": scored_weight,
+        "suggested_value": new_weight
     })
     
     # Increase Repetitions option (always show)
@@ -305,7 +317,9 @@ def generate_progression_suggestions(
         "title": "Increase Repetitions",
         "description": reps_description,
         "action": reps_action,
-        "priority": "medium"
+        "priority": "medium",
+        "current_value": scored_max_reps,
+        "suggested_value": target_reps
     })
     
     # Add Another Set option (always show)
@@ -324,7 +338,9 @@ def generate_progression_suggestions(
         "title": "Add Another Set",
         "description": sets_description,
         "action": sets_action,
-        "priority": "medium"
+        "priority": "medium",
+        "current_value": planned_sets,
+        "suggested_value": planned_sets + 1 if planned_sets else None
     })
     
     return suggestions
