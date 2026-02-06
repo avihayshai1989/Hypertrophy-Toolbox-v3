@@ -647,18 +647,23 @@ export async function deleteWorkoutLog(logId) {
 export async function handleDateChange(event, logId) {
     try {
         const newDate = event.target.value;
+        const input = event.target;
         await api.post('/update_progression_date', {
             id: logId,
             date: newDate
         }, { showLoading: false, showErrorToast: false });
 
-        // Update the display text
-        const cell = event.target.closest('.editable');
+        // Update the display text and hide the input
+        const cell = input.closest('.editable');
         const display = cell.querySelector('.editable-text');
         if (display) {
-            const formattedDate = new Date(newDate).toLocaleDateString('en-GB');
+            const formattedDate = newDate ? new Date(newDate).toLocaleDateString('en-GB') : 'Click to set date';
             display.textContent = formattedDate;
+            display.style.display = 'block';
         }
+        
+        // Hide the input after successful update
+        input.style.display = 'none';
 
         // Get the row and update badge status
         const row = document.querySelector(`tr[data-log-id="${logId}"]`);

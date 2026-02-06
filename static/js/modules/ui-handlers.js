@@ -53,11 +53,51 @@ export function initializeUIHandlers() {
     // Add validation for editable inputs
     document.querySelectorAll('.editable-input').forEach(input => {
         input.addEventListener('input', function() {
-            const field = this.closest('[data-field]').dataset.field;
-            const isValid = validateScoredValue(this.value, field);
-            
-            this.classList.toggle('is-invalid', !isValid);
-            this.classList.toggle('is-valid', isValid);
+            const field = this.closest('[data-field]')?.dataset?.field;
+            if (field) {
+                const isValid = validateScoredValue(this.value, field);
+                this.classList.toggle('is-invalid', !isValid);
+                this.classList.toggle('is-valid', isValid);
+            }
+        });
+        
+        // Auto-save and close on blur (when focus leaves the input)
+        input.addEventListener('blur', function() {
+            // Small delay to allow click events to process first
+            setTimeout(() => {
+                const cell = this.closest('.editable');
+                if (cell) {
+                    const text = cell.querySelector('.editable-text');
+                    if (text) {
+                        text.style.display = 'block';
+                    }
+                    this.style.display = 'none';
+                }
+            }, 100);
+        });
+        
+        // Add Enter key support to submit and close the input
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                // Trigger change event and blur to close the input
+                this.dispatchEvent(new Event('change', { bubbles: true }));
+                this.blur();
+            } else if (e.key === 'Escape') {
+                // Cancel editing on Escape - revert to original value
+                e.preventDefault();
+                const cell = this.closest('.editable');
+                if (cell) {
+                    const text = cell.querySelector('.editable-text');
+                    // Reset input value to original text (don't save)
+                    if (text && text.textContent.trim() !== 'Click to set' && 
+                        text.textContent.trim() !== 'Click to set date' &&
+                        text.textContent.trim() !== 'Click to edit') {
+                        this.value = text.textContent.trim();
+                    }
+                }
+                this.blur();
+            }
         });
     });
 }

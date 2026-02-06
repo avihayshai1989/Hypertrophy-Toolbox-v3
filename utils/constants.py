@@ -37,8 +37,8 @@ FORCE = {
 
 MECHANIC = {
     "compound": "Compound",
-    "isolation": "Isolated",
-    "isolated": "Isolated",
+    "isolation": "Isolation",
+    "isolated": "Isolation",
 }
 
 UTILITY = {

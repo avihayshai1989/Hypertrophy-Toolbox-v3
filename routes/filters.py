@@ -3,13 +3,14 @@ from utils.filter_predicates import FilterPredicates
 from utils.database import DatabaseHandler
 from utils.errors import success_response, error_response
 from utils.logger import get_logger
-from utils.constants import DIFFICULTY, FORCE, MECHANIC, UTILITY
+from utils.constants import DIFFICULTY, MECHANIC, UTILITY
 
 filters_bp = Blueprint('filters', __name__)
 logger = get_logger()
 
-# Define standard filter mapping
+# Define standard filter mapping - supports both display names and snake_case keys
 FILTER_MAPPING = {
+    # Display names (from data-filter-key attribute)
     "Primary Muscle Group": "primary_muscle_group",
     "Secondary Muscle Group": "secondary_muscle_group",
     "Tertiary Muscle Group": "tertiary_muscle_group",
@@ -21,7 +22,19 @@ FILTER_MAPPING = {
     "Grips": "grips",
     "Stabilizers": "stabilizers",
     "Synergists": "synergists",
-    "Difficulty": "difficulty"
+    "Difficulty": "difficulty",
+    # Snake_case keys (from select element id fallback)
+    "primary_muscle_group": "primary_muscle_group",
+    "secondary_muscle_group": "secondary_muscle_group",
+    "tertiary_muscle_group": "tertiary_muscle_group",
+    "advanced_isolated_muscles": "advanced_isolated_muscles",
+    "equipment": "equipment",
+    "mechanic": "mechanic",
+    "utility": "utility",
+    "grips": "grips",
+    "stabilizers": "stabilizers",
+    "synergists": "synergists",
+    "difficulty": "difficulty",
 }
 
 # Whitelist for safe table and column names (prevents SQL injection)
@@ -70,7 +83,6 @@ def validate_column_name(column: str) -> bool:
 
 
 ENUM_VALUE_MAP = {
-    'force': sorted(set(FORCE.values())),
     'mechanic': sorted(set(MECHANIC.values())),
     'utility': sorted(set(UTILITY.values())),
     'difficulty': sorted(set(DIFFICULTY.values())),
@@ -78,6 +90,7 @@ ENUM_VALUE_MAP = {
 
 @filters_bp.route("/filter_exercises", methods=["POST"])
 def filter_exercises():
+    filters = None
     try:
         filters = request.get_json()
         if not filters:
@@ -166,6 +179,26 @@ def get_unique_values(table, column):
 
             if safe_column in ENUM_VALUE_MAP:
                 return jsonify(success_response(data=ENUM_VALUE_MAP[safe_column]))
+
+            # Force column: query DB and normalize to title case to merge variants
+            if safe_column == 'force':
+                query = (
+                    f"SELECT DISTINCT {safe_column} AS value FROM {safe_table} "
+                    f"WHERE {safe_column} IS NOT NULL AND TRIM({safe_column}) <> '' "
+                    f"ORDER BY {safe_column}"
+                )
+                rows = db.fetch_all(query)
+                # Normalize to title case and dedupe (merges 'push'/'Push', 'pull'/'Pull')
+                seen = set()
+                values = []
+                for row in rows:
+                    val = row['value']
+                    if val:
+                        normalized = val.strip().title()
+                        if normalized not in seen:
+                            seen.add(normalized)
+                            values.append(normalized)
+                return jsonify(success_response(data=sorted(values)))
 
             if safe_column in {
                 'primary_muscle_group',

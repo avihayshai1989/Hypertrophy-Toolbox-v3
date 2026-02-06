@@ -9,7 +9,7 @@ from utils.exercise_manager import (
 from utils.errors import success_response, error_response
 from utils.logger import get_logger
 from routes.filters import ALLOWED_COLUMNS, validate_column_name
-from utils.constants import DIFFICULTY, FORCE, MECHANIC, UTILITY
+from utils.constants import DIFFICULTY, MECHANIC, UTILITY
 from utils.plan_generator import generate_starter_plan
 
 workout_plan_bp = Blueprint('workout_plan', __name__)
@@ -29,7 +29,6 @@ def fetch_unique_values(column):
         return []
     
     enum_map = {
-        'force': sorted(set(FORCE.values())),
         'mechanic': sorted(set(MECHANIC.values())),
         'utility': sorted(set(UTILITY.values())),
         'difficulty': sorted(set(DIFFICULTY.values())),
@@ -39,6 +38,26 @@ def fetch_unique_values(column):
         with DatabaseHandler() as db:
             if safe_column in enum_map:
                 return enum_map[safe_column]
+
+            # Force column: query DB and normalize to title case to merge variants
+            if safe_column == 'force':
+                query = (
+                    f"SELECT DISTINCT {safe_column} AS value FROM exercises "
+                    f"WHERE {safe_column} IS NOT NULL AND TRIM({safe_column}) <> '' "
+                    f"ORDER BY {safe_column}"
+                )
+                rows = db.fetch_all(query)
+                # Normalize to title case and dedupe (merges 'push'/'Push', 'pull'/'Pull')
+                seen = set()
+                values = []
+                for row in rows:
+                    val = row['value']
+                    if val:
+                        normalized = val.strip().title()
+                        if normalized not in seen:
+                            seen.add(normalized)
+                            values.append(normalized)
+                return sorted(values)
 
             if safe_column == 'advanced_isolated_muscles':
                 rows = db.fetch_all(

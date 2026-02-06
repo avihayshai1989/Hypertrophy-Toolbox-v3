@@ -2605,6 +2605,21 @@ tr.superset-partner-dragging {
   }
 }
 
+@keyframes picker-appear-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.execution-style-picker.picker-dropup {
+  animation: picker-appear-up 0.2s ease-out;
+}
+
 .execution-picker-content {
   padding: 0;
 }

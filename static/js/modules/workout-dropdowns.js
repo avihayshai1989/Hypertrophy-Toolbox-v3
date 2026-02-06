@@ -276,6 +276,10 @@ function enhanceSelect(select, prefersReducedMotion) {
   
   // Option click
   popover.addEventListener('click', (e) => {
+    // Stop propagation to prevent document-level handlers from interfering
+    // This ensures the change event and subsequent toast notification work reliably
+    e.stopPropagation();
+    
     const option = e.target.closest('[role="option"], .wpdd-option');
     if (option && !option.classList.contains('is-disabled')) {
       const index = Array.from(popover.querySelectorAll('[role="option"], .wpdd-option')).indexOf(option);

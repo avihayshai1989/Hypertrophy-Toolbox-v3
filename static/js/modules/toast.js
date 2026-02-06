@@ -71,6 +71,13 @@ export function showToast(type, message, options = {}) {
     const bgClass = typeToClass[type] || 'bg-success';
     toastElement.classList.add(bgClass);
 
+    // Dispose any existing toast instance to prevent animation conflicts
+    // This ensures clean transitions when showing rapid notifications
+    const existingToast = bootstrap.Toast.getInstance(toastElement);
+    if (existingToast) {
+        existingToast.dispose();
+    }
+
     const toast = new bootstrap.Toast(toastElement, { delay: duration });
     toast.show();
 }

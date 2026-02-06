@@ -180,15 +180,29 @@ async function showExecutionStylePicker(exerciseId, currentExercise) {
     
     // Position picker near the clicked cell
     const cell = document.querySelector(`.execution-style-cell[data-exercise-id="${exerciseId}"]`);
+    document.body.appendChild(picker);
+    
     if (cell) {
         const rect = cell.getBoundingClientRect();
+        const pickerHeight = picker.offsetHeight || 350; // Estimated height if not yet rendered
+        const viewportHeight = window.innerHeight;
+        const spaceBelow = viewportHeight - rect.bottom;
+        const spaceAbove = rect.top;
+        
         picker.style.position = 'fixed';
-        picker.style.top = `${rect.bottom + 5}px`;
         picker.style.left = `${Math.max(10, rect.left - 100)}px`;
         picker.style.zIndex = '1050';
+        
+        // Position above if not enough space below, otherwise position below
+        if (spaceBelow < pickerHeight && spaceAbove > spaceBelow) {
+            picker.style.bottom = `${viewportHeight - rect.top + 5}px`;
+            picker.style.top = 'auto';
+            picker.classList.add('picker-dropup');
+        } else {
+            picker.style.top = `${rect.bottom + 5}px`;
+            picker.style.bottom = 'auto';
+        }
     }
-    
-    document.body.appendChild(picker);
     
     // Event listeners
     const radios = picker.querySelectorAll('input[type="radio"]');
