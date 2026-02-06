@@ -1555,9 +1555,7 @@
 }
 
 #workout[data-page="workout-plan"] .routine-tab-btn .tab-label {
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* Moved to end of file for advanced mode optimization */
 }
 
 #workout[data-page="workout-plan"] .routine-tab-btn .tab-count {
@@ -2786,5 +2784,186 @@ tr.superset-partner-dragging {
   
   .execution-details {
     display: none;
+  }
+}
+
+/* ========================================================================
+   ADVANCED MODE TABLE OPTIMIZATIONS
+   Ensures table fits on 1920x1080 at higher zoom levels (scale 6+)
+   by allowing text wrapping and compact column widths
+   ======================================================================== */
+
+/* Advanced mode: Allow text wrapping in cells to reduce column width */
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced tbody td {
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.3;
+}
+
+/* Advanced mode: Set max-widths on text columns to encourage 2-line wrapping */
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Exercise"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Exercise"] {
+  max-width: 130px;
+  min-width: 100px;
+}
+
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Primary Muscle"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Primary Muscle"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Secondary Muscle"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Secondary Muscle"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Tertiary Muscle"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Tertiary Muscle"] {
+  max-width: 95px;
+  min-width: 70px;
+}
+
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Isolated Muscles"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Isolated Muscles"] {
+  max-width: 100px;
+  min-width: 70px;
+}
+
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Movement Pattern"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Movement Pattern"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Movement Subpattern"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Movement Subpattern"] {
+  max-width: 95px;
+  min-width: 70px;
+}
+
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Stabilizers"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Stabilizers"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Synergists"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Synergists"] {
+  max-width: 85px;
+  min-width: 60px;
+}
+
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Grips"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Grips"] {
+  max-width: 70px;
+  min-width: 55px;
+}
+
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Utility"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Utility"] {
+  max-width: 65px;
+  min-width: 50px;
+}
+
+/* Advanced mode: Compact numeric columns */
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td.is-num,
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th.is-num {
+  white-space: nowrap;
+  min-width: 40px;
+  max-width: 55px;
+}
+
+/* Advanced mode: Reduced cell padding */
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th,
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td {
+  padding: 6px 5px;
+  font-size: 0.82rem;
+}
+
+/* Advanced mode: Allow header text wrapping */
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced thead th {
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.2;
+  vertical-align: bottom;
+}
+
+/* Advanced mode: Make routine column compact */
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Routine"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Routine"] {
+  max-width: 50px;
+  min-width: 35px;
+}
+
+/* Advanced mode: Actions column - ensure always visible */
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Actions"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Actions"] {
+  position: sticky;
+  right: 0;
+  z-index: 2;
+  background-color: var(--wp-surface-elevated);
+  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
+  min-width: 60px;
+  white-space: nowrap;
+}
+
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced thead th[data-label="Actions"] {
+  background-color: var(--wp-surface);
+  z-index: 3;
+}
+
+/* Dark mode sticky Actions */
+[data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Actions"] {
+  background-color: var(--wp-surface);
+  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Advanced mode: Compact remove button */
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Actions"] .btn {
+  padding: 4px 6px;
+  min-height: 26px;
+}
+
+/* ========================================================================
+   ROUTINE TABS - Prevent title cutoff, use smaller text instead
+   ======================================================================== */
+
+/* Override tab label max-width - allow full text with smaller font */
+#workout[data-page="workout-plan"] .routine-tab-btn .tab-label {
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+  font-size: 0.78rem;
+}
+
+/* Compact tab button padding for more tabs */
+#workout[data-page="workout-plan"] .routine-tab-btn {
+  padding: 6px 10px;
+  font-size: 0.78rem;
+}
+
+/* Smaller tab count badge */
+#workout[data-page="workout-plan"] .routine-tab-btn .tab-count {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  font-size: 0.7rem;
+}
+
+/* For very long routine names, allow wrapping on 2 lines max */
+#workout[data-page="workout-plan"] .routine-tab-btn .tab-label {
+  white-space: normal;
+  line-height: 1.2;
+  max-width: 140px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
+}
+
+/* At smaller viewport, further reduce tab sizes */
+@media (max-width: 1366px) {
+  #workout[data-page="workout-plan"] .routine-tab-btn {
+    padding: 5px 8px;
+    font-size: 0.72rem;
+  }
+  
+  #workout[data-page="workout-plan"] .routine-tab-btn .tab-label {
+    max-width: 120px;
+    font-size: 0.72rem;
+  }
+  
+  #workout[data-page="workout-plan"] .routine-tab-btn .tab-count {
+    min-width: 16px;
+    height: 16px;
+    font-size: 0.65rem;
   }
 }

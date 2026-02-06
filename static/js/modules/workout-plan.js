@@ -85,7 +85,7 @@ function renderExecutionStyleBadge(exercise) {
             label = 'STD';
     }
     
-    return `<button class="btn ${badgeClass}" title="Click to change execution style">
+    return `<button class="btn ${badgeClass}" aria-label="Click to change execution style">
         ${icon} <span class="execution-label">${label}</span>${details}
     </button>`;
 }

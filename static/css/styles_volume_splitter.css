@@ -447,3 +447,90 @@
     border-color: #f0919a;
     color: #842029;
 }
+
+/* ============================================
+   DARK MODE STYLES FOR VOLUME SPLITTER
+   ============================================ */
+
+/* Dark mode for muscle row labels */
+[data-theme='dark'] .muscle-row .form-label,
+[data-theme='dark'] .muscle-row .muscle-name,
+[data-theme='dark'] .volume-sliders .form-label,
+[data-theme='dark'] .volume-sliders label {
+    color: #e0e0e0 !important;
+}
+
+/* Dark mode for volume value pills */
+[data-theme='dark'] .volume-value-pill {
+    background: #2d2d2d;
+    border-color: #404040;
+    color: #e0e0e0;
+}
+
+[data-theme='dark'] .volume-value-pill--low {
+    background: #4a3f2a;
+    border-color: #665c3d;
+    color: #ffd54f;
+}
+
+[data-theme='dark'] .volume-value-pill--optimal {
+    background: #1b4332;
+    border-color: #2d6a4f;
+    color: #7adf8a;
+}
+
+[data-theme='dark'] .volume-value-pill--high {
+    background: #4a3224;
+    border-color: #6b4833;
+    color: #ffb74d;
+}
+
+[data-theme='dark'] .volume-value-pill--excessive {
+    background: #4a2c2e;
+    border-color: #6b3d40;
+    color: #f48fb1;
+}
+
+/* Dark mode for slider track - form-range */
+[data-theme='dark'] .volume-sliders .form-range::-webkit-slider-runnable-track {
+    background-color: #343a40;
+}
+
+[data-theme='dark'] .volume-sliders .form-range::-moz-range-track {
+    background-color: #343a40;
+}
+
+/* Dark mode slider focus states */
+[data-theme='dark'] .form-range:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 1px #1a1a1a, 0 0 0 0.25rem rgba(77, 171, 247, 0.25) !important;
+}
+
+[data-theme='dark'] .form-range:focus::-moz-range-thumb {
+    box-shadow: 0 0 0 1px #1a1a1a, 0 0 0 0.25rem rgba(77, 171, 247, 0.25) !important;
+}
+
+/* Dark mode for volume section headers */
+[data-theme='dark'] .volume-input-section h3,
+[data-theme='dark'] .frequency-section h3,
+[data-theme='dark'] .results-section h3,
+[data-theme='dark'] .volume-history-section h3 {
+    color: #e0e0e0 !important;
+}
+
+/* Dark mode for volume section descriptions */
+[data-theme='dark'] .volume-input-section p,
+[data-theme='dark'] .volume-input-section .text-muted,
+[data-theme='dark'] .frequency-section .text-muted,
+[data-theme='dark'] .frequency-section label {
+    color: #b0b0b0 !important;
+}
+
+/* Dark mode for volume form container */
+[data-theme='dark'] .volume-form-container {
+    color: #e0e0e0;
+}
+
+/* Dark mode for current value display in sliders */
+[data-theme='dark'] .volume-sliders .current-value {
+    color: #e0e0e0;
+}

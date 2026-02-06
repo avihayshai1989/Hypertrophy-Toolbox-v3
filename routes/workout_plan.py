@@ -924,13 +924,26 @@ def suggest_replacement_exercise(current_exercise, muscle, equipment, candidates
             meaningful_current = current_words - common_words
             meaningful_candidate = candidate_words - common_words
             overlap = len(meaningful_current & meaningful_candidate)
-            # Add some randomness to avoid always picking same exercise
-            return (overlap, random.random())
+            return overlap
         
-        # Sort by score (higher is better) but with randomness for ties
+        # Score all candidates
         scored = [(score_candidate(c), c) for c in candidates]
-        scored.sort(reverse=True)
-        return scored[0][1]
+        scored.sort(reverse=True, key=lambda x: x[0])
+        
+        # Find the top score and all candidates with that score
+        top_score = scored[0][0]
+        top_candidates = [name for score, name in scored if score == top_score]
+        
+        # If only one top candidate, also include next tier to add variety
+        # This prevents deterministic cycling between just 2 exercises
+        if len(top_candidates) == 1 and len(scored) > 1:
+            second_score = scored[1][0]
+            # Include second-tier candidates if they're close enough (within 1 point)
+            if top_score - second_score <= 1:
+                top_candidates.extend([name for score, name in scored if score == second_score])
+        
+        # Randomly pick from top candidates
+        return random.choice(top_candidates)
     
     # Fallback: random selection
     return random.choice(candidates)

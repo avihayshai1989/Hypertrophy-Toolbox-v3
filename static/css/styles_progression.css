@@ -280,14 +280,15 @@
 }
 
 [data-theme='dark'] .complete-goal {
-    color: #198754;
-    background-color: transparent;
+    color: #fff;
+    background-color: #198754;
     border-color: #198754;
 }
 
 [data-theme='dark'] .complete-goal:hover {
     color: white;
-    background-color: #198754;
+    background-color: #157347;
+    border-color: #146c43;
 }
 
 /* Flatpickr custom styles */

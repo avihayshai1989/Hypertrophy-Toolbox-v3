@@ -328,15 +328,13 @@
 [data-theme='dark'] .workout-log-frame {
     background: #212529;
     border-color: #495057;
-    color: #000;
-    font-weight: bold;
+    color: #e0e0e0;
 }
 
 /* Dark mode for workout log table */
 [data-theme='dark'] .workout-log-frame table {
     background-color: #212529;
-    color: #000;
-    font-weight: bold;
+    color: #e0e0e0;
 }
 
 [data-theme='dark'] .workout-log-frame th {
@@ -347,27 +345,24 @@
 
 [data-theme='dark'] .workout-log-frame td {
     background-color: #212529;
-    color: #000 !important;
-    font-weight: bold;
+    color: #e0e0e0 !important;
     border-color: #495057;
 }
 
 [data-theme='dark'] .workout-log-frame tr:hover td {
     background-color: #2c3034;
-    color: #000 !important;
+    color: #e0e0e0 !important;
 }
 
 /* Dark mode for editable cells */
 [data-theme='dark'] .workout-log-frame .editable-text {
-    color: #000 !important;
-    font-weight: bold;
+    color: #e0e0e0 !important;
     background-color: transparent;
 }
 
 [data-theme='dark'] .workout-log-frame .editable-input {
     background-color: #2c3034;
-    color: #000 !important;
-    font-weight: bold;
+    color: #e0e0e0 !important;
     border-color: #495057;
 }
 
@@ -393,17 +388,18 @@
 [data-theme='dark'] .workout-log-frame select,
 [data-theme='dark'] .workout-log-frame label,
 [data-theme='dark'] .workout-log-frame .text-muted {
-    color: #000 !important;
+    color: #e0e0e0 !important;
     font-weight: bold;
     background-color: #343a40;
     border-color: #495057;
 }
 
 /* Dark mode for table cells and their content */
+[data-theme='dark'] .workout-log-frame td,
+[data-theme='dark'] .workout-log-frame th,
 [data-theme='dark'] .workout-log-frame td *,
 [data-theme='dark'] .workout-log-frame th * {
-    color: #000 !important;
-    font-weight: bold;
+    color: #e0e0e0 !important;
 }
 
 /* Dark mode for date inputs */
@@ -419,8 +415,7 @@
 [data-theme='dark'] .workout-log-frame input,
 [data-theme='dark'] .workout-log-frame select {
     background-color: #2c3034;
-    color: #000 !important;
-    font-weight: bold;
+    color: #e0e0e0 !important;
     border-color: #495057;
 }
 
@@ -432,7 +427,7 @@
 
 [data-theme='dark'] .workout-log-frame tr:hover td {
     background-color: #2c3034;
-    color: #000 !important;
+    color: #e0e0e0 !important;
 }
 
 /* Keep numbers under # column white */
@@ -444,6 +439,14 @@
     color: #fff !important;
 }
 
+/* Make all icons white in dark mode by default */
+[data-theme='dark'] .workout-log-frame i,
+[data-theme='dark'] .workout-log-frame .fas,
+[data-theme='dark'] .workout-log-frame .far,
+[data-theme='dark'] .workout-log-frame .fab {
+    color: #e0e0e0 !important;
+}
+
 /* Make trash icon white in dark mode */
 [data-theme='dark'] .workout-log-frame .fa-trash {
     color: #fff !important;
@@ -451,6 +454,22 @@
 
 [data-theme='dark'] .workout-log-frame .btn-danger i {
     color: #fff !important;
+}
+
+/* Preserve colored progression indicators */
+[data-theme='dark'] .workout-log-frame .text-success,
+[data-theme='dark'] .workout-log-frame i.text-success {
+    color: #28a745 !important;
+}
+
+[data-theme='dark'] .workout-log-frame .text-danger,
+[data-theme='dark'] .workout-log-frame i.text-danger {
+    color: #dc3545 !important;
+}
+
+[data-theme='dark'] .workout-log-frame .text-warning,
+[data-theme='dark'] .workout-log-frame i.text-warning {
+    color: #ffc107 !important;
 }
 
 /* Preserve white color for first column and trash icon on hover */

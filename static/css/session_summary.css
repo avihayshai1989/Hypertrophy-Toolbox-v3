@@ -72,4 +72,96 @@
 
 .ultra-volume {
     background-color: #6f42c1; /* Purple */
-} 
+}
+
+/* ============================================
+   DARK MODE STYLES FOR SUMMARY TABLES
+   ============================================ */
+
+/* Dark mode table striping for summary tables */
+[data-theme='dark'] .summary-frame .table-striped > tbody > tr:nth-of-type(odd) > *,
+[data-theme='dark'] .summary-section .table-striped > tbody > tr:nth-of-type(odd) > *,
+[data-theme='dark'] .summary-tables .table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-accent-bg: transparent !important;
+    box-shadow: none !important;
+    background-color: #252525 !important;
+    color: #e0e0e0 !important;
+}
+
+[data-theme='dark'] .summary-frame .table-striped > tbody > tr:nth-of-type(even) > *,
+[data-theme='dark'] .summary-section .table-striped > tbody > tr:nth-of-type(even) > *,
+[data-theme='dark'] .summary-tables .table-striped > tbody > tr:nth-of-type(even) > * {
+    --bs-table-accent-bg: transparent !important;
+    box-shadow: none !important;
+    background-color: #2d2d2d !important;
+    color: #e0e0e0 !important;
+}
+
+/* Dark mode table headers */
+[data-theme='dark'] .summary-frame .table thead th,
+[data-theme='dark'] .summary-section .table thead th,
+[data-theme='dark'] .summary-tables .table thead th,
+[data-theme='dark'] #session-summary-container .table thead th,
+[data-theme='dark'] #weekly-summary-container .table thead th {
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+    border-color: #404040 !important;
+}
+
+/* Dark mode table cells */
+[data-theme='dark'] .summary-frame .table td,
+[data-theme='dark'] .summary-section .table td,
+[data-theme='dark'] .summary-tables .table td,
+[data-theme='dark'] #session-summary-container .table td,
+[data-theme='dark'] #weekly-summary-container .table td {
+    color: #e0e0e0 !important;
+    border-color: #404040 !important;
+}
+
+/* Dark mode table borders */
+[data-theme='dark'] #session-summary-container .table th,
+[data-theme='dark'] #session-summary-container .table td,
+[data-theme='dark'] #weekly-summary-container .table th,
+[data-theme='dark'] #weekly-summary-container .table td {
+    border: 1px solid #404040 !important;
+}
+
+/* Dark mode table hover */
+[data-theme='dark'] .summary-frame .table tbody tr:hover td,
+[data-theme='dark'] .summary-section .table tbody tr:hover td,
+[data-theme='dark'] .summary-tables .table tbody tr:hover td {
+    background-color: #3d3d3d !important;
+}
+
+/* Dark mode volume legend */
+[data-theme='dark'] .volume-legend {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: #e0e0e0;
+}
+
+[data-theme='dark'] .volume-legend h5,
+[data-theme='dark'] .volume-legend span {
+    color: #e0e0e0 !important;
+}
+
+/* Dark mode summary frame */
+[data-theme='dark'] .summary-frame {
+    background-color: #1a1a1a !important;
+    border-color: #404040 !important;
+}
+
+/* Dark mode method selector */
+[data-theme='dark'] .method-selector label,
+[data-theme='dark'] .method-selector .form-label {
+    color: #e0e0e0 !important;
+}
+
+[data-theme='dark'] .method-selector .form-text {
+    color: #b0b0b0 !important;
+}
+
+/* Dark mode volume indicator border */
+[data-theme='dark'] .volume-indicator {
+    border: 1px solid #404040;
+}
