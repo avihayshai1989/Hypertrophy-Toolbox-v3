@@ -215,7 +215,7 @@ async function clearFilters() {
     try {
         const response = await fetch("/get_all_exercises");
         if (response.ok) {
-            const exercises = await handleApiResponse(response);
+            const exercises = await response.json();
             if (exerciseDropdown && Array.isArray(exercises)) {
                 // Clear existing options
                 exerciseDropdown.innerHTML = '<option value="">Select Exercise</option>';

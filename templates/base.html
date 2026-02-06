@@ -55,11 +55,12 @@
 
 <body>
     <!-- Navbar -->
-    <header id="navbar" data-component="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Main navigation">
+    <header id="navbar" data-component="navbar" data-testid="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Main navigation">
         <div class="container-fluid">
             <!-- Updated Brand with Icon -->
             <a class="navbar-brand nav-link" 
                id="nav-brand" 
+               data-testid="nav-brand"
                href="/"
                role="button"
                aria-current="page">
@@ -90,7 +91,7 @@
             <nav class="collapse navbar-collapse" id="navbarNav" aria-label="Primary navigation">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link nav-link-with-icon" id="nav-workout-plan" href="/workout_plan">
+                        <a class="nav-link nav-link-with-icon" id="nav-workout-plan" data-testid="nav-workout-plan" href="/workout_plan">
                             <img src="{{ url_for('static', filename='images/icons8-to-do.gif') }}"
                                  alt=""
                                  class="nav-icon"
@@ -101,7 +102,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-with-icon" id="nav-weekly-summary" href="/weekly_summary">
+                        <a class="nav-link nav-link-with-icon" id="nav-weekly-summary" data-testid="nav-weekly-summary" href="/weekly_summary">
                             <img src="{{ url_for('static', filename='images/7-days.gif') }}"
                                  alt=""
                                  class="nav-icon"
@@ -112,7 +113,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-with-icon" id="nav-session-summary" href="/session_summary">
+                        <a class="nav-link nav-link-with-icon" id="nav-session-summary" data-testid="nav-session-summary" href="/session_summary">
                             <img src="{{ url_for('static', filename='images/icons8-session-50.png') }}"
                                  alt=""
                                  class="nav-icon"
@@ -123,7 +124,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-with-icon" id="nav-workout-log" href="/workout_log">
+                        <a class="nav-link nav-link-with-icon" id="nav-workout-log" data-testid="nav-workout-log" href="/workout_log">
                             <img src="{{ url_for('static', filename='images/notebook.gif') }}"
                                  alt=""
                                  class="nav-icon"
@@ -134,7 +135,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-with-icon" id="nav-progression-plan" href="/progression">
+                        <a class="nav-link nav-link-with-icon" id="nav-progression-plan" data-testid="nav-progression-plan" href="/progression">
                             <img src="{{ url_for('static', filename='images/icons8-growth.gif') }}"
                                  alt=""
                                  class="nav-icon"
@@ -145,7 +146,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link nav-link-with-icon" id="nav-volume-splitter" href="/volume_splitter">
+                        <a class="nav-link nav-link-with-icon" id="nav-volume-splitter" data-testid="nav-volume-splitter" href="/volume_splitter">
                             <img src="{{ url_for('static', filename='images/dividers.gif') }}"
                                  alt=""
                                  class="nav-icon"
@@ -186,7 +187,7 @@
                     </li>
                     <li class="nav-item nav-divider" aria-hidden="true"></li>
                     <li class="nav-item">
-                        <button id="darkModeToggle" class="nav-link" type="button" aria-label="Toggle Dark Mode">
+                        <button id="darkModeToggle" data-testid="dark-mode-toggle" class="nav-link" type="button" aria-label="Toggle Dark Mode">
                             <i class="fas fa-moon text-primary" aria-hidden="true"></i>
                             <span class="d-none d-lg-inline ms-1 text-primary">Dark Mode</span>
                         </button>
@@ -210,6 +211,7 @@
     <div 
         aria-live="polite" 
         aria-atomic="true" 
+        data-testid="toast-container"
         class="position-fixed toast-container" 
         style="bottom: 20px; right: 20px; z-index: 9999; pointer-events: none;">
         <div 

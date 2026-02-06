@@ -13,6 +13,34 @@
  */
 
 /* ============================================
+   BACKDROP REMOVAL - Fix for UI Scale Issue
+   When CSS zoom != 1, position:fixed backdrops
+   with viewport units render incorrectly.
+   Removing backdrop eliminates visual artifacts.
+   ============================================ */
+.modal-backdrop {
+    display: none !important;
+}
+
+/* ============================================
+   MODAL COUNTER-ZOOM - Fix for Centering
+   When CSS zoom is applied to <html>, position:fixed
+   elements like .modal don't center correctly.
+   Counter-zoom modal to ensure proper centering.
+   Uses same CSS variables as navbar counter-zoom.
+   ============================================ */
+@supports (zoom: 1) {
+    .modal {
+        zoom: var(--ui-scale-inverse, 1);
+    }
+}
+
+/* Add subtle shadow to modal content to maintain visual separation */
+.modal-content {
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.3), 0 0 100px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ============================================
    REMOVE ALL FOCUS SHADOWS ON MOUSE CLICK
    Only show focus indicators for keyboard navigation
    ============================================ */

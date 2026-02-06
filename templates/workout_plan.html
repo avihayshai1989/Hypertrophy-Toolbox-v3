@@ -131,6 +131,7 @@
                                 <div class="cascade-dropdown-wrapper">
                                     <label for="routine-env" data-step="1">Environment</label>
                                     <select id="routine-env" name="routine-env" 
+                                            data-testid="routine-env"
                                             class="form-select cascade-dropdown cascade-env" 
                                             aria-label="Select environment">
                                         <option value="">Select Environment</option>
@@ -148,6 +149,7 @@
                                 <div class="cascade-dropdown-wrapper">
                                     <label for="routine-program" data-step="2">Program</label>
                                     <select id="routine-program" name="routine-program" 
+                                            data-testid="routine-program"
                                             class="form-select cascade-dropdown cascade-program" 
                                             aria-label="Select program" disabled>
                                         <option value="">Select Program</option>
@@ -163,6 +165,7 @@
                                 <div class="cascade-dropdown-wrapper">
                                     <label for="routine-day" data-step="3">Workout</label>
                                     <select id="routine-day" name="routine-day" 
+                                            data-testid="routine-day"
                                             class="form-select cascade-dropdown cascade-routine" 
                                             aria-label="Select workout day" disabled>
                                         <option value="">Select Workout</option>
@@ -180,7 +183,7 @@
                     <!-- Exercise Dropdown -->
                     <div class="col-12 exercise-selector selection-field">
                         <label for="exercise" class="form-label">Exercise</label>
-                        <select id="exercise" name="exercise" class="form-select uniform-dropdown exercise-dropdown" aria-label="Select exercise">
+                        <select id="exercise" name="exercise" data-testid="exercise-search" class="form-select uniform-dropdown exercise-dropdown" aria-label="Select exercise">
                             {% for exercise in exercises %}
                             {% if exercise %}
                             <option value="{{ exercise }}">{{ exercise }}</option>
@@ -194,28 +197,28 @@
                         <div class="selection-actions buttons-row" id="action-buttons-row" role="group" aria-label="Exercise selection actions">
                             <!-- Add Exercise Button -->
                             <div class="inline-control-item" data-order="3">
-                                <button id="add_exercise_btn" class="btn btn-primary" type="button" aria-label="Add exercise to workout plan">
+                                <button id="add_exercise_btn" data-testid="add-exercise-btn" class="btn btn-primary" type="button" aria-label="Add exercise to workout plan">
                                     <i class="fas fa-plus" aria-hidden="true"></i> Add Exercise
                                 </button>
                             </div>
 
                             <!-- Clear Filters Button -->
                             <div class="inline-control-item" data-order="4">
-                                <button id="clear-filters-btn" class="btn btn-outline-secondary" type="button" aria-label="Clear all filters">
+                                <button id="clear-filters-btn" data-testid="clear-filters-btn" class="btn btn-outline-secondary" type="button" aria-label="Clear all filters">
                                     <i class="fas fa-times" aria-hidden="true"></i> Clear Filters
                                 </button>
                             </div>
 
                             <!-- Export All Tables Button -->
                             <div class="inline-control-item" data-order="5">
-                                <button type="button" class="btn btn-export-excel" onclick="exportToExcel()" aria-label="Export workout plan to Excel">
+                                <button type="button" data-testid="export-excel-btn" class="btn btn-export-excel" onclick="exportToExcel()" aria-label="Export workout plan to Excel">
                                     <i class="fas fa-file-excel" aria-hidden="true"></i> Export All Tables
                                 </button>
                             </div>
 
                             <!-- Export to Workout Log Button -->
                             <div class="inline-control-item" data-order="6">
-                                <button id="export-to-log-btn" class="btn btn-export-log" type="button" onclick="exportToWorkoutLog()" aria-label="Export to workout log">
+                                <button id="export-to-log-btn" data-testid="export-to-log-btn" class="btn btn-export-log" type="button" onclick="exportToWorkoutLog()" aria-label="Export to workout log">
                                     <i class="fas fa-clipboard-list" aria-hidden="true"></i> Export to Workout Log
                                 </button>
                             </div>
@@ -294,7 +297,8 @@
                 <table class="table table-striped workout-plan-table tbl tbl--responsive" 
                        role="table" 
                        aria-label="Workout plan exercises"
-                       data-table-responsive="workout_plan">
+                       data-table-responsive="workout_plan"
+                       data-testid="exercise-table">
                     <thead>
                         <tr>
                             <th scope="col" class="superset-select-col" width="40" aria-label="Select for superset" title="Select exercises to create superset">
@@ -651,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Save Program Modal -->
 <div class="modal fade" id="saveBackupModal" tabindex="-1" aria-labelledby="saveBackupModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="saveBackupModalLabel">
@@ -684,7 +688,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Program Library Modal -->
 <div class="modal fade" id="programLibraryModal" tabindex="-1" aria-labelledby="programLibraryModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="programLibraryModalLabel">

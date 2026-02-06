@@ -108,17 +108,8 @@
 }
 
 /* Modal Styles - Progression Page Specific */
-/* Custom backdrop for goal setting modal */
-#goalSettingModal.show::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: -1;
-}
+/* Custom backdrop REMOVED - causes visual artifacts with CSS zoom scaling */
+/* The modal shadow from styles_modals.css provides visual separation */
 
 #goalSettingModal {
     z-index: 1060 !important;

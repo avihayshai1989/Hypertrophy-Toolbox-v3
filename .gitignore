@@ -45,6 +45,7 @@ Thumbs.db
 .coverage
 htmlcov/
 .tox/
+test-results/
 
 # Distribution / packaging
 dist/
