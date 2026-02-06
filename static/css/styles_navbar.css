@@ -315,7 +315,7 @@
   #navbar .nav-link::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: -5px;
     left: 0;
     right: 0;
     height: 3px;
@@ -327,6 +327,9 @@
   
   #navbar .nav-link.active {
     color: var(--nav-text);
+    background-color: var(--nav-surface);
+    border: 1px solid var(--nav-accent);
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
   }
   
   #navbar .nav-link.active::before {
@@ -390,7 +393,7 @@
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    border-radius: var(--nav-radius-sm);
+    border-radius: 999px;
     background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(219, 39, 119, 0.15) 100%);
     border: 1px solid rgba(124, 58, 237, 0.3);
     text-decoration: none;
@@ -465,15 +468,16 @@
     padding: 10px 14px;
     min-height: 40px;
     min-width: 40px;
-    border-radius: var(--nav-radius-sm);
-    background-color: rgba(255, 255, 255, 0.08);
-    border: 1px solid var(--nav-border);
+    border-radius: 999px !important;
+    background-color: var(--nav-surface);
+    border: 2px solid var(--nav-accent);
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
     color: var(--nav-text);
     font-size: var(--nav-fs);
     font-weight: var(--nav-fw-medium);
     cursor: pointer;
     transition: background-color var(--nav-transition-fast), border-color var(--nav-transition-fast),
-                transform var(--nav-transition-fast);
+                transform var(--nav-transition-fast), box-shadow var(--nav-transition-fast);
     position: relative;
     margin-inline-start: var(--nav-gap);
   }
@@ -482,7 +486,7 @@
   #navbar #darkModeToggle::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: -5px;
     left: 0;
     right: 0;
     height: 3px;
@@ -492,13 +496,13 @@
     border-radius: var(--nav-radius-sm) var(--nav-radius-sm) 0 0;
   }
   
-  #navbar #darkModeToggle.active::before {
+  #navbar #darkModeToggle::before {
     transform: scaleX(1);
-    background-color: var(--nav-indicator);
+    background-color: #3b82f6;
   }
   
   [data-theme='dark'] #navbar #darkModeToggle::before {
-    background-color: var(--nav-text);
+    background-color: #ef4444;
   }
   
   /* Hover state */

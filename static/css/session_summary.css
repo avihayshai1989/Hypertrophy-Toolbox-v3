@@ -137,6 +137,30 @@
 }
 
 /* Dark mode volume legend */
+/* ============================================
+   TABLE FONT STYLING - Match Workout Plan
+   ============================================ */
+
+/* Table font styling to match workout plan */
+.summary-frame .table th,
+.summary-section .table th,
+.summary-tables .table th,
+#session-summary-container .table th,
+#weekly-summary-container .table th {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}
+
+.summary-frame .table td,
+.summary-section .table td,
+.summary-tables .table td,
+#session-summary-container .table td,
+#weekly-summary-container .table td {
+    font-size: 0.9rem;
+}
+
 [data-theme='dark'] .volume-legend {
     background-color: #2d2d2d;
     border-color: #404040;

@@ -386,22 +386,22 @@
                             </div>
                             <div class="col-xl-2 col-lg-4 col-md-6">
                                 <label for="gen-volume-scale" class="form-label small mb-1">Volume: <span id="volume-scale-value" class="fw-bold">1.0x</span></label>
-                                <input type="range" class="form-range" id="gen-volume-scale" min="0.6" max="1.2" step="0.1" value="1.0">
+                                <input type="range" class="form-range" id="gen-volume-scale" min="0.6" max="2.0" step="0.1" value="1.0">
                             </div>
                             <div class="col-xl-2 col-lg-4 col-md-6">
                                 <label class="form-label small mb-1">Options</label>
-                                <div class="d-flex flex-wrap gap-2">
+                                <div class="d-flex flex-nowrap gap-3">
                                     <div class="form-check form-check-inline mb-0">
                                         <input class="form-check-input" type="checkbox" id="gen-overwrite" checked>
                                         <label class="form-check-label small" for="gen-overwrite">Overwrite</label>
                                     </div>
                                     <div class="form-check form-check-inline mb-0">
                                         <input class="form-check-input" type="checkbox" id="gen-no-overhead">
-                                        <label class="form-check-label small" for="gen-no-overhead">No Overhead Press</label>
+                                        <label class="form-check-label small text-nowrap" for="gen-no-overhead">No Overhead Press</label>
                                     </div>
                                     <div class="form-check form-check-inline mb-0">
                                         <input class="form-check-input" type="checkbox" id="gen-no-deadlift">
-                                        <label class="form-check-label small" for="gen-no-deadlift">No Deadlifts</label>
+                                        <label class="form-check-label small text-nowrap" for="gen-no-deadlift">No Deadlifts</label>
                                     </div>
                                 </div>
                             </div>
@@ -442,7 +442,7 @@
                                     </div>
                                     <div class="form-check form-check-inline mb-0">
                                         <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-trapbar" value="Trapbar">
-                                        <label class="form-check-label small" for="gen-eq-trapbar"><i class="fas fa-hexagon text-secondary"></i> Trap Bar</label>
+                                        <label class="form-check-label small" for="gen-eq-trapbar"><i class="fas fa-th-large text-secondary"></i> Trap Bar</label>
                                     </div>
                                     <div class="form-check form-check-inline mb-0">
                                         <input class="form-check-input equipment-check" type="checkbox" id="gen-eq-band" value="Band">
@@ -471,9 +471,14 @@
                         <!-- Row 3: Preview -->
                         <div class="row g-2 mb-3">
                             <div class="col-12">
-                                <div class="p-2 bg-light rounded small" id="plan-preview">
-                                    <strong><i class="fas fa-info-circle me-1"></i>Preview:</strong>
-                                    <span id="plan-preview-content">A, B, C • ~7 exercises • 18 sets • 6-15 reps</span>
+                                <div class="plan-preview-box" id="plan-preview">
+                                    <span class="preview-label"><i class="fas fa-info-circle me-1"></i>Preview</span>
+                                    <div class="preview-badges" id="plan-preview-content">
+                                        <span class="preview-badge badge-routines"><i class="fas fa-calendar-alt me-1"></i><span class="badge-value">A, B, C</span></span>
+                                        <span class="preview-badge badge-exercises"><i class="fas fa-dumbbell me-1"></i><span class="badge-value">~7</span> exercises</span>
+                                        <span class="preview-badge badge-sets"><i class="fas fa-layer-group me-1"></i><span class="badge-value">18</span> sets</span>
+                                        <span class="preview-badge badge-reps"><i class="fas fa-redo me-1"></i><span class="badge-value">6-15</span> reps</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -483,7 +488,7 @@
                             <div class="col-12">
                                 <label class="form-label small mb-1">
                                     <i class="fas fa-star me-1"></i>Priority Muscle Groups 
-                                    <span class="text-muted">(Optional, max 2 - get extra volume)</span>
+                                    <span class="text-muted">(Optional – select up to 2 muscles to get extra sets on top of the balanced plan)</span>
                                 </label>
                                 <div id="muscle-selector-container" class="muscle-selector-container">
                                     <!-- Muscle selector will be rendered here by JavaScript -->
@@ -493,6 +498,10 @@
                     </form>
                 </div>
                 <div class="modal-footer py-2">
+                    <div class="plan-disclaimer text-muted me-auto">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Plan covers all muscle groups. Priority muscles (if selected) get extra sets.
+                    </div>
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-success btn-sm" id="generatePlanSubmit" onclick="generateStarterPlan()">
                         <i class="fas fa-magic me-1"></i>Generate Plan
@@ -507,21 +516,47 @@
 <script src="{{ url_for('static', filename='js/modules/muscle-selector.js') }}"></script>
 
 <script>
-// Muscle Selector Instance (global for access)
-let muscleSelector = null;
+// Muscle Selector Instance (global for access from app.js)
+window.muscleSelector = null;
 
 // Plan Generator Preview Update
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Muscle Selector
-    muscleSelector = new MuscleSelector('muscle-selector-container');
+    window.muscleSelector = new MuscleSelector('muscle-selector-container');
     
-    // Volume scale display update
+    // Volume scale display update with temperature colors
     const volumeScale = document.getElementById('gen-volume-scale');
     const volumeScaleValue = document.getElementById('volume-scale-value');
     
+    function updateVolumeColor(value) {
+        if (!volumeScaleValue) return;
+        const v = parseFloat(value);
+        // Remove all color classes
+        volumeScaleValue.classList.remove('volume-value-blue', 'volume-value-green', 
+            'volume-value-yellow', 'volume-value-orange', 'volume-value-red');
+        // Add appropriate color class based on value
+        if (v <= 0.8) {
+            volumeScaleValue.classList.add('volume-value-blue');
+        } else if (v <= 1.1) {
+            volumeScaleValue.classList.add('volume-value-green');
+        } else if (v <= 1.5) {
+            volumeScaleValue.classList.add('volume-value-yellow');
+        } else if (v <= 1.7) {
+            volumeScaleValue.classList.add('volume-value-orange');
+        } else {
+            volumeScaleValue.classList.add('volume-value-red');
+        }
+    }
+    
     if (volumeScale && volumeScaleValue) {
+        // Add temperature class to slider
+        volumeScale.classList.add('volume-temp');
+        // Set initial color
+        updateVolumeColor(volumeScale.value);
+        
         volumeScale.addEventListener('input', function() {
             volumeScaleValue.textContent = this.value + 'x';
+            updateVolumeColor(this.value);
             updatePlanPreview();
         });
     }
@@ -587,7 +622,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const previewContent = document.getElementById('plan-preview-content');
         if (previewContent) {
-            previewContent.textContent = `${routines} (${splitName}) • ~7 ex • ${baseSets} sets • ${repRange}`;
+            previewContent.innerHTML = `
+                <span class="preview-badge badge-routines"><i class="fas fa-calendar-alt me-1"></i><span class="badge-value">${routines}</span></span>
+                <span class="preview-badge badge-exercises"><i class="fas fa-dumbbell me-1"></i><span class="badge-value">~7</span> exercises</span>
+                <span class="preview-badge badge-sets"><i class="fas fa-layer-group me-1"></i><span class="badge-value">${baseSets}</span> sets</span>
+                <span class="preview-badge badge-reps"><i class="fas fa-redo me-1"></i><span class="badge-value">${repRange}</span> reps</span>
+            `;
         }
     }
 });

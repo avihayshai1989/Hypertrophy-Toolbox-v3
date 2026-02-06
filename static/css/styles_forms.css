@@ -78,13 +78,13 @@ textarea:focus-visible,
 }
 
 .form-select:hover, .form-control:hover {
-    background: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.8);
     border-color: rgba(79, 140, 255, 0.3);
 }
 
 .form-select:focus, .form-control:focus {
     border-color: rgba(79, 140, 255, 0.5);
-    background: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.9);
     box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.15), 0 4px 12px rgba(31, 38, 135, 0.12);
     outline: none;
 }

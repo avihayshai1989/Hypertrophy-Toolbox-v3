@@ -311,12 +311,15 @@ html[data-scale="8"] {
     min-width: 24px;
     height: 24px;
     padding: 0 4px;
-    background: var(--nav-surface, #141a23);
-    border: 1px solid var(--nav-border, #202837);
-    border-radius: 4px;
+    background: rgba(20, 26, 35, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(79, 140, 255, 0.2);
+    border-radius: 50%;
     color: var(--nav-accent, #4f8cff);
     font-size: 0.7rem;
     font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .scale-btn-compact {
@@ -326,21 +329,24 @@ html[data-scale="8"] {
     width: 24px;
     height: 24px;
     padding: 0;
-    border: none;
-    background: var(--nav-surface, #141a23);
-    border: 1px solid var(--nav-border, #202837);
+    background: rgba(20, 26, 35, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(168, 178, 193, 0.2);
     color: var(--nav-text-muted, #a8b2c1);
     font-size: 0.85rem;
     font-weight: 600;
-    border-radius: 4px;
+    border-radius: 50%;
     cursor: pointer;
     transition: all var(--nav-transition-fast, 150ms) ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .scale-btn-compact:hover {
-    background: var(--nav-surface-hover, #1a202c);
+    background: rgba(26, 32, 44, 0.75);
     color: var(--nav-text, #e9eef7);
-    border-color: var(--nav-accent, #4f8cff);
+    border-color: rgba(79, 140, 255, 0.4);
+    box-shadow: 0 4px 12px rgba(79, 140, 255, 0.15);
 }
 
 .scale-btn-compact:focus {
@@ -351,6 +357,27 @@ html[data-scale="8"] {
 .scale-btn-compact:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+/* Light mode styles for scale controls */
+[data-theme="light"] .scale-indicator {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(79, 140, 255, 0.3);
+    color: #2563eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .scale-btn-compact {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(100, 116, 139, 0.25);
+    color: #475569;
+}
+
+[data-theme="light"] .scale-btn-compact:hover {
+    background: rgba(255, 255, 255, 0.9);
+    color: #1e293b;
+    border-color: rgba(79, 140, 255, 0.5);
+    box-shadow: 0 4px 12px rgba(79, 140, 255, 0.12);
 }
 
 /* ========================================================================

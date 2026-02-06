@@ -356,9 +356,9 @@ class MuscleSelector {
 
                 <!-- Selection Summary -->
                 <div class="selection-summary">
-                    <span class="summary-label">Selected:</span>
+                    <span class="summary-label">Priority:</span>
                     <span class="summary-value" id="selection-summary-text">
-                        None (all muscles will be targeted)
+                        None – balanced volume across all muscles
                     </span>
                 </div>
             </div>
@@ -854,7 +854,7 @@ class MuscleSelector {
         if (!summaryEl) return;
         
         if (this.selectedMuscles.size === 0) {
-            summaryEl.textContent = 'None (all muscles will be targeted)';
+            summaryEl.textContent = 'None – balanced volume across all muscles';
             return;
         }
         
@@ -868,11 +868,13 @@ class MuscleSelector {
         });
         
         displayNames.sort();
+        let muscleText;
         if (displayNames.length <= 3) {
-            summaryEl.textContent = displayNames.join(', ');
+            muscleText = displayNames.join(', ');
         } else {
-            summaryEl.textContent = `${displayNames.slice(0, 2).join(', ')} +${displayNames.length - 2} more`;
+            muscleText = `${displayNames.slice(0, 2).join(', ')} +${displayNames.length - 2} more`;
         }
+        summaryEl.textContent = `${muscleText} – will get extra sets`;
     }
 
     /**

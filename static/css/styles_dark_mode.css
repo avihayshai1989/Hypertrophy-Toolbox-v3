@@ -153,13 +153,13 @@
 
 [data-theme="dark"] .form-control:hover,
 [data-theme="dark"] .form-select:hover {
-    background: rgba(50, 50, 65, 0.8) !important;
+    background-color: rgba(50, 50, 65, 0.8) !important;
     border-color: rgba(79, 140, 255, 0.3) !important;
 }
 
 [data-theme="dark"] .form-control:focus,
 [data-theme="dark"] .form-select:focus {
-    background: rgba(55, 55, 72, 0.85) !important;
+    background-color: rgba(55, 55, 72, 0.85) !important;
     border-color: rgba(79, 140, 255, 0.5) !important;
     box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.2) !important;
 }
@@ -199,6 +199,34 @@
     border-color: var(--border-color);
 }
 
+/* View Mode Toggle - Dark Mode Glass Style */
+[data-theme="dark"] .tbl-view-mode-toggle {
+    background: linear-gradient(135deg, rgba(55, 65, 81, 0.9), rgba(75, 85, 99, 0.85));
+    color: #e5e7eb;
+    border: 1px solid rgba(107, 114, 128, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .tbl-view-mode-toggle:hover {
+    background: linear-gradient(135deg, rgba(75, 85, 99, 0.95), rgba(107, 114, 128, 0.9));
+    border-color: rgba(139, 146, 155, 0.5);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="dark"] .tbl-view-mode-toggle.active,
+[data-theme="dark"] .tbl-view-mode-toggle[data-view-mode="advanced"] {
+    background: linear-gradient(135deg, rgba(6, 95, 70, 0.9), rgba(4, 120, 87, 0.85));
+    color: #a7f3d0;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+[data-theme="dark"] .tbl-view-mode-toggle.active:hover,
+[data-theme="dark"] .tbl-view-mode-toggle[data-view-mode="advanced"]:hover {
+    background: linear-gradient(135deg, rgba(4, 120, 87, 0.95), rgba(5, 150, 105, 0.9));
+    border-color: rgba(52, 211, 153, 0.5);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
 /* Headers and Text */
 [data-theme="dark"] h1,
 [data-theme="dark"] h2,
@@ -223,7 +251,7 @@ body,
 /* Dark Mode Toggle Button */
 #darkModeToggle {
     background: none;
-    border: none;
+    /* border styling handled by styles_navbar.css */
     padding: 0.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -234,6 +262,10 @@ body,
 #darkModeToggle i,
 #darkModeToggle span {
     color: #0d6efd !important;
+}
+
+[data-theme="dark"] #darkModeToggle i {
+    color: #ffd700 !important;
 }
 
 #darkModeToggle:hover {
