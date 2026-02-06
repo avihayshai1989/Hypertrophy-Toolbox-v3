@@ -111,32 +111,96 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     padding: var(--wp-padding);
-    padding-top: calc(var(--wp-padding) + 1rem);
+    padding-top: 0;
   }
 
   /* ========================================================================
-     Page Header
+     Page Header - 2026 Glass/Neumorphic Style
      ======================================================================== */
   #workout[data-page="workout-plan"]>.container-fluid>.table-header {
-    margin-bottom: var(--wp-gap-xl);
+    margin-bottom: var(--wp-gap-lg);
+    margin-top: -55px;
     text-align: center;
+    padding: var(--wp-padding-sm) var(--wp-padding-xl);
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.9) 0%, 
+      rgba(248, 250, 252, 0.95) 100%);
+    border-radius: var(--wp-radius-lg);
+    box-shadow: 
+      0 8px 32px rgba(79, 140, 255, 0.08),
+      0 2px 8px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #workout[data-page="workout-plan"]>.container-fluid>.table-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(79, 140, 255, 0.3) 50%, 
+      transparent 100%);
   }
 
   #workout[data-page="workout-plan"]>.container-fluid>.table-header h1,
   #workout[data-page="workout-plan"]>.container-fluid>.table-header h2 {
     font-size: var(--wp-fs-title);
-    font-weight: var(--wp-fw-bold);
+    font-weight: var(--wp-fw-semibold);
     color: var(--wp-text);
-    margin-bottom: var(--wp-gap);
-    line-height: 1.2;
+    margin-bottom: var(--wp-gap-sm);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    position: relative;
   }
 
   #workout[data-page="workout-plan"]>.container-fluid>.table-header .table-header-underline {
-    height: 4px;
+    height: 3px;
+    width: 60px;
+    background: linear-gradient(90deg, 
+      var(--wp-accent) 0%, 
+      rgba(79, 140, 255, 0.6) 100%);
+    margin: var(--wp-gap-sm) auto 0;
+    border-radius: 3px;
+    box-shadow: 0 2px 8px rgba(79, 140, 255, 0.3);
+    transition: width var(--wp-transition), box-shadow var(--wp-transition);
+  }
+
+  #workout[data-page="workout-plan"]>.container-fluid>.table-header:hover .table-header-underline {
     width: 80px;
-    background: var(--wp-accent);
-    margin: var(--wp-gap) auto;
-    border-radius: 2px;
+    box-shadow: 0 4px 12px rgba(79, 140, 255, 0.4);
+  }
+
+  /* Dark mode adjustments for glass header */
+  [data-theme='dark'] #workout[data-page="workout-plan"]>.container-fluid>.table-header {
+    background: linear-gradient(135deg, 
+      rgba(26, 32, 44, 0.9) 0%, 
+      rgba(20, 25, 35, 0.95) 100%);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  [data-theme='dark'] #workout[data-page="workout-plan"]>.container-fluid>.table-header::before {
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(79, 140, 255, 0.2) 50%, 
+      transparent 100%);
+  }
+
+  [data-theme='dark'] #workout[data-page="workout-plan"]>.container-fluid>.table-header h1,
+  [data-theme='dark'] #workout[data-page="workout-plan"]>.container-fluid>.table-header h2 {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
 
   /* ========================================================================
@@ -146,30 +210,56 @@
     margin-bottom: var(--wp-gap-xl);
   }
 
-  /* Modernized Collapsible Frame */
+  /* Modernized Collapsible Frame - 2026 Glass Style */
   #workout[data-page="workout-plan"] .collapsible-frame {
-    background-color: var(--wp-surface);
-    border: 1px solid var(--wp-border);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.95) 0%, 
+        rgba(248, 250, 252, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: var(--wp-radius);
     margin-bottom: var(--wp-gap-lg);
     overflow: visible;
-    box-shadow: var(--wp-shadow-sm);
+    box-shadow: 
+        0 4px 20px rgba(79, 140, 255, 0.06),
+        0 1px 4px rgba(0, 0, 0, 0.03),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    /* backdrop-filter removed to fix dropdown stacking context issues */
     transition: box-shadow var(--wp-transition), border-color var(--wp-transition);
   }
 
   #workout[data-page="workout-plan"] .collapsible-frame:hover {
-    box-shadow: var(--wp-shadow);
-    border-color: var(--wp-border-subtle);
+    box-shadow: 
+        0 6px 24px rgba(79, 140, 255, 0.1),
+        0 2px 6px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border-color: rgba(79, 140, 255, 0.15);
   }
 
-  /* Frame Header */
+  /* Frame Header - 2026 Glass Style */
   #workout[data-page="workout-plan"] .frame-header {
-    background-color: var(--wp-surface-elevated);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(248, 250, 252, 0.95) 100%);
     padding: var(--wp-padding);
-    border-bottom: 1px solid var(--wp-border);
+    border-bottom: 1px solid rgba(229, 231, 235, 0.5);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    /* backdrop-filter removed to fix dropdown stacking context issues */
+    position: relative;
+  }
+
+  #workout[data-page="workout-plan"] .frame-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(79, 140, 255, 0.15) 50%, 
+        transparent 100%);
   }
 
   #workout[data-page="workout-plan"] .frame-header.frame-header-2025 {
@@ -186,13 +276,70 @@
     font-size: var(--wp-fs-body);
     font-weight: var(--wp-fw-semibold);
     color: var(--wp-text);
-    text-transform: none;
-    letter-spacing: normal;
-    position: static;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
     background: none !important;
     padding: 0;
+    padding-bottom: 8px;
     border-radius: 0;
     box-shadow: none;
+  }
+
+  #workout[data-page="workout-plan"] .frame-title::after,
+  #workout[data-page="workout-plan"] .filters-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 40px;
+    background: linear-gradient(90deg, 
+        var(--wp-accent) 0%, 
+        rgba(79, 140, 255, 0.5) 100%);
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(79, 140, 255, 0.25);
+    transition: width var(--wp-transition);
+  }
+
+  #workout[data-page="workout-plan"] .frame-header:hover .frame-title::after,
+  #workout[data-page="workout-plan"] .frame-header:hover .filters-title::after {
+    width: 60px;
+  }
+
+  /* Dark Mode - Collapsible Frame Glass Style */
+  [data-theme='dark'] #workout[data-page="workout-plan"] .collapsible-frame {
+    background: linear-gradient(135deg, 
+        rgba(26, 32, 44, 0.9) 0%, 
+        rgba(20, 25, 35, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.25),
+        0 1px 4px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  [data-theme='dark'] #workout[data-page="workout-plan"] .collapsible-frame:hover {
+    box-shadow: 
+        0 6px 24px rgba(0, 0, 0, 0.3),
+        0 2px 6px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border-color: rgba(79, 140, 255, 0.15);
+  }
+
+  /* Dark Mode - Frame Header Glass Style */
+  [data-theme='dark'] #workout[data-page="workout-plan"] .frame-header {
+    background: linear-gradient(135deg, 
+        rgba(26, 32, 44, 0.85) 0%, 
+        rgba(20, 25, 35, 0.9) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  [data-theme='dark'] #workout[data-page="workout-plan"] .frame-header::before {
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(79, 140, 255, 0.1) 50%, 
+        transparent 100%);
   }
 
   /* Dark Mode - Remove squared dark backgrounds from titles */
@@ -354,7 +501,7 @@
      Filters Section
      ======================================================================== */
   #workout[data-page="workout-plan"] .filters-section {
-    background-color: var(--wp-surface);
+    /* Use glass effect from collapsible-frame, not solid background */
     border-radius: var(--wp-radius);
   }
 
@@ -607,31 +754,63 @@
     gap: 0.5rem;
   }
 
+  /* Selection Actions Container - 2026 Glass/Neumorphic Style */
   #workout[data-page="workout-plan"] .selection-actions {
     width: 100% !important;
     padding: calc(var(--wp-gap) * 1.5) calc(var(--wp-gap) * 2);
-    background: linear-gradient(135deg, rgba(79, 140, 255, 0.08) 0%, rgba(79, 140, 255, 0.02) 100%);
-    border: 1px solid var(--wp-border-subtle);
-    border-radius: calc(var(--wp-radius) - 4px);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    transition: box-shadow var(--wp-transition), transform var(--wp-transition);
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.95) 0%, 
+      rgba(248, 250, 252, 0.98) 50%,
+      rgba(241, 245, 249, 0.95) 100%);
+    border: 1px solid rgba(79, 140, 255, 0.15);
+    border-radius: 18px;
+    box-shadow: 
+      0 8px 32px rgba(79, 140, 255, 0.08),
+      0 4px 12px rgba(0, 0, 0, 0.04),
+      inset 0 2px 0 rgba(255, 255, 255, 0.9),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   #workout[data-page="workout-plan"] .selection-actions:hover {
-    box-shadow: var(--wp-shadow);
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.98) 0%, 
+      rgba(250, 252, 255, 1) 50%,
+      rgba(245, 248, 252, 0.98) 100%);
+    border-color: rgba(79, 140, 255, 0.25);
+    box-shadow: 
+      0 12px 40px rgba(79, 140, 255, 0.12),
+      0 6px 16px rgba(0, 0, 0, 0.06),
+      inset 0 2px 0 rgba(255, 255, 255, 1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
   }
 
   [data-theme='dark'] #workout[data-page="workout-plan"] .selection-actions {
-    background: linear-gradient(135deg, rgba(79, 140, 255, 0.12) 0%, rgba(15, 23, 42, 0.6) 100%);
-    border-color: rgba(148, 163, 184, 0.3);
-    box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.1);
+    background: linear-gradient(135deg, 
+      rgba(30, 41, 59, 0.95) 0%, 
+      rgba(15, 23, 42, 0.98) 50%,
+      rgba(10, 15, 30, 0.95) 100%);
+    border: 1px solid rgba(79, 140, 255, 0.2);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.2);
   }
 
   [data-theme='dark'] #workout[data-page="workout-plan"] .selection-actions:hover {
-    box-shadow: 0 12px 32px rgba(79, 140, 255, 0.18);
+    background: linear-gradient(135deg, 
+      rgba(30, 41, 59, 0.98) 0%, 
+      rgba(20, 30, 48, 0.95) 50%,
+      rgba(15, 25, 40, 0.98) 100%);
+    border-color: rgba(96, 165, 250, 0.35);
+    box-shadow: 
+      0 12px 40px rgba(79, 140, 255, 0.15),
+      0 6px 16px rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+    transform: translateY(-2px);
   }
 
   @media (max-width: 991.98px) {
@@ -746,19 +925,25 @@
     align-self: stretch;
   }
 
-  /* Input Field Styling - Modern 2025 */
+  /* Input Field Styling - 2026 Glass/Neumorphic */
   #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control,
   #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"] {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border: 2px solid #e2e8f0;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.95) 0%, 
+      rgba(248, 250, 252, 0.98) 100%);
+    border: 1px solid rgba(229, 231, 235, 0.6);
     color: #1e293b;
-    border-radius: 12px;
+    border-radius: 14px;
     padding: 12px 16px;
     font-size: 1rem;
     font-weight: 500;
     min-height: 48px;
     transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+    box-shadow: 
+      0 4px 16px rgba(79, 140, 255, 0.06),
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.02);
     width: 100%;
     flex: 0 0 auto;
     box-sizing: border-box;
@@ -804,22 +989,31 @@
     -moz-appearance: textfield;
   }
 
-  /* Hover State - Micro-interaction */
+  /* Hover State - Glass Micro-interaction */
   #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control:hover:not(:disabled),
   #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"]:hover:not(:disabled) {
-    border-color: #cbd5e1;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-color: rgba(79, 140, 255, 0.25);
+    box-shadow: 
+      0 6px 20px rgba(79, 140, 255, 0.1),
+      0 2px 6px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.02);
     transform: translateY(-1px);
-    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
   }
 
-  /* Focus State - High Contrast for Accessibility */
+  /* Focus State - Glass with Blue Glow */
   #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control:focus,
   #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"]:focus {
     outline: none;
-    border-color: #4f8cff;
-    box-shadow: 0 0 0 4px rgba(79, 140, 255, 0.15), 0 4px 12px rgba(79, 140, 255, 0.2), 0 2px 6px rgba(0, 0, 0, 0.08);
-    background: #ffffff;
+    border-color: rgba(79, 140, 255, 0.5);
+    box-shadow: 
+      0 0 0 4px rgba(79, 140, 255, 0.12),
+      0 8px 24px rgba(79, 140, 255, 0.15),
+      0 2px 8px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 1);
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 1) 0%, 
+      rgba(252, 253, 255, 0.98) 100%);
     transform: translateY(-1px);
   }
 
@@ -830,66 +1024,121 @@
 
   /* ================================================
      COLOR-CODED BACKGROUNDS FOR WORKOUT CONTROLS
+     2026 Glass/Neumorphic Style
      ================================================ */
   
-  /* Light Pastel Fuchsia - Min Rep & Max Rep */
+  /* Light Pastel Fuchsia - Min Rep & Max Rep - Glass Style */
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#min_rep,
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#max_rep_range {
-    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%) !important;
-    border-color: #f48fb1 !important;
+    background: linear-gradient(135deg, 
+      rgba(252, 228, 236, 0.95) 0%, 
+      rgba(248, 187, 217, 0.9) 100%) !important;
+    border: 1px solid rgba(244, 143, 177, 0.5) !important;
+    box-shadow: 
+      0 4px 16px rgba(236, 64, 122, 0.08),
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      inset 0 -1px 0 rgba(236, 64, 122, 0.05) !important;
   }
   
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#min_rep:hover:not(:disabled),
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#max_rep_range:hover:not(:disabled) {
-    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%) !important;
-    border-color: #ec407a !important;
+    background: linear-gradient(135deg, 
+      rgba(252, 228, 236, 0.98) 0%, 
+      rgba(248, 187, 217, 0.95) 100%) !important;
+    border-color: rgba(236, 64, 122, 0.4) !important;
+    box-shadow: 
+      0 6px 20px rgba(236, 64, 122, 0.12),
+      0 2px 6px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
   }
   
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#min_rep:focus,
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#max_rep_range:focus {
-    background: #fce4ec !important;
-    border-color: #ec407a !important;
-    box-shadow: 0 0 0 4px rgba(236, 64, 122, 0.15), 0 4px 12px rgba(236, 64, 122, 0.2) !important;
+    background: linear-gradient(135deg, 
+      rgba(252, 228, 236, 1) 0%, 
+      rgba(252, 235, 242, 0.98) 100%) !important;
+    border-color: rgba(236, 64, 122, 0.6) !important;
+    box-shadow: 
+      0 0 0 4px rgba(236, 64, 122, 0.12),
+      0 8px 24px rgba(236, 64, 122, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 1) !important;
   }
   
-  /* Light Pastel Pistachio/Green - RIR & RPE */
+  /* Light Pastel Pistachio/Green - RIR & RPE - Glass Style */
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#rir,
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#rpe {
-    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%) !important;
-    border-color: #a5d6a7 !important;
+    background: linear-gradient(135deg, 
+      rgba(232, 245, 233, 0.95) 0%, 
+      rgba(200, 230, 201, 0.9) 100%) !important;
+    border: 1px solid rgba(165, 214, 167, 0.5) !important;
+    box-shadow: 
+      0 4px 16px rgba(102, 187, 106, 0.08),
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      inset 0 -1px 0 rgba(102, 187, 106, 0.05) !important;
   }
   
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#rir:hover:not(:disabled),
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#rpe:hover:not(:disabled) {
-    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%) !important;
-    border-color: #66bb6a !important;
+    background: linear-gradient(135deg, 
+      rgba(232, 245, 233, 0.98) 0%, 
+      rgba(200, 230, 201, 0.95) 100%) !important;
+    border-color: rgba(102, 187, 106, 0.4) !important;
+    box-shadow: 
+      0 6px 20px rgba(102, 187, 106, 0.12),
+      0 2px 6px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
   }
   
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#rir:focus,
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#rpe:focus {
-    background: #e8f5e9 !important;
-    border-color: #66bb6a !important;
-    box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.15), 0 4px 12px rgba(102, 187, 106, 0.2) !important;
+    background: linear-gradient(135deg, 
+      rgba(232, 245, 233, 1) 0%, 
+      rgba(240, 248, 240, 0.98) 100%) !important;
+    border-color: rgba(102, 187, 106, 0.6) !important;
+    box-shadow: 
+      0 0 0 4px rgba(102, 187, 106, 0.12),
+      0 8px 24px rgba(102, 187, 106, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 1) !important;
   }
   
-  /* Light Pastel Banana/Yellow - Weight & Sets */
+  /* Light Pastel Banana/Yellow - Weight & Sets - Glass Style */
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#weight,
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#sets {
-    background: #fff9c4 !important;
-    border-color: #fff176 !important;
+    background: linear-gradient(135deg, 
+      rgba(255, 249, 196, 0.95) 0%, 
+      rgba(255, 245, 157, 0.9) 100%) !important;
+    border: 1px solid rgba(255, 241, 118, 0.6) !important;
+    box-shadow: 
+      0 4px 16px rgba(253, 216, 53, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      inset 0 -1px 0 rgba(253, 216, 53, 0.08) !important;
   }
   
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#weight:hover:not(:disabled),
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#sets:hover:not(:disabled) {
-    background: #fff59d !important;
-    border-color: #ffee58 !important;
+    background: linear-gradient(135deg, 
+      rgba(255, 249, 196, 0.98) 0%, 
+      rgba(255, 241, 118, 0.95) 100%) !important;
+    border-color: rgba(253, 216, 53, 0.5) !important;
+    box-shadow: 
+      0 6px 20px rgba(253, 216, 53, 0.15),
+      0 2px 6px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
   }
   
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#weight:focus,
   #workout[data-page="workout-plan"] .input-fields-group .input-group input#sets:focus {
-    background: #fff9c4 !important;
-    border-color: #fdd835 !important;
-    box-shadow: 0 0 0 4px rgba(253, 216, 53, 0.2), 0 4px 12px rgba(253, 216, 53, 0.25) !important;
+    background: linear-gradient(135deg, 
+      rgba(255, 249, 196, 1) 0%, 
+      rgba(255, 253, 231, 0.98) 100%) !important;
+    border-color: rgba(253, 216, 53, 0.7) !important;
+    box-shadow: 
+      0 0 0 4px rgba(253, 216, 53, 0.15),
+      0 8px 24px rgba(253, 216, 53, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 1) !important;
   }
   
   /* Value Changed Animation Highlight */
@@ -968,7 +1217,7 @@
   }
 }
 
-/* Dark Mode Support */
+/* Dark Mode Support - Glass Style */
 /* Ensure input-fields-group background matches frame-content */
 [data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group {
   background-color: transparent !important;
@@ -981,24 +1230,41 @@
 
 [data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control,
 [data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"] {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  border-color: #334155;
+  background: linear-gradient(135deg, 
+    rgba(30, 41, 59, 0.95) 0%, 
+    rgba(15, 23, 42, 0.98) 100%);
+  border: 1px solid rgba(51, 65, 85, 0.6);
   color: #f1f5f9;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 
 [data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control:hover:not(:disabled),
 [data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"]:hover:not(:disabled) {
-  border-color: #475569;
-  background: linear-gradient(135deg, #1e293b 0%, #1a1f2e 100%);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  border-color: rgba(71, 85, 105, 0.8);
+  background: linear-gradient(135deg, 
+    rgba(30, 41, 59, 0.98) 0%, 
+    rgba(26, 31, 46, 0.95) 100%);
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.25),
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 [data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control:focus,
 [data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"]:focus {
-  border-color: #60a5fa;
-  background: #1e293b;
-  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2), 0 4px 12px rgba(96, 165, 250, 0.15), 0 2px 6px rgba(0, 0, 0, 0.4);
+  border-color: rgba(96, 165, 250, 0.6);
+  background: linear-gradient(135deg, 
+    rgba(30, 41, 59, 1) 0%, 
+    rgba(20, 30, 48, 0.98) 100%);
+  box-shadow: 
+    0 0 0 4px rgba(96, 165, 250, 0.15),
+    0 8px 24px rgba(96, 165, 250, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 [data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group .input-group:focus-within .form-label {
@@ -1012,9 +1278,57 @@
 
 [data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group .input-group .form-control:disabled,
 [data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group .input-group input[type="number"]:disabled {
-  background: #0f172a;
-  border-color: #1e293b;
+  background: linear-gradient(135deg, 
+    rgba(15, 23, 42, 0.9) 0%, 
+    rgba(10, 15, 30, 0.95) 100%);
+  border-color: rgba(30, 41, 59, 0.5);
   color: #475569;
+}
+
+/* Color-coded Inputs - Dark Mode Glass/Neumorphic 2026 */
+/* Min Rep & Max Rep - Pink Glass Dark */
+[data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group #min_rep,
+[data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group #max_rep_range {
+  background: linear-gradient(135deg, 
+    rgba(131, 24, 67, 0.35) 0%, 
+    rgba(157, 23, 77, 0.25) 100%) !important;
+  border: 1px solid rgba(190, 24, 93, 0.4) !important;
+  color: #fda4af !important;
+  box-shadow: 
+    0 4px 16px rgba(190, 24, 93, 0.15),
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 100, 150, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
+}
+
+/* RIR & RPE - Green Glass Dark */
+[data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group #rir,
+[data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group #rpe {
+  background: linear-gradient(135deg, 
+    rgba(6, 78, 59, 0.35) 0%, 
+    rgba(5, 102, 74, 0.25) 100%) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  color: #6ee7b7 !important;
+  box-shadow: 
+    0 4px 16px rgba(16, 185, 129, 0.15),
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(100, 255, 180, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Weight & Sets - Yellow/Gold Glass Dark */
+[data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group #weight,
+[data-theme='dark'] #workout[data-page="workout-plan"] .input-fields-group #sets {
+  background: linear-gradient(135deg, 
+    rgba(113, 63, 18, 0.35) 0%, 
+    rgba(133, 77, 14, 0.25) 100%) !important;
+  border: 1px solid rgba(217, 119, 6, 0.4) !important;
+  color: #fcd34d !important;
+  box-shadow: 
+    0 4px 16px rgba(217, 119, 6, 0.15),
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 220, 100, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
 }
 
 /* ========================================================================
@@ -1035,10 +1349,10 @@
 }
 
 /* ========================================================================
-     Workout Controls Buttons - Modern 2025 Refresh
+     Workout Controls Buttons - 2026 Glass/Neumorphic Style
      ======================================================================== */
 #workout[data-page="workout-plan"] .action-buttons-group .btn {
-  /* Base Modern Styling */
+  /* Base Glass/Neumorphic Styling */
   min-width: auto;
   min-height: 44px;
   /* Accessibility: minimum touch target */
@@ -1050,10 +1364,13 @@
   letter-spacing: 0.3px;
   line-height: 1.4;
   transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
-  /* Smooth micro-interactions */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
-  /* Subtle depth */
-  border: none;
+  /* Glass depth with inset highlights */
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   position: relative;
   overflow: hidden;
   display: inline-flex;
@@ -1064,23 +1381,39 @@
   white-space: nowrap;
 }
 
-/* Add Exercise Button - Seafoam/Teal */
+/* Add Exercise Button - Seafoam/Teal Glass */
 #workout[data-page="workout-plan"] #add_exercise_btn.btn {
-  background: linear-gradient(135deg, #98dfd6 0%, #83d1c4 100%);
+  background: linear-gradient(135deg, 
+    rgba(152, 223, 214, 0.95) 0%, 
+    rgba(131, 209, 196, 0.98) 100%);
   color: #006d77;
-  box-shadow: 0 4px 12px rgba(0, 109, 119, 0.2), 0 2px 4px rgba(0, 109, 119, 0.1);
+  border: 1px solid rgba(0, 109, 119, 0.15);
+  box-shadow: 
+    0 4px 16px rgba(0, 109, 119, 0.18),
+    0 2px 6px rgba(0, 109, 119, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(0, 109, 119, 0.1);
 }
 
 #workout[data-page="workout-plan"] #add_exercise_btn.btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #83d1c4 0%, #6ec1b4 100%);
+  background: linear-gradient(135deg, 
+    rgba(131, 209, 196, 0.98) 0%, 
+    rgba(110, 193, 180, 1) 100%);
   color: #005762;
-  box-shadow: 0 6px 16px rgba(0, 109, 119, 0.25), 0 3px 6px rgba(0, 109, 119, 0.15);
+  border-color: rgba(0, 109, 119, 0.25);
+  box-shadow: 
+    0 8px 24px rgba(0, 109, 119, 0.22),
+    0 4px 10px rgba(0, 109, 119, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(0, 109, 119, 0.15);
   transform: translateY(-2px);
 }
 
 #workout[data-page="workout-plan"] #add_exercise_btn.btn:active:not(:disabled) {
   transform: translateY(0) scale(0.98);
-  box-shadow: 0 2px 6px rgba(0, 109, 119, 0.2), 0 1px 2px rgba(0, 109, 119, 0.1);
+  box-shadow: 
+    0 2px 8px rgba(0, 109, 119, 0.2),
+    inset 0 2px 4px rgba(0, 109, 119, 0.1);
 }
 
 /* Apply Filters Button - Blue - High Contrast */
@@ -1113,64 +1446,224 @@
   box-shadow: 0 2px 6px rgba(30, 64, 175, 0.5), 0 1px 2px rgba(30, 64, 175, 0.4) !important;
 }
 
-/* Clear Filters Button - Midnight Blue */
+/* Clear Filters Button - Midnight Blue Glass */
 #workout[data-page="workout-plan"] #clear-filters-btn.btn {
-  background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+  background: linear-gradient(135deg, 
+    rgba(232, 234, 246, 0.95) 0%, 
+    rgba(197, 202, 233, 0.98) 100%);
   color: #283593;
-  box-shadow: 0 4px 12px rgba(40, 53, 147, 0.15), 0 2px 4px rgba(40, 53, 147, 0.1);
+  border: 1px solid rgba(40, 53, 147, 0.12);
+  box-shadow: 
+    0 4px 16px rgba(40, 53, 147, 0.12),
+    0 2px 6px rgba(40, 53, 147, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(40, 53, 147, 0.08);
 }
 
 #workout[data-page="workout-plan"] #clear-filters-btn.btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #c5cae9 0%, #9fa8da 100%);
+  background: linear-gradient(135deg, 
+    rgba(197, 202, 233, 0.98) 0%, 
+    rgba(159, 168, 218, 1) 100%);
   color: #1a237e;
-  box-shadow: 0 6px 16px rgba(40, 53, 147, 0.2), 0 3px 6px rgba(40, 53, 147, 0.15);
+  border-color: rgba(40, 53, 147, 0.2);
+  box-shadow: 
+    0 8px 24px rgba(40, 53, 147, 0.18),
+    0 4px 10px rgba(40, 53, 147, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(40, 53, 147, 0.12);
   transform: translateY(-2px);
 }
 
 #workout[data-page="workout-plan"] #clear-filters-btn.btn:active:not(:disabled) {
   transform: translateY(0) scale(0.98);
-  box-shadow: 0 2px 6px rgba(40, 53, 147, 0.15), 0 1px 2px rgba(40, 53, 147, 0.1);
+  box-shadow: 
+    0 2px 8px rgba(40, 53, 147, 0.15),
+    inset 0 2px 4px rgba(40, 53, 147, 0.1);
 }
 
-/* Export All Tables Button - Fuchsia/Pink */
+/* Export All Tables Button - Fuchsia/Pink Glass */
 #workout[data-page="workout-plan"] .btn-export-excel.btn,
 #workout[data-page="workout-plan"] .action-buttons-group .btn-export-excel {
-  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+  background: linear-gradient(135deg, 
+    rgba(252, 228, 236, 0.95) 0%, 
+    rgba(248, 187, 208, 0.98) 100%);
   color: #d81b60;
-  box-shadow: 0 4px 12px rgba(216, 27, 96, 0.2), 0 2px 4px rgba(216, 27, 96, 0.1);
+  border: 1px solid rgba(216, 27, 96, 0.15);
+  box-shadow: 
+    0 4px 16px rgba(216, 27, 96, 0.15),
+    0 2px 6px rgba(216, 27, 96, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(216, 27, 96, 0.1);
 }
 
 #workout[data-page="workout-plan"] .btn-export-excel.btn:hover:not(:disabled),
 #workout[data-page="workout-plan"] .action-buttons-group .btn-export-excel:hover:not(:disabled) {
-  background: linear-gradient(135deg, #f8bbd0 0%, #f48fb1 100%);
+  background: linear-gradient(135deg, 
+    rgba(248, 187, 208, 0.98) 0%, 
+    rgba(244, 143, 177, 1) 100%);
   color: #c2185b;
-  box-shadow: 0 6px 16px rgba(216, 27, 96, 0.25), 0 3px 6px rgba(216, 27, 96, 0.15);
+  border-color: rgba(216, 27, 96, 0.25);
+  box-shadow: 
+    0 8px 24px rgba(216, 27, 96, 0.2),
+    0 4px 10px rgba(216, 27, 96, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(216, 27, 96, 0.15);
   transform: translateY(-2px);
 }
 
 #workout[data-page="workout-plan"] .btn-export-excel.btn:active:not(:disabled),
 #workout[data-page="workout-plan"] .action-buttons-group .btn-export-excel:active:not(:disabled) {
   transform: translateY(0) scale(0.98);
-  box-shadow: 0 2px 6px rgba(216, 27, 96, 0.2), 0 1px 2px rgba(216, 27, 96, 0.1);
+  box-shadow: 
+    0 2px 8px rgba(216, 27, 96, 0.18),
+    inset 0 2px 4px rgba(216, 27, 96, 0.1);
 }
 
-/* Export to Workout Log Button - Pastel Pink */
+/* Export to Workout Log Button - Pastel Pink Glass */
 #workout[data-page="workout-plan"] #export-to-log-btn.btn {
-  background: linear-gradient(135deg, #ffe2e4 0%, #ffd0d4 100%);
+  background: linear-gradient(135deg, 
+    rgba(255, 226, 228, 0.95) 0%, 
+    rgba(255, 208, 212, 0.98) 100%);
   color: #d94a5a;
-  box-shadow: 0 4px 12px rgba(217, 74, 90, 0.2), 0 2px 4px rgba(217, 74, 90, 0.1);
+  border: 1px solid rgba(217, 74, 90, 0.15);
+  box-shadow: 
+    0 4px 16px rgba(217, 74, 90, 0.15),
+    0 2px 6px rgba(217, 74, 90, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(217, 74, 90, 0.08);
 }
 
 #workout[data-page="workout-plan"] #export-to-log-btn.btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ffd0d4 0%, #ffc5ca 100%);
+  background: linear-gradient(135deg, 
+    rgba(255, 208, 212, 0.98) 0%, 
+    rgba(255, 197, 202, 1) 100%);
   color: #c73545;
-  box-shadow: 0 6px 16px rgba(217, 74, 90, 0.25), 0 3px 6px rgba(217, 74, 90, 0.15);
+  border-color: rgba(217, 74, 90, 0.25);
+  box-shadow: 
+    0 8px 24px rgba(217, 74, 90, 0.2),
+    0 4px 10px rgba(217, 74, 90, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(217, 74, 90, 0.12);
   transform: translateY(-2px);
 }
 
 #workout[data-page="workout-plan"] #export-to-log-btn.btn:active:not(:disabled) {
   transform: translateY(0) scale(0.98);
-  box-shadow: 0 2px 6px rgba(217, 74, 90, 0.2), 0 1px 2px rgba(217, 74, 90, 0.1);
+  box-shadow: 
+    0 2px 8px rgba(217, 74, 90, 0.18),
+    inset 0 2px 4px rgba(217, 74, 90, 0.1);
+}
+
+/* Generate Starter Plan Button - Emerald Green Glass */
+#workout[data-page="workout-plan"] #generate-plan-btn.btn {
+  background: linear-gradient(135deg, 
+    rgba(187, 247, 208, 0.95) 0%, 
+    rgba(134, 239, 172, 0.98) 100%) !important;
+  color: #166534 !important;
+  border: 1px solid rgba(22, 163, 74, 0.2) !important;
+  box-shadow: 
+    0 4px 16px rgba(22, 163, 74, 0.18),
+    0 2px 6px rgba(22, 163, 74, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(22, 163, 74, 0.1) !important;
+}
+
+#workout[data-page="workout-plan"] #generate-plan-btn.btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, 
+    rgba(134, 239, 172, 0.98) 0%, 
+    rgba(74, 222, 128, 1) 100%) !important;
+  color: #14532d !important;
+  border-color: rgba(22, 163, 74, 0.3) !important;
+  box-shadow: 
+    0 8px 24px rgba(22, 163, 74, 0.22),
+    0 4px 10px rgba(22, 163, 74, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(22, 163, 74, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+/* Save Program Button - Sky Blue Glass */
+#workout[data-page="workout-plan"] #save-program-btn.btn {
+  background: linear-gradient(135deg, 
+    rgba(224, 242, 254, 0.95) 0%, 
+    rgba(186, 230, 253, 0.98) 100%) !important;
+  color: #0369a1 !important;
+  border: 1px solid rgba(14, 165, 233, 0.25) !important;
+  box-shadow: 
+    0 4px 16px rgba(14, 165, 233, 0.15),
+    0 2px 6px rgba(14, 165, 233, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(14, 165, 233, 0.08) !important;
+}
+
+#workout[data-page="workout-plan"] #save-program-btn.btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, 
+    rgba(186, 230, 253, 0.98) 0%, 
+    rgba(125, 211, 252, 1) 100%) !important;
+  color: #075985 !important;
+  border-color: rgba(14, 165, 233, 0.35) !important;
+  box-shadow: 
+    0 8px 24px rgba(14, 165, 233, 0.2),
+    0 4px 10px rgba(14, 165, 233, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(14, 165, 233, 0.12) !important;
+  transform: translateY(-2px);
+}
+
+/* Program Library Button - Slate Glass */
+#workout[data-page="workout-plan"] #load-program-btn.btn {
+  background: linear-gradient(135deg, 
+    rgba(241, 245, 249, 0.95) 0%, 
+    rgba(226, 232, 240, 0.98) 100%) !important;
+  color: #475569 !important;
+  border: 1px solid rgba(100, 116, 139, 0.2) !important;
+  box-shadow: 
+    0 4px 16px rgba(100, 116, 139, 0.12),
+    0 2px 6px rgba(100, 116, 139, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(100, 116, 139, 0.06) !important;
+}
+
+#workout[data-page="workout-plan"] #load-program-btn.btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, 
+    rgba(226, 232, 240, 0.98) 0%, 
+    rgba(203, 213, 225, 1) 100%) !important;
+  color: #334155 !important;
+  border-color: rgba(100, 116, 139, 0.3) !important;
+  box-shadow: 
+    0 8px 24px rgba(100, 116, 139, 0.18),
+    0 4px 10px rgba(100, 116, 139, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(100, 116, 139, 0.1) !important;
+  transform: translateY(-2px);
+}
+
+/* Clear Plan Button - Rose/Red Glass */
+#workout[data-page="workout-plan"] #clear-plan-btn.btn {
+  background: linear-gradient(135deg, 
+    rgba(254, 226, 226, 0.95) 0%, 
+    rgba(254, 202, 202, 0.98) 100%) !important;
+  color: #dc2626 !important;
+  border: 1px solid rgba(220, 38, 38, 0.2) !important;
+  box-shadow: 
+    0 4px 16px rgba(220, 38, 38, 0.12),
+    0 2px 6px rgba(220, 38, 38, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(220, 38, 38, 0.08) !important;
+}
+
+#workout[data-page="workout-plan"] #clear-plan-btn.btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, 
+    rgba(254, 202, 202, 0.98) 0%, 
+    rgba(252, 165, 165, 1) 100%) !important;
+  color: #b91c1c !important;
+  border-color: rgba(220, 38, 38, 0.3) !important;
+  box-shadow: 
+    0 8px 24px rgba(220, 38, 38, 0.18),
+    0 4px 10px rgba(220, 38, 38, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(220, 38, 38, 0.12) !important;
+  transform: translateY(-2px);
 }
 
 /* Button Group Styles */
@@ -1204,12 +1697,21 @@
 [data-theme='dark'] #workout[data-page="workout-plan"] #add_exercise_btn.btn {
   background: linear-gradient(135deg, rgba(152, 223, 214, 0.25) 0%, rgba(131, 209, 196, 0.25) 100%);
   color: #83d1c4;
-  box-shadow: 0 4px 12px rgba(152, 223, 214, 0.2), 0 2px 4px rgba(152, 223, 214, 0.1);
+  border: 1px solid rgba(152, 223, 214, 0.25);
+  box-shadow: 
+    0 4px 16px rgba(152, 223, 214, 0.15),
+    0 2px 6px rgba(152, 223, 214, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 [data-theme='dark'] #workout[data-page="workout-plan"] #add_exercise_btn.btn:hover:not(:disabled) {
   background: linear-gradient(135deg, rgba(152, 223, 214, 0.35) 0%, rgba(131, 209, 196, 0.35) 100%);
   color: #98dfd6;
+  border-color: rgba(152, 223, 214, 0.35);
+  box-shadow: 
+    0 8px 24px rgba(152, 223, 214, 0.2),
+    0 4px 10px rgba(152, 223, 214, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 [data-theme='dark'] #workout[data-page="workout-plan"] #filter-btn.btn,
@@ -1233,36 +1735,131 @@
 [data-theme='dark'] #workout[data-page="workout-plan"] #clear-filters-btn.btn {
   background: linear-gradient(135deg, rgba(232, 234, 246, 0.15) 0%, rgba(197, 202, 233, 0.15) 100%);
   color: #c5cae9;
-  box-shadow: 0 4px 12px rgba(197, 202, 233, 0.15), 0 2px 4px rgba(197, 202, 233, 0.1);
+  border: 1px solid rgba(197, 202, 233, 0.2);
+  box-shadow: 
+    0 4px 16px rgba(197, 202, 233, 0.12),
+    0 2px 6px rgba(197, 202, 233, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 [data-theme='dark'] #workout[data-page="workout-plan"] #clear-filters-btn.btn:hover:not(:disabled) {
   background: linear-gradient(135deg, rgba(197, 202, 233, 0.25) 0%, rgba(159, 168, 218, 0.25) 100%);
   color: #e8eaf6;
+  border-color: rgba(197, 202, 233, 0.3);
+  box-shadow: 
+    0 8px 24px rgba(197, 202, 233, 0.18),
+    0 4px 10px rgba(197, 202, 233, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 [data-theme='dark'] #workout[data-page="workout-plan"] .btn-export-excel.btn,
 [data-theme='dark'] #workout[data-page="workout-plan"] .action-buttons-group .btn-export-excel {
   background: linear-gradient(135deg, rgba(252, 228, 236, 0.2) 0%, rgba(248, 187, 208, 0.2) 100%);
   color: #f8bbd0;
-  box-shadow: 0 4px 12px rgba(248, 187, 208, 0.2), 0 2px 4px rgba(248, 187, 208, 0.1);
+  border: 1px solid rgba(248, 187, 208, 0.2);
+  box-shadow: 
+    0 4px 16px rgba(248, 187, 208, 0.15),
+    0 2px 6px rgba(248, 187, 208, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 [data-theme='dark'] #workout[data-page="workout-plan"] .btn-export-excel.btn:hover:not(:disabled),
 [data-theme='dark'] #workout[data-page="workout-plan"] .action-buttons-group .btn-export-excel:hover:not(:disabled) {
   background: linear-gradient(135deg, rgba(248, 187, 208, 0.3) 0%, rgba(244, 143, 177, 0.3) 100%);
   color: #fce4ec;
+  border-color: rgba(248, 187, 208, 0.3);
+  box-shadow: 
+    0 8px 24px rgba(248, 187, 208, 0.2),
+    0 4px 10px rgba(248, 187, 208, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 [data-theme='dark'] #workout[data-page="workout-plan"] #export-to-log-btn.btn {
   background: linear-gradient(135deg, rgba(255, 226, 228, 0.2) 0%, rgba(255, 208, 212, 0.2) 100%);
   color: #ffd0d4;
-  box-shadow: 0 4px 12px rgba(255, 208, 212, 0.2), 0 2px 4px rgba(255, 208, 212, 0.1);
+  border: 1px solid rgba(255, 208, 212, 0.2);
+  box-shadow: 
+    0 4px 16px rgba(255, 208, 212, 0.15),
+    0 2px 6px rgba(255, 208, 212, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 [data-theme='dark'] #workout[data-page="workout-plan"] #export-to-log-btn.btn:hover:not(:disabled) {
   background: linear-gradient(135deg, rgba(255, 208, 212, 0.3) 0%, rgba(255, 197, 202, 0.3) 100%);
   color: #ffe2e4;
+  border-color: rgba(255, 208, 212, 0.3);
+  box-shadow: 
+    0 8px 24px rgba(255, 208, 212, 0.2),
+    0 4px 10px rgba(255, 208, 212, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Dark Mode - Generate Starter Plan Button */
+[data-theme='dark'] #workout[data-page="workout-plan"] #generate-plan-btn.btn {
+  background: linear-gradient(135deg, rgba(134, 239, 172, 0.2) 0%, rgba(74, 222, 128, 0.2) 100%) !important;
+  color: #86efac !important;
+  border: 1px solid rgba(74, 222, 128, 0.25) !important;
+  box-shadow: 
+    0 4px 16px rgba(74, 222, 128, 0.15),
+    0 2px 6px rgba(74, 222, 128, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme='dark'] #workout[data-page="workout-plan"] #generate-plan-btn.btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(134, 239, 172, 0.3) 0%, rgba(74, 222, 128, 0.3) 100%) !important;
+  color: #bbf7d0 !important;
+  border-color: rgba(74, 222, 128, 0.35) !important;
+}
+
+/* Dark Mode - Save Program Button */
+[data-theme='dark'] #workout[data-page="workout-plan"] #save-program-btn.btn {
+  background: linear-gradient(135deg, rgba(125, 211, 252, 0.2) 0%, rgba(56, 189, 248, 0.2) 100%) !important;
+  color: #7dd3fc !important;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+  box-shadow: 
+    0 4px 16px rgba(56, 189, 248, 0.15),
+    0 2px 6px rgba(56, 189, 248, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme='dark'] #workout[data-page="workout-plan"] #save-program-btn.btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(125, 211, 252, 0.3) 0%, rgba(56, 189, 248, 0.3) 100%) !important;
+  color: #bae6fd !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+}
+
+/* Dark Mode - Program Library Button */
+[data-theme='dark'] #workout[data-page="workout-plan"] #load-program-btn.btn {
+  background: linear-gradient(135deg, rgba(203, 213, 225, 0.15) 0%, rgba(148, 163, 184, 0.15) 100%) !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(148, 163, 184, 0.25) !important;
+  box-shadow: 
+    0 4px 16px rgba(148, 163, 184, 0.12),
+    0 2px 6px rgba(148, 163, 184, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme='dark'] #workout[data-page="workout-plan"] #load-program-btn.btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(203, 213, 225, 0.25) 0%, rgba(148, 163, 184, 0.25) 100%) !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+}
+
+/* Dark Mode - Clear Plan Button */
+[data-theme='dark'] #workout[data-page="workout-plan"] #clear-plan-btn.btn {
+  background: linear-gradient(135deg, rgba(252, 165, 165, 0.2) 0%, rgba(248, 113, 113, 0.2) 100%) !important;
+  color: #fca5a5 !important;
+  border: 1px solid rgba(248, 113, 113, 0.25) !important;
+  box-shadow: 
+    0 4px 16px rgba(248, 113, 113, 0.12),
+    0 2px 6px rgba(248, 113, 113, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme='dark'] #workout[data-page="workout-plan"] #clear-plan-btn.btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(252, 165, 165, 0.3) 0%, rgba(248, 113, 113, 0.3) 100%) !important;
+  color: #fee2e2 !important;
+  border-color: rgba(248, 113, 113, 0.35) !important;
 }
 
 /* Reduce Motion */
@@ -1281,15 +1878,146 @@
 }
 
 /* ========================================================================
-     Workout Plan Table
+     Workout Plan Table - 2026 Glass/Neumorphic Style
      ======================================================================== */
 #workout[data-page="workout-plan"] .workout-plan.table-container {
-  background-color: var(--wp-surface);
-  border: 1px solid var(--wp-border);
-  border-radius: var(--wp-radius);
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(248, 250, 252, 0.98) 100%) !important;
+  border: 1px solid rgba(229, 231, 235, 0.4) !important;
+  border-radius: var(--wp-radius-lg) !important;
   padding: var(--wp-padding-lg);
-  box-shadow: var(--wp-shadow-sm);
-  margin-top: var(--wp-gap-xl);
+  box-shadow: 
+    0 8px 32px rgba(79, 140, 255, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  margin-top: var(--wp-gap-lg);
+  position: relative;
+}
+
+#workout[data-page="workout-plan"] .workout-plan.table-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(79, 140, 255, 0.3) 50%, 
+    transparent 100%);
+  border-radius: var(--wp-radius-lg) var(--wp-radius-lg) 0 0;
+}
+
+#workout[data-page="workout-plan"] .workout-plan.table-container:hover {
+  box-shadow: 
+    0 12px 40px rgba(79, 140, 255, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+/* Dark mode table container */
+[data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan.table-container {
+  background: linear-gradient(135deg, 
+    rgba(26, 32, 44, 0.95) 0%, 
+    rgba(20, 25, 35, 0.98) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan.table-container::before {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(79, 140, 255, 0.2) 50%, 
+    transparent 100%);
+}
+
+[data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan.table-container:hover {
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Glass/Neumorphic style for table header - 2026 */
+#workout[data-page="workout-plan"] .workout-plan.table-container > .table-header {
+  margin-bottom: var(--wp-gap-lg);
+  padding: var(--wp-padding) var(--wp-padding-lg);
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.85) 0%, 
+    rgba(248, 250, 252, 0.9) 100%);
+  border-radius: var(--wp-radius);
+  box-shadow: 
+    0 4px 20px rgba(79, 140, 255, 0.06),
+    0 1px 4px rgba(0, 0, 0, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+
+#workout[data-page="workout-plan"] .workout-plan.table-container > .table-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(79, 140, 255, 0.25) 50%, 
+    transparent 100%);
+}
+
+#workout[data-page="workout-plan"] .workout-plan.table-container > .table-header h2 {
+  font-weight: var(--wp-fw-semibold);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--wp-gap-sm);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+#workout[data-page="workout-plan"] .workout-plan.table-container > .table-header .table-header-underline {
+  height: 3px;
+  width: 50px;
+  background: linear-gradient(90deg, 
+    var(--wp-accent) 0%, 
+    rgba(79, 140, 255, 0.5) 100%);
+  margin: var(--wp-gap-sm) auto 0;
+  border-radius: 3px;
+  box-shadow: 0 2px 6px rgba(79, 140, 255, 0.25);
+  transition: width var(--wp-transition), box-shadow var(--wp-transition);
+}
+
+#workout[data-page="workout-plan"] .workout-plan.table-container > .table-header:hover .table-header-underline {
+  width: 70px;
+  box-shadow: 0 3px 10px rgba(79, 140, 255, 0.35);
+}
+
+/* Dark mode for table header glass effect */
+[data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan.table-container > .table-header {
+  background: linear-gradient(135deg, 
+    rgba(26, 32, 44, 0.85) 0%, 
+    rgba(20, 25, 35, 0.9) 100%);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.25),
+    0 1px 4px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan.table-container > .table-header::before {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(79, 140, 255, 0.15) 50%, 
+    transparent 100%);
+}
+
+[data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan.table-container > .table-header h2 {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 #workout[data-page="workout-plan"] .workout-plan.table-container .tbl-controls {
@@ -1303,28 +2031,63 @@
 }
 
 #workout[data-page="workout-plan"] .workout-plan-table thead th {
-  background-color: var(--wp-surface);
-  color: var(--wp-text);
+  background: linear-gradient(180deg, 
+    rgba(255, 255, 255, 0.98) 0%, 
+    rgba(248, 250, 252, 0.95) 50%,
+    rgba(241, 245, 249, 0.92) 100%) !important;
+  color: var(--wp-text) !important;
   font-weight: var(--wp-fw-semibold);
   font-size: var(--wp-table-fs);
   /* Removed uppercase and letter-spacing to save horizontal space */
-  text-transform: none;
-  letter-spacing: normal;
+  text-transform: none !important;
+  letter-spacing: normal !important;
   padding: var(--wp-table-cell-padding);
-  border-bottom: 2px solid var(--wp-border);
+  border-bottom: 2px solid rgba(79, 140, 255, 0.2) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.9) !important;
   position: sticky;
   top: 0;
   z-index: var(--wp-z-base);
   white-space: nowrap;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(79, 140, 255, 0.1),
+    0 4px 12px rgba(79, 140, 255, 0.08) !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+[data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan-table thead th {
+  background: linear-gradient(180deg, 
+    rgba(40, 48, 64, 0.98) 0%, 
+    rgba(32, 40, 54, 0.95) 50%,
+    rgba(26, 32, 44, 0.92) 100%) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  border-bottom: 2px solid rgba(79, 140, 255, 0.25) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(79, 140, 255, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 #workout[data-page="workout-plan"] .workout-plan-table tbody td {
   padding: var(--wp-table-cell-padding);
-  border-bottom: 1px solid var(--wp-border);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.4) !important;
   color: var(--wp-text);
-  background-color: var(--wp-surface-elevated);
-  transition: background-color var(--wp-transition-fast);
+  background: linear-gradient(180deg, 
+    rgba(255, 255, 255, 0.98) 0%, 
+    rgba(252, 253, 255, 0.95) 100%) !important;
+  transition: background var(--wp-transition-fast), box-shadow var(--wp-transition-fast);
   font-size: var(--wp-table-fs);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+[data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan-table tbody td {
+  background: linear-gradient(180deg, 
+    rgba(26, 32, 44, 0.98) 0%, 
+    rgba(22, 27, 38, 0.95) 100%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
 }
 
 /* Ensure Utility and Grips columns show full text - prevent text cutoff */
@@ -1369,24 +2132,32 @@
 }
 
 #workout[data-page="workout-plan"] .workout-plan-table tbody tr:hover td {
-  background-color: var(--wp-surface);
+  background: linear-gradient(180deg, 
+    rgba(79, 140, 255, 0.12) 0%, 
+    rgba(79, 140, 255, 0.06) 100%) !important;
+  box-shadow: inset 0 0 0 1px rgba(79, 140, 255, 0.15) !important;
 }
 
 #workout[data-page="workout-plan"] .workout-plan-table tbody tr:nth-child(even) td {
-  background-color: var(--wp-surface);
+  background: linear-gradient(180deg, 
+    rgba(248, 250, 252, 0.99) 0%, 
+    rgba(244, 247, 250, 0.96) 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
 }
 
-/* Dark mode adjustments */
-[data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan-table tbody td {
-  background-color: var(--wp-surface);
-}
-
+/* Dark mode row adjustments */
 [data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan-table tbody tr:hover td {
-  background-color: var(--wp-surface-elevated);
+  background: linear-gradient(180deg, 
+    rgba(79, 140, 255, 0.15) 0%, 
+    rgba(79, 140, 255, 0.08) 100%) !important;
+  box-shadow: inset 0 0 0 1px rgba(79, 140, 255, 0.2) !important;
 }
 
 [data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan-table tbody tr:nth-child(even) td {
-  background-color: rgba(255, 255, 255, 0.02);
+  background: linear-gradient(180deg, 
+    rgba(32, 40, 52, 0.98) 0%, 
+    rgba(28, 35, 46, 0.95) 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
 }
 
 /* ========================================================================

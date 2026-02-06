@@ -13,10 +13,102 @@
     max-width: 100%;
     margin: 0;
     padding: 1.5rem;
-    display: grid;
-    grid-template-columns: 300px 1fr 350px;
-    gap: 1.5rem;
-    min-height: calc(100vh - 80px); /* Account for navbar */
+}
+
+/* Form container takes full width */
+.volume-splitter-container .volume-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* ========================================================================
+   Page Header - 2026 Glass/Neumorphic Style
+   ======================================================================== */
+.volume-splitter-header {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    text-align: center;
+    padding: 12px 32px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(248, 250, 252, 0.95) 100%);
+    border-radius: 20px;
+    box-shadow: 
+        0 8px 32px rgba(79, 140, 255, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    position: relative;
+    overflow: hidden;
+}
+
+.volume-splitter-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(79, 140, 255, 0.3) 50%, 
+        transparent 100%);
+}
+
+.volume-splitter-header h1 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    position: relative;
+    line-height: 1.3;
+}
+
+.volume-splitter-header .header-underline {
+    height: 3px;
+    width: 60px;
+    background: linear-gradient(90deg, 
+        #4f8cff 0%, 
+        rgba(79, 140, 255, 0.6) 100%);
+    margin: 8px auto 0;
+    border-radius: 3px;
+    box-shadow: 0 2px 8px rgba(79, 140, 255, 0.3);
+    transition: width 0.2s ease, box-shadow 0.2s ease;
+}
+
+.volume-splitter-header:hover .header-underline {
+    width: 80px;
+    box-shadow: 0 4px 12px rgba(79, 140, 255, 0.4);
+}
+
+.volume-splitter-header .lead {
+    margin-bottom: 0;
+    color: var(--text-muted, #6c757d);
+}
+
+/* Dark mode adjustments for glass header */
+[data-theme='dark'] .volume-splitter-header {
+    background: linear-gradient(135deg, 
+        rgba(26, 32, 44, 0.9) 0%, 
+        rgba(20, 25, 35, 0.95) 100%);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .volume-splitter-header::before {
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(79, 140, 255, 0.2) 50%, 
+        transparent 100%);
+}
+
+[data-theme='dark'] .volume-splitter-header h1 {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* Left Column - Controls */
@@ -338,35 +430,43 @@
 
 /* Add these dark mode styles */
 [data-theme='dark'] .results-section {
-    background-color: var(--card-bg);
-    border-color: var(--border-color);
+    background-color: #2d2d2d !important;
+    border-color: #404040 !important;
 }
 
 [data-theme='dark'] .results-section table {
-    color: var(--text-primary);
+    color: #e0e0e0 !important;
+    background-color: #2d2d2d !important;
 }
 
 [data-theme='dark'] .results-section thead th {
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
-    border-color: var(--border-color);
+    background: #343a40 !important;
+    color: #e0e0e0 !important;
+    border-color: #404040 !important;
+    box-shadow: none !important;
 }
 
 [data-theme='dark'] .results-section tbody tr {
-    background-color: var(--card-bg);
+    background-color: #2d2d2d !important;
+}
+
+[data-theme='dark'] .results-section tbody td {
+    background: #2d2d2d !important;
+    color: #e0e0e0 !important;
+    border-color: #404040 !important;
+    box-shadow: none !important;
 }
 
 [data-theme='dark'] .results-section tbody tr:nth-of-type(odd) {
-    background-color: var(--table-stripe);
+    background-color: #252525 !important;
 }
 
-[data-theme='dark'] .results-section td,
-[data-theme='dark'] .results-section th {
-    border-color: var(--border-color);
+[data-theme='dark'] .results-section tbody tr:nth-of-type(odd) td {
+    background: #252525 !important;
 }
 
-[data-theme='dark'] .results-section tbody tr:hover {
-    background-color: var(--hover-bg);
+[data-theme='dark'] .results-section tbody tr:hover td {
+    background-color: #3d3d3d !important;
 }
 
 /* Status colors in dark mode */

@@ -15,8 +15,8 @@
 {% block content %}
 <main id="workout" data-page="workout-plan" role="main">
     <div class="container-fluid">
-        <!-- Page Header with consistent styling -->
-        <header class="table-header text-center mb-4">
+        <!-- Page Header - 2026 Glass Style -->
+        <header class="table-header text-center">
             <h1>Workout Plan</h1>
             <div class="table-header-underline" aria-hidden="true"></div>
         </header>
@@ -38,7 +38,7 @@
                 </div>
                 <div class="frame-content" id="filters-content">
                     <div class="filters dropdown-group">
-                        <form id="filters-form" class="row gx-4 gy-3" role="search" aria-label="Filter workout plan exercises">
+                        <form id="filters-form" class="row gx-4" role="search" aria-label="Filter workout plan exercises">
                             {% for filter_name, filter_options in filters.items() %}
                             {% set filter_id = filter_name | lower | replace(' ', '_') %}
                             <div class="col-lg-3 col-md-4 col-sm-6">
@@ -258,7 +258,7 @@
 
         <!-- Display the Workout Plan -->
         <!-- AGENT:START B-1 PRIORITY-CLASSES -->
-        <section class="workout-plan table-container mt-5" aria-labelledby="workout-plan-table-heading">
+        <section class="workout-plan table-container" aria-labelledby="workout-plan-table-heading">
             <div class="table-header">
                 <h2 id="workout-plan-table-heading" class="text-center">Workout Plan Table</h2>
                 <div class="table-header-underline" aria-hidden="true"></div>

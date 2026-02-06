@@ -21,7 +21,8 @@ env/
 ENV/
 
 # Logs
-logs/
+logs/*
+!logs/.gitkeep
 *.log
 
 # Database

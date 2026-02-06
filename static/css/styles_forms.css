@@ -62,49 +62,64 @@ textarea:focus-visible,
     margin-bottom: 0.5rem;
 }
 
-/* Form Controls */
+/* Form Controls - Glass Effect */
 .form-select, .form-control {
     margin-bottom: var(--space-md, 0.875rem);
     padding: var(--input-padding-y, 0.375rem) var(--input-padding-x, 0.625rem);
     font-size: var(--input-font-size, 0.9rem);
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    background-color: #fafafa;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     height: var(--input-height-md, 38px);
+    box-shadow: 0 2px 8px rgba(31, 38, 135, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.form-select:hover, .form-control:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(79, 140, 255, 0.3);
 }
 
 .form-select:focus, .form-control:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 8px rgba(13, 110, 253, 0.4);
+    border-color: rgba(79, 140, 255, 0.5);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.15), 0 4px 12px rgba(31, 38, 135, 0.12);
     outline: none;
 }
 
-/* Dropdown Styles */
+/* Dropdown Styles - Glass Effect */
 .filter-dropdown {
-    background-color: #e6f7ff;
+    background: rgba(230, 247, 255, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     color: #333;
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .filter-dropdown:not([value]):not(:focus) {
-    background-color: #e6f7ff;
+    background: rgba(230, 247, 255, 0.7);
     color: #555;
 }
 
 .filter-dropdown:focus, .filter-dropdown:active {
-    background-color: #ffffff;
+    background: rgba(255, 255, 255, 0.9);
     color: #000;
 }
 
-/* Uniform Dropdown */
+/* Uniform Dropdown - Glass */
 .uniform-dropdown {
     width: 100%;
     max-width: 100%;
     min-width: 200px;
-    background-color: #e6f7ff;
+    background: rgba(230, 247, 255, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     height: var(--input-height-md, 38px);
     box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* Exercise dropdown specific - full width */

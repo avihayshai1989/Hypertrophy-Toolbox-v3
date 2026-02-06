@@ -87,8 +87,12 @@ function enhanceSelect(select, prefersReducedMotion) {
   // Insert container before select
   select.parentNode.insertBefore(container, select);
   container.appendChild(button);
-  container.appendChild(popover);
+  // Append popover to document.body to avoid fixed positioning issues with transformed ancestors
+  document.body.appendChild(popover);
   container.appendChild(select);
+  
+  // Store reference to popover on container for cleanup
+  container._popoverElement = popover;
   
   // Build options from select
   const options = buildOptions(select, popover);
@@ -308,7 +312,9 @@ function enhanceSelect(select, prefersReducedMotion) {
   
   // Close on outside click - handle globally
   const outsideClickHandler = (e) => {
-    if (button.getAttribute('aria-expanded') === 'true' && !container.contains(e.target)) {
+    if (button.getAttribute('aria-expanded') === 'true' && 
+        !container.contains(e.target) && 
+        !popover.contains(e.target)) {
       closeDropdown(false);
     }
   };
@@ -325,6 +331,10 @@ function enhanceSelect(select, prefersReducedMotion) {
     document.removeEventListener('click', outsideClickHandler);
     if (container._optionsObserver) {
       container._optionsObserver.disconnect();
+    }
+    // Remove popover from document.body
+    if (popover.parentNode) {
+      popover.parentNode.removeChild(popover);
     }
   };
   

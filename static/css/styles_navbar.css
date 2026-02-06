@@ -8,18 +8,25 @@
      CSS Custom Properties (Navbar-scoped tokens)
      ======================================================================== */
   :root {
-    /* Colors - Light Mode (WCAG AA+ compliant) */
-    --nav-bg: #0e1116;
-    --nav-surface: #141a23;
-    --nav-surface-hover: #1a202c;
-    --nav-text: #e9eef7;
-    --nav-text-muted: #a8b2c1;
-    --nav-accent: #4f8cff;
-    --nav-accent-hover: #6ba3ff;
-    --nav-accent-press: #3c6ed1;
-    --nav-border: #202837;
+    /* Colors - Light Mode - Frosted White Glass */
+    --nav-bg: rgba(255, 255, 255, 0.75);
+    --nav-bg-solid: #ffffff;
+    --nav-surface: rgba(240, 240, 245, 0.8);
+    --nav-surface-hover: rgba(230, 230, 235, 0.9);
+    --nav-text: #1a1a2e;
+    --nav-text-muted: #4a4a5a;
+    --nav-accent: #0066cc;
+    --nav-accent-hover: #0055aa;
+    --nav-accent-press: #004488;
+    --nav-border: rgba(0, 0, 0, 0.08);
     --nav-indicator: #dc3545;
     --nav-indicator-hover: rgba(220, 53, 69, 0.5);
+    
+    /* Glass Effect Properties - Frosted White Glass */
+    --nav-blur: 20px;
+    --nav-glass-border: 1px solid rgba(255, 255, 255, 0.6);
+    --nav-glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    --nav-glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.8);
     
     /* Spacing & Layout */
     --nav-gap: 12px;
@@ -34,8 +41,8 @@
     --nav-radius-lg: 16px;
     
     /* Shadows */
-    --nav-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
-    --nav-shadow-light: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --nav-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --nav-shadow-light: 0 2px 12px rgba(0, 0, 0, 0.06);
     
     /* Typography */
     --nav-font: ui-sans-serif, system-ui, "Inter", "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
@@ -55,14 +62,17 @@
   
   /* Dark Mode Overrides */
   [data-theme='dark'] {
-    --nav-bg: #0b0d12;
-    --nav-surface: #121620;
-    --nav-surface-hover: #1a1d29;
+    --nav-bg: #080810;
+    --nav-bg-solid: #080810;
+    --nav-surface: #151520;
+    --nav-surface-hover: #1e1e2a;
     --nav-text: #e9eef7;
     --nav-text-muted: #a8b2c1;
-    --nav-border: #2a2f3d;
-    --nav-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
-    --nav-shadow-light: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --nav-border: rgba(255, 255, 255, 0.08);
+    --nav-glass-border: 1px solid rgba(255, 255, 255, 0.1);
+    --nav-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --nav-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --nav-shadow-light: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
   
   /* Reduced Motion */
@@ -74,7 +84,8 @@
   }
   
   /* ========================================================================
-     Base Navbar Container
+     Base Navbar Container - Frosted Glass Style
+     Note: backdrop-filter applied in override section for highest specificity
      ======================================================================== */
   #navbar {
     position: sticky;
@@ -84,13 +95,14 @@
     width: 100%;
     max-width: 100vw;
     z-index: 1000;
-    background-color: var(--nav-bg);
+    background: var(--nav-bg);
+    /* backdrop-filter applied in override section */
     color: var(--nav-text);
     font-family: var(--nav-font);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    border-bottom: 1px solid var(--nav-border);
-    box-shadow: none;
+    border-bottom: var(--nav-glass-border);
+    box-shadow: var(--nav-glass-shadow), var(--nav-glass-inset);
     height: 64px !important;
     min-height: 64px !important;
     max-height: none;
@@ -98,8 +110,7 @@
     align-items: center;
     overflow: visible;
     transition: height var(--nav-transition), box-shadow var(--nav-transition), 
-                backdrop-filter var(--nav-transition), background-color var(--nav-transition);
-    will-change: height, box-shadow;
+                background-color var(--nav-transition);
   }
   
   /* Hide scrollbar for navbar specifically */
@@ -126,19 +137,18 @@
     scrollbar-width: none;
   }
   
-  /* Compact Mode (on scroll) */
+/* Compact Mode (on scroll) - Frosted Glass */
+  /* Note: backdrop-filter applied in override section */
   #navbar.nb-compact {
     height: 56px !important;
     min-height: 56px !important;
     max-height: none;
-    box-shadow: var(--nav-shadow);
-    backdrop-filter: saturate(140%) blur(8px);
-    -webkit-backdrop-filter: saturate(140%) blur(8px);
-    background-color: rgba(14, 17, 22, 0.95);
+    box-shadow: var(--nav-shadow), var(--nav-glass-inset);
+    background: var(--nav-bg);
   }
-  
+
   [data-theme='dark'] #navbar.nb-compact {
-    background-color: rgba(11, 13, 18, 0.95);
+    background: var(--nav-bg);
   }
   
   /* Container */
@@ -153,6 +163,7 @@
     width: 100%;
     height: 100%;
     box-sizing: border-box;
+    background: transparent;
   }
   
   /* Compact mode container adjustments */
@@ -573,10 +584,16 @@
     display: block;
     width: 20px;
     height: 20px;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28233, 238, 247, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    /* Dark icon for light mode frosted white glass */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2826, 26, 46, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+  }
+  
+  /* Dark mode toggler icon */
+  [data-theme='dark'] #navbar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28233, 238, 247, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
   }
   
   /* ========================================================================
@@ -596,20 +613,27 @@
       display: none;
     }
     
-    /* Mobile menu overlay */
+    /* Mobile menu overlay - Frosted White Glass */
     #navbar nav.navbar-collapse.show {
       display: flex;
       position: fixed;
       inset: 0;
       top: var(--nav-height);
-      background-color: var(--nav-bg);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
       flex-direction: column;
       align-items: stretch;
       padding: 24px;
       overflow-y: auto;
       z-index: 999;
-      box-shadow: var(--nav-shadow);
+      box-shadow: var(--nav-glass-shadow);
       animation: slideInDown 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Dark mode mobile menu */
+    [data-theme='dark'] #navbar nav.navbar-collapse.show {
+      background: rgba(11, 13, 18, 0.95);
     }
     
     #navbar.nb-compact nav.navbar-collapse.show {
@@ -782,25 +806,59 @@ body:not(:has(#navbar)) .navbar {
 
 /* ==========================================================================
    Override layer styles - MUST be outside @layer for highest specificity
+   Frosted Glass Effect Overrides - Single Layer Only
    ========================================================================== */
-#navbar {
+
+/* Reset ALL Bootstrap backgrounds on #navbar to prevent layering */
+#navbar,
+#navbar.bg-dark,
+#navbar.navbar-dark,
+#navbar.navbar {
   height: 64px !important;
   min-height: 64px !important;
   max-height: 64px !important;
-  background-color: var(--nav-bg, #0e1116) !important;
+  /* Frosted white glass background */
+  background: rgba(255, 255, 255, 0.75) !important;
+  background-color: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08) !important;
   padding: 0 !important;
+  /* Single stacking context - prevents glitches */
+  isolation: isolate !important;
 }
 
-#navbar.nb-compact {
+#navbar.nb-compact,
+#navbar.nb-compact.bg-dark,
+#navbar.nb-compact.navbar-dark,
+#navbar.nb-compact.navbar {
   height: 56px !important;
   min-height: 56px !important;
   max-height: 56px !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
 }
 
-/* Ensure all navbar children have matching background */
-#navbar.bg-dark,
-#navbar.navbar-dark {
-  background-color: var(--nav-bg, #0e1116) !important;
+/* Dark mode overrides - dark frosted glass */
+[data-theme='dark'] #navbar,
+[data-theme='dark'] #navbar.bg-dark,
+[data-theme='dark'] #navbar.navbar-dark,
+[data-theme='dark'] #navbar.navbar {
+  background: rgba(11, 13, 18, 0.85) !important;
+  background-color: rgba(11, 13, 18, 0.85) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme='dark'] #navbar.nb-compact,
+[data-theme='dark'] #navbar.nb-compact.bg-dark,
+[data-theme='dark'] #navbar.nb-compact.navbar-dark,
+[data-theme='dark'] #navbar.nb-compact.navbar {
+  background: rgba(11, 13, 18, 0.9) !important;
+  background-color: rgba(11, 13, 18, 0.9) !important;
 }
 
 #navbar > .container-fluid {
@@ -808,26 +866,56 @@ body:not(:has(#navbar)) .navbar {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   align-items: center !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 #navbar .navbar-collapse {
   height: 100% !important;
+  background: transparent !important;
   background-color: transparent !important;
 }
 
 #navbar .navbar-nav {
   height: 100% !important;
   align-items: center !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 #navbar .nav-item {
   height: 100% !important;
   display: flex !important;
   align-items: center !important;
+  background: transparent !important;
 }
 
 #navbar .nav-link {
   height: auto !important;
   padding-top: 8px !important;
   padding-bottom: 8px !important;
+  color: #4a4a5a !important;
+}
+
+#navbar .nav-link:hover,
+#navbar .nav-link.active {
+  color: #1a1a2e !important;
+}
+
+#navbar .navbar-brand {
+  color: #1a1a2e !important;
+}
+
+/* Dark mode text colors */
+[data-theme='dark'] #navbar .nav-link {
+  color: #a8b2c1 !important;
+}
+
+[data-theme='dark'] #navbar .nav-link:hover,
+[data-theme='dark'] #navbar .nav-link.active {
+  color: #e9eef7 !important;
+}
+
+[data-theme='dark'] #navbar .navbar-brand {
+  color: #e9eef7 !important;
 }

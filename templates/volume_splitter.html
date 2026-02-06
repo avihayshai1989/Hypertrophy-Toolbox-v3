@@ -9,6 +9,13 @@
 {% endblock %}
 
 {% block content %}
+<!-- Header Section - Outside grid container -->
+<div class="page-header text-center mb-4 volume-splitter-header">
+    <h1>Volume Splitter</h1>
+    <div class="header-underline"></div>
+    <p class="lead">Plan and distribute your training volume effectively across your workout week</p>
+</div>
+
 <div id="volume-splitter-app"
      class="volume-splitter-container"
      data-basic-muscles='{{ basic_muscle_groups|tojson }}'
@@ -16,11 +23,6 @@
      data-basic-ranges='{{ basic_recommended_ranges|tojson }}'
      data-advanced-ranges='{{ advanced_recommended_ranges|tojson }}'
      data-default-mode='{{ default_mode }}'>
-    <!-- Header Section -->
-    <div class="section-header text-center mb-4">
-        <h2>Volume Splitter</h2>
-        <p class="lead">Plan and distribute your training volume effectively across your workout week</p>
-    </div>
 
     <!-- Main Form -->
     <div class="volume-form-container">

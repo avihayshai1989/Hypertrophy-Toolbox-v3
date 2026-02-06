@@ -517,44 +517,107 @@ body:has(.workout-log-page) {
 }
 
 /* ======================================
-   Import Controls Frame Styles
+   Import Controls Frame Styles - 2026 Glass Style
    ====================================== */
 .workout-log-controls-frame .collapsible-frame {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 12px;
-    border: 1px solid #dee2e6;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.95) 0%, 
+        rgba(248, 250, 252, 0.98) 100%);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 
+        0 4px 20px rgba(79, 140, 255, 0.06),
+        0 1px 4px rgba(0, 0, 0, 0.03),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    /* backdrop-filter removed to fix dropdown stacking context issues */
 }
 
 [data-theme='dark'] .workout-log-controls-frame .collapsible-frame {
-    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-    border-color: #444;
+    background: linear-gradient(135deg, 
+        rgba(26, 32, 44, 0.9) 0%, 
+        rgba(20, 25, 35, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.25),
+        0 1px 4px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .workout-log-controls-frame .frame-header {
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid rgba(229, 231, 235, 0.5);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(248, 250, 252, 0.95) 100%);
+    position: relative;
+}
+
+.workout-log-controls-frame .frame-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(79, 140, 255, 0.15) 50%, 
+        transparent 100%);
 }
 
 [data-theme='dark'] .workout-log-controls-frame .frame-header {
-    border-bottom-color: #444;
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+    background: linear-gradient(135deg, 
+        rgba(26, 32, 44, 0.85) 0%, 
+        rgba(20, 25, 35, 0.9) 100%);
+}
+
+[data-theme='dark'] .workout-log-controls-frame .frame-header::before {
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(79, 140, 255, 0.1) 50%, 
+        transparent 100%);
 }
 
 .workout-log-controls-frame .frame-title {
     font-weight: 600;
-    font-size: 1.1rem;
-    color: #333;
+    font-size: 0.9rem;
+    color: #1a1f2e;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.workout-log-controls-frame .frame-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 40px;
+    background: linear-gradient(90deg, 
+        #4f8cff 0%, 
+        rgba(79, 140, 255, 0.5) 100%);
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(79, 140, 255, 0.25);
+    transition: width 0.2s ease;
+}
+
+.workout-log-controls-frame .frame-header:hover .frame-title::after {
+    width: 60px;
 }
 
 [data-theme='dark'] .workout-log-controls-frame .frame-title {
-    color: #fff;
+    color: #e9eef7;
 }
 
 .workout-log-controls-frame .frame-content {
     padding: 1.5rem;
+    background: transparent;
 }
 
 .import-controls-container {
@@ -607,6 +670,32 @@ body:has(.workout-log-page) {
 [data-theme='dark'] #import-from-plan-btn:hover {
     background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%) !important;
     box-shadow: 0 4px 12px rgba(102, 187, 106, 0.5);
+}
+
+/* Dark mode - Clear Log button styling */
+[data-theme='dark'] .import-actions .btn-outline-danger,
+[data-theme='dark'] #clear-log-btn {
+    background-color: rgba(220, 53, 69, 0.15) !important;
+    color: #ff6b7a !important;
+    border-color: #ff6b7a !important;
+}
+
+[data-theme='dark'] .import-actions .btn-outline-danger i,
+[data-theme='dark'] #clear-log-btn i {
+    color: #ff6b7a !important;
+}
+
+[data-theme='dark'] .import-actions .btn-outline-danger:hover,
+[data-theme='dark'] #clear-log-btn:hover {
+    background-color: rgba(220, 53, 69, 0.3) !important;
+    color: #ff8a96 !important;
+    border-color: #ff8a96 !important;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+[data-theme='dark'] .import-actions .btn-outline-danger:hover i,
+[data-theme='dark'] #clear-log-btn:hover i {
+    color: #ff8a96 !important;
 }
 
 /* ======================================

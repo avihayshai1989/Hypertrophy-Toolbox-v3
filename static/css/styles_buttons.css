@@ -1,4 +1,4 @@
-/* Button Base Styles - Make even more specific to override Bootstrap */
+/* Button Base Styles - Glass Effect Enhancement */
 button.btn,
 a.btn,
 input.btn,
@@ -25,77 +25,84 @@ button[type="submit"].btn {
     transition: all 0.3s ease !important;
     border: none !important;
     cursor: pointer !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.4) !important;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
-/* Button Types */
+/* Button Types - Glass Enhancement */
 .btn-success {
-    background-color: #e8f5e9;
+    background: linear-gradient(135deg, rgba(232, 245, 233, 0.9), rgba(200, 230, 201, 0.85));
     color: #2e7d32;
-    border: 1px solid #c8e6c9;
+    border: 1px solid rgba(200, 230, 201, 0.6);
 }
 
 .btn-success:hover {
-    background-color: #c8e6c9;
-    border-color: #a5d6a7;
+    background: linear-gradient(135deg, rgba(200, 230, 201, 0.95), rgba(165, 214, 167, 0.9));
+    border-color: rgba(165, 214, 167, 0.7);
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(46, 125, 50, 0.15), inset 0 1px 0 rgba(255,255,255,0.5) !important;
 }
 
 .btn-primary {
-    background-color: #e3f2fd;
+    background: linear-gradient(135deg, rgba(227, 242, 253, 0.9), rgba(187, 222, 251, 0.85));
     color: #1976d2;
-    border: 1px solid #bbdefb;
+    border: 1px solid rgba(187, 222, 251, 0.6);
 }
 
 .btn-primary:hover {
-    background-color: #bbdefb;
-    border-color: #90caf9;
+    background: linear-gradient(135deg, rgba(187, 222, 251, 0.95), rgba(144, 202, 249, 0.9));
+    border-color: rgba(144, 202, 249, 0.7);
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(25, 118, 210, 0.15), inset 0 1px 0 rgba(255,255,255,0.5) !important;
 }
 
 .btn-outline-secondary {
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, rgba(248, 249, 250, 0.9), rgba(233, 236, 239, 0.85));
     color: #2c3e50;
-    border: 1px solid #e9ecef;
+    border: 1px solid rgba(233, 236, 239, 0.6);
 }
 
 .btn-outline-secondary:hover {
-    background-color: #e9ecef;
-    border-color: #dee2e6;
+    background: linear-gradient(135deg, rgba(233, 236, 239, 0.95), rgba(222, 226, 230, 0.9));
+    border-color: rgba(222, 226, 230, 0.7);
     color: #2c3e50;
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(44, 62, 80, 0.1), inset 0 1px 0 rgba(255,255,255,0.5) !important;
 }
 
-/* Export Buttons */
+/* Export Buttons - Glass */
 .btn-export-excel {
-    background-color: #fce4ec !important;  /* Light fuchsia background */
-    color: #d81b60 !important;  /* Darker fuchsia text */
-    border: 1px solid #f8bbd0 !important;  /* Light fuchsia border */
+    background: linear-gradient(135deg, rgba(252, 228, 236, 0.9), rgba(248, 187, 208, 0.85)) !important;
+    color: #d81b60 !important;
+    border: 1px solid rgba(248, 187, 208, 0.6) !important;
 }
 
 .btn-export-excel:hover {
-    background-color: #f8bbd0 !important;  /* Slightly darker on hover */
-    border-color: #f48fb1 !important;
+    background: linear-gradient(135deg, rgba(248, 187, 208, 0.95), rgba(244, 143, 177, 0.9)) !important;
+    border-color: rgba(244, 143, 177, 0.7) !important;
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(216, 27, 96, 0.15), inset 0 1px 0 rgba(255,255,255,0.5) !important;
 }
 
 .btn-export-log {
-    background-color: #e8e3f7 !important;  /* Light lilac background */
-    color: #673ab7 !important;  /* Darker lilac text */
-    border: 1px solid #d4c6f7 !important;  /* Light lilac border */
+    background: linear-gradient(135deg, rgba(232, 227, 247, 0.9), rgba(212, 198, 247, 0.85)) !important;
+    color: #673ab7 !important;
+    border: 1px solid rgba(212, 198, 247, 0.6) !important;
 }
 
 .btn-export-log:hover {
-    background-color: #d4c6f7 !important;  /* Slightly darker on hover */
-    border-color: #b39ddb !important;
+    background: linear-gradient(135deg, rgba(212, 198, 247, 0.95), rgba(179, 157, 219, 0.9)) !important;
+    border-color: rgba(179, 157, 219, 0.7) !important;
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(103, 58, 183, 0.15), inset 0 1px 0 rgba(255,255,255,0.5) !important;
 }
 
-/* Clear Filters Button */
+/* Clear Filters Button - Glass */
 #clear-filters-btn {
-    background-color: #e8eaf6 !important;  /* Light midnight blue background */
-    color: #283593 !important;  /* Darker midnight blue text */
-    border: 1px solid #c5cae9 !important;  /* Light midnight blue border */
+    background: linear-gradient(135deg, rgba(232, 234, 246, 0.9), rgba(197, 202, 233, 0.85)) !important;
+    color: #283593 !important;
+    border: 1px solid rgba(197, 202, 233, 0.6) !important;
 }
 
 #clear-filters-btn:hover {

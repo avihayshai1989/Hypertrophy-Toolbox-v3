@@ -84,7 +84,7 @@
 [data-theme='dark'] .summary-tables .table-striped > tbody > tr:nth-of-type(odd) > * {
     --bs-table-accent-bg: transparent !important;
     box-shadow: none !important;
-    background-color: #252525 !important;
+    background: #252525 !important;
     color: #e0e0e0 !important;
 }
 
@@ -93,7 +93,7 @@
 [data-theme='dark'] .summary-tables .table-striped > tbody > tr:nth-of-type(even) > * {
     --bs-table-accent-bg: transparent !important;
     box-shadow: none !important;
-    background-color: #2d2d2d !important;
+    background: #2d2d2d !important;
     color: #e0e0e0 !important;
 }
 
@@ -103,9 +103,10 @@
 [data-theme='dark'] .summary-tables .table thead th,
 [data-theme='dark'] #session-summary-container .table thead th,
 [data-theme='dark'] #weekly-summary-container .table thead th {
-    background-color: #1a1a1a !important;
+    background: #1a1a1a !important;
     color: #e0e0e0 !important;
     border-color: #404040 !important;
+    box-shadow: none !important;
 }
 
 /* Dark mode table cells */
@@ -114,8 +115,10 @@
 [data-theme='dark'] .summary-tables .table td,
 [data-theme='dark'] #session-summary-container .table td,
 [data-theme='dark'] #weekly-summary-container .table td {
+    background: #2d2d2d !important;
     color: #e0e0e0 !important;
     border-color: #404040 !important;
+    box-shadow: none !important;
 }
 
 /* Dark mode table borders */

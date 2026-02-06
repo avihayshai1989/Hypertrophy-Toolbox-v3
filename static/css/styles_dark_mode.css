@@ -1,53 +1,107 @@
-/* Dark Mode Styles */
+/* Dark Mode Styles - Glass Effect */
 [data-theme="dark"] {
     /* Base Colors */
-    --bg-primary: #1a1a1a;
-    --bg-secondary: #2d2d2d;
-    --text-primary: #e0e0e0;
-    --text-secondary: #b0b0b0;
-    --border-color: #404040;
-    --card-bg: #2d2d2d;
-    --input-bg: #333333;
-    --table-stripe: #252525;
-    --hover-bg: #3d3d3d;
-    --test-color: red;
+    --bg-primary: #0f0f14;
+    --bg-secondary: #1a1a22;
+    --text-primary: #e8eaf0;
+    --text-secondary: #a8adb8;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --card-bg: rgba(26, 26, 34, 0.75);
+    --input-bg: rgba(40, 40, 52, 0.8);
+    --table-stripe: rgba(35, 35, 45, 0.6);
+    --hover-bg: rgba(50, 50, 65, 0.7);
+    
+    /* Glass Effect Tokens - Dark Mode */
+    --glass-blur: 16px;
+    --glass-bg: rgba(26, 26, 34, 0.75);
+    --glass-bg-hover: rgba(35, 35, 48, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --glass-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.5);
+    --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-/* Base Elements */
+/* Base Elements - Dark Glass Background */
 [data-theme="dark"] body {
-    background-color: var(--bg-primary) !important;
+    background: 
+        radial-gradient(at 40% 20%, rgba(76, 110, 245, 0.08) 0px, transparent 50%),
+        radial-gradient(at 80% 0%, rgba(139, 92, 246, 0.06) 0px, transparent 50%),
+        radial-gradient(at 0% 50%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
+        radial-gradient(at 80% 50%, rgba(244, 63, 94, 0.04) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(79, 140, 255, 0.06) 0px, transparent 50%),
+        linear-gradient(135deg, #0a0a0f 0%, #0f0f18 50%, #12121c 100%) !important;
+    background-attachment: fixed !important;
     color: var(--text-primary) !important;
 }
 
-/* Navbar Specific */
-[data-theme="dark"] .navbar {
-    background-color: var(--bg-secondary) !important;
-    border-bottom: 1px solid var(--border-color);
+/* Navbar Specific - Dark Mode */
+/* Note: All navbar styling is handled by styles_navbar.css to prevent double-layer glitch */
+/* Background removed - #navbar in styles_navbar.css controls this */
+[data-theme="dark"] #navbar {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
 }
 
 [data-theme="dark"] .navbar-dark .navbar-nav .nav-link {
     color: var(--text-primary) !important;
 }
 
-/* Cards and Containers */
-[data-theme="dark"] .card,
-[data-theme="dark"] .container,
-[data-theme="dark"] .container-fluid,
-[data-theme="dark"] .modal-content,
-[data-theme="dark"] .dropdown-menu {
-    background-color: var(--card-bg) !important;
-    border-color: var(--border-color);
+/* Cards and Containers - Glass */
+[data-theme="dark"] .card {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: var(--glass-shadow) !important;
 }
 
-/* Frames and Sections */
+[data-theme="dark"] .card:hover {
+    background: var(--glass-bg-hover) !important;
+    box-shadow: var(--glass-shadow-hover) !important;
+}
+
+[data-theme="dark"] .container,
+[data-theme="dark"] .container-fluid {
+    background: transparent !important;
+}
+
+[data-theme="dark"] .modal-content {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: var(--glass-shadow) !important;
+}
+
+[data-theme="dark"] .dropdown-menu {
+    background: rgba(26, 26, 34, 0.95) !important;
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: var(--glass-shadow) !important;
+}
+
+/* Frames and Sections - Glass */
 [data-theme="dark"] .collapsible-frame,
-[data-theme="dark"] .frame-content,
-[data-theme="dark"] .frame-header,
 [data-theme="dark"] .filters-section,
 [data-theme="dark"] .summary-frame,
 [data-theme="dark"] .workout-log-frame {
-    background-color: var(--card-bg) !important;
-    border-color: var(--border-color) !important;
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: var(--glass-shadow), var(--glass-inset) !important;
+}
+
+[data-theme="dark"] .frame-content {
+    background: rgba(26, 26, 34, 0.5) !important;
+}
+
+[data-theme="dark"] .frame-header {
+    background: rgba(30, 30, 42, 0.6) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
 }
 
 /* Tables */
@@ -85,38 +139,54 @@
     background-color: var(--hover-bg) !important;
 }
 
-/* Form Elements */
+/* Form Elements - Glass */
 [data-theme="dark"] .form-control,
 [data-theme="dark"] .form-select,
 [data-theme="dark"] .input-group-text {
-    background-color: #2c3034 !important;
-    border-color: #495057 !important;
-    color: #e9ecef !important;
+    background: rgba(40, 40, 52, 0.7) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #e8eaf0 !important;
+    transition: all 0.2s ease !important;
+}
+
+[data-theme="dark"] .form-control:hover,
+[data-theme="dark"] .form-select:hover {
+    background: rgba(50, 50, 65, 0.8) !important;
+    border-color: rgba(79, 140, 255, 0.3) !important;
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+    background: rgba(55, 55, 72, 0.85) !important;
+    border-color: rgba(79, 140, 255, 0.5) !important;
+    box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Specific styles for the exercise search input */
 [data-theme="dark"] #exercise-search.form-control {
-    background-color: #2c3034 !important;
+    background: rgba(40, 40, 52, 0.7) !important;
     color: #fff !important;
-    border-color: #495057 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Placeholder text color */
 [data-theme="dark"] #exercise-search.form-control::placeholder {
-    color: #6c757d !important;
+    color: #8b8fa5 !important;
 }
 
 /* Focus state */
 [data-theme="dark"] #exercise-search.form-control:focus {
-    background-color: #343a40 !important;
-    border-color: #0d6efd !important;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    background: rgba(55, 55, 72, 0.85) !important;
+    border-color: rgba(79, 140, 255, 0.5) !important;
+    box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.15) !important;
     color: #fff !important;
 }
 
 /* Hover state */
 [data-theme="dark"] #exercise-search.form-control:hover {
-    border-color: #6c757d !important;
+    border-color: rgba(79, 140, 255, 0.3) !important;
 }
 
 /* Buttons */
@@ -175,18 +245,18 @@ body,
     border: 1px solid var(--border-color);
 }
 
-/* Welcome Page in Dark Mode */
+/* Welcome Page in Dark Mode - Glass */
 [data-theme="dark"] .welcome-container {
-    background-color: var(--bg-primary);
+    background: transparent;
 }
 
 [data-theme="dark"] .hero-section {
-    background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
-}
-
-/* Add this somewhere visible to test */
-[data-theme="dark"] .navbar-brand {
-    color: var(--test-color) !important;
+    background: 
+        radial-gradient(at 30% 20%, rgba(79, 140, 255, 0.15) 0px, transparent 50%),
+        radial-gradient(at 70% 80%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
+        linear-gradient(135deg, rgba(20, 20, 30, 0.9) 0%, rgba(30, 30, 45, 0.85) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 /* Tables - Add table-responsive styles */
