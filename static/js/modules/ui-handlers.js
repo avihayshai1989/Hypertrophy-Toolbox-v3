@@ -1,5 +1,6 @@
 import { createVolumeChart, createProgressChart } from './charts.js';
 import { fetchWeeklySummary, fetchSessionSummary } from './summary.js';
+import { handleDateChange } from './workout-log.js';
 
 export function initializeUIHandlers() {
     // Handle editable fields
@@ -17,6 +18,25 @@ export function initializeUIHandlers() {
                 text.style.display = 'none';
                 input.style.display = 'block';
                 input.focus();
+                
+                // For date inputs, open the picker immediately
+                if (input.type === 'date' && typeof input.showPicker === 'function') {
+                    try {
+                        input.showPicker();
+                    } catch (err) {
+                        // Silently fail if not supported
+                    }
+                }
+            }
+        });
+    });
+    
+    // Initialize date input change handlers
+    document.querySelectorAll('.date-editable .date-input').forEach(input => {
+        input.addEventListener('change', function() {
+            const logId = this.dataset.logId;
+            if (logId) {
+                handleDateChange({ target: this }, logId);
             }
         });
     });
@@ -28,7 +48,8 @@ export function initializeUIHandlers() {
                 input.style.display = 'none';
             });
             document.querySelectorAll('.editable-text').forEach(text => {
-                text.style.display = 'block';
+                // Use flex for date displays, block for others
+                text.style.display = text.classList.contains('date-display') ? 'flex' : 'block';
             });
         }
     });
@@ -50,8 +71,8 @@ export function initializeUIHandlers() {
 
     initializeSummaryMethodHandlers();
 
-    // Add validation for editable inputs
-    document.querySelectorAll('.editable-input').forEach(input => {
+    // Add validation for editable inputs (excluding date inputs which have their own handler)
+    document.querySelectorAll('.editable-input:not(.date-input)').forEach(input => {
         input.addEventListener('input', function() {
             const field = this.closest('[data-field]')?.dataset?.field;
             if (field) {
@@ -69,7 +90,8 @@ export function initializeUIHandlers() {
                 if (cell) {
                     const text = cell.querySelector('.editable-text');
                     if (text) {
-                        text.style.display = 'block';
+                        // Use flex for date displays, block for others
+                        text.style.display = text.classList.contains('date-display') ? 'flex' : 'block';
                     }
                     this.style.display = 'none';
                 }

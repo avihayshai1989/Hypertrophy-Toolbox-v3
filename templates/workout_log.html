@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid px-4">
+<div class="container-fluid px-1 workout-log-page">
     <div class="page-header text-center mb-4">
         <h1>{{ page_title }}</h1>
         <div class="header-underline"></div>
@@ -70,19 +70,19 @@
                         <th scope="col" class="col--high" data-label="#">#</th>
                         <th scope="col" class="col--high" data-label="Routine">Routine</th>
                         <th scope="col" class="col--high" data-label="Exercise">Exercise</th>
-                        <th scope="col" class="col--high is-num" data-label="Planned Sets">Planned Sets</th>
-                        <th scope="col" class="col--med is-num" data-label="Planned Min Reps">Planned Min Reps</th>
-                        <th scope="col" class="col--med is-num" data-label="Planned Max Reps">Planned Max Reps</th>
-                        <th scope="col" class="col--med is-num" data-label="Planned RIR">Planned RIR</th>
-                        <th scope="col" class="col--med is-num" data-label="Planned RPE">Planned RPE</th>
-                        <th scope="col" class="col--high is-num" data-label="Planned Weight">Planned Weight</th>
-                        <th scope="col" class="col--high is-num editable" data-label="Scored Min Reps">Scored Min Reps</th>
-                        <th scope="col" class="col--high is-num editable" data-label="Scored Max Reps">Scored Max Reps</th>
-                        <th scope="col" class="col--med is-num editable" data-label="Scored RIR">Scored RIR</th>
-                        <th scope="col" class="col--med is-num editable" data-label="Scored RPE">Scored RPE</th>
-                        <th scope="col" class="col--high is-num editable" data-label="Scored Weight">Scored Weight</th>
-                        <th scope="col" class="col--med" data-label="Last Progression">Last Progression</th>
-                        <th scope="col" class="col--high" data-label="Progressive Overload">Progressive Overload</th>
+                        <th scope="col" class="col--high is-num" data-label="Planned Sets">Planned<br>Sets</th>
+                        <th scope="col" class="col--med is-num" data-label="Planned Min Reps">Planned<br>Min Reps</th>
+                        <th scope="col" class="col--med is-num" data-label="Planned Max Reps">Planned<br>Max Reps</th>
+                        <th scope="col" class="col--med is-num" data-label="Planned RIR">Planned<br>RIR</th>
+                        <th scope="col" class="col--med is-num" data-label="Planned RPE">Planned<br>RPE</th>
+                        <th scope="col" class="col--high is-num" data-label="Planned Weight">Planned<br>Weight</th>
+                        <th scope="col" class="col--high is-num editable" data-label="Scored Min Reps">Scored<br>Min Reps</th>
+                        <th scope="col" class="col--high is-num editable" data-label="Scored Max Reps">Scored<br>Max Reps</th>
+                        <th scope="col" class="col--med is-num editable" data-label="Scored RIR">Scored<br>RIR</th>
+                        <th scope="col" class="col--med is-num editable" data-label="Scored RPE">Scored<br>RPE</th>
+                        <th scope="col" class="col--high is-num editable" data-label="Scored Weight">Scored<br>Weight</th>
+                        <th scope="col" class="col--med" data-label="Last Progression">Last<br>Progression</th>
+                        <th scope="col" class="col--high" data-label="Progressive Overload">Progressive<br>Overload</th>
                         <th scope="col" class="col--high" data-label="Actions">Actions</th>
                     </tr>
                 </thead>
@@ -105,7 +105,7 @@
                                        value="{{ log.scored_min_reps if log.scored_min_reps and log.scored_min_reps != 'None' else '' }}"
                                        onchange="updateScoredValue('{{ log.id }}', 'scored_min_reps', this.value)"
                                        style="display: none;">
-                                <span class="editable-text">{{ log.scored_min_reps if log.scored_min_reps and log.scored_min_reps != 'None' else 'Click to set' }}</span>
+                                <span class="editable-text">{{ log.scored_min_reps if log.scored_min_reps and log.scored_min_reps != 'None' else '--' }}</span>
                                 {% if log.scored_min_reps and log.scored_min_reps != 'None' and log.planned_min_reps %}
                                     {% if log.scored_min_reps|int > log.planned_min_reps|int %}
                                         <i class="fas fa-arrow-up progression-indicator text-success" title="Above target! (+{{ log.scored_min_reps|int - log.planned_min_reps|int }})"></i>
@@ -124,7 +124,7 @@
                                        value="{{ log.scored_max_reps if log.scored_max_reps and log.scored_max_reps != 'None' else '' }}"
                                        onchange="updateScoredValue('{{ log.id }}', 'scored_max_reps', this.value)"
                                        style="display: none;">
-                                <span class="editable-text">{{ log.scored_max_reps if log.scored_max_reps and log.scored_max_reps != 'None' else 'Click to set' }}</span>
+                                <span class="editable-text">{{ log.scored_max_reps if log.scored_max_reps and log.scored_max_reps != 'None' else '--' }}</span>
                                 {% if log.scored_max_reps and log.scored_max_reps != 'None' and log.planned_max_reps %}
                                     {% if log.scored_max_reps|int > log.planned_max_reps|int %}
                                         <i class="fas fa-arrow-up progression-indicator text-success" title="Above target! (+{{ log.scored_max_reps|int - log.planned_max_reps|int }})"></i>
@@ -143,7 +143,7 @@
                                        value="{{ log.scored_rir if log.scored_rir and log.scored_rir != 'None' else '' }}"
                                        onchange="updateScoredValue('{{ log.id }}', 'scored_rir', this.value)"
                                        style="display: none;">
-                                <span class="editable-text">{{ log.scored_rir if log.scored_rir and log.scored_rir != 'None' else 'Click to set' }}</span>
+                                <span class="editable-text">{{ log.scored_rir if log.scored_rir and log.scored_rir != 'None' else '--' }}</span>
                                 {# For RIR, LOWER is BETTER (means you pushed harder) #}
                                 {% if log.scored_rir is not none and log.scored_rir != 'None' and log.planned_rir is not none %}
                                     {% if log.scored_rir|int < log.planned_rir|int %}
@@ -163,7 +163,7 @@
                                        value="{{ log.scored_rpe if log.scored_rpe and log.scored_rpe != 'None' else '' }}"
                                        onchange="updateScoredValue('{{ log.id }}', 'scored_rpe', this.value)"
                                        style="display: none;">
-                                <span class="editable-text">{{ log.scored_rpe if log.scored_rpe and log.scored_rpe != 'None' else 'Click to set' }}</span>
+                                <span class="editable-text">{{ log.scored_rpe if log.scored_rpe and log.scored_rpe != 'None' else '--' }}</span>
                                 {# For RPE, HIGHER means you pushed harder - it's a measure of effort #}
                                 {% if log.scored_rpe is not none and log.scored_rpe != 'None' and log.planned_rpe is not none %}
                                     {% if log.scored_rpe|float > log.planned_rpe|float %}
@@ -185,7 +185,7 @@
                                        min="0"
                                        onchange="updateScoredValue('{{ log.id }}', 'scored_weight', this.value)"
                                        style="display: none;">
-                                <span class="editable-text">{{ log.scored_weight if log.scored_weight and log.scored_weight != 'None' else 'Click to set' }}</span>
+                                <span class="editable-text">{{ log.scored_weight if log.scored_weight and log.scored_weight != 'None' else '--' }}</span>
                                 {% if log.scored_weight and log.scored_weight != 'None' and log.planned_weight %}
                                     {% if log.scored_weight|float > log.planned_weight|float %}
                                         <i class="fas fa-arrow-up progression-indicator text-success" title="Weight increased! (+{{ (log.scored_weight|float - log.planned_weight|float)|round(1) }}kg)"></i>
@@ -197,17 +197,17 @@
                                 {% endif %}
                             </div>
                         </td>
-                        <td data-label="Last Progression" class="editable" data-field="last_progression_date">
+                        <td data-label="Last Progression" class="editable date-editable" data-field="last_progression_date" title="Click to set date">
                             <input type="date" 
                                    class="editable-input date-input" 
                                    value="{{ log.last_progression_date if log.last_progression_date and log.last_progression_date != 'None' else '' }}"
-                                   onchange="handleDateChange(event, '{{ log.id }}')"
+                                   data-log-id="{{ log.id }}"
                                    style="display: none;">
-                            <span class="editable-text">
+                            <span class="editable-text date-display">
                                 {% if log.last_progression_date and log.last_progression_date != 'None' %}
-                                    {{ log.last_progression_date|datetime('%d-%m-%Y') }}
+                                    {{ log.last_progression_date|datetime('%d-%m-%y') }}
                                 {% else %}
-                                    Click to set date
+                                    <i class="fas fa-calendar-alt date-icon"></i>
                                 {% endif %}
                             </span>
                         </td>
@@ -224,8 +224,8 @@
                             </span>
                         </td>
                         <td data-label="Actions">
-                            <button class="btn btn-danger btn-sm" onclick="deleteWorkoutLog('{{ log.id }}')">
-                                <i class="fas fa-trash"></i> Delete
+                            <button class="btn btn-danger btn-sm delete-btn" onclick="deleteWorkoutLog('{{ log.id }}')" title="Delete">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </td>
                     </tr>

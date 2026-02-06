@@ -644,30 +644,65 @@ export async function deleteWorkoutLog(logId) {
     }
 }
 
+/**
+ * Format Date object to DD-MM-YY for display
+ * @param {Date} date - Date object
+ * @returns {string} - Date string in DD-MM-YY format
+ */
+function formatToDDMMYY(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
+    return `${day}-${month}-${year}`;
+}
+
 export async function handleDateChange(event, logId) {
     try {
-        const newDate = event.target.value;
+        const inputValue = event.target.value; // Native date input gives YYYY-MM-DD
         const input = event.target;
+        
+        // If logId not provided, get from data attribute
+        const id = logId || input.dataset.logId;
+        
+        let displayDate = '';
+        
+        // Validate date if provided
+        if (inputValue && inputValue.trim() !== '') {
+            const dateObj = new Date(inputValue);
+            const year = dateObj.getFullYear();
+            
+            if (isNaN(dateObj.getTime()) || year < 2020 || year > 2099) {
+                showToast('error', 'Please select a valid date (2020-2099)');
+                return;
+            }
+            
+            displayDate = formatToDDMMYY(dateObj);
+        }
+        
         await api.post('/update_progression_date', {
-            id: logId,
-            date: newDate
+            id: id,
+            date: inputValue // Send YYYY-MM-DD format to backend
         }, { showLoading: false, showErrorToast: false });
 
         // Update the display text and hide the input
         const cell = input.closest('.editable');
         const display = cell.querySelector('.editable-text');
         if (display) {
-            const formattedDate = newDate ? new Date(newDate).toLocaleDateString('en-GB') : 'Click to set date';
-            display.textContent = formattedDate;
-            display.style.display = 'block';
+            if (displayDate) {
+                display.innerHTML = displayDate;
+            } else {
+                // Show calendar icon when no date is set
+                display.innerHTML = '<i class="fas fa-calendar-alt date-icon"></i>';
+            }
+            display.style.display = 'flex';
         }
         
         // Hide the input after successful update
         input.style.display = 'none';
 
         // Get the row and update badge status
-        const row = document.querySelector(`tr[data-log-id="${logId}"]`);
-        const badge = row.querySelector('.badge');
+        const row = document.querySelector(`tr[data-log-id="${id}"]`);
+        const badge = row?.querySelector('.badge');
         if (badge) {
             // Get all the values
             const planned_rir = parseFloat(row.querySelector('[data-field="planned_rir"]')?.textContent) || 0;
