@@ -223,16 +223,14 @@
         0 4px 20px rgba(79, 140, 255, 0.06),
         0 1px 4px rgba(0, 0, 0, 0.03),
         inset 0 1px 0 rgba(255, 255, 255, 0.7);
-    /* backdrop-filter removed to fix dropdown stacking context issues */
-    transition: box-shadow var(--wp-transition), border-color var(--wp-transition);
+    /* Explicitly disable backdrop-filter to prevent glitches during input interactions */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
+  /* Hover effect disabled to prevent visual glitches during input interactions */
   #workout[data-page="workout-plan"] .collapsible-frame:hover {
-    box-shadow: 
-        0 6px 24px rgba(79, 140, 255, 0.1),
-        0 2px 6px rgba(0, 0, 0, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    border-color: rgba(79, 140, 255, 0.15);
+    /* Keep same as non-hover to prevent repaint glitches */
   }
 
   /* Frame Header - 2026 Glass Style */
@@ -245,7 +243,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* backdrop-filter removed to fix dropdown stacking context issues */
+    /* Explicitly disable backdrop-filter to prevent glitches during input interactions */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     position: relative;
   }
 
@@ -284,6 +284,9 @@
     padding-bottom: 8px;
     border-radius: 0;
     box-shadow: none;
+    /* Disable backdrop-filter to prevent glitches during input interactions */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
   #workout[data-page="workout-plan"] .frame-title::after,
@@ -298,13 +301,7 @@
         var(--wp-accent) 0%, 
         rgba(79, 140, 255, 0.5) 100%);
     border-radius: 2px;
-    box-shadow: 0 1px 4px rgba(79, 140, 255, 0.25);
-    transition: width var(--wp-transition);
-  }
-
-  #workout[data-page="workout-plan"] .frame-header:hover .frame-title::after,
-  #workout[data-page="workout-plan"] .frame-header:hover .filters-title::after {
-    width: 60px;
+    /* box-shadow and transition removed to prevent glitches during input interactions */
   }
 
   /* Dark Mode - Collapsible Frame Glass Style */
@@ -317,14 +314,13 @@
         0 4px 20px rgba(0, 0, 0, 0.25),
         0 1px 4px rgba(0, 0, 0, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    /* Explicitly disable backdrop-filter to prevent glitches during input interactions */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
   [data-theme='dark'] #workout[data-page="workout-plan"] .collapsible-frame:hover {
-    box-shadow: 
-        0 6px 24px rgba(0, 0, 0, 0.3),
-        0 2px 6px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    border-color: rgba(79, 140, 255, 0.15);
+    /* Hover effect disabled to prevent visual glitches during input interactions */
   }
 
   /* Dark Mode - Frame Header Glass Style */
@@ -333,6 +329,9 @@
         rgba(26, 32, 44, 0.85) 0%, 
         rgba(20, 25, 35, 0.9) 100%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    /* Explicitly disable backdrop-filter to prevent glitches during input interactions */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
   [data-theme='dark'] #workout[data-page="workout-plan"] .frame-header::before {
@@ -351,6 +350,9 @@
     border-radius: 0 !important;
     box-shadow: none !important;
     padding: 0 !important;
+    /* Disable backdrop-filter to prevent glitches during input interactions */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
   /* ========================================================================
@@ -938,7 +940,8 @@
     font-size: 1rem;
     font-weight: 500;
     min-height: 48px;
-    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    /* Narrow transition to border-color only - box-shadow transitions cause glitches */
+    transition: border-color 200ms ease;
     box-shadow: 
       0 4px 16px rgba(79, 140, 255, 0.06),
       0 1px 3px rgba(0, 0, 0, 0.04),
@@ -951,6 +954,9 @@
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: textfield;
+    /* Disable backdrop-filter on inputs to prevent glitches */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
   @media (max-width: 768px) {
@@ -998,7 +1004,7 @@
       0 2px 6px rgba(0, 0, 0, 0.06),
       inset 0 1px 0 rgba(255, 255, 255, 0.9),
       inset 0 -1px 0 rgba(0, 0, 0, 0.02);
-    transform: translateY(-1px);
+    /* transform removed to prevent glitches */
   }
 
   /* Focus State - Glass with Blue Glow */
@@ -1014,7 +1020,7 @@
     background: linear-gradient(135deg, 
       rgba(255, 255, 255, 1) 0%, 
       rgba(252, 253, 255, 0.98) 100%);
-    transform: translateY(-1px);
+    /* transform removed to prevent glitches */
   }
 
   /* Active/Focused Label - using focus-within on parent */
@@ -1893,6 +1899,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
   margin-top: var(--wp-gap-lg);
   position: relative;
+  overflow: visible !important;
 }
 
 #workout[data-page="workout-plan"] .workout-plan.table-container::before {
@@ -2028,6 +2035,7 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  overflow: visible !important;
 }
 
 #workout[data-page="workout-plan"] .workout-plan-table thead th {
@@ -2103,13 +2111,12 @@
 #workout[data-page="workout-plan"] .workout-plan.table-container {
   width: 100%;
   min-width: 100%;
-  overflow-x: auto;
+  overflow: visible !important;
 }
 
 #workout[data-page="workout-plan"] .tbl-wrap,
 #workout[data-page="workout-plan"] .tbl-wrap--full {
-  overflow-x: auto;
-  overflow-y: visible;
+  overflow: visible !important;
   max-width: 100%;
   display: block !important;
 }
@@ -2729,23 +2736,23 @@
     font-size: 0.75rem;
   }
   
-  /* Make table container fit without scrollbar */
-  #workout[data-page="workout-plan"] .workout-plan.table-container {
+  /* Make table container fit without scrollbar (except in advanced mode) */
+  #workout[data-page="workout-plan"] .workout-plan.table-container:not(:has(.tbl--view-advanced)) {
     width: 100%;
     min-width: unset;
     overflow-x: hidden;
     padding: var(--wp-padding-sm);
   }
   
-  #workout[data-page="workout-plan"] .tbl-wrap,
-  #workout[data-page="workout-plan"] .tbl-wrap--full {
+  #workout[data-page="workout-plan"] .tbl-wrap:not(:has(.tbl--view-advanced)),
+  #workout[data-page="workout-plan"] .tbl-wrap--full:not(:has(.tbl--view-advanced)) {
     overflow-x: hidden;
     overflow-y: visible;
     max-width: 100%;
   }
   
   /* Table should fit viewport width without scrolling */
-  #workout[data-page="workout-plan"] .workout-plan-table {
+  #workout[data-page="workout-plan"] .workout-plan-table:not(.tbl--view-advanced) {
     table-layout: auto;
     width: 100%;
     max-width: 100%;
@@ -2769,14 +2776,12 @@
     padding: 3px 2px;
   }
   
-  /* Routine column */
+  /* Routine column - 3-line format */
   #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Routine"],
   #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Routine"] {
-    width: 60px;
-    min-width: 55px;
-    max-width: 70px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    width: 85px;
+    min-width: 75px;
+    max-width: 100px;
   }
   
   /* Exercise column - needs more space */
@@ -2876,19 +2881,19 @@
   /* Actions column - compact */
   #workout[data-page="workout-plan"] .workout-plan-table th[data-label="Actions"],
   #workout[data-page="workout-plan"] .workout-plan-table td[data-label="Actions"] {
-    width: 50px;
-    min-width: 45px;
-    max-width: 60px;
+    width: 36px;
+    min-width: 32px;
+    max-width: 40px;
     text-align: center;
-    padding: 3px 4px;
+    padding: 2px 1px;
   }
   
   /* Compact table buttons - icon only, minimal size */
   #workout[data-page="workout-plan"] .workout-plan-table .btn {
-    padding: 3px 5px;
-    min-height: 24px;
-    width: 26px;
-    height: 26px;
+    padding: 2px 3px;
+    min-height: 22px;
+    width: 22px;
+    height: 22px;
   }
   
   #workout[data-page="workout-plan"] .workout-plan-table .btn i {
@@ -3564,6 +3569,30 @@ tr.superset-partner-dragging {
    by allowing text wrapping and compact column widths
    ======================================================================== */
 
+/* Advanced mode: Allow horizontal scrolling since there are many columns */
+#workout[data-page="workout-plan"] .workout-plan.table-container:has(.tbl--view-advanced),
+#workout[data-page="workout-plan"] .tbl-wrap:has(.tbl--view-advanced),
+#workout[data-page="workout-plan"] .tbl-wrap--full:has(.tbl--view-advanced) {
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  max-width: none !important;
+  padding-right: 10px !important;
+}
+
+/* Advanced mode table - spread to use full width, override base .table overflow:hidden */
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: none !important;
+  table-layout: auto !important;
+  overflow: visible !important;
+}
+
+/* Ensure base table class doesn't clip content in advanced mode */
+#workout[data-page="workout-plan"] .table.tbl--view-advanced {
+  overflow: visible !important;
+}
+
 /* Advanced mode: Allow text wrapping in cells to reduce column width */
 #workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced tbody td {
   white-space: normal;
@@ -3646,40 +3675,82 @@ tr.superset-partner-dragging {
   vertical-align: bottom;
 }
 
-/* Advanced mode: Make routine column compact */
-#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Routine"],
-#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Routine"] {
-  max-width: 50px;
-  min-width: 35px;
+/* Routine cell - 3-line vertical layout (Environment, Program, Workout) */
+#workout[data-page="workout-plan"] .workout-plan-table .routine-cell {
+  min-width: 80px !important;
+  max-width: 120px !important;
+  width: auto !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  vertical-align: middle;
 }
 
-/* Advanced mode: Actions column - ensure always visible */
+#workout[data-page="workout-plan"] .workout-plan-table .routine-cell .routine-env,
+#workout[data-page="workout-plan"] .workout-plan-table .routine-cell .routine-program,
+#workout[data-page="workout-plan"] .workout-plan-table .routine-cell .routine-workout {
+  display: block;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#workout[data-page="workout-plan"] .workout-plan-table .routine-cell .routine-env {
+  font-weight: 600;
+  font-size: 0.72rem;
+  color: var(--wp-text-muted);
+}
+
+#workout[data-page="workout-plan"] .workout-plan-table .routine-cell .routine-program {
+  font-weight: 500;
+  font-size: 0.78rem;
+}
+
+#workout[data-page="workout-plan"] .workout-plan-table .routine-cell .routine-workout {
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--wp-text-muted);
+}
+
+/* Advanced mode: Routine column - 3-line format */
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Routine"],
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Routine"] {
+  min-width: 85px !important;
+  max-width: 110px !important;
+  width: 95px !important;
+}
+
+/* Advanced mode: Actions column - ensure button is visible */
 #workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Actions"],
 #workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced th[data-label="Actions"] {
-  position: sticky;
-  right: 0;
-  z-index: 2;
-  background-color: var(--wp-surface-elevated);
-  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
-  min-width: 60px;
-  white-space: nowrap;
+  min-width: 80px !important;
+  width: 80px !important;
+  white-space: nowrap !important;
+  padding: 6px 10px !important;
+  overflow: visible !important;
+  text-align: center;
 }
 
 #workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced thead th[data-label="Actions"] {
   background-color: var(--wp-surface);
-  z-index: 3;
 }
 
-/* Dark mode sticky Actions */
-[data-theme='dark'] #workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Actions"] {
-  background-color: var(--wp-surface);
-  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.3);
+/* Advanced mode: Remove button - ensure fully visible */
+#workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Actions"] .btn {
+  padding: 5px 8px !important;
+  min-height: 30px !important;
+  min-width: 36px !important;
+  width: auto !important;
+  height: auto !important;
 }
 
 /* Advanced mode: Compact remove button */
 #workout[data-page="workout-plan"] .workout-plan-table.tbl--view-advanced td[data-label="Actions"] .btn {
-  padding: 4px 6px;
-  min-height: 26px;
+  padding: 4px 6px !important;
+  min-height: 28px !important;
+  width: 30px !important;
+  height: 30px !important;
 }
 
 /* ========================================================================

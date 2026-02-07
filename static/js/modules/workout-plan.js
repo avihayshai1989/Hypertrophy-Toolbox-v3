@@ -272,6 +272,18 @@ function parseRoutine(routine) {
 }
 
 /**
+ * Formats a routine string for display in 3 lines (Environment, Program, Workout)
+ * @param {string} routine - The routine string to format
+ * @returns {string} HTML string with routine formatted on 3 lines
+ */
+function formatRoutineForDisplay(routine) {
+    if (!routine) return 'N/A';
+    const parsed = parseRoutine(routine);
+    if (!parsed.env && !parsed.program && !parsed.workout) return 'N/A';
+    return `<span class="routine-env">${parsed.env || ''}</span><span class="routine-program">${parsed.program || ''}</span><span class="routine-workout">${parsed.workout || ''}</span>`;
+}
+
+/**
  * Compares two routine strings for sorting
  * Sorts by Environment, then Program, then Workout
  * @param {string} a - First routine
@@ -1152,7 +1164,7 @@ export function updateWorkoutPlanTable(exercises) {
             <td class="drag-handle" title="Drag to reorder">
                 <i class="fas fa-grip-vertical"></i>
             </td>
-            <td class="col--high" data-label="Routine">${exercise.routine || 'N/A'}</td>
+            <td class="col--high routine-cell" data-label="Routine">${formatRoutineForDisplay(exercise.routine)}</td>
             <td class="col--high exercise-cell" data-label="Exercise">
                 <span class="exercise-name">${exercise.exercise || 'N/A'}</span>
                 ${supersetBadgeHtml}

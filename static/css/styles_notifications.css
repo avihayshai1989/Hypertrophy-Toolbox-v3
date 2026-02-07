@@ -1,12 +1,32 @@
-/* Toast Notification Styles */
+/* Toast Notification Styles - 2026 Frosted Glass Theme */
 .toast {
-    opacity: 0.95;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     font-size: 1.1rem;
-    border-radius: 12px;
-    min-width: 300px;
-    padding: 10px;
+    border-radius: 16px;
+    min-width: 320px;
+    padding: 12px 16px;
     margin: 15px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.toast::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.5) 50%, 
+        transparent 100%);
 }
 
 .toast .toast-body {
@@ -16,41 +36,251 @@
     line-height: 1.4;
 }
 
-/* Success toast with pastel green background */
+/* Success toast - Frosted Green Glass */
 .toast.bg-success {
-    background-color: #d4edda !important;
-    color: #155724 !important;
-    border: 1px solid #c3e6cb;
+    background: linear-gradient(135deg, 
+        rgba(40, 167, 69, 0.85) 0%, 
+        rgba(34, 139, 34, 0.9) 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(40, 167, 69, 0.4);
+    box-shadow: 
+        0 8px 32px rgba(40, 167, 69, 0.2),
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
-/* Alert Types with enhanced visibility */
+.toast.bg-success::before {
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(144, 238, 144, 0.5) 50%, 
+        transparent 100%);
+}
+
+/* Danger/Error toast - Frosted Red Glass */
+.toast.bg-danger {
+    background: linear-gradient(135deg, 
+        rgba(220, 53, 69, 0.85) 0%, 
+        rgba(185, 45, 58, 0.9) 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(220, 53, 69, 0.4);
+    box-shadow: 
+        0 8px 32px rgba(220, 53, 69, 0.2),
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.toast.bg-danger::before {
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 182, 193, 0.5) 50%, 
+        transparent 100%);
+}
+
+/* Warning toast - Frosted Amber Glass */
+.toast.bg-warning {
+    background: linear-gradient(135deg, 
+        rgba(255, 193, 7, 0.88) 0%, 
+        rgba(255, 160, 0, 0.92) 100%) !important;
+    color: #1a1a1a !important;
+    border: 1px solid rgba(255, 193, 7, 0.5);
+    box-shadow: 
+        0 8px 32px rgba(255, 193, 7, 0.25),
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.toast.bg-warning::before {
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 239, 186, 0.6) 50%, 
+        transparent 100%);
+}
+
+/* Info toast - Frosted Blue Glass */
+.toast.bg-info {
+    background: linear-gradient(135deg, 
+        rgba(13, 202, 240, 0.85) 0%, 
+        rgba(0, 168, 206, 0.9) 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(13, 202, 240, 0.4);
+    box-shadow: 
+        0 8px 32px rgba(13, 202, 240, 0.2),
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.toast.bg-info::before {
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(173, 216, 230, 0.5) 50%, 
+        transparent 100%);
+}
+
+/* Primary toast - Frosted Blue Glass */
+.toast.bg-primary {
+    background: linear-gradient(135deg, 
+        rgba(13, 110, 253, 0.85) 0%, 
+        rgba(10, 88, 202, 0.9) 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(13, 110, 253, 0.4);
+    box-shadow: 
+        0 8px 32px rgba(13, 110, 253, 0.2),
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.toast.bg-primary::before {
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(135, 206, 250, 0.5) 50%, 
+        transparent 100%);
+}
+
+/* Secondary toast - Frosted Gray Glass */
+.toast.bg-secondary {
+    background: linear-gradient(135deg, 
+        rgba(108, 117, 125, 0.85) 0%, 
+        rgba(90, 98, 104, 0.9) 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(108, 117, 125, 0.4);
+    box-shadow: 
+        0 8px 32px rgba(108, 117, 125, 0.2),
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.toast.bg-secondary::before {
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(200, 200, 200, 0.5) 50%, 
+        transparent 100%);
+}
+
+/* Dark theme toast adjustments */
+[data-theme='dark'] .toast {
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .toast.bg-success {
+    background: linear-gradient(135deg, 
+        rgba(40, 167, 69, 0.75) 0%, 
+        rgba(34, 139, 34, 0.85) 100%) !important;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+[data-theme='dark'] .toast.bg-danger {
+    background: linear-gradient(135deg, 
+        rgba(220, 53, 69, 0.75) 0%, 
+        rgba(185, 45, 58, 0.85) 100%) !important;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+[data-theme='dark'] .toast.bg-warning {
+    background: linear-gradient(135deg, 
+        rgba(255, 193, 7, 0.78) 0%, 
+        rgba(255, 160, 0, 0.85) 100%) !important;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+[data-theme='dark'] .toast.bg-info {
+    background: linear-gradient(135deg, 
+        rgba(13, 202, 240, 0.75) 0%, 
+        rgba(0, 168, 206, 0.85) 100%) !important;
+    border: 1px solid rgba(13, 202, 240, 0.3);
+}
+
+[data-theme='dark'] .toast.bg-primary {
+    background: linear-gradient(135deg, 
+        rgba(13, 110, 253, 0.75) 0%, 
+        rgba(10, 88, 202, 0.85) 100%) !important;
+    border: 1px solid rgba(13, 110, 253, 0.3);
+}
+
+[data-theme='dark'] .toast.bg-secondary {
+    background: linear-gradient(135deg, 
+        rgba(108, 117, 125, 0.75) 0%, 
+        rgba(90, 98, 104, 0.85) 100%) !important;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+/* Alert Types with frosted glass effect */
 .alert {
     padding: 1.2rem;
     margin-bottom: 1.2rem;
-    border: 1px solid transparent;
-    border-radius: 0.5rem;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     gap: 0.8rem;
     font-size: 1.1rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+}
+
+.alert::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.4) 50%, 
+        transparent 100%);
 }
 
 .alert-success {
-    background-color: rgba(40, 167, 69, 0.95);
-    border-color: #28a745;
+    background: linear-gradient(135deg, 
+        rgba(40, 167, 69, 0.85) 0%, 
+        rgba(34, 139, 34, 0.9) 100%);
+    border: 1px solid rgba(40, 167, 69, 0.4);
     color: white;
+    box-shadow: 
+        0 8px 32px rgba(40, 167, 69, 0.15),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .alert-danger {
-    background-color: rgba(220, 53, 69, 0.95);
-    border-color: #dc3545;
+    background: linear-gradient(135deg, 
+        rgba(220, 53, 69, 0.85) 0%, 
+        rgba(185, 45, 58, 0.9) 100%);
+    border: 1px solid rgba(220, 53, 69, 0.4);
     color: white;
+    box-shadow: 
+        0 8px 32px rgba(220, 53, 69, 0.15),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .alert-warning {
-    background-color: rgba(255, 193, 7, 0.95);
-    border-color: #ffc107;
-    color: #000;
+    background: linear-gradient(135deg, 
+        rgba(255, 193, 7, 0.88) 0%, 
+        rgba(255, 160, 0, 0.92) 100%);
+    border: 1px solid rgba(255, 193, 7, 0.5);
+    color: #1a1a1a;
+    box-shadow: 
+        0 8px 32px rgba(255, 193, 7, 0.2),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.alert-info {
+    background: linear-gradient(135deg, 
+        rgba(13, 202, 240, 0.85) 0%, 
+        rgba(0, 168, 206, 0.9) 100%);
+    border: 1px solid rgba(13, 202, 240, 0.4);
+    color: white;
+    box-shadow: 
+        0 8px 32px rgba(13, 202, 240, 0.15),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* Enhanced Alert Animation */
@@ -78,15 +308,24 @@
     z-index: 1050;
 }
 
-/* Close button styling */
+/* Close button styling - frosted glass look */
 .toast .btn-close {
     padding: 12px;
-    opacity: 0.8;
-    transition: opacity 0.2s;
+    opacity: 0.85;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
 .toast .btn-close:hover {
     opacity: 1;
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+}
+
+/* Warning toast close button needs dark filter */
+.toast.bg-warning .btn-close {
+    filter: invert(0) !important;
 }
 
 /* Add fade out animation */
@@ -96,7 +335,7 @@
 
 @keyframes fadeOut {
     from {
-        opacity: 0.95;
+        opacity: 1;
         transform: translateX(0);
     }
     to {

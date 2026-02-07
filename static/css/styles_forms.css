@@ -614,16 +614,17 @@ input.form-control#sets:focus {
    VALUE CHANGED ANIMATION & HIGHLIGHT
    ================================================ */
 
-/* Keyframe for pulse animation */
+/* Keyframe for pulse animation - using opacity instead of transform scale
+   to prevent layout shifts that cause backdrop-filter glitches */
 @keyframes inputValuePulse {
     0% {
-        transform: scale(1);
+        opacity: 1;
     }
     50% {
-        transform: scale(1.03);
+        opacity: 0.85;
     }
     100% {
-        transform: scale(1);
+        opacity: 1;
     }
 }
 

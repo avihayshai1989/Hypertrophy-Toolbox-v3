@@ -59,18 +59,22 @@
     height: 3rem;
 }
 
-/* Toast Enhancements for Different Types */
+/* Toast Enhancements for Different Types - Frosted Glass */
 #liveToast.bg-warning {
-    background-color: #ffc107 !important;
-    color: #000 !important;
+    background: linear-gradient(135deg, 
+        rgba(255, 193, 7, 0.88) 0%, 
+        rgba(255, 160, 0, 0.92) 100%) !important;
+    color: #1a1a1a !important;
 }
 
 #liveToast.bg-warning .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
+    filter: invert(0) !important;
 }
 
 #liveToast.bg-info {
-    background-color: #0dcaf0 !important;
+    background: linear-gradient(135deg, 
+        rgba(13, 202, 240, 0.85) 0%, 
+        rgba(0, 168, 206, 0.9) 100%) !important;
 }
 
 /* Error Container Styles */

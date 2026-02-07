@@ -175,6 +175,13 @@
     color: #007bff;
 }
 
+/* Isolate input-fields-group to prevent animation repaints from
+   affecting nearby backdrop-filter elements (frame-title glitch fix) */
+.input-fields-group {
+    contain: layout style;
+    isolation: isolate;
+}
+
 /* Collapsible Frame Styles - Glass/Frosted Effect */
 .collapsible-frame {
     position: relative;
@@ -208,9 +215,7 @@
 /* Frame Header - Glass Style */
 .frame-header {
     position: relative;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.85);
     padding: 0.75rem 1rem;
     display: flex;
     justify-content: space-between;
@@ -219,6 +224,9 @@
     z-index: 10;
     box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.3);
     border-radius: 16px 16px 0 0;
+    /* GPU layer promotion to prevent backdrop-filter sibling glitches */
+    transform: translateZ(0);
+    will-change: contents;
 }
 
 .frame-header::before {
@@ -262,13 +270,6 @@
         #4f8cff 0%, 
         rgba(79, 140, 255, 0.5) 100%);
     border-radius: 2px;
-    box-shadow: 0 1px 4px rgba(79, 140, 255, 0.25);
-    transition: width 0.2s ease;
-}
-
-.frame-header:hover .frame-title::after,
-.frame-header:hover .filters-title::after {
-    width: 60px;
 }
 
 /* Dark mode - Collapsible Frame */
@@ -426,6 +427,13 @@
 /* Collapsed state adjustments */
 .collapsible-frame.collapsed .frame-header {
     justify-content: flex-start;
+}
+
+/* Preserve grid layout for 2025 headers when collapsed - keeps button on right */
+.collapsible-frame.collapsed .frame-header.frame-header-2025 {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    justify-content: initial;
 }
 
 .collapsible-frame.collapsed .frame-title,
