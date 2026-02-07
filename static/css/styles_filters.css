@@ -689,4 +689,140 @@ select.filter-dropdown:focus {
     border-color: #daa520 !important;      /* Goldenrod border */
     box-shadow: 0 0 0 0.2rem rgba(218, 165, 32, 0.35) !important;
     color: #ffe082 !important;
+}
+
+/* ========================================================================
+   Filter View Mode Toggle (Simple/Advanced)
+   ======================================================================== */
+.filter-view-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-right: 0.75rem;
+}
+
+.filter-view-toggle {
+    display: flex;
+    border-radius: 20px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(200, 220, 240, 0.5);
+    box-shadow: 
+        0 1px 4px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    padding: 3px;
+}
+
+.filter-view-toggle .btn {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 16px !important;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: none !important;
+    margin: 0;
+}
+
+.filter-view-toggle .btn:first-child {
+    border-radius: 16px !important;
+}
+
+.filter-view-toggle .btn:last-child {
+    border-radius: 16px !important;
+}
+
+.filter-view-toggle .btn i {
+    font-size: 0.7rem;
+}
+
+.filter-view-toggle .toggle-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+/* Active state - clear pill highlight */
+.filter-view-toggle .btn.btn-primary {
+    background: linear-gradient(135deg, #2196f3 0%, #1e88e5 100%);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(33, 150, 243, 0.35);
+}
+
+/* Inactive state - subtle transparent */
+.filter-view-toggle .btn.btn-outline-secondary {
+    background: transparent;
+    color: #5a6978;
+}
+
+.filter-view-toggle .btn.btn-outline-secondary:hover {
+    background: rgba(33, 150, 243, 0.1);
+    color: #1976d2;
+}
+
+/* Filter header with toggle integration */
+.frame-header-2025 .frame-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.frame-header-2025 .frame-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Dark mode toggle styles */
+[data-theme='dark'] .filter-view-toggle {
+    background: rgba(40, 50, 60, 0.6);
+    border-color: rgba(80, 100, 120, 0.4);
+    box-shadow: 
+        0 1px 4px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] .filter-view-toggle .btn.btn-primary {
+    background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(25, 118, 210, 0.4);
+}
+
+[data-theme='dark'] .filter-view-toggle .btn.btn-outline-secondary {
+    background: transparent;
+    color: #a0aab5;
+}
+
+[data-theme='dark'] .filter-view-toggle .btn.btn-outline-secondary:hover {
+    background: rgba(33, 150, 243, 0.15);
+    color: #64b5f6;
+}
+
+/* Responsive - hide label on small screens */
+@media (max-width: 576px) {
+    .filter-view-toggle .toggle-label {
+        display: none;
+    }
+    
+    .filter-view-toggle .btn {
+        padding: 0.35rem 0.5rem;
+    }
+}
+
+/* Page header context (Weekly/Session Summary) */
+.page-header .filter-view-toggle-wrapper {
+    margin-right: 0;
+}
+
+.page-header .filter-view-toggle {
+    background: rgba(255, 255, 255, 0.7);
+    border-color: rgba(180, 200, 220, 0.4);
+}
+
+[data-theme='dark'] .page-header .filter-view-toggle {
+    background: rgba(45, 55, 70, 0.7);
+    border-color: rgba(90, 110, 130, 0.4);
 } 

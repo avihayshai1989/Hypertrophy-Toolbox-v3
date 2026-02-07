@@ -306,11 +306,13 @@ async function updateSessionSummary() {
                 const warningLevel = row.warning_level || 'ok';
                 const volume = getVolumeDetails(effectiveSets);
                 const warning = getSessionWarningBadge(warningLevel, effectivePerSession);
+                // Transform muscle group name based on view mode
+                const muscleDisplay = window.FilterViewMode?.transformMuscleDisplay(row.muscle_group) || row.muscle_group || "N/A";
                 
                 return `
                     <tr class="${row.is_excessive ? 'table-danger' : row.is_borderline ? 'table-warning' : ''}">
                         <td data-label="Routine">${row.routine || "N/A"}</td>
-                        <td data-label="Muscle Group">${row.muscle_group || "N/A"}</td>
+                        <td data-label="Muscle Group" data-raw-value="${row.muscle_group || ''}">${muscleDisplay}</td>
                         <td data-label="Effective Sets" class="is-num">${effectiveSets.toFixed(1)}</td>
                         <td data-label="Raw Sets" class="is-num">${rawSets.toFixed(1)}</td>
                         <td data-label="Total Volume" class="is-num">${(row.total_volume || 0).toFixed(0)}</td>
@@ -377,6 +379,34 @@ async function updateSessionSummary() {
 }
 
 // Initialize table when the page loads
-document.addEventListener("DOMContentLoaded", updateSessionSummary);
+document.addEventListener("DOMContentLoaded", function() {
+    // Listen for view mode changes (toggle is in navbar)
+    if (window.FilterViewMode) {
+        document.addEventListener('filterViewModeChanged', function() {
+            // Re-render tables with updated muscle names
+            updateSessionSummary();
+            // Also update the server-rendered isolated muscles table
+            updateIsolatedMuscleDisplays();
+        });
+    }
+    
+    updateSessionSummary();
+});
+
+/**
+ * Update isolated muscle displays in server-rendered table based on view mode
+ */
+function updateIsolatedMuscleDisplays() {
+    const isolatedCells = document.querySelectorAll('td[data-label="Isolated Muscle"]');
+    isolatedCells.forEach(cell => {
+        const rawValue = cell.getAttribute('data-raw-value') || cell.textContent.trim();
+        if (!cell.getAttribute('data-raw-value')) {
+            cell.setAttribute('data-raw-value', rawValue);
+        }
+        if (window.FilterViewMode) {
+            cell.textContent = window.FilterViewMode.transformIsolatedMuscleDisplay(rawValue);
+        }
+    });
+}
 </script>
 {% endblock %}

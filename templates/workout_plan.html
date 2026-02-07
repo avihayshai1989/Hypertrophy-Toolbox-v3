@@ -513,16 +513,86 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<script src="{{ url_for('static', filename='js/modules/filter-view-mode.js') }}"></script>
 <script src="{{ url_for('static', filename='js/modules/muscle-selector.js') }}"></script>
 
 <script>
 // Muscle Selector Instance (global for access from app.js)
 window.muscleSelector = null;
 
+/**
+ * Update muscle-related filter dropdowns based on view mode
+ * @param {'simple' | 'advanced'} mode - The current view mode
+ */
+function updateMuscleFilterDropdowns(mode) {
+    if (!window.FilterViewMode) {
+        console.warn('FilterViewMode not loaded yet');
+        return;
+    }
+    
+    const muscleFilterIds = [
+        'primary_muscle_group',
+        'secondary_muscle_group', 
+        'tertiary_muscle_group',
+        'advanced_isolated_muscles'
+    ];
+    
+    muscleFilterIds.forEach(filterId => {
+        const select = document.getElementById(filterId);
+        if (!select) return;
+        
+        // Store current selection
+        const currentValue = select.value;
+        
+        // Determine muscle type from filter id
+        let muscleType = 'primary';
+        if (filterId.includes('secondary')) muscleType = 'secondary';
+        else if (filterId.includes('tertiary')) muscleType = 'tertiary';
+        else if (filterId.includes('isolated')) muscleType = 'isolated';
+        
+        // Get new options from FilterViewMode
+        const options = window.FilterViewMode.getMuscleFilterOptions(muscleType, mode);
+        
+        // Clear existing options (except "All")
+        while (select.options.length > 1) {
+            select.remove(1);
+        }
+        
+        // Add new options
+        options.forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt.value;
+            option.textContent = opt.label;
+            select.appendChild(option);
+        });
+        
+        // Try to restore selection if it exists in new options
+        const optionExists = Array.from(select.options).some(opt => opt.value === currentValue);
+        if (optionExists) {
+            select.value = currentValue;
+        } else {
+            select.value = '';  // Reset to "All"
+        }
+    });
+    
+    // Dispatch event so other components can react (e.g., table display)
+    document.dispatchEvent(new CustomEvent('muscleFilterOptionsUpdated', { detail: { mode } }));
+}
+
 // Plan Generator Preview Update
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Muscle Selector
     window.muscleSelector = new MuscleSelector('muscle-selector-container');
+    
+    // Listen for view mode changes and update filters
+    if (window.FilterViewMode) {
+        document.addEventListener('filterViewModeChanged', function(e) {
+            updateMuscleFilterDropdowns(e.detail.mode);
+        });
+        
+        // Apply initial mode to filter dropdowns
+        updateMuscleFilterDropdowns(window.FilterViewMode.getViewMode());
+    }
     
     // Volume scale display update with temperature colors
     const volumeScale = document.getElementById('gen-volume-scale');

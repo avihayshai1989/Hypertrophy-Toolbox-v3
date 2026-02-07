@@ -545,6 +545,102 @@
   }
   
   /* ========================================================================
+     Muscle Naming Mode Toggle (Simple/Scientific)
+     ======================================================================== */
+  #navbar #muscleModeToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    min-height: 40px;
+    min-width: 40px;
+    border-radius: 999px !important;
+    background-color: var(--nav-surface);
+    border: 2px solid var(--nav-accent);
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+    color: var(--nav-text);
+    font-size: var(--nav-fs);
+    font-weight: var(--nav-fw-medium);
+    cursor: pointer;
+    transition: background-color var(--nav-transition-fast), border-color var(--nav-transition-fast),
+                transform var(--nav-transition-fast), box-shadow var(--nav-transition-fast);
+    position: relative;
+    margin-inline-start: var(--nav-gap);
+  }
+  
+  /* Active indicator */
+  #navbar #muscleModeToggle::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: #10b981; /* Green for Simple mode */
+    transform: scaleX(1);
+    transition: transform var(--nav-transition), background-color var(--nav-transition);
+    border-radius: var(--nav-radius-sm) var(--nav-radius-sm) 0 0;
+  }
+  
+  /* Scientific mode indicator color */
+  #navbar #muscleModeToggle.scientific-mode::before {
+    background-color: #8b5cf6; /* Purple for Scientific mode */
+  }
+  
+  /* Hover state */
+  #navbar #muscleModeToggle:hover {
+    background-color: var(--nav-surface);
+    border-color: var(--nav-accent);
+  }
+  
+  #navbar #muscleModeToggle:active {
+    transform: scale(0.98);
+  }
+  
+  /* Focus state */
+  #navbar #muscleModeToggle:focus-visible {
+    outline: 2px solid var(--nav-accent);
+    outline-offset: 2px;
+    background-color: var(--nav-surface);
+  }
+  
+  /* Icon styling - Simple mode (user icon) */
+  #navbar #muscleModeToggle .muscle-mode-icon {
+    color: #10b981; /* Green */
+    font-size: 1.1em;
+    transition: color var(--nav-transition-fast);
+  }
+  
+  /* Icon styling - Scientific mode (microscope icon) */
+  #navbar #muscleModeToggle .muscle-mode-icon.fa-microscope {
+    color: #8b5cf6; /* Purple */
+  }
+  
+  /* Label styling */
+  #navbar #muscleModeToggle .muscle-mode-label {
+    color: inherit;
+    margin: 0;
+    font-weight: 500;
+  }
+  
+  /* Dark mode adjustments */
+  [data-theme='dark'] #navbar #muscleModeToggle .muscle-mode-icon {
+    color: #34d399; /* Lighter green in dark mode */
+  }
+  
+  [data-theme='dark'] #navbar #muscleModeToggle .muscle-mode-icon.fa-microscope {
+    color: #a78bfa; /* Lighter purple in dark mode */
+  }
+  
+  /* Compact mode adjustments */
+  #navbar.nb-compact #muscleModeToggle {
+    padding: 8px 12px;
+    min-height: 36px;
+    min-width: 36px;
+  }
+  
+  /* ========================================================================
      Mobile Menu Toggle Button
      ======================================================================== */
   #navbar .navbar-toggler,

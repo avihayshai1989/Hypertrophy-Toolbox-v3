@@ -420,9 +420,11 @@ async function updateWeeklySummary() {
                 const rawSets = row.raw_sets || row.total_sets;
                 const frequency = row.frequency || 0;
                 const volume = getVolumeDetails(effectiveSets);
+                // Transform muscle group name based on view mode
+                const muscleDisplay = window.FilterViewMode?.transformMuscleDisplay(row.muscle_group) || row.muscle_group || "N/A";
                 return `
                     <tr>
-                        <td data-label="Muscle Group">${row.muscle_group || "N/A"}</td>
+                        <td data-label="Muscle Group" data-raw-value="${row.muscle_group || ''}">${muscleDisplay}</td>
                         <td data-label="Effective Sets" class="is-num">${effectiveSets.toFixed(1)}</td>
                         <td data-label="Raw Sets" class="is-num">${rawSets.toFixed(1)}</td>
                         <td data-label="Frequency" class="is-num">${frequency}</td>
@@ -484,9 +486,35 @@ async function updateWeeklySummary() {
 
 // Initialize table when the page loads
 document.addEventListener("DOMContentLoaded", function() {
+    // Listen for view mode changes (toggle is in navbar)
+    if (window.FilterViewMode) {
+        document.addEventListener('filterViewModeChanged', function() {
+            // Re-render tables with updated muscle names
+            updateWeeklySummary();
+            // Also update the server-rendered isolated muscles table
+            updateIsolatedMuscleDisplays();
+        });
+    }
+    
     updateWeeklySummary();
     updatePatternCoverage();
 });
+
+/**
+ * Update isolated muscle displays in server-rendered table based on view mode
+ */
+function updateIsolatedMuscleDisplays() {
+    const isolatedCells = document.querySelectorAll('td[data-label="Isolated Muscle"]');
+    isolatedCells.forEach(cell => {
+        const rawValue = cell.getAttribute('data-raw-value') || cell.textContent.trim();
+        if (!cell.getAttribute('data-raw-value')) {
+            cell.setAttribute('data-raw-value', rawValue);
+        }
+        if (window.FilterViewMode) {
+            cell.textContent = window.FilterViewMode.transformIsolatedMuscleDisplay(rawValue);
+        }
+    });
+}
 
 function get_category_tooltip(category) {
     const tooltips = {

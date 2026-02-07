@@ -2,6 +2,26 @@ import { showToast } from './toast.js';
 import { api } from './fetch-wrapper.js';
 
 /**
+ * Transform muscle display value based on current view mode (Simple/Advanced)
+ * @param {string} value - Raw muscle value from database
+ * @param {'primary'|'isolated'} type - Type of muscle field
+ * @returns {string} - Display value appropriate for current mode
+ */
+function transformMuscleDisplay(value, type = 'primary') {
+    if (!value || value === 'N/A') return value || 'N/A';
+    
+    // Check if FilterViewMode is available
+    if (typeof window.FilterViewMode === 'undefined') {
+        return value;
+    }
+    
+    if (type === 'isolated') {
+        return window.FilterViewMode.transformIsolatedMuscleDisplay(value);
+    }
+    return window.FilterViewMode.transformMuscleDisplay(value);
+}
+
+/**
  * Helper function to handle standardized API responses
  * @param {Response} response - Fetch response object
  * @returns {Promise<Object>} Extracted data or throws error
@@ -523,10 +543,10 @@ export function reloadWorkoutPlan(data) {
             <td>${item.id}</td>
             <td>${item.routine || "N/A"}</td>
             <td>${item.exercise || "N/A"}</td>
-            <td>${item.primary_muscle_group || "N/A"}</td>
-            <td>${item.secondary_muscle_group || "N/A"}</td>
-            <td>${item.tertiary_muscle_group || "N/A"}</td>
-            <td>${item.advanced_isolated_muscles || "N/A"}</td>
+            <td>${transformMuscleDisplay(item.primary_muscle_group)}</td>
+            <td>${transformMuscleDisplay(item.secondary_muscle_group)}</td>
+            <td>${transformMuscleDisplay(item.tertiary_muscle_group)}</td>
+            <td>${transformMuscleDisplay(item.advanced_isolated_muscles, 'isolated')}</td>
             <td>${item.utility || "N/A"}</td>
             <td>${item.sets || "N/A"}</td>
             <td>${item.min_rep_range || "N/A"}</td>
@@ -561,11 +581,11 @@ export async function updateExerciseDetails(exercise) {
                 <h5>Exercise Details</h5>
                 <div class="detail-row">
                     <span class="detail-label">Primary Muscle:</span>
-                    <span class="detail-value">${info.primary_muscle_group || 'N/A'}</span>
+                    <span class="detail-value">${transformMuscleDisplay(info.primary_muscle_group)}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Secondary Muscle:</span>
-                    <span class="detail-value">${info.secondary_muscle_group || 'N/A'}</span>
+                    <span class="detail-value">${transformMuscleDisplay(info.secondary_muscle_group)}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Equipment:</span>
@@ -1068,9 +1088,40 @@ export function initializeWorkoutPlanHandlers() {
     
     // Initialize routine tabs - "All" tab click handler
     initializeRoutineTabs();
+    
+    // Listen for view mode changes to update muscle display
+    document.addEventListener('filterViewModeChanged', handleViewModeChange);
 
     // Initial fetch of workout plan
     fetchWorkoutPlan();
+}
+
+/**
+ * Handle view mode change (Simple/Advanced)
+ * Updates displayed muscle values in the table without re-fetching data
+ */
+function handleViewModeChange(e) {
+    const mode = e.detail?.mode;
+    if (!mode) return;
+    
+    // Update muscle column displays using cached workout data
+    updateMuscleDisplaysInTable();
+}
+
+/**
+ * Update muscle display values in table based on current view mode
+ * Uses data-raw-value attributes to re-transform values
+ */
+function updateMuscleDisplaysInTable() {
+    const tbody = document.querySelector('#workout_plan_table_body');
+    if (!tbody) return;
+    
+    // Update cells that have data-raw-value attribute
+    tbody.querySelectorAll('[data-raw-value]').forEach(cell => {
+        const rawValue = cell.getAttribute('data-raw-value');
+        const isIsolated = cell.getAttribute('data-label') === 'Isolated Muscles';
+        cell.textContent = transformMuscleDisplay(rawValue, isIsolated ? 'isolated' : 'primary');
+    });
 }
 
 /**
@@ -1187,10 +1238,10 @@ export function updateWorkoutPlanTable(exercises) {
                     <i class="fas fa-sync-alt"></i>
                 </button>
             </td>
-            <td class="col--med" data-label="Primary Muscle">${exercise.primary_muscle_group || 'N/A'}</td>
-            <td class="col--low" data-label="Secondary Muscle">${exercise.secondary_muscle_group || 'N/A'}</td>
-            <td class="col--low" data-label="Tertiary Muscle">${exercise.tertiary_muscle_group || 'N/A'}</td>
-            <td class="col--low" data-label="Isolated Muscles">${exercise.advanced_isolated_muscles || 'N/A'}</td>
+            <td class="col--med" data-label="Primary Muscle" data-raw-value="${exercise.primary_muscle_group || ''}">${transformMuscleDisplay(exercise.primary_muscle_group)}</td>
+            <td class="col--low" data-label="Secondary Muscle" data-raw-value="${exercise.secondary_muscle_group || ''}">${transformMuscleDisplay(exercise.secondary_muscle_group)}</td>
+            <td class="col--low" data-label="Tertiary Muscle" data-raw-value="${exercise.tertiary_muscle_group || ''}">${transformMuscleDisplay(exercise.tertiary_muscle_group)}</td>
+            <td class="col--low" data-label="Isolated Muscles" data-raw-value="${exercise.advanced_isolated_muscles || ''}">${transformMuscleDisplay(exercise.advanced_isolated_muscles, 'isolated')}</td>
             <td class="col--low" data-label="Utility">${exercise.utility || 'N/A'}</td>
             <td class="col--low" data-label="Movement Pattern">${exercise.movement_pattern || 'N/A'}</td>
             <td class="col--low" data-label="Movement Subpattern">${exercise.movement_subpattern || 'N/A'}</td>

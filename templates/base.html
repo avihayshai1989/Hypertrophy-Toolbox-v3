@@ -186,6 +186,14 @@
                         </div>
                     </li>
                     <li class="nav-item nav-divider" aria-hidden="true"></li>
+                    <!-- Muscle Naming Mode Toggle (Simple/Scientific) -->
+                    <li class="nav-item">
+                        <button id="muscleModeToggle" class="nav-link muscle-mode-toggle" type="button" aria-label="Toggle Muscle Naming Mode" title="Toggle between simple and scientific muscle names">
+                            <i class="fas fa-user muscle-mode-icon" aria-hidden="true"></i>
+                            <span class="d-none d-lg-inline ms-1 muscle-mode-label">Simple</span>
+                        </button>
+                    </li>
+                    <li class="nav-item nav-divider" aria-hidden="true"></li>
                     <li class="nav-item">
                         <button id="darkModeToggle" data-testid="dark-mode-toggle" class="nav-link" type="button" aria-label="Toggle Dark Mode">
                             <i class="fas fa-moon text-primary" aria-hidden="true"></i>
@@ -278,6 +286,8 @@
     <script src="{{ url_for('static', filename='js/darkMode.js') }}"></script>
     <script src="{{ url_for('static', filename='js/accessibility.js') }}"></script>
     <script src="{{ url_for('static', filename='js/table-responsiveness.js') }}?v={{ range(1, 1000000) | random }}"></script>
+    <!-- Filter View Mode (Simple/Advanced muscle naming) -->
+    <script src="{{ url_for('static', filename='js/modules/filter-view-mode.js') }}?v={{ range(1, 1000000) | random }}"></script>
     
     <!-- Page-Specific JS (Override in child templates) -->
     {% block page_js %}{% endblock %}
