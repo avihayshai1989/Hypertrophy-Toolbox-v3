@@ -1311,27 +1311,10 @@
     }
 }
 
+/* Collapse toggle tooltips - disabled, using native title attribute instead */
 .collapse-toggle[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.9);
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 1000;
-    opacity: 0;
-    animation: tooltipFadeIn 200ms ease-in-out forwards;
-}
-
-[data-theme='dark'] .collapse-toggle[title]:hover::after {
-    background-color: rgba(255, 255, 255, 0.95);
-    color: #000;
+    display: none !important;
+    content: none !important;
 }
 
 @keyframes tooltipFadeIn {
