@@ -1022,12 +1022,13 @@ def replace_exercise():
             
             # c) Build candidate pool from exercises table
             # Match same primary muscle group and equipment (case-insensitive)
+            # Also exclude current exercise with case-insensitive comparison
             candidates_query = """
                 SELECT exercise_name
                 FROM exercises
                 WHERE LOWER(primary_muscle_group) = LOWER(?)
                   AND LOWER(equipment) = LOWER(?)
-                  AND exercise_name != ?
+                  AND LOWER(exercise_name) != LOWER(?)
             """
             candidate_rows = db.fetch_all(candidates_query, (muscle, equipment, current_exercise))
             candidate_names = [row['exercise_name'] for row in candidate_rows]
@@ -1037,23 +1038,11 @@ def replace_exercise():
                 SELECT exercise FROM user_selection WHERE routine = ?
             """
             routine_exercises = db.fetch_all(routine_exercises_query, (routine,))
-            routine_exercise_names = {row['exercise'] for row in routine_exercises}
+            # Use case-insensitive comparison for routine exercises
+            routine_exercise_names_lower = {row['exercise'].lower() for row in routine_exercises}
             
-            # Filter out exercises already in the routine
-            valid_candidates = [c for c in candidate_names if c not in routine_exercise_names]
-            
-            logger.debug(
-                "Replacement candidates",
-                extra={
-                    'exercise_id': exercise_id,
-                    'current_exercise': current_exercise,
-                    'routine': routine,
-                    'muscle': muscle,
-                    'equipment': equipment,
-                    'total_candidates': len(candidate_names),
-                    'valid_candidates': len(valid_candidates)
-                }
-            )
+            # Filter out exercises already in the routine (case-insensitive)
+            valid_candidates = [c for c in candidate_names if c.lower() not in routine_exercise_names_lower]
             
             # e) If no valid candidates, return failure
             if not valid_candidates:
@@ -1085,19 +1074,30 @@ def replace_exercise():
                     }
                 }), 200
             
-            # g) Double-check duplicate constraint before updating
+            # g) Double-check duplicate constraint before updating (case-insensitive)
             duplicate_check = db.fetch_one(
-                "SELECT id FROM user_selection WHERE routine = ? AND exercise = ?",
+                "SELECT id FROM user_selection WHERE routine = ? AND LOWER(exercise) = LOWER(?)",
                 (routine, new_exercise)
             )
             
             if duplicate_check:
-                # Try to find another candidate
-                remaining_candidates = [c for c in valid_candidates if c != new_exercise]
+                # Try to find another candidate (case-insensitive comparison)
+                remaining_candidates = [c for c in valid_candidates if c.lower() != new_exercise.lower()]
                 if remaining_candidates:
                     new_exercise = suggest_replacement_exercise(
                         current_exercise, muscle, equipment, remaining_candidates, "fallback"
                     )
+                    if not new_exercise:
+                        return jsonify({
+                            "ok": False,
+                            "status": "error",
+                            "message": "Failed to select replacement exercise",
+                            "error": {
+                                "code": "SELECTION_FAILED",
+                                "reason": "selection_failed",
+                                "message": "Failed to select replacement exercise"
+                            }
+                        }), 200
                 else:
                     return jsonify({
                         "ok": False,
@@ -1154,11 +1154,15 @@ def replace_exercise():
                 }
             )
             
+            # Calculate remaining options (excluding the one we just picked)
+            remaining_options = len([c for c in valid_candidates if c.lower() != new_exercise.lower()])
+            
             return jsonify(success_response(
                 data={
                     "updated_row": updated_row,
                     "old_exercise": current_exercise,
-                    "new_exercise": new_exercise
+                    "new_exercise": new_exercise,
+                    "remaining_options": remaining_options
                 },
                 message=f"Replaced {current_exercise} with {new_exercise}"
             ))

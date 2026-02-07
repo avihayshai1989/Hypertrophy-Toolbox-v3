@@ -284,6 +284,18 @@ function formatRoutineForDisplay(routine) {
 }
 
 /**
+ * Formats a routine string for display in tab labels (3 lines)
+ * @param {string} routine - The routine string to format
+ * @returns {string} HTML string with routine formatted on 3 lines for tabs
+ */
+function formatRoutineForTab(routine) {
+    if (!routine) return 'N/A';
+    const parsed = parseRoutine(routine);
+    if (!parsed.env && !parsed.program && !parsed.workout) return routine;
+    return `<span class="tab-env">${parsed.env || ''}</span><span class="tab-program">${parsed.program || ''}</span><span class="tab-workout">${parsed.workout || ''}</span>`;
+}
+
+/**
  * Compares two routine strings for sorting
  * Sorts by Environment, then Program, then Workout
  * @param {string} a - First routine
@@ -394,7 +406,7 @@ function updateRoutineTabs(exercises) {
         }
         
         tabBtn.innerHTML = `
-            <span class="tab-label">${routine}</span>
+            <span class="tab-label">${formatRoutineForTab(routine)}</span>
             <span class="tab-count">${routineCounts[routine]}</span>
         `;
         
@@ -1464,8 +1476,10 @@ async function handleSwapExercise(exerciseId, currentExerciseName) {
             // Update the cached data
             updateCachedExercise(exerciseId, updatedRow);
             
-            // Show success toast
-            showToast('success', `Replaced "${oldExercise}" → "${newExercise}"`);
+            // Show success toast with remaining options count
+            const remaining = responseData.remaining_options ?? 0;
+            const optionsText = remaining === 1 ? '1 option left' : `${remaining} options left`;
+            showToast('success', `Replaced "${oldExercise}" → "${newExercise}" (${optionsText})`);
             
             // Brief highlight effect on the row
             row.classList.add('row-swapped');
@@ -1556,11 +1570,17 @@ function updateCachedExercise(exerciseId, updatedData) {
 
 
 function makeTableCellEditable(cell, exerciseId, fieldName) {
-    const originalValue = cell.textContent;
+    // Prevent creating multiple inputs if already editing
+    if (cell.querySelector('input')) {
+        return;
+    }
+    
+    const originalValue = cell.textContent.trim();
     const input = document.createElement('input');
     input.type = 'number';
-    input.value = originalValue;
+    input.value = originalValue === 'N/A' ? '' : originalValue;
     input.className = 'form-control form-control-sm';
+    input.dataset.originalValue = originalValue;
     
     // Add validation rules based on field type
     switch(fieldName) {
@@ -1591,10 +1611,18 @@ function makeTableCellEditable(cell, exerciseId, fieldName) {
     cell.textContent = '';
     cell.appendChild(input);
     input.focus();
+    input.select();
 
-    input.addEventListener('blur', async () => {
-        const newValue = input.value;
-        if (newValue !== originalValue) {
+    const finishEditing = async (save = true) => {
+        const storedOriginal = input.dataset.originalValue;
+        const newValue = input.value.trim();
+        
+        // Remove input and restore cell
+        if (input.parentNode === cell) {
+            cell.removeChild(input);
+        }
+        
+        if (save && newValue && newValue !== storedOriginal) {
             try {
                 const response = await updateExerciseField(exerciseId, fieldName, newValue);
                 if (response.ok) {
@@ -1605,17 +1633,36 @@ function makeTableCellEditable(cell, exerciseId, fieldName) {
                 }
             } catch (error) {
                 console.error('Error updating exercise:', error);
-                cell.textContent = originalValue;
+                cell.textContent = storedOriginal;
                 showToast('Failed to update exercise', true);
             }
         } else {
-            cell.textContent = originalValue;
+            cell.textContent = newValue || storedOriginal;
         }
-    });
+    };
 
-    input.addEventListener('keypress', (e) => {
+    // Use mousedown to detect clicks outside the input
+    const handleClickOutside = (e) => {
+        if (!cell.contains(e.target)) {
+            document.removeEventListener('mousedown', handleClickOutside);
+            finishEditing(true);
+        }
+    };
+    
+    // Delay adding the outside click handler to prevent immediate trigger
+    setTimeout(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+    }, 10);
+
+    input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            input.blur();
+            e.preventDefault();
+            document.removeEventListener('mousedown', handleClickOutside);
+            finishEditing(true);
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            document.removeEventListener('mousedown', handleClickOutside);
+            finishEditing(false);
         }
     });
 }

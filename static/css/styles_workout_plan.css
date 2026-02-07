@@ -3754,21 +3754,64 @@ tr.superset-partner-dragging {
 }
 
 /* ========================================================================
-   ROUTINE TABS - Prevent title cutoff, use smaller text instead
+   ROUTINE TABS - 3-line format (Environment, Program, Workout)
    ======================================================================== */
 
-/* Override tab label max-width - allow full text with smaller font */
+/* Tab label container - 3 line vertical layout */
 #workout[data-page="workout-plan"] .routine-tab-btn .tab-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
   max-width: none;
   overflow: visible;
   text-overflow: clip;
-  font-size: 0.78rem;
+  text-align: left;
+}
+
+/* Tab environment line */
+#workout[data-page="workout-plan"] .routine-tab-btn .tab-label .tab-env {
+  display: block;
+  font-weight: 600;
+  font-size: 0.68rem;
+  color: var(--wp-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Tab program line */
+#workout[data-page="workout-plan"] .routine-tab-btn .tab-label .tab-program {
+  display: block;
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+/* Tab workout line */
+#workout[data-page="workout-plan"] .routine-tab-btn .tab-label .tab-workout {
+  display: block;
+  font-weight: 400;
+  font-size: 0.68rem;
+  color: var(--wp-text-muted);
+}
+
+/* Active tab - override child text colors to white for visibility */
+#workout[data-page="workout-plan"] .routine-tab-btn.active .tab-label .tab-env,
+#workout[data-page="workout-plan"] .routine-tab-btn.active .tab-label .tab-workout {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+#workout[data-page="workout-plan"] .routine-tab-btn.active .tab-label .tab-program {
+  color: #ffffff;
 }
 
 /* Compact tab button padding for more tabs */
 #workout[data-page="workout-plan"] .routine-tab-btn {
-  padding: 6px 10px;
+  padding: 6px 12px;
   font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Smaller tab count badge */
@@ -3777,18 +3820,7 @@ tr.superset-partner-dragging {
   height: 18px;
   padding: 0 4px;
   font-size: 0.7rem;
-}
-
-/* For very long routine names, allow wrapping on 2 lines max */
-#workout[data-page="workout-plan"] .routine-tab-btn .tab-label {
-  white-space: normal;
-  line-height: 1.2;
-  max-width: 140px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-align: left;
+  align-self: center;
 }
 
 /* At smaller viewport, further reduce tab sizes */
@@ -3798,9 +3830,13 @@ tr.superset-partner-dragging {
     font-size: 0.72rem;
   }
   
-  #workout[data-page="workout-plan"] .routine-tab-btn .tab-label {
-    max-width: 120px;
-    font-size: 0.72rem;
+  #workout[data-page="workout-plan"] .routine-tab-btn .tab-label .tab-env,
+  #workout[data-page="workout-plan"] .routine-tab-btn .tab-label .tab-workout {
+    font-size: 0.62rem;
+  }
+  
+  #workout[data-page="workout-plan"] .routine-tab-btn .tab-label .tab-program {
+    font-size: 0.68rem;
   }
   
   #workout[data-page="workout-plan"] .routine-tab-btn .tab-count {
