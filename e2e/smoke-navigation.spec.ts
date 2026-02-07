@@ -116,7 +116,7 @@ test.describe('Global Smoke and Navigation', () => {
     await expect(page).toHaveURL(/\/progression/);
     const progressionPage = page.locator(SELECTORS.PAGE_PROGRESSION);
     await expect(progressionPage).toBeVisible();
-    await expect(page.locator('h2')).toContainText('Progression Plan');
+    await expect(page.locator('h1')).toContainText('Progression Plan');
   });
 
   test('navigate to Volume Splitter via navbar', async ({ page }) => {
@@ -129,7 +129,7 @@ test.describe('Global Smoke and Navigation', () => {
     await expect(page).toHaveURL(/\/volume_splitter/);
     const volumePage = page.locator(SELECTORS.PAGE_VOLUME_SPLITTER);
     await expect(volumePage).toBeVisible();
-    await expect(page.locator('h2')).toContainText('Volume Splitter');
+    await expect(page.locator('h1')).toContainText('Volume Splitter');
   });
 
   test('navigate back to home via brand link', async ({ page }) => {

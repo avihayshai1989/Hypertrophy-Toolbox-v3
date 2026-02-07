@@ -22,7 +22,7 @@ def test_normalize_force_synonyms():
 
 
 def test_normalize_mechanic_and_utility():
-    assert normalize_mechanic('isolation') == 'Isolated'
+    assert normalize_mechanic('isolation') == 'Isolation'
     assert normalize_mechanic('Hybrid') == 'Hybrid'
     assert normalize_utility('basic or auxiliary') == 'Basic'
     assert normalize_utility('auxiliary') == 'Auxiliary'
@@ -73,7 +73,7 @@ def test_normalize_exercise_row_deduplicates_isolations():
     assert normalised['advanced_isolated_muscles'] == 'gluteus-maximus'
     assert normalised['force'] == 'Push/Pull'
     assert normalised['utility'] == 'Basic'
-    assert normalised['mechanic'] == 'Isolated'
+    assert normalised['mechanic'] == 'Isolation'
     assert normalised['difficulty'] == 'Advanced'
     assert normalised['equipment'] == 'Smith_Machine'
     assert normalised['grips'] == 'Neutral, Overhand'

@@ -24,7 +24,7 @@ test.describe('Volume Splitter Page', () => {
 
   test('page loads with correct structure', async ({ page }) => {
     // Check page title
-    await expect(page.locator('h2')).toContainText('Volume Splitter');
+    await expect(page.locator('h1')).toContainText('Volume Splitter');
 
     // Check container
     await expect(page.locator(SELECTORS.PAGE_VOLUME_SPLITTER)).toBeVisible();

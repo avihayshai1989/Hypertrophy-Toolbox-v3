@@ -47,6 +47,7 @@ Thumbs.db
 htmlcov/
 .tox/
 test-results/
+playwright-report/
 
 # Distribution / packaging
 dist/

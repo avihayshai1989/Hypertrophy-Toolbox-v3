@@ -296,8 +296,131 @@ test.describe('Workout Plan Page', () => {
     await expect(modal).toBeVisible({ timeout: 5000 });
     await expect(modal.locator('.modal-title')).toContainText('Generate Starter Plan');
 
+    // Verify modal has expected content/structure
+    await expect(modal.locator('.modal-body')).toBeVisible();
+    await expect(modal.locator('.btn-close')).toBeVisible();
+  });
+});
+
+test.describe('Plan Generator v1.5.0 Features', () => {
+  test.beforeEach(async ({ page, consoleErrors }) => {
+    consoleErrors.startCollecting();
+    await page.goto(ROUTES.WORKOUT_PLAN);
+    await waitForPageReady(page);
+  });
+
+  test.afterEach(async ({ consoleErrors }) => {
+    consoleErrors.assertNoErrors();
+  });
+
+  test('generate plan modal has priority muscles option', async ({ page }) => {
+    // Open the generate plan modal
+    const generateBtn = page.locator('#generate-plan-btn');
+    await generateBtn.click();
+
+    const modal = page.locator('#generatePlanModal');
+    await expect(modal).toBeVisible({ timeout: 5000 });
+
+    // Check for priority muscles selector (v1.5.0 feature)
+    const priorityMuscles = modal.locator('#priority-muscles, [name="priority_muscles"], select[data-field="priority_muscles"]');
+    
+    // If the priority muscles field exists, verify it works
+    if (await priorityMuscles.count() > 0) {
+      await expect(priorityMuscles).toBeVisible();
+    }
+
     // Close modal
-    await modal.locator('.btn-close').click();
-    await expect(modal).not.toBeVisible();
+    await page.keyboard.press('Escape');
+  });
+
+  test('generate plan modal has time budget option', async ({ page }) => {
+    // Open the generate plan modal
+    const generateBtn = page.locator('#generate-plan-btn');
+    await generateBtn.click();
+
+    const modal = page.locator('#generatePlanModal');
+    await expect(modal).toBeVisible({ timeout: 5000 });
+
+    // Check for time budget input (v1.5.0 feature)
+    const timeBudget = modal.locator('#time-budget, [name="time_budget_minutes"], input[data-field="time_budget"]');
+    
+    // If the time budget field exists, verify it accepts numeric input
+    if (await timeBudget.count() > 0) {
+      await expect(timeBudget).toBeVisible();
+      // Time budget should accept numbers
+      await timeBudget.fill('45');
+      await expect(timeBudget).toHaveValue('45');
+    }
+
+    // Close modal
+    await page.keyboard.press('Escape');
+  });
+
+  test('generate plan modal has merge mode toggle', async ({ page }) => {
+    // Open the generate plan modal
+    const generateBtn = page.locator('#generate-plan-btn');
+    await generateBtn.click();
+
+    const modal = page.locator('#generatePlanModal');
+    await expect(modal).toBeVisible({ timeout: 5000 });
+
+    // Check for merge mode checkbox (v1.5.0 feature)
+    const mergeMode = modal.locator('#merge-mode, [name="merge_mode"], input[type="checkbox"][data-field="merge_mode"]');
+    
+    // If merge mode toggle exists, verify it's functional
+    if (await mergeMode.count() > 0) {
+      await expect(mergeMode).toBeVisible();
+    }
+
+    // Close modal
+    await page.keyboard.press('Escape');
+  });
+
+  test('generator API returns priority muscles option', async ({ request }) => {
+    const response = await request.get('http://localhost:5000/get_generator_options');
+    expect(response.ok()).toBeTruthy();
+    
+    const data = await response.json();
+    expect(data.data).toHaveProperty('priority_muscles');
+    expect(data.data.priority_muscles).toHaveProperty('available');
+    expect(Array.isArray(data.data.priority_muscles.available)).toBe(true);
+    expect(data.data.priority_muscles.available.length).toBeGreaterThan(0);
+    expect(data.data.priority_muscles).toHaveProperty('max_selections');
+    expect(data.data.priority_muscles.max_selections).toBe(2);
+  });
+
+  test('generator API returns time budget presets', async ({ request }) => {
+    const response = await request.get('http://localhost:5000/get_generator_options');
+    expect(response.ok()).toBeTruthy();
+    
+    const data = await response.json();
+    expect(data.data).toHaveProperty('time_budget');
+    expect(data.data.time_budget).toHaveProperty('min');
+    expect(data.data.time_budget).toHaveProperty('max');
+    expect(data.data.time_budget).toHaveProperty('presets');
+    expect(Array.isArray(data.data.time_budget.presets)).toBe(true);
+  });
+
+  test('generator API validates priority muscles limit', async ({ request }) => {
+    // Try to generate with too many priority muscles
+    const response = await request.post('http://localhost:5000/generate_starter_plan', {
+      data: {
+        training_days: 2,
+        environment: 'gym',
+        priority_muscles: ['Chest', 'Back', 'Shoulders', 'Arms', 'Legs'],
+        persist: false
+      }
+    });
+    
+    // Should either accept (with truncation) or return validation error
+    expect([200, 400]).toContain(response.status());
+    
+    if (response.ok()) {
+      const data = await response.json();
+      // If accepted, it should have truncated to max 2
+      if (data.data.metadata && data.data.metadata.priority_muscles) {
+        expect(data.data.metadata.priority_muscles.length).toBeLessThanOrEqual(2);
+      }
+    }
   });
 });

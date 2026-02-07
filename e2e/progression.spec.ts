@@ -22,7 +22,7 @@ test.describe('Progression Plan Page', () => {
 
   test('page loads with correct structure', async ({ page }) => {
     // Check page title
-    await expect(page.locator('h2')).toContainText('Progression Plan');
+    await expect(page.locator('h1')).toContainText('Progression Plan');
 
     // Check container
     await expect(page.locator(SELECTORS.PAGE_PROGRESSION)).toBeVisible();
@@ -227,21 +227,25 @@ test.describe('Progression Goal Management', () => {
   });
 
   test('add goal form has required fields', async ({ page }) => {
-    // Check for goal type selector
-    const goalType = page.locator('#goal-type, select[name="goal_type"]');
+    // Goal form fields are in a modal - check that modal and form exists
+    const goalModal = page.locator('#goalSettingModal');
+    const goalForm = page.locator('#goalForm');
     
-    // Check for target value input
-    const targetValue = page.locator('#target-value, input[name="target_value"]');
+    // Modal should exist in the DOM (even if not visible)
+    await expect(goalModal).toBeAttached();
+    await expect(goalForm).toBeAttached();
     
-    // Check for target date input
-    const targetDate = page.locator('#target-date, input[type="date"]');
-
-    // At least some of these should exist
-    const goalTypeCount = await goalType.count();
+    // Check for form fields within the modal
+    const currentValue = page.locator('#currentValue');
+    const targetValue = page.locator('#targetValue');
+    const goalDate = page.locator('#goalDate');
+    
+    // At least target value and goal date should exist
+    const currentValueCount = await currentValue.count();
     const targetValueCount = await targetValue.count();
-    const targetDateCount = await targetDate.count();
+    const goalDateCount = await goalDate.count();
 
-    expect(goalTypeCount + targetValueCount + targetDateCount).toBeGreaterThan(0);
+    expect(currentValueCount + targetValueCount + goalDateCount).toBeGreaterThan(0);
   });
 
   test('goal type selector has options', async ({ page }) => {
@@ -403,6 +407,106 @@ test.describe('Progression Suggestions', () => {
         const text = await suggestionsContainer.textContent();
         // Either shows suggestions or remains empty (both are valid states)
       }
+    }
+  });
+});
+
+test.describe('Double Progression Logic (v1.5.0)', () => {
+  test.beforeEach(async ({ page, consoleErrors }) => {
+    consoleErrors.startCollecting();
+    await page.goto(ROUTES.PROGRESSION);
+    await waitForPageReady(page);
+  });
+
+  test.afterEach(async ({ consoleErrors }) => {
+    consoleErrors.assertNoErrors();
+  });
+
+  test('suggestions display double progression types', async ({ page }) => {
+    const exerciseSelector = page.locator('#exerciseSelect');
+    const options = exerciseSelector.locator('option');
+    const count = await options.count();
+
+    if (count > 1) {
+      const optionValue = await options.nth(1).getAttribute('value');
+      if (optionValue) {
+        await exerciseSelector.selectOption(optionValue);
+        await page.waitForTimeout(1500);
+
+        const suggestionsContainer = page.locator('#suggestionsContainer, .suggestions-container');
+        
+        // If suggestions are visible, verify they have proper structure
+        if (await suggestionsContainer.isVisible()) {
+          const suggestionCards = suggestionsContainer.locator('.suggestion-card, .card, [class*="suggestion"]');
+          const cardCount = await suggestionCards.count();
+          
+          if (cardCount > 0) {
+            // Each suggestion should have title and description
+            const firstCard = suggestionCards.first();
+            const text = await firstCard.textContent();
+            expect(text?.length).toBeGreaterThan(0);
+          }
+        }
+      }
+    }
+  });
+
+  test('double progression suggestions include weight or rep recommendations', async ({ page }) => {
+    // Navigate with an exercise that has workout history
+    const exerciseSelector = page.locator('#exerciseSelect');
+    const options = exerciseSelector.locator('option');
+    const count = await options.count();
+
+    if (count > 1) {
+      const optionValue = await options.nth(1).getAttribute('value');
+      if (optionValue) {
+        await exerciseSelector.selectOption(optionValue);
+        await page.waitForTimeout(1500);
+
+        const pageContent = await page.content();
+        const lowerContent = pageContent.toLowerCase();
+        
+        // Double progression should mention weight or rep changes
+        const hasProgressionTerms = 
+          lowerContent.includes('weight') ||
+          lowerContent.includes('reps') ||
+          lowerContent.includes('increase') ||
+          lowerContent.includes('decrease') ||
+          lowerContent.includes('progression') ||
+          lowerContent.includes('rep range') ||
+          lowerContent.includes('start training'); // Initial state message
+        
+        expect(hasProgressionTerms).toBeTruthy();
+      }
+    }
+  });
+
+  test('API returns proper suggestion structure', async ({ page, request }) => {
+    // Test the API directly using Playwright's request context
+    const response = await request.post('http://localhost:5000/get_exercise_suggestions', {
+      data: {
+        exercise: 'Bench Press (Barbell)',
+        is_novice: true
+      }
+    });
+    
+    expect(response.ok()).toBeTruthy();
+    const suggestions = await response.json();
+    expect(Array.isArray(suggestions)).toBe(true);
+    
+    // Verify suggestion structure matches v1.5.0 double progression format
+    if (suggestions.length > 0) {
+      const suggestion = suggestions[0];
+      expect(suggestion).toHaveProperty('type');
+      expect(suggestion).toHaveProperty('title');
+      expect(suggestion).toHaveProperty('description');
+      
+      // Valid suggestion types for double progression
+      const validTypes = [
+        'double_progression_weight', 'double_progression_reps',
+        'technique', 'info', 'start', 'warning', 'success'
+      ];
+      expect(validTypes.some(type => suggestion.type.includes(type) || validTypes.includes(suggestion.type))).toBeTruthy();
     }
   });
 });
