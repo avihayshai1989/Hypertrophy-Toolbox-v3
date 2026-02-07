@@ -27,11 +27,12 @@ styles.css
 - Generated via `npm run build:css` from `scss/custom-bootstrap.scss`
 **Note:** Optional - CDN version can be used instead
 
-### `styles_tokens.css` (0 lines - EMPTY)
-**Status:** ⚠️ DEPRECATED/EMPTY
-**Owner:** Design tokens (currently unused)
-**Scope:** CSS custom properties / design tokens
-**Action:** Can be deleted or repurposed for design token system
+### `styles_tokens.css` (372 lines)
+**Owner:** Design tokens / Responsive scaling system
+**Scope:**
+- CSS custom properties for responsive spacing and sizing
+- Viewport-based scaling (720p to 4K)
+- Spacing scale, typography sizes, layout tokens
 
 ### `styles_general.css` (23 lines)
 **Owner:** Global base styles
@@ -354,9 +355,9 @@ styles.css
 
 ### Medium Priority
 
-4. **Design Tokens**
-   - Populate `styles_tokens.css` with CSS custom properties
-   - Define color palette, spacing scale, typography scale
+4. **Design Tokens Enhancement**
+   - `styles_tokens.css` now contains responsive scaling system
+   - Consider adding color palette tokens
    - Reference tokens throughout other files
 
 5. **Chat Styles Review**
