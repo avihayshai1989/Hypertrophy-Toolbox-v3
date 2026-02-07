@@ -5,9 +5,10 @@ import { api } from './fetch-wrapper.js';
  * Transform muscle display value based on current view mode (Simple/Advanced)
  * @param {string} value - Raw muscle value from database
  * @param {'primary'|'isolated'} type - Type of muscle field
+ * @param {string} isolatedMuscles - Optional isolated muscles for this exercise (for scientific detail)
  * @returns {string} - Display value appropriate for current mode
  */
-function transformMuscleDisplay(value, type = 'primary') {
+function transformMuscleDisplay(value, type = 'primary', isolatedMuscles = null) {
     if (!value || value === 'N/A') return value || 'N/A';
     
     // Check if FilterViewMode is available
@@ -18,7 +19,65 @@ function transformMuscleDisplay(value, type = 'primary') {
     if (type === 'isolated') {
         return window.FilterViewMode.transformIsolatedMuscleDisplay(value);
     }
+    
+    // In scientific mode, try to show isolated muscle detail for primary muscle
+    const mode = window.FilterViewMode.getViewMode();
+    if (mode === 'advanced' && isolatedMuscles && type === 'primary') {
+        // Parse the isolated muscles and find ones related to this muscle group
+        const relevantIsolated = getRelevantIsolatedMuscles(value, isolatedMuscles);
+        if (relevantIsolated) {
+            return relevantIsolated;
+        }
+    }
+    
     return window.FilterViewMode.transformMuscleDisplay(value);
+}
+
+/**
+ * Get isolated muscles that relate to a given muscle group
+ * Maps primary muscle groups to their isolated muscle patterns
+ */
+function getRelevantIsolatedMuscles(muscleGroup, isolatedMusclesStr) {
+    if (!isolatedMusclesStr) return null;
+    
+    // Map muscle groups to patterns that match their isolated muscles
+    const muscleGroupPatterns = {
+        'Chest': ['pectoralis', 'pec'],
+        'Biceps': ['bicep'],
+        'Triceps': ['tricep'],
+        'Front-Shoulder': ['anterior-deltoid'],
+        'Middle-Shoulder': ['lateral-deltoid'],
+        'Rear-Shoulder': ['posterior-deltoid'],
+        'Quadriceps': ['quadricep', 'rectus-femoris', 'inner-thigh'],
+        'Hamstrings': ['hamstring'],
+        'Gluteus Maximus': ['gluteus'],
+        'Calves': ['soleus', 'gastrocnemius', 'tibialis'],
+        'Latissimus Dorsi': ['lat'],
+        'Trapezius': ['trapezius'],
+        'Forearms': ['wrist-'],
+        'Abs/Core': ['abdominal'],
+    };
+    
+    const patterns = muscleGroupPatterns[muscleGroup];
+    if (!patterns) return null;
+    
+    // Split isolated muscles and find matching ones
+    const isolatedList = isolatedMusclesStr.split(',').map(m => m.trim().toLowerCase());
+    const matches = isolatedList.filter(muscle => 
+        patterns.some(pattern => muscle.includes(pattern))
+    );
+    
+    if (matches.length === 0) return null;
+    
+    // Transform each match to proper label
+    return matches.map(m => {
+        // Use FilterViewMode to get the proper label
+        if (window.FilterViewMode?.ADVANCED_MUSCLES?.[m]) {
+            return window.FilterViewMode.ADVANCED_MUSCLES[m].label;
+        }
+        // Fallback: titlecase
+        return m.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    }).join(', ');
 }
 
 /**
@@ -543,9 +602,9 @@ export function reloadWorkoutPlan(data) {
             <td>${item.id}</td>
             <td>${item.routine || "N/A"}</td>
             <td>${item.exercise || "N/A"}</td>
-            <td>${transformMuscleDisplay(item.primary_muscle_group)}</td>
-            <td>${transformMuscleDisplay(item.secondary_muscle_group)}</td>
-            <td>${transformMuscleDisplay(item.tertiary_muscle_group)}</td>
+            <td>${transformMuscleDisplay(item.primary_muscle_group, 'primary', item.advanced_isolated_muscles)}</td>
+            <td>${transformMuscleDisplay(item.secondary_muscle_group, 'primary', item.advanced_isolated_muscles)}</td>
+            <td>${transformMuscleDisplay(item.tertiary_muscle_group, 'primary', item.advanced_isolated_muscles)}</td>
             <td>${transformMuscleDisplay(item.advanced_isolated_muscles, 'isolated')}</td>
             <td>${item.utility || "N/A"}</td>
             <td>${item.sets || "N/A"}</td>
@@ -581,11 +640,11 @@ export async function updateExerciseDetails(exercise) {
                 <h5>Exercise Details</h5>
                 <div class="detail-row">
                     <span class="detail-label">Primary Muscle:</span>
-                    <span class="detail-value">${transformMuscleDisplay(info.primary_muscle_group)}</span>
+                    <span class="detail-value">${transformMuscleDisplay(info.primary_muscle_group, 'primary', info.advanced_isolated_muscles)}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Secondary Muscle:</span>
-                    <span class="detail-value">${transformMuscleDisplay(info.secondary_muscle_group)}</span>
+                    <span class="detail-value">${transformMuscleDisplay(info.secondary_muscle_group, 'primary', info.advanced_isolated_muscles)}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Equipment:</span>
@@ -1120,7 +1179,11 @@ function updateMuscleDisplaysInTable() {
     tbody.querySelectorAll('[data-raw-value]').forEach(cell => {
         const rawValue = cell.getAttribute('data-raw-value');
         const isIsolated = cell.getAttribute('data-label') === 'Isolated Muscles';
-        cell.textContent = transformMuscleDisplay(rawValue, isIsolated ? 'isolated' : 'primary');
+        const row = cell.closest('tr');
+        // Get isolated muscles from the same row for scientific mode
+        const isolatedCell = row?.querySelector('[data-label="Isolated Muscles"]');
+        const isolatedMuscles = isolatedCell?.getAttribute('data-raw-value') || null;
+        cell.textContent = transformMuscleDisplay(rawValue, isIsolated ? 'isolated' : 'primary', isIsolated ? null : isolatedMuscles);
     });
 }
 
@@ -1238,9 +1301,9 @@ export function updateWorkoutPlanTable(exercises) {
                     <i class="fas fa-sync-alt"></i>
                 </button>
             </td>
-            <td class="col--med" data-label="Primary Muscle" data-raw-value="${exercise.primary_muscle_group || ''}">${transformMuscleDisplay(exercise.primary_muscle_group)}</td>
-            <td class="col--low" data-label="Secondary Muscle" data-raw-value="${exercise.secondary_muscle_group || ''}">${transformMuscleDisplay(exercise.secondary_muscle_group)}</td>
-            <td class="col--low" data-label="Tertiary Muscle" data-raw-value="${exercise.tertiary_muscle_group || ''}">${transformMuscleDisplay(exercise.tertiary_muscle_group)}</td>
+            <td class="col--med" data-label="Primary Muscle" data-raw-value="${exercise.primary_muscle_group || ''}">${transformMuscleDisplay(exercise.primary_muscle_group, 'primary', exercise.advanced_isolated_muscles)}</td>
+            <td class="col--low" data-label="Secondary Muscle" data-raw-value="${exercise.secondary_muscle_group || ''}">${transformMuscleDisplay(exercise.secondary_muscle_group, 'primary', exercise.advanced_isolated_muscles)}</td>
+            <td class="col--low" data-label="Tertiary Muscle" data-raw-value="${exercise.tertiary_muscle_group || ''}">${transformMuscleDisplay(exercise.tertiary_muscle_group, 'primary', exercise.advanced_isolated_muscles)}</td>
             <td class="col--low" data-label="Isolated Muscles" data-raw-value="${exercise.advanced_isolated_muscles || ''}">${transformMuscleDisplay(exercise.advanced_isolated_muscles, 'isolated')}</td>
             <td class="col--low" data-label="Utility">${exercise.utility || 'N/A'}</td>
             <td class="col--low" data-label="Movement Pattern">${exercise.movement_pattern || 'N/A'}</td>

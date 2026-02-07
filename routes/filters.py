@@ -51,7 +51,7 @@ SIMPLE_TO_ADVANCED_ISOLATED = {
     'front-shoulders': ['anterior-deltoid'],
     'middle-shoulders': ['lateral-deltoid'],
     'rear-shoulders': ['posterior-deltoid'],
-    'chest': ['upper-pectoralis'],
+    'chest': ['upper-pectoralis', 'lower-pectoralis'],
     'biceps': ['long-head-bicep', 'short-head-bicep'],
     'triceps': ['lateral-head-triceps', 'long-head-triceps', 'medial-head-triceps'],
     'forearms': ['wrist-extensors', 'wrist-flexors'],

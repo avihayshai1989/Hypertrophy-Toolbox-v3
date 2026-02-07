@@ -15,10 +15,10 @@ def progression_plan():
     """Render the progression plan page."""
     try:
         with DatabaseHandler() as db:
-            # Get unique exercises from workout log
+            # Get unique exercises from user_selection (the workout plan)
             query = """
             SELECT DISTINCT exercise, routine
-            FROM workout_log
+            FROM user_selection
             ORDER BY routine, exercise
             """
             exercises = db.fetch_all(query)

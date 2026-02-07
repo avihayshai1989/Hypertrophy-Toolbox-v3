@@ -308,7 +308,7 @@ export async function updateScoredValue(logId, field, value) {
         if (cell) {
             const display = cell.querySelector('.editable-text');
             if (display) {
-                display.textContent = value || 'Click to set';
+                display.textContent = value || '--';
             }
             
             // Update progression indicator for this cell

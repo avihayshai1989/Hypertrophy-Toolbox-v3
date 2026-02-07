@@ -2,21 +2,118 @@ import { createVolumeChart, createProgressChart } from './charts.js';
 import { fetchWeeklySummary, fetchSessionSummary } from './summary.js';
 import { handleDateChange } from './workout-log.js';
 
+/**
+ * Add custom +/- buttons to number inputs for reliable increment/decrement
+ * Native browser spinners can be unreliable across different browsers/platforms
+ */
+function addCustomSpinnerButtons(input) {
+    // Don't add buttons if already added
+    if (input.dataset.hasCustomSpinners === 'true') return;
+    input.dataset.hasCustomSpinners = 'true';
+    
+    // Create wrapper for the input + buttons
+    const wrapper = document.createElement('div');
+    wrapper.className = 'number-input-wrapper';
+    wrapper.style.cssText = 'display: flex; align-items: center; gap: 2px;';
+    
+    // Insert wrapper in place of input
+    input.parentNode.insertBefore(wrapper, input);
+    wrapper.appendChild(input);
+    
+    // Create minus button
+    const minusBtn = document.createElement('button');
+    minusBtn.type = 'button';
+    minusBtn.className = 'number-spinner-btn number-spinner-minus';
+    minusBtn.innerHTML = '−'; // Use Unicode minus for better click area
+    minusBtn.style.cssText = `
+        width: 26px; height: 26px; padding: 0; border: 1px solid #ccc;
+        background: #f8f9fa; border-radius: 4px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px; font-weight: bold; color: #495057; line-height: 1;
+        user-select: none;
+    `;
+    
+    // Create plus button
+    const plusBtn = document.createElement('button');
+    plusBtn.type = 'button';
+    plusBtn.className = 'number-spinner-btn number-spinner-plus';
+    plusBtn.innerHTML = '+'; // Use plain text for better click area
+    plusBtn.style.cssText = minusBtn.style.cssText;
+    
+    // Insert buttons
+    wrapper.insertBefore(minusBtn, input);
+    wrapper.appendChild(plusBtn);
+    
+    // Get step from input or default to 1
+    const step = parseFloat(input.step) || 1;
+    // Default min to 0 to prevent negative numbers for workout data
+    const min = input.min !== '' ? parseFloat(input.min) : 0;
+    const max = input.max !== '' ? parseFloat(input.max) : null;
+    
+    // Set min attribute on input if not already set
+    if (!input.hasAttribute('min')) {
+        input.setAttribute('min', '0');
+    }
+    
+    // Handler to change value
+    function changeValue(delta) {
+        let currentValue = parseFloat(input.value) || 0;
+        let newValue = currentValue + delta;
+        
+        // Respect min/max - always prevent negative
+        if (newValue < min) newValue = min;
+        if (max !== null && newValue > max) newValue = max;
+        
+        input.value = newValue;
+        
+        // Trigger input and change events so handlers respond
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        
+        // Keep input focused
+        input.focus();
+    }
+    
+    // Add click handlers
+    minusBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        changeValue(-step);
+    });
+    
+    plusBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        changeValue(step);
+    });
+    
+    // Prevent blur when clicking buttons
+    minusBtn.addEventListener('mousedown', (e) => e.preventDefault());
+    plusBtn.addEventListener('mousedown', (e) => e.preventDefault());
+}
+
 export function initializeUIHandlers() {
     // Handle editable fields
     document.querySelectorAll('.editable').forEach(cell => {
         cell.addEventListener('click', function(e) {
-            // Don't trigger if clicking on the input
-            if (e.target.classList.contains('editable-input')) {
+            // Don't trigger if clicking on the input or spinner buttons
+            if (e.target.classList.contains('editable-input') || 
+                e.target.classList.contains('number-spinner-btn') ||
+                e.target.closest('.number-spinner-btn')) {
                 return;
             }
             
             const input = this.querySelector('.editable-input');
             const text = this.querySelector('.editable-text');
+            const wrapper = this.querySelector('.number-input-wrapper');
             
             if (input) {
                 text.style.display = 'none';
                 input.style.display = 'block';
+                // Also show the wrapper if it exists (for number inputs with custom buttons)
+                if (wrapper) {
+                    wrapper.style.display = 'inline-flex';
+                }
                 input.focus();
                 
                 // For date inputs, open the picker immediately
@@ -43,6 +140,12 @@ export function initializeUIHandlers() {
 
     // Handle clicking outside editable fields
     document.addEventListener('click', function(e) {
+        // Don't hide if clicking on spinner buttons
+        if (e.target.classList.contains('number-spinner-btn') || 
+            e.target.closest('.number-spinner-btn')) {
+            return;
+        }
+        
         if (!e.target.closest('.editable') && !e.target.classList.contains('editable-input')) {
             document.querySelectorAll('.editable-input').forEach(input => {
                 input.style.display = 'none';
@@ -50,6 +153,10 @@ export function initializeUIHandlers() {
             document.querySelectorAll('.editable-text').forEach(text => {
                 // Use flex for date displays, block for others
                 text.style.display = text.classList.contains('date-display') ? 'flex' : 'block';
+            });
+            // Also hide number input wrappers
+            document.querySelectorAll('.number-input-wrapper').forEach(wrapper => {
+                wrapper.style.display = 'none';
             });
         }
     });
@@ -71,32 +178,105 @@ export function initializeUIHandlers() {
 
     initializeSummaryMethodHandlers();
 
+    // Global flag for spinner interaction tracking
+    let activeSpinnerInput = null;
+    let globalBlurTimeout = null;
+    
+    // Debounce timers for spinner input updates (to avoid too many API calls)
+    const inputDebounceTimers = new Map();
+    
+    // Global mouseup handler (only add once)
+    document.addEventListener('mouseup', function() {
+        setTimeout(() => {
+            activeSpinnerInput = null;
+        }, 50);
+    });
+
     // Add validation for editable inputs (excluding date inputs which have their own handler)
     document.querySelectorAll('.editable-input:not(.date-input)').forEach(input => {
+        // Combined input handler for validation and spinner interaction
         input.addEventListener('input', function() {
+            // Validation
             const field = this.closest('[data-field]')?.dataset?.field;
             if (field) {
                 const isValid = validateScoredValue(this.value, field);
                 this.classList.toggle('is-invalid', !isValid);
                 this.classList.toggle('is-valid', isValid);
             }
+            // Value changed (possibly via spinner), cancel any pending hide
+            if (globalBlurTimeout) {
+                clearTimeout(globalBlurTimeout);
+                globalBlurTimeout = null;
+            }
+            
+            // For number inputs (spinners), debounce and trigger the update
+            // This ensures spinner clicks actually save the value
+            if (this.type === 'number' && typeof window.updateScoredValue === 'function') {
+                const row = this.closest('tr[data-log-id]');
+                const cell = this.closest('[data-field]');
+                if (row && cell) {
+                    const logId = row.dataset.logId;
+                    const fieldName = cell.dataset.field;
+                    const value = this.value;
+                    
+                    // Clear existing timer for this input
+                    const timerKey = `${logId}-${fieldName}`;
+                    if (inputDebounceTimers.has(timerKey)) {
+                        clearTimeout(inputDebounceTimers.get(timerKey));
+                    }
+                    
+                    // Debounce: wait 500ms after last input before saving
+                    // This allows rapid spinner clicks without hammering the API
+                    inputDebounceTimers.set(timerKey, setTimeout(() => {
+                        window.updateScoredValue(logId, fieldName, value);
+                        inputDebounceTimers.delete(timerKey);
+                    }, 500));
+                }
+            }
         });
         
-        // Auto-save and close on blur (when focus leaves the input)
-        input.addEventListener('blur', function() {
-            // Small delay to allow click events to process first
-            setTimeout(() => {
-                const cell = this.closest('.editable');
-                if (cell) {
-                    const text = cell.querySelector('.editable-text');
-                    if (text) {
-                        // Use flex for date displays, block for others
-                        text.style.display = text.classList.contains('date-display') ? 'flex' : 'block';
-                    }
-                    this.style.display = 'none';
-                }
-            }, 100);
+        // Mousedown on input (including spinners) - flag that interaction is happening
+        input.addEventListener('mousedown', function() {
+            activeSpinnerInput = this;
+            // Clear any pending blur timeout
+            if (globalBlurTimeout) {
+                clearTimeout(globalBlurTimeout);
+                globalBlurTimeout = null;
+            }
         });
+        
+        // For number inputs, don't auto-hide on blur - let click-outside handler manage it
+        // This allows spinners to work properly
+        if (input.type !== 'number') {
+            // Auto-save and close on blur (when focus leaves the input)
+            input.addEventListener('blur', function() {
+                const inputElement = this;
+                // Clear any existing timeout
+                if (globalBlurTimeout) {
+                    clearTimeout(globalBlurTimeout);
+                }
+                // Delay to allow click events to process
+                globalBlurTimeout = setTimeout(() => {
+                    // Check if user clicked back into this input (re-focused it)
+                    if (document.activeElement === inputElement) {
+                        return; // Don't hide if user is still interacting
+                    }
+                    const cell = inputElement.closest('.editable');
+                    if (cell) {
+                        const text = cell.querySelector('.editable-text');
+                        if (text) {
+                            // Use flex for date displays, block for others
+                            text.style.display = text.classList.contains('date-display') ? 'flex' : 'block';
+                        }
+                        inputElement.style.display = 'none';
+                    }
+                    globalBlurTimeout = null;
+                }, 200);
+            });
+        } else {
+            // For number inputs, add custom +/- buttons since native spinners can be unreliable
+            addCustomSpinnerButtons(input);
+        }
         
         // Add Enter key support to submit and close the input
         input.addEventListener('keydown', function(e) {
@@ -104,6 +284,17 @@ export function initializeUIHandlers() {
                 e.preventDefault();
                 // Trigger change event and blur to close the input
                 this.dispatchEvent(new Event('change', { bubbles: true }));
+                // Hide input and wrapper, show text
+                const cell = this.closest('.editable');
+                if (cell) {
+                    const text = cell.querySelector('.editable-text');
+                    const wrapper = cell.querySelector('.number-input-wrapper');
+                    if (text) {
+                        text.style.display = text.classList.contains('date-display') ? 'flex' : 'block';
+                    }
+                    this.style.display = 'none';
+                    if (wrapper) wrapper.style.display = 'none';
+                }
                 this.blur();
             } else if (e.key === 'Escape') {
                 // Cancel editing on Escape - revert to original value
@@ -111,12 +302,20 @@ export function initializeUIHandlers() {
                 const cell = this.closest('.editable');
                 if (cell) {
                     const text = cell.querySelector('.editable-text');
+                    const wrapper = cell.querySelector('.number-input-wrapper');
                     // Reset input value to original text (don't save)
                     if (text && text.textContent.trim() !== 'Click to set' && 
                         text.textContent.trim() !== 'Click to set date' &&
-                        text.textContent.trim() !== 'Click to edit') {
+                        text.textContent.trim() !== 'Click to edit' &&
+                        text.textContent.trim() !== '--') {
                         this.value = text.textContent.trim();
                     }
+                    // Show text, hide input and wrapper
+                    if (text) {
+                        text.style.display = text.classList.contains('date-display') ? 'flex' : 'block';
+                    }
+                    this.style.display = 'none';
+                    if (wrapper) wrapper.style.display = 'none';
                 }
                 this.blur();
             }

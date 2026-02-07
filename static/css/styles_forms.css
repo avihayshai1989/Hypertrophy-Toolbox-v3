@@ -599,6 +599,7 @@ input.form-control#weight,
 input.form-control#sets {
     background-color: #fff9c4 !important; /* Light pastel banana */
     border-color: #fff176 !important;
+    text-align: center;
 }
 
 .input-fields-group input#weight:focus,

@@ -158,9 +158,14 @@ def generate_progression_suggestions(
     scored_weight = latest.get("scored_weight")
     planned_min_reps = latest.get("planned_min_reps")
     planned_max_reps = latest.get("planned_max_reps")
+    planned_weight = latest.get("planned_weight")
     planned_sets = latest.get("planned_sets")
     scored_rir = latest.get("scored_rir")
     scored_rpe = latest.get("scored_rpe")
+    
+    # Use scored values if available, otherwise fall back to planned values
+    current_weight = scored_weight if scored_weight is not None else planned_weight
+    current_reps = scored_max_reps if scored_max_reps is not None else planned_max_reps
     
     # Analyze consistency across sessions
     consistency = _analyze_consistency(history)
@@ -281,10 +286,10 @@ def generate_progression_suggestions(
     # These let the user manually choose their progression path
     
     # Increase Weight option (always show)
-    if scored_weight is not None:
-        weight_increment = _calculate_weight_increment(scored_weight, is_novice)
-        new_weight = scored_weight + weight_increment
-        weight_description = f"Increase the weight for {exercise} from {scored_weight}kg to {new_weight}kg."
+    if current_weight is not None:
+        weight_increment = _calculate_weight_increment(current_weight, is_novice)
+        new_weight = current_weight + weight_increment
+        weight_description = f"Increase the weight for {exercise} from {current_weight}kg to {new_weight}kg."
         weight_action = f"Set weight goal: {new_weight}kg"
     else:
         new_weight = None
@@ -298,14 +303,14 @@ def generate_progression_suggestions(
         "action": weight_action,
         "priority": "medium",
         "suggested_weight": new_weight,
-        "current_value": scored_weight,
+        "current_value": current_weight,
         "suggested_value": new_weight
     })
     
     # Increase Repetitions option (always show)
-    if scored_max_reps is not None:
-        target_reps = scored_max_reps + 2
-        reps_description = f"Increase your reps for {exercise} from {scored_max_reps} to {target_reps} reps."
+    if current_reps is not None:
+        target_reps = current_reps + 2
+        reps_description = f"Increase your reps for {exercise} from {current_reps} to {target_reps} reps."
         reps_action = f"Set reps goal: {target_reps} reps"
     else:
         target_reps = None
@@ -318,7 +323,7 @@ def generate_progression_suggestions(
         "description": reps_description,
         "action": reps_action,
         "priority": "medium",
-        "current_value": scored_max_reps,
+        "current_value": current_reps,
         "suggested_value": target_reps
     })
     

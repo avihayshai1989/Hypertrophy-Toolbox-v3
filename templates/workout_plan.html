@@ -75,7 +75,7 @@
                     <div class="input-fields-group" role="group" aria-label="Exercise parameters">
                         <div class="input-group">
                             <label for="weight" class="form-label">Weight</label>
-                            <input type="number" id="weight" name="weight" class="form-control" min="0" value="25" aria-label="Weight in kilograms">
+                            <input type="number" id="weight" name="weight" class="form-control" min="0" step="any" value="25" aria-label="Weight in kilograms">
                         </div>
                         <div class="input-group">
                             <label for="sets" class="form-label">Sets</label>
@@ -585,14 +585,20 @@ document.addEventListener('DOMContentLoaded', function() {
     window.muscleSelector = new MuscleSelector('muscle-selector-container');
     
     // Listen for view mode changes and update filters
-    if (window.FilterViewMode) {
-        document.addEventListener('filterViewModeChanged', function(e) {
-            updateMuscleFilterDropdowns(e.detail.mode);
-        });
-        
-        // Apply initial mode to filter dropdowns
-        updateMuscleFilterDropdowns(window.FilterViewMode.getViewMode());
+    document.addEventListener('filterViewModeChanged', function(e) {
+        updateMuscleFilterDropdowns(e.detail.mode);
+    });
+    
+    // Apply initial mode to filter dropdowns (with retry for race conditions)
+    function initMuscleFilters() {
+        if (window.FilterViewMode) {
+            updateMuscleFilterDropdowns(window.FilterViewMode.getViewMode());
+        } else {
+            // FilterViewMode not ready yet, retry in 50ms
+            setTimeout(initMuscleFilters, 50);
+        }
     }
+    initMuscleFilters();
     
     // Volume scale display update with temperature colors
     const volumeScale = document.getElementById('gen-volume-scale');

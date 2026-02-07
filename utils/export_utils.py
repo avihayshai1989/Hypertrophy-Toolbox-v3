@@ -298,7 +298,8 @@ def create_excel_workbook(
             if sheet_name == 'Workout Plan':
                 color_index = 0
                 for row_data in data:
-                    superset_group = row_data.get('superset_group')
+                    # Support both original and renamed column names
+                    superset_group = row_data.get('superset_group') or row_data.get('Superset Group')
                     if superset_group and superset_group not in superset_color_map:
                         color_index = (color_index % 4) + 1
                         superset_color_map[superset_group] = color_index
@@ -311,7 +312,8 @@ def create_excel_workbook(
                 # Determine cell format based on superset group (for Workout Plan sheet)
                 row_format = cell_format
                 if sheet_name == 'Workout Plan':
-                    superset_group = row_data.get('superset_group')
+                    # Support both original and renamed column names
+                    superset_group = row_data.get('superset_group') or row_data.get('Superset Group')
                     if superset_group and superset_group in superset_color_map:
                         color_num = superset_color_map[superset_group]
                         row_format = superset_formats.get(color_num, cell_format)

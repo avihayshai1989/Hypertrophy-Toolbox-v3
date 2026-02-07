@@ -3,8 +3,16 @@ import { showToast } from './toast.js';
 export async function exportToExcel() {
     try {
         console.log('=== Starting export to Excel ===');
-        console.log('Making fetch request to /export_to_excel');
-        const response = await fetch('/export_to_excel', {
+        
+        // Get the current view mode from localStorage (matches filter-view-mode.js storage key)
+        const viewMode = localStorage.getItem('hypertrophy_filter_view_mode') || 'simple';
+        console.log('Current view mode:', viewMode);
+        
+        // Build URL with view_mode parameter
+        const exportUrl = `/export_to_excel?view_mode=${encodeURIComponent(viewMode)}`;
+        console.log('Making fetch request to:', exportUrl);
+        
+        const response = await fetch(exportUrl, {
             method: 'GET',
             headers: {
                 'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'

@@ -59,6 +59,7 @@
         
         // Front Body - Chest
         'upper-pectoralis': { label: 'Upper Pectoralis', side: 'front' },
+        'lower-pectoralis': { label: 'Lower Pectoralis', side: 'front' },
         
         // Front Body - Arms
         'long-head-bicep': { label: 'Long Head Bicep', side: 'front' },
@@ -120,6 +121,7 @@
         
         // Chest
         'Chest': 'chest',
+        'Upper Chest': 'chest',
         
         // Arms
         'Biceps': 'biceps',
@@ -128,6 +130,7 @@
         
         // Core
         'Abs/Core': 'abs',
+        'Core': 'abs',
         'Rectus Abdominis': 'abs',
         'External Obliques': 'obliques',
         
@@ -138,6 +141,7 @@
         'Latissimus Dorsi': 'lats',
         'Upper Back': 'upper-back',
         'Lower Back': 'lower-back',
+        'Erectors': 'lower-back',
         
         // Lower Body
         'Gluteus Maximus': 'glutes',
@@ -147,7 +151,56 @@
         'Calves': 'calves',
         
         // Misc
-        'Neck': 'front-shoulders'  // Group with shoulders for simplicity
+        'Neck': 'front-shoulders',  // Group with shoulders for simplicity
+        'Shoulders': 'front-shoulders'  // Generic shoulders
+    };
+
+    /**
+     * Maps database primary_muscle_group values to scientific display names
+     * Used in advanced/scientific mode for weekly/session summaries
+     * Matches naming style from ADVANCED_MUSCLES
+     */
+    const DB_TO_ADVANCED = {
+        // Shoulders
+        'Front-Shoulder': 'Anterior Deltoid',
+        'Middle-Shoulder': 'Lateral Deltoid',
+        'Rear-Shoulder': 'Posterior Deltoid',
+        'Shoulders': 'Anterior Deltoid',
+        
+        // Chest
+        'Chest': 'Upper / Lower Pectoralis',
+        'Upper Chest': 'Upper Pectoralis',
+        
+        // Arms
+        'Biceps': 'Long / Short Head Bicep',
+        'Triceps': 'Lateral / Long / Medial Head Triceps',
+        'Forearms': 'Wrist Flexors / Extensors',
+        
+        // Core
+        'Abs/Core': 'Upper / Lower Abdominals',
+        'Core': 'Upper / Lower Abdominals',
+        'Rectus Abdominis': 'Upper / Lower Abdominals',
+        'External Obliques': 'Obliques',
+        
+        // Back
+        'Trapezius': 'Upper / Lower Trapezius',
+        'Upper Traps': 'Upper Trapezius',
+        'Middle-Traps': 'Lower Trapezius',
+        'Latissimus Dorsi': 'Latissimus Dorsi',
+        'Upper Back': 'Upper Back',
+        'Lower Back': 'Lower Back',
+        'Erectors': 'Lower Back',
+        
+        // Lower Body
+        'Gluteus Maximus': 'Gluteus Maximus',
+        'Glutes': 'Gluteus Maximus / Medius',
+        'Hip-Adductors': 'Inner Thigh',
+        'Quadriceps': 'Rectus Femoris / Outer Quadricep',
+        'Hamstrings': 'Lateral / Medial Hamstrings',
+        'Calves': 'Gastrocnemius / Soleus',
+        
+        // Misc
+        'Neck': 'Neck'
     };
 
     /**
@@ -171,7 +224,7 @@
         'front-shoulders': ['anterior-deltoid'],
         'middle-shoulders': ['lateral-deltoid'],
         'rear-shoulders': ['posterior-deltoid'],
-        'chest': ['upper-pectoralis'],
+        'chest': ['upper-pectoralis', 'lower-pectoralis'],
         'biceps': ['long-head-bicep', 'short-head-bicep'],
         'triceps': ['lateral-head-triceps', 'long-head-triceps', 'medial-head-triceps'],
         'forearms': ['wrist-extensors', 'wrist-flexors'],
@@ -207,6 +260,7 @@
         'lateral-deltoid': 'lateral-deltoid',
         'posterior-deltoid': 'posterior-deltoid',
         'upper-pectoralis': 'upper-pectoralis',
+        'lower-pectoralis': 'lower-pectoralis',
         'long-head-bicep': 'long-head-bicep',
         'short-head-bicep': 'short-head-bicep',
         'lateral-head-triceps': 'lateral-head-triceps',
@@ -305,6 +359,10 @@
             // First check if it's already an advanced key
             if (ADVANCED_MUSCLES[dbValue.toLowerCase()]) {
                 return ADVANCED_MUSCLES[dbValue.toLowerCase()].label;
+            }
+            // Check DB_TO_ADVANCED mapping for scientific names
+            if (DB_TO_ADVANCED[dbValue]) {
+                return DB_TO_ADVANCED[dbValue];
             }
             // Return original if no advanced mapping
             return dbValue;

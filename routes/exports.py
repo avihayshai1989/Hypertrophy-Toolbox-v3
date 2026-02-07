@@ -21,6 +21,205 @@ import logging
 exports_bp = Blueprint('exports', __name__)
 logger = get_logger()
 
+# Muscle name mapping from database values to scientific/advanced display names
+# Matches the DB_TO_ADVANCED mapping in filter-view-mode.js
+DB_TO_ADVANCED_MUSCLE = {
+    # Shoulders
+    'Front-Shoulder': 'Anterior Deltoid',
+    'Middle-Shoulder': 'Lateral Deltoid',
+    'Rear-Shoulder': 'Posterior Deltoid',
+    'Shoulders': 'Anterior Deltoid',
+    
+    # Chest
+    'Chest': 'Upper / Lower Pectoralis',
+    'Upper Chest': 'Upper Pectoralis',
+    'Lower Pectoralis': 'Lower Pectoralis',
+    'Upper Pectoralis': 'Upper Pectoralis',
+    
+    # Arms
+    'Biceps': 'Long / Short Head Bicep',
+    'Long Head Bicep': 'Long Head Bicep',
+    'Short Head Bicep': 'Short Head Bicep',
+    'Triceps': 'Lateral / Long / Medial Head Triceps',
+    'Lateral Head Triceps': 'Lateral Head Triceps',
+    'Long Head Triceps': 'Long Head Triceps',
+    'Medial Head Triceps': 'Medial Head Triceps',
+    'Forearms': 'Wrist Flexors / Extensors',
+    'Wrist Flexors': 'Wrist Flexors',
+    'Wrist Extensors': 'Wrist Extensors',
+    
+    # Core
+    'Abs/Core': 'Upper / Lower Abdominals',
+    'Core': 'Upper / Lower Abdominals',
+    'Rectus Abdominis': 'Upper / Lower Abdominals',
+    'External Obliques': 'Obliques',
+    'Obliques': 'Obliques',
+    
+    # Back
+    'Trapezius': 'Upper / Lower Trapezius',
+    'Upper Traps': 'Upper Trapezius',
+    'Middle-Traps': 'Lower Trapezius',
+    'Latissimus Dorsi': 'Latissimus Dorsi',
+    'Lats': 'Latissimus Dorsi',
+    'Upper Back': 'Upper Back',
+    'Lower Back': 'Lower Back',
+    'Erectors': 'Lower Back',
+    
+    # Lower Body
+    'Gluteus Maximus': 'Gluteus Maximus',
+    'Glutes': 'Gluteus Maximus / Medius',
+    'Hip-Adductors': 'Inner Thigh',
+    'Quadriceps': 'Rectus Femoris / Outer Quadricep',
+    'Hamstrings': 'Lateral / Medial Hamstrings',
+    'Calves': 'Gastrocnemius / Soleus',
+    'Gastrocnemius': 'Gastrocnemius',
+    'Soleus': 'Soleus',
+    
+    # Misc
+    'Neck': 'Neck',
+    'Serratus': 'Serratus Anterior',
+}
+
+# Columns that contain muscle names and should be transformed in advanced view
+MUSCLE_COLUMNS = ['primary_muscle_group', 'secondary_muscle_group', 'tertiary_muscle_group']
+
+# Column configuration for export matching UI table order
+# Maps database column names to display names for each view mode
+WORKOUT_PLAN_COLUMNS = {
+    # Column order matching UI table (excluding non-exportable columns like checkbox, actions)
+    'order': [
+        'routine',
+        'exercise', 
+        'primary_muscle_group',
+        'secondary_muscle_group',
+        'tertiary_muscle_group',
+        'advanced_isolated_muscles',
+        'utility',
+        'movement_pattern',
+        'movement_subpattern',
+        'sets',
+        'min_rep_range',
+        'max_rep_range',
+        'rir',
+        'rpe',
+        'weight',
+        'execution_style',
+        'grips',
+        'stabilizers',
+        'synergists',
+        'superset_group',
+        'exercise_order',
+    ],
+    # Display names for simple view (user-friendly)
+    'simple': {
+        'routine': 'Routine',
+        'exercise': 'Exercise',
+        'primary_muscle_group': 'Primary Muscle',
+        'secondary_muscle_group': 'Secondary Muscle',
+        'tertiary_muscle_group': 'Tertiary Muscle',
+        'advanced_isolated_muscles': 'Isolated Muscles',
+        'utility': 'Utility',
+        'movement_pattern': 'Movement Pattern',
+        'movement_subpattern': 'Movement Subpattern',
+        'sets': 'Sets',
+        'min_rep_range': 'Min Rep',
+        'max_rep_range': 'Max Rep',
+        'rir': 'RIR',
+        'rpe': 'RPE',
+        'weight': 'Weight',
+        'execution_style': 'Style',
+        'grips': 'Grips',
+        'stabilizers': 'Stabilizers',
+        'synergists': 'Synergists',
+        'superset_group': 'Superset Group',
+        'exercise_order': 'Exercise Order',
+    },
+    # Display names for advanced/scientific view
+    'advanced': {
+        'routine': 'Routine',
+        'exercise': 'Exercise',
+        'primary_muscle_group': 'Primary Muscle Group',
+        'secondary_muscle_group': 'Secondary Muscle Group',
+        'tertiary_muscle_group': 'Tertiary Muscle Group',
+        'advanced_isolated_muscles': 'Advanced Isolated Muscles',
+        'utility': 'Utility',
+        'movement_pattern': 'Movement Pattern',
+        'movement_subpattern': 'Movement Subpattern',
+        'sets': 'Sets',
+        'min_rep_range': 'Min Rep Range',
+        'max_rep_range': 'Max Rep Range',
+        'rir': 'RIR',
+        'rpe': 'RPE',
+        'weight': 'Weight',
+        'execution_style': 'Execution Style',
+        'grips': 'Grips',
+        'stabilizers': 'Stabilizers',
+        'synergists': 'Synergists',
+        'superset_group': 'Superset Group',
+        'exercise_order': 'Exercise Order',
+    }
+}
+
+
+def transform_muscle_value(value, view_mode):
+    """
+    Transform a muscle name value based on view mode.
+    
+    In advanced mode, transforms simple names like 'Chest' to scientific names
+    like 'Upper / Lower Pectoralis'.
+    
+    Args:
+        value: The muscle name value from the database
+        view_mode: 'simple' or 'advanced'
+        
+    Returns:
+        Transformed value (or original if no transformation needed)
+    """
+    if view_mode != 'advanced' or not value:
+        return value
+    
+    return DB_TO_ADVANCED_MUSCLE.get(value, value)
+
+
+def reorder_and_rename_columns(data, column_config, view_mode='simple'):
+    """
+    Reorder columns to match UI table order and rename based on view mode.
+    Also transforms muscle name values in advanced mode.
+    
+    Args:
+        data: List of row dictionaries from database
+        column_config: Configuration dict with 'order' and view mode mappings
+        view_mode: 'simple' or 'advanced'
+        
+    Returns:
+        List of row dictionaries with columns reordered and renamed
+    """
+    if not data:
+        return data
+    
+    column_order = column_config['order']
+    display_names = column_config.get(view_mode, column_config.get('simple', {}))
+    
+    reordered_data = []
+    for row in data:
+        new_row = {}
+        for col in column_order:
+            if col in row:
+                display_name = display_names.get(col, col)
+                value = row[col]
+                # Transform muscle values in advanced mode
+                if col in MUSCLE_COLUMNS:
+                    value = transform_muscle_value(value, view_mode)
+                new_row[display_name] = value
+        # Add any remaining columns not in the defined order (at the end)
+        for key, value in row.items():
+            display_name = display_names.get(key, key)
+            if display_name not in new_row and key not in ['id', 'sort_order']:
+                new_row[display_name] = value
+        reordered_data.append(new_row)
+    
+    return reordered_data
+
 # Removed verbose before_request logging - using logger only
 
 def calculate_volume_for_category(category, muscle_group):
@@ -87,15 +286,24 @@ def export_to_excel():
     """
     Export all data to Excel using memory-efficient approach.
     
+    Query Parameters:
+        view_mode: 'simple' or 'advanced' - determines column naming
+    
     This replaces pandas with direct XlsxWriter usage for better
     memory efficiency and performance on large datasets.
     """
     try:
+        # Get view mode from query parameter (default to simple)
+        view_mode = request.args.get('view_mode', 'simple')
+        if view_mode not in ('simple', 'advanced'):
+            view_mode = 'simple'
+        
         logger.info(
             "Starting Excel export",
             extra={
                 'export_type': 'excel',
-                'format': 'workout_data'
+                'format': 'workout_data',
+                'view_mode': view_mode
             }
         )
         sheets_data = {}
@@ -158,6 +366,7 @@ def export_to_excel():
             has_superset = column_exists(db, 'user_selection', 'superset_group')
             has_order = column_exists(db, 'user_selection', 'exercise_order')
             
+            # Build query to fetch all needed columns from exercises table for proper export
             # Order by routine first, then group superset exercises together, then by exercise_order
             if has_superset and has_order:
                 # For superset exercises: group them together by using a subquery to find 
@@ -170,11 +379,32 @@ def export_to_excel():
                         WHERE superset_group IS NOT NULL
                         GROUP BY superset_group, routine
                     )
-                    SELECT us.*, e.primary_muscle_group, e.secondary_muscle_group,
-                           CASE 
-                               WHEN us.superset_group IS NOT NULL THEN smo.min_order
-                               ELSE us.exercise_order
-                           END as sort_order
+                    SELECT 
+                        us.routine,
+                        us.exercise,
+                        e.primary_muscle_group,
+                        e.secondary_muscle_group,
+                        e.tertiary_muscle_group,
+                        e.advanced_isolated_muscles,
+                        e.utility,
+                        e.movement_pattern,
+                        e.movement_subpattern,
+                        us.sets,
+                        us.min_rep_range,
+                        us.max_rep_range,
+                        us.rir,
+                        us.rpe,
+                        us.weight,
+                        us.execution_style,
+                        e.grips,
+                        e.stabilizers,
+                        e.synergists,
+                        us.superset_group,
+                        us.exercise_order,
+                        CASE 
+                            WHEN us.superset_group IS NOT NULL THEN smo.min_order
+                            ELSE us.exercise_order
+                        END as sort_order
                     FROM user_selection us
                     LEFT JOIN exercises e ON us.exercise = e.exercise_name
                     LEFT JOIN superset_min_order smo 
@@ -189,14 +419,55 @@ def export_to_excel():
                 """
             elif has_order:
                 user_selection_query = """
-                    SELECT us.*, e.primary_muscle_group, e.secondary_muscle_group
+                    SELECT 
+                        us.routine,
+                        us.exercise,
+                        e.primary_muscle_group,
+                        e.secondary_muscle_group,
+                        e.tertiary_muscle_group,
+                        e.advanced_isolated_muscles,
+                        e.utility,
+                        e.movement_pattern,
+                        e.movement_subpattern,
+                        us.sets,
+                        us.min_rep_range,
+                        us.max_rep_range,
+                        us.rir,
+                        us.rpe,
+                        us.weight,
+                        us.execution_style,
+                        e.grips,
+                        e.stabilizers,
+                        e.synergists,
+                        us.superset_group,
+                        us.exercise_order
                     FROM user_selection us
                     LEFT JOIN exercises e ON us.exercise = e.exercise_name
                     ORDER BY us.routine, us.exercise_order, us.exercise
                 """
             else:
                 user_selection_query = """
-                    SELECT us.*, e.primary_muscle_group, e.secondary_muscle_group
+                    SELECT 
+                        us.routine,
+                        us.exercise,
+                        e.primary_muscle_group,
+                        e.secondary_muscle_group,
+                        e.tertiary_muscle_group,
+                        e.advanced_isolated_muscles,
+                        e.utility,
+                        e.movement_pattern,
+                        e.movement_subpattern,
+                        us.sets,
+                        us.min_rep_range,
+                        us.max_rep_range,
+                        us.rir,
+                        us.rpe,
+                        us.weight,
+                        us.execution_style,
+                        e.grips,
+                        e.stabilizers,
+                        e.synergists,
+                        us.superset_group
                     FROM user_selection us
                     LEFT JOIN exercises e ON us.exercise = e.exercise_name
                     ORDER BY us.routine, us.exercise
@@ -204,6 +475,12 @@ def export_to_excel():
             
             user_selection = db.fetch_all(user_selection_query)
             if user_selection:
+                # Reorder and rename columns based on view mode
+                user_selection = reorder_and_rename_columns(
+                    user_selection, 
+                    WORKOUT_PLAN_COLUMNS, 
+                    view_mode
+                )
                 sheets_data['Workout Plan'] = user_selection
                 logger.info(f"Fetched {len(user_selection)} workout plan rows")
 

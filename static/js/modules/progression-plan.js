@@ -137,7 +137,11 @@ export function initializeProgressionPlan() {
             
             // Use pre-filled values if available, otherwise fetch from API
             if (goalType !== 'technique') {
-                if (prefilledCurrentValue && prefilledCurrentValue !== '' && prefilledTargetValue && prefilledTargetValue !== '') {
+                // Check for valid pre-filled values (not empty, 'null', or undefined)
+                const hasValidCurrentValue = prefilledCurrentValue && prefilledCurrentValue !== '' && prefilledCurrentValue !== 'null';
+                const hasValidTargetValue = prefilledTargetValue && prefilledTargetValue !== '' && prefilledTargetValue !== 'null';
+                
+                if (hasValidCurrentValue && hasValidTargetValue) {
                     // Use the pre-calculated values from the suggestion
                     console.log('Using prefilled values from suggestion');
                     currentValueInput.value = prefilledCurrentValue;
@@ -332,8 +336,9 @@ export function initializeProgressionPlan() {
             const card = document.createElement('div');
             card.className = 'col-md-6 col-lg-3';
             // Include current_value and suggested_value as data attributes if available
-            const currentValue = suggestion.current_value !== undefined ? suggestion.current_value : '';
-            const suggestedValue = suggestion.suggested_value !== undefined ? suggestion.suggested_value : '';
+            // Check for both undefined and null to handle cases where Python None becomes JSON null
+            const currentValue = (suggestion.current_value !== undefined && suggestion.current_value !== null) ? suggestion.current_value : '';
+            const suggestedValue = (suggestion.suggested_value !== undefined && suggestion.suggested_value !== null) ? suggestion.suggested_value : '';
             card.innerHTML = `
                 <div class="card suggestion-card" data-goal-type="${suggestion.type}">
                     <div class="card-body d-flex flex-column">

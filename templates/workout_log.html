@@ -88,9 +88,10 @@
                 </thead>
                 <tbody>
                     {% for log in workout_logs %}
+                    {% set routine_parts = log.routine.split(' - ') if log.routine else ['', '', ''] %}
                     <tr data-log-id="{{ log.id }}">
                         <td data-label="#">{{ loop.index }}</td>
-                        <td data-label="Routine">{{ log.routine }}</td>
+                        <td data-label="Routine" class="routine-cell"><span class="routine-env">{{ routine_parts[0] if routine_parts|length > 0 else '' }}</span><span class="routine-program">{{ routine_parts[1] if routine_parts|length > 1 else '' }}</span><span class="routine-workout">{{ routine_parts[2] if routine_parts|length > 2 else '' }}</span></td>
                         <td data-label="Exercise">{{ log.exercise }}</td>
                         <td data-label="Planned Sets">{{ log.planned_sets }}</td>
                         <td data-label="Planned Min Reps" data-field="planned_min_reps">{{ log.planned_min_reps }}</td>
@@ -104,6 +105,7 @@
                                        class="editable-input number-input" 
                                        value="{{ log.scored_min_reps if log.scored_min_reps and log.scored_min_reps != 'None' else '' }}"
                                        onchange="updateScoredValue('{{ log.id }}', 'scored_min_reps', this.value)"
+                                       min="0"
                                        style="display: none;">
                                 <span class="editable-text">{{ log.scored_min_reps if log.scored_min_reps and log.scored_min_reps != 'None' else '--' }}</span>
                                 {% if log.scored_min_reps and log.scored_min_reps != 'None' and log.planned_min_reps %}
@@ -123,6 +125,7 @@
                                        class="editable-input number-input" 
                                        value="{{ log.scored_max_reps if log.scored_max_reps and log.scored_max_reps != 'None' else '' }}"
                                        onchange="updateScoredValue('{{ log.id }}', 'scored_max_reps', this.value)"
+                                       min="0"
                                        style="display: none;">
                                 <span class="editable-text">{{ log.scored_max_reps if log.scored_max_reps and log.scored_max_reps != 'None' else '--' }}</span>
                                 {% if log.scored_max_reps and log.scored_max_reps != 'None' and log.planned_max_reps %}
@@ -141,6 +144,7 @@
                                 <input type="number" 
                                        class="editable-input number-input" 
                                        value="{{ log.scored_rir if log.scored_rir and log.scored_rir != 'None' else '' }}"
+                                       min="0"
                                        onchange="updateScoredValue('{{ log.id }}', 'scored_rir', this.value)"
                                        style="display: none;">
                                 <span class="editable-text">{{ log.scored_rir if log.scored_rir and log.scored_rir != 'None' else '--' }}</span>
@@ -161,6 +165,7 @@
                                 <input type="number" 
                                        class="editable-input number-input" 
                                        value="{{ log.scored_rpe if log.scored_rpe and log.scored_rpe != 'None' else '' }}"
+                                       min="0"
                                        onchange="updateScoredValue('{{ log.id }}', 'scored_rpe', this.value)"
                                        style="display: none;">
                                 <span class="editable-text">{{ log.scored_rpe if log.scored_rpe and log.scored_rpe != 'None' else '--' }}</span>

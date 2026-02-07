@@ -42,7 +42,7 @@ body:not(:has(#navbar)) .navbar,
    ========================================================================== */
 .page-header {
     margin-bottom: 1rem;
-    margin-top: -40px;
+    margin-top: 10px;
     text-align: center;
     padding: 12px 32px;
     position: relative;
@@ -83,6 +83,7 @@ body:not(:has(#navbar)) .navbar,
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     position: relative;
     line-height: 1.3;
+    color: #2c3e50;
 }
 
 .header-underline {
