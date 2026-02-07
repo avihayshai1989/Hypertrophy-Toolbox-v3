@@ -1610,6 +1610,8 @@ async function handleSwapExercise(exerciseId, currentExerciseName) {
                 showToast('warning', 'All alternatives are already in this routine.');
             } else if (reason === 'not_found') {
                 showToast('error', 'Exercise not found in workout plan.');
+            } else if (reason === 'missing_metadata') {
+                showToast('warning', 'This exercise is missing muscle/equipment data and cannot be replaced.');
             } else {
                 showToast('error', message);
             }
@@ -1627,6 +1629,8 @@ async function handleSwapExercise(exerciseId, currentExerciseName) {
             showToast('warning', 'All alternatives are already in this routine.');
         } else if (reason === 'not_found') {
             showToast('error', 'Exercise not found in workout plan.');
+        } else if (reason === 'missing_metadata') {
+            showToast('warning', 'This exercise is missing muscle/equipment data and cannot be replaced.');
         } else {
             showToast('error', message);
         }
