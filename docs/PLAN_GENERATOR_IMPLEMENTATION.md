@@ -1,7 +1,7 @@
 # Auto Starter Plan Generator - Implementation Tracker
 
 ## Project Overview
-Movement-pattern-driven workout plan generator based on Liel Levy's course methodology.
+Movement-pattern-driven workout plan generator.
 
 ## Implementation Status
 

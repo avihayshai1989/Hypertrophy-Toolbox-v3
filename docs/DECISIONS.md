@@ -7,7 +7,7 @@ This document captures the non-negotiable rules for the Excel to SQLite merge ut
 - **Empty cell handling**: Blank strings and missing values coming from Excel are treated as nulls and never overwrite populated database fields.
 - **Case sensitivity flag**: `--nocase` enforces a `COLLATE NOCASE` uniqueness constraint; when omitted, uniqueness is strictly case-sensitive.
 - **Update-only flag**: `--update-only` converts unmatched Excel rows into skipped entries instead of inserts.
-- **Default paths**: Unless overridden, the tool reads from `data/musclewiki_exercises.xlsx`, writes to `data/database.db`, and emits Markdown artifacts in `docs/`.
+- **Default paths**: Unless overridden, the tool reads from `data/exercises.xlsx`, writes to `data/database.db`, and emits Markdown artifacts in `docs/`.
 
 ## Data semantics
 
