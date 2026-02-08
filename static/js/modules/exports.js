@@ -1,8 +1,34 @@
 import { showToast } from './toast.js';
 
+/**
+ * Check if the workout plan table has any exercises
+ * @returns {boolean} True if table has exercises, false if empty
+ */
+function hasExercisesInPlan() {
+    const tableBody = document.getElementById('workout_plan_table_body');
+    if (!tableBody) return false;
+    
+    const rows = tableBody.querySelectorAll('tr');
+    // Check if any rows exist (excluding empty state row)
+    for (const row of rows) {
+        // Skip rows that are empty state messages
+        if (row.querySelector('td[colspan]')) continue;
+        if (row.classList.contains('empty-state')) continue;
+        // If we find a real exercise row, return true
+        if (row.querySelector('td')) return true;
+    }
+    return false;
+}
+
 export async function exportToExcel() {
     try {
         console.log('=== Starting export to Excel ===');
+        
+        // Check for empty plan before export
+        if (!hasExercisesInPlan()) {
+            showToast('warning', 'No exercises to export. Add exercises to your workout plan first.');
+            return;
+        }
         
         // Get the current view mode from localStorage (matches filter-view-mode.js storage key)
         const viewMode = localStorage.getItem('hypertrophy_filter_view_mode') || 'simple';
@@ -64,6 +90,12 @@ export async function exportToExcel() {
 
 export async function exportToWorkoutLog() {
     try {
+        // Check for empty plan before export
+        if (!hasExercisesInPlan()) {
+            showToast('warning', 'No exercises to export. Add exercises to your workout plan first.');
+            return;
+        }
+        
         const response = await fetch('/export_to_workout_log', {
             method: 'POST',
             headers: {
